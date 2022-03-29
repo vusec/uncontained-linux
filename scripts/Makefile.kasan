@@ -37,6 +37,10 @@ else
 endif
 
 CFLAGS_KASAN += $(call cc-param,asan-stack=$(stack_enable))
+CFLAGS_KASAN += $(call cc-param,asan-instrument-reads=0)
+CFLAGS_KASAN += $(call cc-param,asan-instrument-writes=0)
+CFLAGS_KASAN += $(call cc-param,asan-instrument-atomics=0)
+CFLAGS_KASAN += $(call cc-param,asan-instrument-byval=0)
 
 endif # CONFIG_KASAN_GENERIC
 
