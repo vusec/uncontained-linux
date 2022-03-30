@@ -130,7 +130,33 @@ static inline void list_del(struct list_head *entry)
  * @member:	the name of the member within the struct.
  *
  */
-#define container_of(ptr, type, member) ({			\
+// define the globals only once
+#ifndef _UNCONTAINED_CONTAINER_OF_H
+#define _UNCONTAINED_CONTAINER_OF_H
+
+static volatile unsigned long __container_of_type_in;
+static volatile unsigned long __container_of_type_out;
+static volatile unsigned long __container_of_ptr_in;
+static volatile unsigned long __container_of_ptr_out;
+
+#endif /* _UNCONTAINED_CONTAINER_OF_H */
+
+// define a wrapper for container_of only if kasan is enabled
+#ifdef KASAN_ENABLED
+#define container_of(ptr, type, member) ({ \
+    typeof(ptr) __tmp_type_in; \
+    type* __tmp_ptr_out = __uncontained_container_of(ptr, type, member); \
+    __container_of_ptr_in   = (unsigned long)ptr; \
+    __container_of_type_in  = (unsigned long)&__tmp_type_in; \
+    __container_of_type_out = (unsigned long)&__tmp_ptr_out; \
+    __container_of_ptr_out  = (unsigned long) __tmp_ptr_out; \
+    (type*)__container_of_ptr_out;  })
+#else
+#define container_of(ptr, type, member) ({ \
+    __uncontained_container_of(ptr, type, member); })
+#endif
+
+#define __uncontained_container_of(ptr, type, member) ({			\
 	const typeof( ((type *)0)->member ) *__mptr = (ptr);	\
 	(type *)( (char *)__mptr - offsetof(type,member) );})
 
