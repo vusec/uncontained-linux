@@ -213,7 +213,33 @@ static __always_inline ptrdiff_t ptrdiff(const void *a, const void *b)
  * Exactly like container_of() with the exception that it plays nicely
  * with sparse for __user @ptr.
  */
-#define container_of_user(ptr, type, member) ({				\
+// define the globals only once
+#ifndef _UNCONTAINED_CONTAINER_OF_H
+#define _UNCONTAINED_CONTAINER_OF_H
+
+static volatile unsigned long __container_of_type_in;
+static volatile unsigned long __container_of_type_out;
+static volatile unsigned long __container_of_ptr_in;
+static volatile unsigned long __container_of_ptr_out;
+
+#endif /* _UNCONTAINED_CONTAINER_OF_H */
+
+// define a wrapper for container_of_user only if kasan is enabled
+#ifdef KASAN_ENABLED
+#define container_of_user(ptr, type, member) ({ \
+    typeof(ptr) __tmp_type_in; \
+    type* __tmp_ptr_out = __uncontained_container_of_user(ptr, type, member); \
+    __container_of_ptr_in   = (unsigned long)ptr; \
+    __container_of_type_in  = (unsigned long)&__tmp_type_in; \
+    __container_of_type_out = (unsigned long)&__tmp_ptr_out; \
+    __container_of_ptr_out  = (unsigned long) __tmp_ptr_out; \
+    (type*)__container_of_ptr_out;  })
+#else
+#define container_of_user(ptr, type, member) ({ \
+    __uncontained_container_of_user(ptr, type, member); })
+#endif
+
+#define __uncontained_container_of_user(ptr, type, member) ({				\
 	void __user *__mptr = (void __user *)(ptr);			\
 	BUILD_BUG_ON_MSG(!__same_type(*(ptr), struct_member(type, member)) && \
 			 !__same_type(*(ptr), void),			\
