@@ -218,6 +218,8 @@ static void register_global(struct kasan_global *global)
 		     KASAN_GLOBAL_REDZONE, false);
 }
 
+// we set it in do_ctors() in /init/main.c
+extern bool __asan_globals_ready;
 void __asan_register_globals(struct kasan_global *globals, size_t size)
 {
 	int i;
@@ -229,6 +231,7 @@ EXPORT_SYMBOL(__asan_register_globals);
 
 void __asan_unregister_globals(struct kasan_global *globals, size_t size)
 {
+	__asan_globals_ready = false;
 }
 EXPORT_SYMBOL(__asan_unregister_globals);
 
