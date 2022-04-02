@@ -1140,6 +1140,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
 	prevent_tail_call_optimization();
 }
 
+bool __asan_globals_ready = false;
 /* Call all constructor functions linked into the kernel. */
 static void __init do_ctors(void)
 {
@@ -1155,6 +1156,7 @@ static void __init do_ctors(void)
 	for (; fn < (ctor_fn_t *) __ctors_end; fn++)
 		(*fn)();
 #endif
+	__asan_globals_ready = true;
 }
 
 #ifdef CONFIG_KALLSYMS
