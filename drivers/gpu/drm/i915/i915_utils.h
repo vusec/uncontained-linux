@@ -221,6 +221,7 @@ static volatile unsigned long __container_of_type_in;
 static volatile unsigned long __container_of_type_out;
 static volatile unsigned long __container_of_ptr_in;
 static volatile unsigned long __container_of_ptr_out;
+static volatile unsigned long __container_of_ptr_diff;
 
 #endif /* _UNCONTAINED_CONTAINER_OF_H */
 
@@ -233,6 +234,7 @@ static volatile unsigned long __container_of_ptr_out;
     __container_of_type_in  = (unsigned long)&__tmp_type_in; \
     __container_of_type_out = (unsigned long)&__tmp_ptr_out; \
     __container_of_ptr_out  = (unsigned long) __tmp_ptr_out; \
+    __container_of_ptr_diff = (unsigned long) offsetof(type, member); \
     (type*)__container_of_ptr_out;  })
 #else
 #define container_of_user(ptr, type, member) ({ \
