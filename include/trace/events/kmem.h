@@ -35,7 +35,7 @@ DECLARE_EVENT_CLASS(kmem_alloc,
 		__entry->gfp_flags	= gfp_flags;
 	),
 
-	TP_printk("call_site=%pS ptr=%p bytes_req=%zu bytes_alloc=%zu gfp_flags=%s",
+	TP_printk("call_site=%pS ptr=%px bytes_req=%zu bytes_alloc=%zu gfp_flags=%s",
 		(void *)__entry->call_site,
 		__entry->ptr,
 		__entry->bytes_req,
@@ -88,7 +88,7 @@ DECLARE_EVENT_CLASS(kmem_alloc_node,
 		__entry->node		= node;
 	),
 
-	TP_printk("call_site=%pS ptr=%p bytes_req=%zu bytes_alloc=%zu gfp_flags=%s node=%d",
+	TP_printk("call_site=%pS ptr=%px bytes_req=%zu bytes_alloc=%zu gfp_flags=%s node=%d",
 		(void *)__entry->call_site,
 		__entry->ptr,
 		__entry->bytes_req,
@@ -131,7 +131,7 @@ TRACE_EVENT(kfree,
 		__entry->ptr		= ptr;
 	),
 
-	TP_printk("call_site=%pS ptr=%p",
+	TP_printk("call_site=%pS ptr=%px",
 		  (void *)__entry->call_site, __entry->ptr)
 );
 
@@ -153,7 +153,7 @@ TRACE_EVENT(kmem_cache_free,
 		__assign_str(name, name);
 	),
 
-	TP_printk("call_site=%pS ptr=%p name=%s",
+	TP_printk("call_site=%pS ptr=%px name=%s",
 		  (void *)__entry->call_site, __entry->ptr, __get_str(name))
 );
 
