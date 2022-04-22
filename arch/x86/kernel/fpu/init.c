@@ -157,13 +157,17 @@ static void __init fpu__init_task_struct_size(void)
 	 * Subtract off the static size of the register state.
 	 * It potentially has a bunch of padding.
 	 */
-	task_size -= sizeof(current->thread.fpu.__fpstate.regs);
+	// remove the padding calculation to make all statically and dynamically 
+	// allocated task_struct the same size
+	// task_size -= sizeof(current->thread.fpu.__fpstate.regs);
 
 	/*
 	 * Add back the dynamically-calculated register state
 	 * size.
 	 */
-	task_size += fpu_kernel_cfg.default_size;
+	// remove the padding calculation to make all statically and dynamically 
+	// allocated task_struct the same size
+	// task_size += fpu_kernel_cfg.default_size;
 
 	/*
 	 * We dynamically size 'struct fpu', so we require that
