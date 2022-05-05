@@ -21,6 +21,11 @@
 #include <asm/reg.h>
 #include <asm/plpar_wrappers.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct patb_entry *pseries_partition_tb;
 
 static void kvmhv_update_ptbl_cache(struct kvm_nested_guest *gp);
@@ -445,6 +450,10 @@ long kvmhv_nested_init(void)
 		ptb_order = 8;
 	pseries_partition_tb = kmalloc(sizeof(struct patb_entry) << ptb_order,
 				       GFP_KERNEL);
+	{
+		struct patb_entry __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!pseries_partition_tb) {
 		pr_err("kvm-hv: failed to allocated nested partition table\n");
 		return -ENOMEM;

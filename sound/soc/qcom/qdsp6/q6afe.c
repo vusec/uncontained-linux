@@ -19,6 +19,11 @@
 #include <sound/soc-dai.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "q6dsp-errno.h"
 #include "q6core.h"
 #include "q6afe.h"
@@ -989,6 +994,14 @@ static int q6afe_set_param(struct q6afe *afe, struct q6afe_port *port,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*param) + sizeof(*pdata) + psize;
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*param)) __uncontained_tmp112;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp112;
+	}
+	{
+		typeof((*pdata)) __uncontained_tmp113;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1043,6 +1056,14 @@ static int q6afe_port_set_param_v2(struct q6afe_port *port, void *data,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*param) + sizeof(*pdata) + psize;
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*param)) __uncontained_tmp114;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp114;
+	}
+	{
+		typeof((*pdata)) __uncontained_tmp115;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1202,6 +1223,10 @@ int q6afe_port_stop(struct q6afe_port *port)
 
 	pkt_size = APR_HDR_SIZE + sizeof(*stop);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*stop)) __uncontained_tmp116;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1514,6 +1539,10 @@ int q6afe_port_start(struct q6afe_port *port)
 
 	pkt_size = APR_HDR_SIZE + sizeof(*start);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*start)) __uncontained_tmp117;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1661,6 +1690,10 @@ int q6afe_unvote_lpass_core_hw(struct device *dev, uint32_t hw_block_id,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*vote_cfg);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*vote_cfg)) __uncontained_tmp118;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp118;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1699,6 +1732,10 @@ int q6afe_vote_lpass_core_hw(struct device *dev, uint32_t hw_block_id,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*vote_cfg);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*vote_cfg)) __uncontained_tmp119;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!p)
 		return -ENOMEM;
 

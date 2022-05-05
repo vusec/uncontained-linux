@@ -18,6 +18,11 @@
 #include <linux/mm.h>
 #include <asm/diag.h>
 #include <asm/ebcdic.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "hypfs.h"
 
 #define TMP_SIZE 64		/* size of temporary buffers */
@@ -409,6 +414,10 @@ static int dbfs_d204_create(void **data, void **data_free_ptr, size_t *size)
 
 	buf_size = PAGE_SIZE * (diag204_buf_pages + 1) + sizeof(d204->hdr);
 	base = vzalloc(buf_size);
+	{
+		typeof((d204->hdr)) __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!base)
 		return -ENOMEM;
 	d204 = page_align_ptr(base + sizeof(d204->hdr)) - sizeof(d204->hdr);

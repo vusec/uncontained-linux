@@ -21,6 +21,11 @@
 #include <net/9p/9p.h>
 #include <net/9p/client.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "v9fs.h"
 #include "v9fs_vfs.h"
 #include "fid.h"
@@ -71,8 +76,13 @@ static struct p9_rdir *v9fs_alloc_rdir_buf(struct file *filp, int buflen)
 {
 	struct p9_fid *fid = filp->private_data;
 
-	if (!fid->rdir)
+	if (!fid->rdir) {
 		fid->rdir = kzalloc(sizeof(struct p9_rdir) + buflen, GFP_KERNEL);
+		{
+			struct p9_rdir __uncontained_tmp106;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp106;
+		}
+	}
 	return fid->rdir;
 }
 

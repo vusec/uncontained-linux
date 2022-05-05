@@ -10,6 +10,11 @@
 #include <linux/firmware.h>
 #include <brcmu_wifi.h>
 #include <brcmu_utils.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "core.h"
 #include "bus.h"
 #include "debug.h"
@@ -148,6 +153,10 @@ static int brcmf_c_process_clm_blob(struct brcmf_if *ifp)
 	}
 
 	chunk_buf = kzalloc(sizeof(*chunk_buf) + MAX_CHUNK_LEN - 1, GFP_KERNEL);
+	{
+		typeof((*chunk_buf)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!chunk_buf) {
 		err = -ENOMEM;
 		goto done;

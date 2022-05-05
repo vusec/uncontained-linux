@@ -169,7 +169,12 @@
 #include <linux/timex.h>
 #include <linux/uaccess.h>
 #include <asm/dma.h>
-#include <asm/div64.h>		/* do_div */
+#include <asm/div64.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/		/* do_div */
 
 #define VERSION	"2.75"
 #define IP_NAME_SZ 32
@@ -3752,6 +3757,10 @@ static int pktgen_add_device(struct pktgen_thread *t, const char *ifname)
 	pkt_dev->flows = vzalloc_node(array_size(MAX_CFLOWS,
 						 sizeof(struct flow_state)),
 				      node);
+	{
+		struct flow_state __uncontained_tmp142;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp142;
+	}
 	if (pkt_dev->flows == NULL) {
 		kfree(pkt_dev);
 		return -ENOMEM;

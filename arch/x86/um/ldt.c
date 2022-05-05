@@ -13,6 +13,11 @@
 #include <skas.h>
 #include <sysdep/tls.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static inline int modify_ldt (int func, void *ptr, unsigned long bytecount)
 {
 	return syscall(__NR_modify_ldt, func, ptr, bytecount);
@@ -277,6 +282,10 @@ static void ldt_get_host_info(void)
 	else {
 		size = (size + 1) * sizeof(dummy_list[0]);
 		tmp = kmalloc(size, GFP_KERNEL);
+		{
+			typeof((dummy_list[0])) __uncontained_tmp5;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+		}
 		if (tmp == NULL) {
 			printk(KERN_ERR "ldt_get_host_info: couldn't allocate "
 			       "host ldt list\n");

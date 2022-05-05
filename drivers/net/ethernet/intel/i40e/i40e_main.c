@@ -14,6 +14,11 @@
 #include "i40e_xsk.h"
 #include <net/udp_tunnel.h>
 #include <net/xdp_sock_drv.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 /* All i40e tracepoints are defined by the include below, which
  * must be included exactly once across the whole kernel with
  * CREATE_TRACE_POINTS defined
@@ -2425,6 +2430,10 @@ int i40e_sync_vsi_filters(struct i40e_vsi *vsi)
 		list_size = filter_list_len *
 			    sizeof(struct i40e_aqc_remove_macvlan_element_data);
 		del_list = kzalloc(list_size, GFP_ATOMIC);
+		{
+			struct i40e_aqc_remove_macvlan_element_data __uncontained_tmp53;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp53;
+		}
 		if (!del_list)
 			goto err_no_memory;
 
@@ -2486,6 +2495,10 @@ int i40e_sync_vsi_filters(struct i40e_vsi *vsi)
 		list_size = filter_list_len *
 			       sizeof(struct i40e_aqc_add_macvlan_element_data);
 		add_list = kzalloc(list_size, GFP_ATOMIC);
+		{
+			struct i40e_aqc_add_macvlan_element_data __uncontained_tmp54;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+		}
 		if (!add_list)
 			goto err_no_memory;
 
@@ -10194,6 +10207,10 @@ static int i40e_get_capabilities(struct i40e_pf *pf,
 	buf_len = 40 * sizeof(struct i40e_aqc_list_capabilities_element_resp);
 	do {
 		cap_buf = kzalloc(buf_len, GFP_KERNEL);
+		{
+			struct i40e_aqc_list_capabilities_element_resp __uncontained_tmp55;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+		}
 		if (!cap_buf)
 			return -ENOMEM;
 
@@ -11136,6 +11153,10 @@ static int i40e_vsi_alloc_arrays(struct i40e_vsi *vsi, bool alloc_qvectors)
 	size = sizeof(struct i40e_ring *) * vsi->alloc_queue_pairs *
 	       (i40e_enabled_xdp_vsi(vsi) ? 3 : 2);
 	vsi->tx_rings = kzalloc(size, GFP_KERNEL);
+	{
+		struct i40e_ring *__uncontained_tmp56;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!vsi->tx_rings)
 		return -ENOMEM;
 	next_rings = vsi->tx_rings + vsi->alloc_queue_pairs;
@@ -11149,6 +11170,10 @@ static int i40e_vsi_alloc_arrays(struct i40e_vsi *vsi, bool alloc_qvectors)
 		/* allocate memory for q_vector pointers */
 		size = sizeof(struct i40e_q_vector *) * vsi->num_q_vectors;
 		vsi->q_vectors = kzalloc(size, GFP_KERNEL);
+		{
+			struct i40e_q_vector *__uncontained_tmp57;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+		}
 		if (!vsi->q_vectors) {
 			ret = -ENOMEM;
 			goto err_vectors;
@@ -11791,6 +11816,14 @@ static int i40e_init_interrupt_scheme(struct i40e_pf *pf)
 	/* set up vector assignment tracking */
 	size = sizeof(struct i40e_lump_tracking) + (sizeof(u16) * vectors);
 	pf->irq_pile = kzalloc(size, GFP_KERNEL);
+	{
+		struct i40e_lump_tracking __uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
+	{
+		u16 __uncontained_tmp59;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!pf->irq_pile)
 		return -ENOMEM;
 
@@ -12594,6 +12627,14 @@ static int i40e_sw_init(struct i40e_pf *pf)
 	size = sizeof(struct i40e_lump_tracking)
 		+ (sizeof(u16) * pf->hw.func_caps.num_tx_qp);
 	pf->qp_pile = kzalloc(size, GFP_KERNEL);
+	{
+		struct i40e_lump_tracking __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
+	{
+		u16 __uncontained_tmp61;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!pf->qp_pile) {
 		err = -ENOMEM;
 		goto sw_init_done;

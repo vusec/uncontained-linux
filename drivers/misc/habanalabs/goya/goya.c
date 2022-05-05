@@ -16,6 +16,11 @@
 #include <linux/iommu.h>
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * GOYA security scheme:
  *
@@ -4785,6 +4790,10 @@ static int goya_unmask_irq_arr(struct hl_device *hdev, u32 *irq_arr,
 	}
 
 	pkt = kzalloc(total_pkt_size, GFP_KERNEL);
+	{
+		struct cpucp_unmask_irq_arr_packet __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!pkt)
 		return -ENOMEM;
 

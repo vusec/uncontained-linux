@@ -14,6 +14,11 @@
 #include <linux/spi/spi.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "wlcore.h"
 #include "debug.h"
 #include "wl12xx_80211.h"
@@ -1811,6 +1816,10 @@ int wl1271_acx_set_rx_filter(struct wl1271 *wl, u8 index, bool enable,
 
 	acx_size = ALIGN(sizeof(*acx) + fields_size, 4);
 	acx = kzalloc(acx_size, GFP_KERNEL);
+	{
+		typeof((*acx)) __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 
 	if (!acx)
 		return -ENOMEM;

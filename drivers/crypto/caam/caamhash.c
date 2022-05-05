@@ -67,6 +67,11 @@
 #include "caamhash_desc.h"
 #include <crypto/engine.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define CAAM_CRA_PRIORITY		3000
 
 /* max hash key is max split key size */
@@ -703,6 +708,10 @@ static struct ahash_edesc *ahash_edesc_alloc(struct ahash_request *req,
 	unsigned int sg_size = sg_num * sizeof(struct sec4_sg_entry);
 
 	edesc = kzalloc(sizeof(*edesc) + sg_size, GFP_DMA | flags);
+	{
+		typeof((*edesc)) __uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!edesc) {
 		dev_err(ctx->jrdev, "could not allocate extended descriptor\n");
 		return NULL;

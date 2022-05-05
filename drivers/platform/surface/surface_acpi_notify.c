@@ -24,6 +24,11 @@
 #include <linux/surface_aggregator/controller.h>
 #include <linux/surface_acpi_notify.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct san_data {
 	struct device *dev;
 	struct ssam_controller *ctrl;
@@ -348,6 +353,10 @@ static u32 san_evt_bat_nf(struct ssam_event_notifier *nf,
 		return san_evt_bat(event, d->dev) ? SSAM_NOTIF_HANDLED : 0;
 
 	work = kzalloc(sizeof(*work) + event->length, GFP_KERNEL);
+	{
+		typeof((*work)) __uncontained_tmp91;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (!work)
 		return ssam_notifier_from_errno(-ENOMEM);
 

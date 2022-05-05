@@ -40,6 +40,11 @@
 #include <linux/usb/input.h>
 #include <media/rc-core.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* Driver Information */
 #define DRIVER_AUTHOR "Jarod Wilson <jarod@redhat.com>"
 #define DRIVER_AUTHOR2 "The Dweller, Stephen Cox"
@@ -536,6 +541,10 @@ static void redrat3_reset(struct redrat3_dev *rr3)
 	txpipe = usb_sndctrlpipe(udev, 0);
 
 	val = kmalloc(len, GFP_KERNEL);
+	{
+		typeof((*val)) __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!val)
 		return;
 

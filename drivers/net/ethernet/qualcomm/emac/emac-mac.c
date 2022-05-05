@@ -14,6 +14,11 @@
 #include <linux/phy.h>
 #include <linux/of.h>
 #include <net/ip6_checksum.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "emac.h"
 #include "emac-sgmii.h"
 
@@ -680,6 +685,10 @@ static int emac_tx_q_desc_alloc(struct emac_adapter *adpt,
 
 	size = sizeof(struct emac_buffer) * tx_q->tpd.count;
 	tx_q->tpd.tpbuff = kzalloc_node(size, GFP_KERNEL, node);
+	{
+		struct emac_buffer __uncontained_tmp72;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp72;
+	}
 	if (!tx_q->tpd.tpbuff)
 		return -ENOMEM;
 
@@ -722,6 +731,10 @@ static int emac_rx_descs_alloc(struct emac_adapter *adpt)
 
 	size = sizeof(struct emac_buffer) * rx_q->rfd.count;
 	rx_q->rfd.rfbuff = kzalloc_node(size, GFP_KERNEL, node);
+	{
+		struct emac_buffer __uncontained_tmp73;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
+	}
 	if (!rx_q->rfd.rfbuff)
 		return -ENOMEM;
 

@@ -31,6 +31,11 @@
 #include <sound/core.h>
 #include <sound/emu10k1.h>
 #include <linux/firmware.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "p16v.h"
 #include "tina2.h"
 #include "p17v.h"
@@ -1883,8 +1888,16 @@ int snd_emu10k1_create(struct snd_card *card,
 
 	emu->page_ptr_table = vmalloc(array_size(sizeof(void *),
 						 emu->max_cache_pages));
+	{
+		void *__uncontained_tmp158;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp158;
+	}
 	emu->page_addr_table = vmalloc(array_size(sizeof(unsigned long),
 						  emu->max_cache_pages));
+	{
+		unsigned long __uncontained_tmp159;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp159;
+	}
 	if (!emu->page_ptr_table || !emu->page_addr_table)
 		return -ENOMEM;
 

@@ -11,6 +11,16 @@
 #include <linux/slab.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "cros_ec_trace.h"
 
 #define EC_COMMAND_RETRIES	50
@@ -117,6 +127,14 @@ static int send_command(struct cros_ec_device *ec_dev,
 
 		status_msg = kmalloc(sizeof(*status_msg) + sizeof(*status),
 				     GFP_KERNEL);
+		{
+			typeof((*status)) __uncontained_tmp83;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp83;
+		}
+		{
+			typeof((*status_msg)) __uncontained_tmp84;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp84;
+		}
 		if (!status_msg)
 			return -ENOMEM;
 
@@ -313,6 +331,18 @@ static int cros_ec_host_command_proto_query_v2(struct cros_ec_device *ec_dev)
 	int len = max(sizeof(*hello_params), sizeof(*hello_response));
 
 	msg = kmalloc(sizeof(*msg) + len, GFP_KERNEL);
+	{
+		typeof((*hello_params)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
+	{
+		typeof((*hello_response)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
+	{
+		typeof((*msg)) __uncontained_tmp85;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!msg)
 		return -ENOMEM;
 
@@ -379,6 +409,18 @@ static int cros_ec_get_host_command_version_mask(struct cros_ec_device *ec_dev,
 
 	msg = kmalloc(sizeof(*msg) + max(sizeof(*rver), sizeof(*pver)),
 		      GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp86;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
+	}
+	{
+		typeof((*pver)) __uncontained_tmp87;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp87;
+	}
+	{
+		typeof((*rver)) __uncontained_tmp88;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (!msg)
 		return -ENOMEM;
 
@@ -418,6 +460,14 @@ int cros_ec_query_all(struct cros_ec_device *ec_dev)
 
 	proto_msg = kzalloc(sizeof(*proto_msg) + sizeof(*proto_info),
 			    GFP_KERNEL);
+	{
+		typeof((*proto_info)) __uncontained_tmp89;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp89;
+	}
+	{
+		typeof((*proto_msg)) __uncontained_tmp90;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (!proto_msg)
 		return -ENOMEM;
 
@@ -854,6 +904,18 @@ int cros_ec_get_sensor_count(struct cros_ec_dev *ec)
 
 	msg = kzalloc(sizeof(*msg) + max(sizeof(*params), sizeof(*resp)),
 		      GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp91;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp91;
+	}
+	{
+		typeof((*params)) __uncontained_tmp92;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp92;
+	}
+	{
+		typeof((*resp)) __uncontained_tmp93;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!msg)
 		return -ENOMEM;
 
@@ -923,6 +985,10 @@ int cros_ec_command(struct cros_ec_device *ec_dev,
 	int ret;
 
 	msg = kzalloc(sizeof(*msg) + max(insize, outsize), GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp94;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!msg)
 		return -ENOMEM;
 

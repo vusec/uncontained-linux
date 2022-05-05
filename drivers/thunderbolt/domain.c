@@ -16,6 +16,11 @@
 #include <linux/random.h>
 #include <crypto/hash.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "tb.h"
 
 static DEFINE_IDA(tb_domain_ida);
@@ -391,6 +396,10 @@ struct tb *tb_domain_alloc(struct tb_nhi *nhi, int timeout_msec, size_t privsize
 	BUILD_BUG_ON(sizeof(struct tb_regs_hop) != 2 * 4);
 
 	tb = kzalloc(sizeof(*tb) + privsize, GFP_KERNEL);
+	{
+		typeof((*tb)) __uncontained_tmp93;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!tb)
 		return NULL;
 
@@ -738,6 +747,10 @@ int tb_domain_challenge_switch_key(struct tb *tb, struct tb_switch *sw)
 
 	shash = kzalloc(sizeof(*shash) + crypto_shash_descsize(tfm),
 			GFP_KERNEL);
+	{
+		typeof((*shash)) __uncontained_tmp94;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!shash) {
 		ret = -ENOMEM;
 		goto err_free_tfm;

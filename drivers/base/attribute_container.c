@@ -18,6 +18,11 @@
 #include <linux/module.h>
 #include <linux/mutex.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "base.h"
 
 /* This is a private structure used to tie the classdev and the
@@ -156,6 +161,10 @@ attribute_container_add_device(struct device *dev,
 			continue;
 
 		ic = kzalloc(sizeof(*ic), GFP_KERNEL);
+		{
+			typeof((*ic)) __uncontained_tmp8;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+		}
 		if (!ic) {
 			dev_err(dev, "failed to allocate class container\n");
 			continue;

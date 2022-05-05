@@ -27,6 +27,11 @@
 #include <asm/cputable.h>
 #include <asm/pte-walk.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "book3s.h"
 #include "trace_hv.h"
 
@@ -98,6 +103,10 @@ int kvmppc_allocate_hpt(struct kvm_hpt_info *info, u32 order)
 
 	/* Allocate reverse map array */
 	rev = vmalloc(array_size(npte, sizeof(struct revmap_entry)));
+	{
+		struct revmap_entry __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!rev) {
 		if (cma)
 			kvm_free_hpt_cma(page, 1 << (order - PAGE_SHIFT));

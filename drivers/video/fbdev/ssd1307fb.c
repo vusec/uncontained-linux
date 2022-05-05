@@ -17,6 +17,11 @@
 #include <linux/uaccess.h>
 #include <linux/regulator/consumer.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define SSD1307FB_DATA			0x40
 #define SSD1307FB_COMMAND		0x80
 
@@ -116,6 +121,10 @@ static struct ssd1307fb_array *ssd1307fb_alloc_array(u32 len, u8 type)
 	struct ssd1307fb_array *array;
 
 	array = kzalloc(sizeof(struct ssd1307fb_array) + len, GFP_KERNEL);
+	{
+		struct ssd1307fb_array __uncontained_tmp135;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp135;
+	}
 	if (!array)
 		return NULL;
 

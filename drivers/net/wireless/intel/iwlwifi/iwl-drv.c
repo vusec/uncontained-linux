@@ -10,6 +10,11 @@
 #include <linux/module.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "iwl-drv.h"
 #include "iwl-csr.h"
 #include "iwl-debug.h"
@@ -1509,6 +1514,14 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
 			drv->fw.dbg.n_dest_reg;
 
 		drv->fw.dbg.dest_tlv = kmalloc(dbg_dest_size, GFP_KERNEL);
+		{
+			typeof((*drv->fw.dbg.dest_tlv)) __uncontained_tmp77;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp77;
+		}
+		{
+			typeof((drv->fw.dbg.dest_tlv->reg_ops[0])) __uncontained_tmp78;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+		}
 
 		if (!drv->fw.dbg.dest_tlv)
 			goto out_free_fw;

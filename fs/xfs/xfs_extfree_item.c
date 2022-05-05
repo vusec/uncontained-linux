@@ -25,6 +25,16 @@
 #include "xfs_log_priv.h"
 #include "xfs_log_recover.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct kmem_cache	*xfs_efi_cache;
 struct kmem_cache	*xfs_efd_cache;
 
@@ -160,6 +170,14 @@ xfs_efi_init(
 		size = (uint)(sizeof(struct xfs_efi_log_item) +
 			((nextents - 1) * sizeof(xfs_extent_t)));
 		efip = kmem_zalloc(size, 0);
+		{
+			typeof((xfs_extent_t)) __uncontained_tmp111;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp111;
+		}
+		{
+			struct xfs_efi_log_item __uncontained_tmp110;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp110;
+		}
 	} else {
 		efip = kmem_cache_zalloc(xfs_efi_cache,
 					 GFP_KERNEL | __GFP_NOFAIL);
@@ -332,6 +350,14 @@ xfs_trans_get_efd(
 		efdp = kmem_zalloc(sizeof(struct xfs_efd_log_item) +
 				(nextents - 1) * sizeof(struct xfs_extent),
 				0);
+		{
+			struct xfs_efd_log_item __uncontained_tmp158;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp158;
+		}
+		{
+			struct xfs_extent __uncontained_tmp159;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp159;
+		}
 	} else {
 		efdp = kmem_cache_zalloc(xfs_efd_cache,
 					GFP_KERNEL | __GFP_NOFAIL);

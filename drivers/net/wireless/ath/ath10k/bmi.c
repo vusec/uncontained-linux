@@ -10,6 +10,11 @@
 #include "htc.h"
 #include "hw.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 void ath10k_bmi_start(struct ath10k *ar)
 {
 	ath10k_dbg(ar, ATH10K_DBG_BMI, "bmi start\n");
@@ -358,6 +363,10 @@ static int ath10k_bmi_lz_data_large(struct ath10k *ar, const void *buffer, u32 l
 
 	buf_len = sizeof(*cmd) + BMI_MAX_LARGE_DATA_SIZE - BMI_MAX_DATA_SIZE;
 	cmd = kzalloc(buf_len, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (!cmd)
 		return -ENOMEM;
 

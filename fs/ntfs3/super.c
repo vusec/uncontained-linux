@@ -35,6 +35,11 @@
 #include <linux/seq_file.h>
 #include <linux/statfs.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "debug.h"
 #include "ntfs.h"
 #include "ntfs_fs.h"
@@ -1402,6 +1407,10 @@ static int ntfs_init_fs_context(struct fs_context *fc)
 		goto free_opts;
 
 	sbi->upcase = kvmalloc(0x10000 * sizeof(short), GFP_KERNEL);
+	{
+		short __uncontained_tmp114;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!sbi->upcase)
 		goto free_sbi;
 

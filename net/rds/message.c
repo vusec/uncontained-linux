@@ -37,6 +37,11 @@
 #include <linux/list.h>
 #include <linux/errqueue.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "rds.h"
 
 static unsigned int	rds_exthdr_size[__RDS_EXTHDR_MAX] = {
@@ -289,6 +294,10 @@ struct rds_message *rds_message_alloc(unsigned int extra_len, gfp_t gfp)
 		return NULL;
 
 	rm = kzalloc(sizeof(struct rds_message) + extra_len, gfp);
+	{
+		struct rds_message __uncontained_tmp157;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp157;
+	}
 	if (!rm)
 		goto out;
 

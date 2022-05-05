@@ -24,6 +24,11 @@
 #include <linux/sizes.h>
 #include <asm/mach/flash.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct sa_subdev_info {
 	char name[16];
 	struct map_info map;
@@ -173,6 +178,14 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
 	 * Allocate the map_info structs in one go.
 	 */
 	info = kzalloc(size, GFP_KERNEL);
+	{
+		struct sa_info __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
+	{
+		struct sa_subdev_info __uncontained_tmp27;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!info) {
 		ret = -ENOMEM;
 		goto out;

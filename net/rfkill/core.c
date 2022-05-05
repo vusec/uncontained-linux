@@ -22,6 +22,16 @@
 #include <linux/fs.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "rfkill.h"
 
 #define POLL_INTERVAL		(5 * HZ)
@@ -278,6 +288,10 @@ static void rfkill_send_events(struct rfkill *rfkill, enum rfkill_operation op)
 
 	list_for_each_entry(data, &rfkill_fds, list) {
 		ev = kzalloc(sizeof(*ev), GFP_KERNEL);
+		{
+			typeof((*ev)) __uncontained_tmp104;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp104;
+		}
 		if (!ev)
 			continue;
 		rfkill_fill_event(&ev->ev, rfkill, op);
@@ -981,6 +995,10 @@ struct rfkill * __must_check rfkill_alloc(const char *name,
 		return NULL;
 
 	rfkill = kzalloc(sizeof(*rfkill) + strlen(name) + 1, GFP_KERNEL);
+	{
+		typeof((*rfkill)) __uncontained_tmp158;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp158;
+	}
 	if (!rfkill)
 		return NULL;
 
@@ -1166,6 +1184,10 @@ static int rfkill_fop_open(struct inode *inode, struct file *file)
 
 	list_for_each_entry(rfkill, &rfkill_list, node) {
 		ev = kzalloc(sizeof(*ev), GFP_KERNEL);
+		{
+			typeof((*ev)) __uncontained_tmp105;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp105;
+		}
 		if (!ev)
 			goto free;
 		rfkill_fill_event(&ev->ev, rfkill, RFKILL_OP_ADD);

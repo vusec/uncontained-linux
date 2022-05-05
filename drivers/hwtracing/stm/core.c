@@ -24,6 +24,11 @@
 
 #include <uapi/linux/stm.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static unsigned int stm_core_up;
 
 /*
@@ -864,6 +869,14 @@ int stm_register_device(struct device *parent, struct stm_data *stm_data,
 
 	nmasters = stm_data->sw_end - stm_data->sw_start + 1;
 	stm = vzalloc(sizeof(*stm) + nmasters * sizeof(void *));
+	{
+		typeof((*stm)) __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
+	{
+		void *__uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!stm)
 		return -ENOMEM;
 

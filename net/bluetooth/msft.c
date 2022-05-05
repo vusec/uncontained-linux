@@ -7,6 +7,11 @@
 #include <net/bluetooth/hci_core.h>
 #include <net/bluetooth/mgmt.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hci_request.h"
 #include "mgmt_util.h"
 #include "msft.h"
@@ -430,6 +435,14 @@ static int msft_add_monitor_sync(struct hci_dev *hdev,
 	}
 
 	cp = kmalloc(total_size, GFP_KERNEL);
+	{
+		typeof((*cp)) __uncontained_tmp95;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp95;
+	}
+	{
+		typeof((*pattern_data)) __uncontained_tmp96;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!cp)
 		return -ENOMEM;
 
@@ -688,6 +701,14 @@ static int __msft_add_monitor_pattern(struct hci_dev *hdev,
 	}
 
 	cp = kmalloc(total_size, GFP_KERNEL);
+	{
+		typeof((*cp)) __uncontained_tmp97;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp97;
+	}
+	{
+		typeof((*pattern_data)) __uncontained_tmp98;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp98;
+	}
 	if (!cp)
 		return -ENOMEM;
 

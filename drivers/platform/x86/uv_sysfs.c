@@ -16,6 +16,11 @@
 #include <asm/uv/uv_hub.h>
 #include <asm/uv/uv_geo.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define INVALID_CNODE -1
 
 struct kobject *sgi_uv_kobj;
@@ -374,6 +379,10 @@ static int uv_ports_init(void)
 	for (j = 0; j < uv_bios_obj_cnt; j++) {
 		sz = hub_buf[j].ports * sizeof(*port_buf[j]);
 		port_buf[j] = kzalloc(sz, GFP_KERNEL);
+		{
+			typeof((*port_buf[j])) __uncontained_tmp82;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp82;
+		}
 		if (!port_buf[j]) {
 			ret = -ENOMEM;
 			j--;

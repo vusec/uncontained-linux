@@ -12,6 +12,11 @@
 
 #include <rtw_wifi_regd.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define RTW_MAX_MGMT_TX_CNT (8)
 
 #define RTW_SCAN_IE_LEN_MAX      2304
@@ -1388,6 +1393,10 @@ static int cfg80211_rtw_scan(struct wiphy *wiphy
 
 	ssid = kzalloc(RTW_SSID_SCAN_AMOUNT * sizeof(struct ndis_802_11_ssid),
 		       GFP_KERNEL);
+	{
+		struct ndis_802_11_ssid __uncontained_tmp98;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp98;
+	}
 	if (!ssid) {
 		ret = -ENOMEM;
 		goto check_need_indicate_scan_done;

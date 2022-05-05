@@ -15,6 +15,11 @@
 #include <linux/wait.h>
 #include <linux/bitmap.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "tcm.h"
 
 static unsigned long mask[8];
@@ -226,6 +231,10 @@ struct tcm *sita_init(u16 width, u16 height)
 		return NULL;
 
 	tcm = kzalloc(sizeof(*tcm) + map_size, GFP_KERNEL);
+	{
+		typeof((*tcm)) __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!tcm)
 		goto error;
 

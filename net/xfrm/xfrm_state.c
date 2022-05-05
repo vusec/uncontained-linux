@@ -30,6 +30,11 @@
 
 #include <crypto/aead.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "xfrm_hash.h"
 
 #define xfrm_state_deref_prot(table, net) \
@@ -1487,6 +1492,10 @@ static inline int clone_security(struct xfrm_state *x, struct xfrm_sec_ctx *secu
 	int err;
 
 	uctx = kmalloc(size, GFP_KERNEL);
+	{
+		typeof((*uctx)) __uncontained_tmp105;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!uctx)
 		return -ENOMEM;
 

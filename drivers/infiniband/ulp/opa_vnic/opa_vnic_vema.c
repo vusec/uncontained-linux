@@ -58,6 +58,11 @@
 #include <rdma/opa_smi.h>
 #include <rdma/opa_port_info.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "opa_vnic_internal.h"
 
 char opa_vnic_driver_name[] = "opa_vnic";
@@ -999,6 +1004,10 @@ static int opa_vnic_vema_add_one(struct ib_device *device)
 
 	size += device->phys_port_cnt * sizeof(struct opa_vnic_vema_port);
 	cport = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*cport)) __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!cport)
 		return -ENOMEM;
 

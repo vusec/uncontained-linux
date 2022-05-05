@@ -9,6 +9,11 @@
 #include <linux/spinlock.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "etnaviv_drv.h"
 #include "etnaviv_gem.h"
 #include "etnaviv_gpu.h"
@@ -564,6 +569,10 @@ static int etnaviv_gem_new_impl(struct drm_device *dev, u32 size, u32 flags,
 	}
 
 	etnaviv_obj = kzalloc(sz, GFP_KERNEL);
+	{
+		typeof((*etnaviv_obj)) __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!etnaviv_obj)
 		return -ENOMEM;
 

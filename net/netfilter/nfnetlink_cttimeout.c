@@ -31,6 +31,11 @@
 #include <linux/netfilter/nfnetlink.h>
 #include <linux/netfilter/nfnetlink_cttimeout.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static unsigned int nfct_timeout_id __read_mostly;
 
 struct nfct_timeout_pernet {
@@ -144,6 +149,10 @@ static int cttimeout_new_timeout(struct sk_buff *skb,
 
 	timeout = kzalloc(sizeof(struct ctnl_timeout) +
 			  l4proto->ctnl_timeout.obj_size, GFP_KERNEL);
+	{
+		struct ctnl_timeout __uncontained_tmp146;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp146;
+	}
 	if (timeout == NULL) {
 		ret = -ENOMEM;
 		goto err_proto_put;

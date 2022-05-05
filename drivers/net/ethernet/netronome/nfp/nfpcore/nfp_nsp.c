@@ -17,6 +17,11 @@
 #include <linux/sizes.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define NFP_SUBSYS "nfp_nsp"
 
 #include "nfp.h"
@@ -514,6 +519,10 @@ nfp_nsp_command_buf_dma_sg(struct nfp_nsp *nsp,
 	nseg = DIV_ROUND_UP(max_size, chunk_size);
 
 	chunks = kzalloc(array_size(sizeof(*chunks), nseg), GFP_KERNEL);
+	{
+		typeof((*chunks)) __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!chunks)
 		return -ENOMEM;
 

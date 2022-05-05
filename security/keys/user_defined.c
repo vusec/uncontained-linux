@@ -12,6 +12,11 @@
 #include <linux/err.h>
 #include <keys/user-type.h>
 #include <linux/uaccess.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "internal.h"
 
 static int logon_vet_description(const char *desc);
@@ -65,6 +70,10 @@ int user_preparse(struct key_preparsed_payload *prep)
 		return -EINVAL;
 
 	upayload = kmalloc(sizeof(*upayload) + datalen, GFP_KERNEL);
+	{
+		typeof((*upayload)) __uncontained_tmp160;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp160;
+	}
 	if (!upayload)
 		return -ENOMEM;
 

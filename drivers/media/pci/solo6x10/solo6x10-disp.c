@@ -14,6 +14,11 @@
 #include <linux/videodev2.h>
 #include <media/v4l2-ioctl.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "solo6x10.h"
 
 #define SOLO_VCLK_DELAY			3
@@ -168,6 +173,10 @@ static int solo_dma_vin_region(struct solo_dev *solo_dev, u32 off,
 	int i, ret = 0;
 
 	buf = kmalloc(size, GFP_KERNEL);
+	{
+		typeof((*buf)) __uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!buf)
 		return -ENOMEM;
 

@@ -45,6 +45,11 @@
 #include <asm/errno.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define KPROBE_HASH_BITS 6
 #define KPROBE_TABLE_SIZE (1 << KPROBE_HASH_BITS)
 
@@ -2130,6 +2135,10 @@ int register_kretprobe(struct kretprobe *rp)
 	for (i = 0; i < rp->maxactive; i++) {
 		inst = kzalloc(sizeof(struct kretprobe_instance) +
 			       rp->data_size, GFP_KERNEL);
+		{
+			struct kretprobe_instance __uncontained_tmp123;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp123;
+		}
 		if (inst == NULL) {
 			refcount_set(&rp->rph->ref, i);
 			free_rp_inst(rp);

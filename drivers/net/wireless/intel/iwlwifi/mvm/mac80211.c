@@ -16,6 +16,11 @@
 #include <net/ieee80211_radiotap.h>
 #include <net/tcp.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "iwl-drv.h"
 #include "iwl-op-mode.h"
 #include "iwl-io.h"
@@ -1705,6 +1710,10 @@ static u64 iwl_mvm_prepare_multicast(struct ieee80211_hw *hw,
 
 	len = roundup(sizeof(*cmd) + addr_count * ETH_ALEN, 4);
 	cmd = kzalloc(len, GFP_ATOMIC);
+	{
+		typeof((*cmd)) __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!cmd)
 		return 0;
 

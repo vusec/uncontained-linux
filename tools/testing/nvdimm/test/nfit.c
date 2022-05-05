@@ -25,6 +25,11 @@
 
 #include <asm/mce.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Generate an NFIT table to describe the following topology:
  *
@@ -2880,6 +2885,10 @@ static union acpi_object *nfit_test_evaluate_dsm(acpi_handle handle,
 static int setup_result(void *buf, size_t size)
 {
 	result = kmalloc(sizeof(union acpi_object) + size, GFP_KERNEL);
+	{
+		union acpi_object __uncontained_tmp174;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp174;
+	}
 	if (!result)
 		return -ENOMEM;
 	result->package.type = ACPI_TYPE_BUFFER,

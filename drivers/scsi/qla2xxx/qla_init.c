@@ -10,6 +10,11 @@
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "qla_devtbl.h"
 
 #ifdef CONFIG_SPARC
@@ -8184,6 +8189,10 @@ qla24xx_load_risc_flash(scsi_qla_host_t *vha, uint32_t *srisc_addr,
 		    "-> fwdt%u template allocate template %#x words...\n",
 		    j, risc_size);
 		fwdt->template = vmalloc(risc_size * sizeof(*dcode));
+		{
+			typeof((*dcode)) __uncontained_tmp91;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp91;
+		}
 		if (!fwdt->template) {
 			ql_log(ql_log_warn, vha, 0x0164,
 			    "-> fwdt%u failed allocate template.\n", j);
@@ -8439,6 +8448,10 @@ qla24xx_load_risc_blob(scsi_qla_host_t *vha, uint32_t *srisc_addr)
 		    "-> fwdt%u template allocate template %#x words...\n",
 		    j, risc_size);
 		fwdt->template = vmalloc(risc_size * sizeof(*dcode));
+		{
+			typeof((*dcode)) __uncontained_tmp92;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp92;
+		}
 		if (!fwdt->template) {
 			ql_log(ql_log_warn, vha, 0x0174,
 			    "-> fwdt%u failed allocate template.\n", j);

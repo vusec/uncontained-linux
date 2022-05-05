@@ -14,6 +14,11 @@
 #include <crypto/hash.h>
 #include <crypto/hash_info.h>
 #include <crypto/public_key.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "pkcs7_parser.h"
 
 /*
@@ -53,6 +58,10 @@ static int pkcs7_digest(struct pkcs7_message *pkcs7,
 		goto error_no_desc;
 
 	desc = kzalloc(desc_size, GFP_KERNEL);
+	{
+		typeof((*desc)) __uncontained_tmp12;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!desc)
 		goto error_no_desc;
 

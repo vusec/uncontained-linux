@@ -27,6 +27,16 @@
 
 #include <nvif/class.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct gk20a_fw_av
 {
 	u32 addr;
@@ -51,6 +61,18 @@ gk20a_gr_av_to_init(struct gf100_gr *gr, const char *path, const char *name,
 
 	nent = (blob.size / sizeof(struct gk20a_fw_av));
 	pack = vzalloc((sizeof(*pack) * 2) + (sizeof(*init) * (nent + 1)));
+	{
+		struct gk20a_fw_av __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
+	{
+		typeof((*init)) __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
+	{
+		typeof((*pack)) __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!pack) {
 		ret = -ENOMEM;
 		goto end;
@@ -101,6 +123,18 @@ gk20a_gr_aiv_to_init(struct gf100_gr *gr, const char *path, const char *name,
 
 	nent = (blob.size / sizeof(struct gk20a_fw_aiv));
 	pack = vzalloc((sizeof(*pack) * 2) + (sizeof(*init) * (nent + 1)));
+	{
+		struct gk20a_fw_aiv __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
+	{
+		typeof((*init)) __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
+	{
+		typeof((*pack)) __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!pack) {
 		ret = -ENOMEM;
 		goto end;
@@ -149,6 +183,18 @@ gk20a_gr_av_to_method(struct gf100_gr *gr, const char *path, const char *name,
 
 	pack = vzalloc((sizeof(*pack) * (max_classes + 1)) +
 		       (sizeof(*init) * (nent + max_classes + 1)));
+	{
+		struct gk20a_fw_av __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
+	{
+		typeof((*init)) __uncontained_tmp36;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+	}
+	{
+		typeof((*pack)) __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!pack) {
 		ret = -ENOMEM;
 		goto end;

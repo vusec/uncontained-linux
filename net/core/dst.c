@@ -27,6 +27,11 @@
 #include <net/dst.h>
 #include <net/dst_metadata.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 int dst_discard_out(struct net *net, struct sock *sk, struct sk_buff *skb)
 {
 	kfree_skb(skb);
@@ -301,6 +306,10 @@ struct metadata_dst *metadata_dst_alloc(u8 optslen, enum metadata_type type,
 	struct metadata_dst *md_dst;
 
 	md_dst = kmalloc(sizeof(*md_dst) + optslen, flags);
+	{
+		typeof((*md_dst)) __uncontained_tmp168;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp168;
+	}
 	if (!md_dst)
 		return NULL;
 

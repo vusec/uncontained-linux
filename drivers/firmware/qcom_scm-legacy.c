@@ -13,6 +13,11 @@
 #include <linux/arm-smccc.h>
 #include <linux/dma-mapping.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "qcom_scm.h"
 
 static DEFINE_MUTEX(qcom_scm_lock);
@@ -146,6 +151,14 @@ int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
 	const __le32 *res_buf;
 
 	cmd = kzalloc(PAGE_ALIGN(alloc_len), GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp18;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+	}
+	{
+		typeof((*rsp)) __uncontained_tmp19;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!cmd)
 		return -ENOMEM;
 

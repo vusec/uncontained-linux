@@ -17,6 +17,11 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DRVNAME "i5k_amb"
 
 #define I5K_REG_AMB_BASE_ADDR		0x48
@@ -264,6 +269,10 @@ static int i5k_amb_hwmon_init(struct platform_device *pdev)
 	data->attrs = kzalloc(array3_size(num_ambs, KNOBS_PER_AMB,
 					  sizeof(*data->attrs)),
 			      GFP_KERNEL);
+	{
+		typeof((*data->attrs)) __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!data->attrs)
 		return -ENOMEM;
 	data->num_attrs = 0;

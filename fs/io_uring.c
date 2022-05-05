@@ -88,6 +88,11 @@
 
 #include <uapi/linux/io_uring.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "internal.h"
 #include "io-wq.h"
 
@@ -1514,6 +1519,10 @@ static __cold struct io_ring_ctx *io_ring_ctx_alloc(struct io_uring_params *p)
 	int i, hash_bits;
 
 	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+	{
+		typeof((*ctx)) __uncontained_tmp124;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (!ctx)
 		return NULL;
 
@@ -1528,11 +1537,19 @@ static __cold struct io_ring_ctx *io_ring_ctx_alloc(struct io_uring_params *p)
 	ctx->cancel_hash_bits = hash_bits;
 	ctx->cancel_hash = kmalloc((1U << hash_bits) * sizeof(struct hlist_head),
 					GFP_KERNEL);
+	{
+		struct hlist_head __uncontained_tmp123;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (!ctx->cancel_hash)
 		goto err;
 	__hash_init(ctx->cancel_hash, 1U << hash_bits);
 
 	ctx->dummy_ubuf = kzalloc(sizeof(*ctx->dummy_ubuf), GFP_KERNEL);
+	{
+		typeof((*ctx->dummy_ubuf)) __uncontained_tmp125;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (!ctx->dummy_ubuf)
 		goto err;
 	/* set invalid range, so io_import_fixed() fails meeting it */

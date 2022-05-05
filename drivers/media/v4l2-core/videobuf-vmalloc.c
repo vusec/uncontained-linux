@@ -24,6 +24,11 @@
 
 #include <media/videobuf-vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define MAGIC_DMABUF   0x17760309
 #define MAGIC_VMAL_MEM 0x18221223
 
@@ -138,6 +143,10 @@ static struct videobuf_buffer *__videobuf_alloc_vb(size_t size)
 	struct videobuf_buffer *vb;
 
 	vb = kzalloc(size + sizeof(*mem), GFP_KERNEL);
+	{
+		typeof((*mem)) __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!vb)
 		return vb;
 

@@ -3,7 +3,12 @@
 #include <linux/vmalloc.h>
 #include <linux/mm.h>
 
-#include <linux/swapops.h> /* depends on mm.h include */
+#include <linux/swapops.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/ /* depends on mm.h include */
 
 static DEFINE_MUTEX(swap_cgroup_mutex);
 struct swap_cgroup_ctrl {
@@ -175,6 +180,10 @@ int swap_cgroup_swapon(int type, unsigned long max_pages)
 	array_size = length * sizeof(void *);
 
 	array = vzalloc(array_size);
+	{
+		void *__uncontained_tmp94;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!array)
 		goto nomem;
 

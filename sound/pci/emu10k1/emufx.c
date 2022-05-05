@@ -28,6 +28,11 @@
 #include <sound/tlv.h>
 #include <sound/emu10k1.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #if 0		/* for testing purposes - digital out -> capture */
 #define EMU10K1_CAPTURE_DIGITAL_OUT
 #endif
@@ -664,6 +669,10 @@ static unsigned int *copy_tlv(const unsigned int __user *_tlv, bool in_kernel)
 	if (data[1] >= MAX_TLV_SIZE)
 		return NULL;
 	tlv = kmalloc(data[1] + sizeof(data), GFP_KERNEL);
+	{
+		typeof((data)) __uncontained_tmp161;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp161;
+	}
 	if (!tlv)
 		return NULL;
 	memcpy(tlv, data, sizeof(data));

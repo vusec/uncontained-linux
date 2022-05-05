@@ -6,6 +6,11 @@
  */
 #include <linux/firmware.h>
 #include <linux/rtnetlink.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "iwl-trans.h"
 #include "iwl-csr.h"
 #include "mvm.h"
@@ -459,6 +464,14 @@ iwl_mvm_update_mcc(struct iwl_mvm *mvm, const char *alpha2,
 		resp_len = sizeof(struct iwl_mcc_update_resp) +
 			   n_channels * sizeof(__le32);
 		resp_cp = kzalloc(resp_len, GFP_KERNEL);
+		{
+			typeof((__le32)) __uncontained_tmp40;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+		}
+		{
+			struct iwl_mcc_update_resp __uncontained_tmp39;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+		}
 		if (!resp_cp) {
 			resp_cp = ERR_PTR(-ENOMEM);
 			goto exit;

@@ -23,6 +23,11 @@
 #include <linux/fpga/adi-axi-common.h>
 #include <linux/iio/adc/adi-axi-adc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Register definitions:
  *   https://wiki.analog.com/resources/fpga/docs/axi_adc_ip#register_map
@@ -174,6 +179,10 @@ static struct adi_axi_adc_conv *adi_axi_adc_conv_register(struct device *dev,
 		alloc_size += ALIGN(sizeof_priv, IIO_ALIGN);
 
 	cl = kzalloc(alloc_size, GFP_KERNEL);
+	{
+		struct adi_axi_adc_client __uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!cl)
 		return ERR_PTR(-ENOMEM);
 

@@ -14,6 +14,11 @@
 
 #include <dt-bindings/clock/at91.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "pmc.h"
 
 #define SAMA7G5_INIT_TABLE(_table, _count)		\
@@ -923,6 +928,10 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
 	alloc_mem = kmalloc(sizeof(void *) *
 			    (ARRAY_SIZE(sama7g5_mckx) + ARRAY_SIZE(sama7g5_gck)),
 			    GFP_KERNEL);
+	{
+		void *__uncontained_tmp16;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!alloc_mem)
 		goto err_free;
 

@@ -39,6 +39,11 @@
 #include <linux/notifier.h>
 #include <linux/dma-iommu.h>
 #include <linux/irqdomain.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "vfio.h"
 
 #define DRIVER_VERSION  "0.2"
@@ -248,6 +253,10 @@ static int vfio_dma_bitmap_alloc(struct vfio_dma *dma, size_t pgsize)
 	 */
 	dma->bitmap = kvzalloc(DIRTY_BITMAP_BYTES(npages) + sizeof(u64),
 			       GFP_KERNEL);
+	{
+		u64 __uncontained_tmp117;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!dma->bitmap)
 		return -ENOMEM;
 

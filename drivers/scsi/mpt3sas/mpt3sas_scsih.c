@@ -57,6 +57,16 @@
 #include <linux/blk-mq-pci.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "mpt3sas_base.h"
 
 #define RAID_CHANNEL 1
@@ -246,6 +256,10 @@ static struct fw_event_work *alloc_fw_event_work(int len)
 	struct fw_event_work *fw_event;
 
 	fw_event = kzalloc(sizeof(*fw_event) + len, GFP_ATOMIC);
+	{
+		typeof((*fw_event)) __uncontained_tmp106;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!fw_event)
 		return NULL;
 
@@ -5647,6 +5661,10 @@ _scsih_smart_predicted_fault(struct MPT3SAS_ADAPTER *ioc, u16 handle)
 	sz = offsetof(Mpi2EventNotificationReply_t, EventData) +
 	     sizeof(Mpi2EventDataSasDeviceStatusChange_t);
 	event_reply = kzalloc(sz, GFP_ATOMIC);
+	{
+		Mpi2EventDataSasDeviceStatusChange_t __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!event_reply) {
 		ioc_err(ioc, "failure at %s:%d/%s()!\n",
 			__FILE__, __LINE__, __func__);

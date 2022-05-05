@@ -39,6 +39,11 @@
 #include <xen/xenbus.h>
 #include <xen/platform_pci.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct xenfb_info {
 	unsigned char		*fb;
 	struct fb_info		*fb_info;
@@ -371,6 +376,10 @@ static int xenfb_probe(struct xenbus_device *dev,
 	int ret = 0;
 
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
+	{
+		typeof((*info)) __uncontained_tmp137;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp137;
+	}
 	if (info == NULL) {
 		xenbus_dev_fatal(dev, -ENOMEM, "allocating info structure");
 		return -ENOMEM;
@@ -413,6 +422,10 @@ static int xenfb_probe(struct xenbus_device *dev,
 	info->nr_pages = (fb_size + PAGE_SIZE - 1) >> PAGE_SHIFT;
 
 	info->gfns = vmalloc(array_size(sizeof(unsigned long), info->nr_pages));
+	{
+		unsigned long __uncontained_tmp136;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp136;
+	}
 	if (!info->gfns)
 		goto error_nomem;
 

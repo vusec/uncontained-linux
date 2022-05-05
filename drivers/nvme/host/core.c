@@ -22,6 +22,11 @@
 #include <linux/pm_qos.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "nvme.h"
 #include "fabrics.h"
 
@@ -845,6 +850,10 @@ static blk_status_t nvme_setup_discard(struct nvme_ns *ns, struct request *req,
 	static const size_t alloc_size = sizeof(*range) * NVME_DSM_MAX_RANGES;
 
 	range = kzalloc(alloc_size, GFP_ATOMIC | __GFP_NOWARN);
+	{
+		typeof((*range)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!range) {
 		/*
 		 * If we fail allocation our range, fallback to the controller
@@ -3741,6 +3750,10 @@ static struct nvme_ns_head *nvme_alloc_ns_head(struct nvme_ctrl *ctrl,
 #endif
 
 	head = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*head)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!head)
 		goto out;
 	ret = ida_alloc_min(&ctrl->subsys->ns_ida, 1, GFP_KERNEL);

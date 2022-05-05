@@ -18,6 +18,11 @@
 #include <linux/backing-dev.h>
 #include <trace/events/ext4.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * MUSTDO:
  *   - test ext4_ext_search_left() and ext4_ext_search_right()
@@ -1214,6 +1219,10 @@ static int ext4_mb_init_cache(struct page *page, char *incore, gfp_t gfp)
 	if (groups_per_page > 1) {
 		i = sizeof(struct buffer_head *) * groups_per_page;
 		bh = kzalloc(i, gfp);
+		{
+			struct buffer_head *__uncontained_tmp102;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp102;
+		}
 		if (bh == NULL) {
 			err = -ENOMEM;
 			goto out;
@@ -3096,6 +3105,10 @@ int ext4_mb_alloc_groupinfo(struct super_block *sb, ext4_group_t ngroups)
 
 	size = roundup_pow_of_two(sizeof(*sbi->s_group_info) * size);
 	new_groupinfo = kvzalloc(size, GFP_KERNEL);
+	{
+		typeof((*sbi->s_group_info)) __uncontained_tmp106;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!new_groupinfo) {
 		ext4_msg(sb, KERN_ERR, "can't allocate buddy meta group");
 		return -ENOMEM;
@@ -3135,6 +3148,10 @@ int ext4_mb_add_groupinfo(struct super_block *sb, ext4_group_t group,
 		metalen = sizeof(*meta_group_info) <<
 			EXT4_DESC_PER_BLOCK_BITS(sb);
 		meta_group_info = kmalloc(metalen, GFP_NOFS);
+		{
+			typeof((*meta_group_info)) __uncontained_tmp103;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp103;
+		}
 		if (meta_group_info == NULL) {
 			ext4_msg(sb, KERN_ERR, "can't allocate mem "
 				 "for a buddy group");
@@ -3390,6 +3407,10 @@ int ext4_mb_init(struct super_block *sb)
 	i = MB_NUM_ORDERS(sb) * sizeof(*sbi->s_mb_offsets);
 
 	sbi->s_mb_offsets = kmalloc(i, GFP_KERNEL);
+	{
+		typeof((*sbi->s_mb_offsets)) __uncontained_tmp104;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (sbi->s_mb_offsets == NULL) {
 		ret = -ENOMEM;
 		goto out;
@@ -3397,6 +3418,10 @@ int ext4_mb_init(struct super_block *sb)
 
 	i = MB_NUM_ORDERS(sb) * sizeof(*sbi->s_mb_maxs);
 	sbi->s_mb_maxs = kmalloc(i, GFP_KERNEL);
+	{
+		typeof((*sbi->s_mb_maxs)) __uncontained_tmp105;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (sbi->s_mb_maxs == NULL) {
 		ret = -ENOMEM;
 		goto out;

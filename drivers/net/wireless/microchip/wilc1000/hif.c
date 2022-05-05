@@ -6,6 +6,11 @@
 
 #include "netdev.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define WILC_HIF_SCAN_TIMEOUT_MS                5000
 #define WILC_HIF_CONNECT_TIMEOUT_MS             9500
 
@@ -1157,6 +1162,10 @@ int wilc_add_ptk(struct wilc_vif *vif, const u8 *ptk, u8 ptk_key_len,
 		wid_list[0].val = (s8 *)&cipher_mode;
 
 		key_buf = kzalloc(sizeof(*key_buf) + t_key_len, GFP_KERNEL);
+		{
+			typeof((*key_buf)) __uncontained_tmp76;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+		}
 		if (!key_buf)
 			return -ENOMEM;
 
@@ -1185,6 +1194,10 @@ int wilc_add_ptk(struct wilc_vif *vif, const u8 *ptk, u8 ptk_key_len,
 		struct wilc_sta_wpa_ptk *key_buf;
 
 		key_buf = kzalloc(sizeof(*key_buf) + t_key_len, GFP_KERNEL);
+		{
+			typeof((*key_buf)) __uncontained_tmp77;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp77;
+		}
 		if (!key_buf)
 			return -ENOMEM;
 
@@ -1221,6 +1234,10 @@ int wilc_add_rx_gtk(struct wilc_vif *vif, const u8 *rx_gtk, u8 gtk_key_len,
 	int t_key_len = gtk_key_len + WILC_RX_MIC_KEY_LEN + WILC_TX_MIC_KEY_LEN;
 
 	gtk_key = kzalloc(sizeof(*gtk_key) + t_key_len, GFP_KERNEL);
+	{
+		typeof((*gtk_key)) __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!gtk_key)
 		return -ENOMEM;
 

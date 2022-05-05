@@ -43,6 +43,11 @@
 #include <asm/ccwdev.h>
 #include <asm/cpcmd.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "qeth_core.h"
 
 struct qeth_dbf_info qeth_dbf[QETH_DBF_INFOS] = {
@@ -885,11 +890,19 @@ static struct qeth_cmd_buffer *qeth_alloc_cmd(struct qeth_channel *channel,
 		return NULL;
 
 	iob = kzalloc(sizeof(*iob), GFP_KERNEL);
+	{
+		typeof((*iob)) __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!iob)
 		return NULL;
 
 	iob->data = kzalloc(ALIGN(length, 8) + ccws * sizeof(struct ccw1),
 			    GFP_KERNEL | GFP_DMA);
+	{
+		struct ccw1 __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!iob->data) {
 		kfree(iob);
 		return NULL;

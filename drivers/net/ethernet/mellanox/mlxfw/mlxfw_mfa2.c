@@ -8,6 +8,11 @@
 #include <linux/netlink.h>
 #include <linux/vmalloc.h>
 #include <linux/xz.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "mlxfw_mfa2.h"
 #include "mlxfw_mfa2_file.h"
 #include "mlxfw_mfa2_tlv.h"
@@ -550,6 +555,10 @@ mlxfw_mfa2_file_component_get(const struct mlxfw_mfa2_file *mfa2_file,
 	comp_buf_size = comp_size + mlxfw_mfa2_comp_magic_len;
 
 	comp_data = vzalloc(sizeof(*comp_data) + comp_buf_size);
+	{
+		typeof((*comp_data)) __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!comp_data)
 		return ERR_PTR(-ENOMEM);
 	comp_data->comp.data_size = comp_size;

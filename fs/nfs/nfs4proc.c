@@ -56,6 +56,11 @@
 #include <linux/freezer.h>
 #include <linux/iversion.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "nfs4_fs.h"
 #include "delegation.h"
 #include "internal.h"
@@ -5856,6 +5861,10 @@ static void nfs4_write_cached_acl(struct inode *inode, struct page **pages, size
 
 	if (buflen <= PAGE_SIZE) {
 		acl = kmalloc(buflen, GFP_KERNEL);
+		{
+			typeof((*acl)) __uncontained_tmp109;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp109;
+		}
 		if (acl == NULL)
 			goto out;
 		acl->cached = 1;

@@ -59,6 +59,11 @@
 #include <linux/serial_core.h>
 #include <linux/serial.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 
 #define MOD_AUTHOR			"Option Wireless"
 #define MOD_DESCRIPTION			"USB High Speed Option driver"
@@ -2779,6 +2784,10 @@ struct hso_shared_int *hso_create_shared_int(struct usb_interface *interface)
 	mux->shared_intr_buf =
 		kzalloc(le16_to_cpu(mux->intr_endp->wMaxPacketSize),
 			GFP_KERNEL);
+	{
+		typeof((*mux)) __uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!mux->shared_intr_buf)
 		goto exit;
 

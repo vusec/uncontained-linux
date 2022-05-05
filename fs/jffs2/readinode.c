@@ -19,6 +19,11 @@
 #include <linux/pagemap.h>
 #include <linux/mtd/mtd.h>
 #include <linux/compiler.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "nodelist.h"
 
 /*
@@ -995,6 +1000,10 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
 	 * needs to be fixed. */
 	len = sizeof(union jffs2_node_union) + c->wbuf_pagesize;
 	buf = kmalloc(len, GFP_KERNEL);
+	{
+		union jffs2_node_union __uncontained_tmp87;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (!buf)
 		return -ENOMEM;
 

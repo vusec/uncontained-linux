@@ -33,6 +33,11 @@
 
 #include <asm/div64.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DRV_NAME	"iwl3945"
 
 #include "commands.h"
@@ -2517,6 +2522,10 @@ il3945_request_scan(struct il_priv *il, struct ieee80211_vif *vif)
 		il->scan_cmd =
 		    kmalloc(sizeof(struct il3945_scan_cmd) + IL_MAX_SCAN_SIZE,
 			    GFP_KERNEL);
+		{
+			struct il3945_scan_cmd __uncontained_tmp59;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+		}
 		if (!il->scan_cmd) {
 			D_SCAN("Fail to allocate scan memory\n");
 			return -ENOMEM;

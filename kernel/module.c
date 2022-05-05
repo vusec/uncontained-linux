@@ -63,6 +63,16 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/module.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef ARCH_SHF_SMALL
 #define ARCH_SHF_SMALL 0
 #endif
@@ -1544,6 +1554,14 @@ static void add_sect_attrs(struct module *mod, const struct load_info *info)
 			sizeof(sect_attrs->grp.bin_attrs[0]));
 	size[1] = (nloaded + 1) * sizeof(sect_attrs->grp.bin_attrs[0]);
 	sect_attrs = kzalloc(size[0] + size[1], GFP_KERNEL);
+	{
+		typeof((sect_attrs->grp.bin_attrs[0])) __uncontained_tmp90;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp90;
+	}
+	{
+		typeof((sect_attrs->grp.bin_attrs[0])) __uncontained_tmp91;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (sect_attrs == NULL)
 		return;
 
@@ -1757,6 +1775,10 @@ static int module_add_modinfo_attrs(struct module *mod)
 	mod->modinfo_attrs = kzalloc((sizeof(struct module_attribute) *
 					(ARRAY_SIZE(modinfo_attrs) + 1)),
 					GFP_KERNEL);
+	{
+		struct module_attribute __uncontained_tmp132;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (!mod->modinfo_attrs)
 		return -ENOMEM;
 

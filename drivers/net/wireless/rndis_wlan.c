@@ -31,6 +31,11 @@
 #include <linux/usb/usbnet.h>
 #include <linux/usb/rndis_host.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 
 /* NOTE: All these are settings for Broadcom chipset */
 static char modparam_country[4] = "EU";
@@ -703,6 +708,10 @@ static int rndis_query_oid(struct usbnet *dev, u32 oid, void *data, int *len)
 
 	if (buflen > COMMAND_BUFFER_SIZE) {
 		u.buf = kmalloc(buflen, GFP_KERNEL);
+		{
+			typeof((*u.get)) __uncontained_tmp62;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+		}
 		if (!u.buf)
 			return -ENOMEM;
 	} else {
@@ -787,6 +796,10 @@ static int rndis_set_oid(struct usbnet *dev, u32 oid, const void *data,
 
 	if (buflen > COMMAND_BUFFER_SIZE) {
 		u.buf = kmalloc(buflen, GFP_KERNEL);
+		{
+			typeof((*u.set)) __uncontained_tmp63;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+		}
 		if (!u.buf)
 			return -ENOMEM;
 	} else {
@@ -877,6 +890,10 @@ static int rndis_set_config_parameter(struct usbnet *dev, char *param,
 	info_len += 12;
 #endif
 	infobuf = kmalloc(info_len, GFP_KERNEL);
+	{
+		typeof((*infobuf)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!infobuf)
 		return -ENOMEM;
 

@@ -14,6 +14,11 @@
 #include <linux/iio/hw-consumer.h>
 #include <linux/iio/buffer_impl.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  * struct iio_hw_consumer - IIO hw consumer block
  * @buffers: hardware buffers list head.
@@ -61,6 +66,10 @@ static struct hw_consumer_buffer *iio_hw_consumer_get_buffer(
 	}
 
 	buf = kzalloc(sizeof(*buf) + mask_size, GFP_KERNEL);
+	{
+		typeof((*buf)) __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!buf)
 		return NULL;
 

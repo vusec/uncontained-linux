@@ -43,6 +43,11 @@
 #include <linux/fs_context.h>
 #include <linux/fs_parser.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static const struct super_operations xfs_super_operations;
 
 static struct kset *xfs_kset;		/* top-level xfs sysfs dir */
@@ -1999,6 +2004,14 @@ xfs_init_caches(void)
 					(XFS_EFD_MAX_FAST_EXTENTS - 1) *
 					sizeof(struct xfs_extent)),
 					0, 0, NULL);
+	{
+		struct xfs_efd_log_item __uncontained_tmp123;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp123;
+	}
+	{
+		struct xfs_extent __uncontained_tmp124;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (!xfs_efd_cache)
 		goto out_destroy_buf_item_cache;
 
@@ -2007,6 +2020,14 @@ xfs_init_caches(void)
 					 (XFS_EFI_MAX_FAST_EXTENTS - 1) *
 					 sizeof(struct xfs_extent)),
 					 0, 0, NULL);
+	{
+		struct xfs_efi_log_item __uncontained_tmp125;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp125;
+	}
+	{
+		struct xfs_extent __uncontained_tmp126;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp126;
+	}
 	if (!xfs_efi_cache)
 		goto out_destroy_efd_cache;
 

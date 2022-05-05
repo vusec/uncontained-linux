@@ -5,6 +5,11 @@
 #include <linux/spinlock.h>
 #include <linux/ceph/string_table.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static DEFINE_SPINLOCK(string_tree_lock);
 static struct rb_root string_tree = RB_ROOT;
 
@@ -38,6 +43,10 @@ struct ceph_string *ceph_find_or_create_string(const char* str, size_t len)
 		return exist;
 
 	cs = kmalloc(sizeof(*cs) + len + 1, GFP_NOFS);
+	{
+		typeof((*cs)) __uncontained_tmp167;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp167;
+	}
 	if (!cs)
 		return NULL;
 

@@ -12,6 +12,11 @@
 #include <linux/uaccess.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "etnaviv_cmdbuf.h"
 #include "etnaviv_drv.h"
 #include "etnaviv_gpu.h"
@@ -35,6 +40,14 @@ static struct etnaviv_gem_submit *submit_create(struct drm_device *dev,
 	size_t sz = size_vstruct(nr_bos, sizeof(submit->bos[0]), sizeof(*submit));
 
 	submit = kzalloc(sz, GFP_KERNEL);
+	{
+		typeof((*submit)) __uncontained_tmp15;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+	}
+	{
+		typeof((submit->bos[0])) __uncontained_tmp16;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!submit)
 		return NULL;
 

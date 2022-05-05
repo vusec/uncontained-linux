@@ -15,6 +15,11 @@
 #include <linux/stringify.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DRV_NAME		"cros-ec-pchg"
 #define PCHG_DIR_PREFIX		"peripheral"
 #define PCHG_DIR_NAME		PCHG_DIR_PREFIX "%d"
@@ -63,6 +68,10 @@ static int cros_pchg_ec_command(const struct charger_data *charger,
 	int ret;
 
 	msg = kzalloc(sizeof(*msg) + max(outsize, insize), GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp84;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!msg)
 		return -ENOMEM;
 

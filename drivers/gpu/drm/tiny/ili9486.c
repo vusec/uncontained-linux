@@ -23,6 +23,11 @@
 #include <drm/drm_mipi_dbi.h>
 #include <drm/drm_modeset_helper.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define ILI9486_ITFCTR1         0xb0
 #define ILI9486_PWCTRL1         0xc2
 #define ILI9486_VMCTRL1         0xc5
@@ -49,6 +54,10 @@ static int waveshare_command(struct mipi_dbi *mipi, u8 *cmd, u8 *par,
 	__be16 *buf;
 
 	buf = kmalloc(32 * sizeof(u16), GFP_KERNEL);
+	{
+		typeof((u16)) __uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!buf)
 		return -ENOMEM;
 

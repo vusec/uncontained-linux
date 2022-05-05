@@ -20,6 +20,11 @@
 #include <net/ioam6.h>
 #include <net/sch_generic.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static void ioam6_ns_release(struct ioam6_namespace *ns)
 {
 	kfree_rcu(ns, rcu);
@@ -334,6 +339,10 @@ static int ioam6_genl_addsc(struct sk_buff *skb, struct genl_info *info)
 	len_aligned = ALIGN(len, 4);
 
 	sc = kzalloc(sizeof(*sc) + len_aligned, GFP_KERNEL);
+	{
+		typeof((*sc)) __uncontained_tmp152;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp152;
+	}
 	if (!sc) {
 		err = -ENOMEM;
 		goto out_unlock;

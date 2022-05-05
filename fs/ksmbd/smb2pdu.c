@@ -12,6 +12,11 @@
 #include <linux/ethtool.h>
 #include <linux/falloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "glob.h"
 #include "smbfsctl.h"
 #include "oplock.h"
@@ -2969,6 +2974,22 @@ int smb2_open(struct ksmbd_work *work)
 							sizeof(struct smb_acl) +
 							sizeof(struct smb_ace) * ace_num * 2,
 							GFP_KERNEL);
+					{
+						struct smb_ace __uncontained_tmp118;
+						__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp118;
+					}
+					{
+						struct smb_acl __uncontained_tmp119;
+						__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp119;
+					}
+					{
+						struct smb_ntsd __uncontained_tmp120;
+						__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp120;
+					}
+					{
+						struct smb_sid __uncontained_tmp121;
+						__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp121;
+					}
 					if (!pntsd)
 						goto err_out;
 
@@ -8525,6 +8546,10 @@ int smb3_encrypt_resp(struct ksmbd_work *work)
 		return -ENOMEM;
 
 	work->tr_buf = kzalloc(sizeof(struct smb2_transform_hdr) + 4, GFP_KERNEL);
+	{
+		struct smb2_transform_hdr __uncontained_tmp122;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp122;
+	}
 	if (!work->tr_buf)
 		return rc;
 

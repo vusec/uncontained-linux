@@ -11,6 +11,11 @@
 #include <linux/mutex.h>
 #include <trace/events/mlxsw.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "reg.h"
 #include "core.h"
 #include "resources.h"
@@ -695,6 +700,10 @@ mlxsw_sp_acl_tcam_region_create(struct mlxsw_sp *mlxsw_sp,
 	int err;
 
 	region = kzalloc(sizeof(*region) + ops->region_priv_size, GFP_KERNEL);
+	{
+		typeof((*region)) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!region)
 		return ERR_PTR(-ENOMEM);
 	region->mlxsw_sp = mlxsw_sp;
@@ -980,6 +989,10 @@ mlxsw_sp_acl_tcam_chunk_create(struct mlxsw_sp *mlxsw_sp,
 	struct mlxsw_sp_acl_tcam_chunk *chunk;
 
 	chunk = kzalloc(sizeof(*chunk) + ops->chunk_priv_size, GFP_KERNEL);
+	{
+		typeof((*chunk)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!chunk)
 		return ERR_PTR(-ENOMEM);
 	chunk->vchunk = vchunk;
@@ -1129,6 +1142,10 @@ mlxsw_sp_acl_tcam_entry_create(struct mlxsw_sp *mlxsw_sp,
 	int err;
 
 	entry = kzalloc(sizeof(*entry) + ops->entry_priv_size, GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp69;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!entry)
 		return ERR_PTR(-ENOMEM);
 	entry->ventry = ventry;

@@ -32,6 +32,11 @@
 
 #include <video/mipi_display.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define SUN6I_DSI_CTL_REG		0x000
 #define SUN6I_DSI_CTL_EN			BIT(0)
 
@@ -890,6 +895,10 @@ static int sun6i_dsi_dcs_write_long(struct sun6i_dsi *dsi,
 		     sun6i_dsi_dcs_build_pkt_hdr(dsi, msg));
 
 	bounce = kzalloc(ALIGN(msg->tx_len + sizeof(crc), 4), GFP_KERNEL);
+	{
+		typeof((crc)) __uncontained_tmp19;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!bounce)
 		return -ENOMEM;
 

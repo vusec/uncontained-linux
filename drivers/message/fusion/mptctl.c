@@ -66,6 +66,11 @@
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_tcq.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define COPYRIGHT	"Copyright (c) 1999-2008 LSI Corporation"
 #define MODULEAUTHOR	"LSI Corporation"
 #include "mptbase.h"
@@ -1408,6 +1413,10 @@ mptctl_gettargetinfo (MPT_ADAPTER *ioc, unsigned long arg)
 	 *       7- 0: Target ID
 	 */
 	pmem = kzalloc(numBytes, GFP_KERNEL);
+	{
+		mpt_ioctl_header __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!pmem) {
 		printk(MYIOC_s_ERR_FMT "%s@%d::mptctl_gettargetinfo() - no memory available!\n",
 			ioc->name, __FILE__, __LINE__);
@@ -1573,6 +1582,10 @@ mptctl_eventenable (MPT_ADAPTER *ioc, unsigned long arg)
 		 */
 		int sz = MPTCTL_EVENT_LOG_SIZE * sizeof(MPT_IOCTL_EVENTS);
 		ioc->events = kzalloc(sz, GFP_KERNEL);
+		{
+			typeof((MPT_IOCTL_EVENTS)) __uncontained_tmp25;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+		}
 		if (!ioc->events) {
 			printk(MYIOC_s_ERR_FMT
 			    ": ERROR - Insufficient memory to add adapter!\n",

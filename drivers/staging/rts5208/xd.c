@@ -14,6 +14,11 @@
 #include <linux/sched.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "rtsx.h"
 #include "rtsx_transport.h"
 #include "rtsx_scsi.h"
@@ -798,6 +803,10 @@ static int xd_init_l2p_tbl(struct rtsx_chip *chip)
 	dev_dbg(rtsx_dev(chip), "Buffer size for l2p table is %d\n", size);
 
 	xd_card->zone = vmalloc(size);
+	{
+		struct zone_entry __uncontained_tmp88;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (!xd_card->zone)
 		return STATUS_ERROR;
 

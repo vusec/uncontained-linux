@@ -7,6 +7,11 @@
 #include <linux/slab.h>
 #include <linux/errno.h>
 #include <linux/interrupt.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "adf_accel_devices.h"
 #include "adf_common_drv.h"
 #include "adf_cfg.h"
@@ -259,6 +264,10 @@ static int adf_isr_alloc_msix_vectors_data(struct adf_accel_dev *accel_dev)
 
 	irqs = kzalloc_node(msix_num_entries * sizeof(*irqs),
 			    GFP_KERNEL, dev_to_node(&GET_DEV(accel_dev)));
+	{
+		typeof((*irqs)) __uncontained_tmp10;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!irqs)
 		return -ENOMEM;
 

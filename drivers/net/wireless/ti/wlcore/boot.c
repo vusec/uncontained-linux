@@ -10,6 +10,11 @@
 #include <linux/slab.h>
 #include <linux/export.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "debug.h"
 #include "acx.h"
 #include "boot.h"
@@ -133,6 +138,10 @@ static int wlcore_boot_static_data(struct wl1271 *wl)
 	int ret;
 
 	static_data = kmalloc(len, GFP_KERNEL);
+	{
+		typeof((*static_data)) __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!static_data) {
 		ret = -ENOMEM;
 		goto out;

@@ -20,6 +20,11 @@
 #include <media/videobuf2-core.h>
 #include <media/videobuf2-dma-contig.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "coda.h"
 #include "trace.h"
 
@@ -724,6 +729,10 @@ static int coda9_jpeg_load_huff_tab(struct coda_ctx *ctx)
 	int ret;
 
 	huff = kzalloc(sizeof(*huff), GFP_KERNEL);
+	{
+		typeof((*huff)) __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!huff)
 		return -ENOMEM;
 
@@ -739,6 +748,10 @@ static int coda9_jpeg_load_huff_tab(struct coda_ctx *ctx)
 		ctx->params.jpeg_huff_data =
 			kzalloc(sizeof(u32) * CODA9_JPEG_ENC_HUFF_DATA_SIZE,
 				GFP_KERNEL);
+		{
+			u32 __uncontained_tmp41;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+		}
 		if (!ctx->params.jpeg_huff_data) {
 			ret = -ENOMEM;
 			goto out;

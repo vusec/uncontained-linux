@@ -14,6 +14,11 @@
 #include <drm/drm_file.h>
 #include <drm/drm_vblank.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "msm_drv.h"
 #include "msm_gem.h"
 #include "msm_mmu.h"
@@ -787,6 +792,10 @@ static int interface_init(struct mdp5_kms *mdp5_kms)
 			continue;
 
 		intf = kzalloc(sizeof(*intf), GFP_KERNEL);
+		{
+			typeof((*intf)) __uncontained_tmp15;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+		}
 		if (!intf) {
 			DRM_DEV_ERROR(dev->dev, "failed to construct INTF%d\n", i);
 			return -ENOMEM;

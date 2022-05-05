@@ -10,6 +10,11 @@
 #include <linux/fs.h>
 #include <linux/kernel.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "debug.h"
 #include "ntfs.h"
 #include "ntfs_fs.h"
@@ -1722,6 +1727,10 @@ indx_insert_into_buffer(struct ntfs_index *indx, struct ntfs_inode *ni,
 
 	sp_size = le16_to_cpu(sp->size);
 	up_e = kmalloc(sp_size + sizeof(u64), GFP_NOFS);
+	{
+		u64 __uncontained_tmp123;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (!up_e)
 		return -ENOMEM;
 	memcpy(up_e, sp, sp_size);
@@ -2088,6 +2097,10 @@ static int indx_get_entry_to_replace(struct ntfs_index *indx,
 	te = hdr_first_de(&n->index->ihdr);
 	/* Copy the candidate entry into the replacement entry buffer. */
 	re = kmalloc(le16_to_cpu(te->size) + sizeof(u64), GFP_NOFS);
+	{
+		u64 __uncontained_tmp124;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (!re) {
 		err = -ENOMEM;
 		goto out;

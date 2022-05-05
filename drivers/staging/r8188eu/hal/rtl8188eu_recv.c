@@ -12,6 +12,11 @@
 
 #include "../include/rtl8188e_hal.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 void rtl8188eu_init_recvbuf(struct recv_buf *precvbuf)
 {
 	precvbuf->transfer_len = 0;
@@ -43,6 +48,10 @@ int	rtl8188eu_init_recv_priv(struct adapter *padapter)
 
 	precvpriv->pallocated_recv_buf = kzalloc(NR_RECVBUFF * sizeof(struct recv_buf) + 4,
 						 GFP_KERNEL);
+	{
+		struct recv_buf __uncontained_tmp103;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!precvpriv->pallocated_recv_buf) {
 		res = _FAIL;
 		goto exit;

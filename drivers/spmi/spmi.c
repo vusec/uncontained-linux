@@ -17,6 +17,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/spmi.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static bool is_registered;
 static DEFINE_IDA(ctrl_ida);
 
@@ -430,6 +435,10 @@ struct spmi_controller *spmi_controller_alloc(struct device *parent,
 		return NULL;
 
 	ctrl = kzalloc(sizeof(*ctrl) + size, GFP_KERNEL);
+	{
+		typeof((*ctrl)) __uncontained_tmp83;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!ctrl)
 		return NULL;
 

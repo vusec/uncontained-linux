@@ -63,6 +63,11 @@
 #include <scsi/scsi_tcq.h>
 #include <scsi/scsi_dbg.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "mptbase.h"
 #include "mptscsih.h"
 #include "lsi/mpi_log_sas.h"
@@ -2152,6 +2157,10 @@ mptscsih_is_phys_disk(MPT_ADAPTER *ioc, u8 channel, u8 id)
 			continue;
 		phys_disk = kzalloc(offsetof(RaidPhysDiskPage1_t, Path) +
 		   (num_paths * sizeof(RAID_PHYS_DISK1_PATH)), GFP_KERNEL);
+		{
+			typeof((RAID_PHYS_DISK1_PATH)) __uncontained_tmp40;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+		}
 		if (!phys_disk)
 			continue;
 		if ((mpt_raid_phys_disk_pg1(ioc,
@@ -2230,6 +2239,10 @@ mptscsih_raid_id_to_num(MPT_ADAPTER *ioc, u8 channel, u8 id)
 			continue;
 		phys_disk = kzalloc(offsetof(RaidPhysDiskPage1_t, Path) +
 		   (num_paths * sizeof(RAID_PHYS_DISK1_PATH)), GFP_KERNEL);
+		{
+			typeof((RAID_PHYS_DISK1_PATH)) __uncontained_tmp41;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+		}
 		if (!phys_disk)
 			continue;
 		if ((mpt_raid_phys_disk_pg1(ioc,

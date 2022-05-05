@@ -37,6 +37,11 @@
 #include <rdma/ib_user_verbs.h>
 #include <rdma/rdma_counter.h>
 #include <linux/mlx5/fs.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "mlx5_ib.h"
 #include "ib_rep.h"
 #include "counters.h"
@@ -1286,6 +1291,10 @@ static int create_raw_packet_qp_sq(struct mlx5_ib_dev *dev,
 		sizeof(u64) *
 			ib_umem_num_dma_blocks(sq->ubuffer.umem, page_size);
 	in = kvzalloc(inlen, GFP_KERNEL);
+	{
+		u64 __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!in) {
 		err = -ENOMEM;
 		goto err_umem;
@@ -1375,6 +1384,10 @@ static int create_raw_packet_qp_rq(struct mlx5_ib_dev *dev,
 	inlen = MLX5_ST_SZ_BYTES(create_rq_in) +
 		sizeof(u64) * ib_umem_num_dma_blocks(umem, page_size);
 	in = kvzalloc(inlen, GFP_KERNEL);
+	{
+		u64 __uncontained_tmp27;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!in)
 		return -ENOMEM;
 
@@ -5073,6 +5086,10 @@ static int  create_rq(struct mlx5_ib_rwq *rwq, struct ib_pd *pd,
 
 	inlen = MLX5_ST_SZ_BYTES(create_rq_in) + sizeof(u64) * rwq->rq_num_pas;
 	in = kvzalloc(inlen, GFP_KERNEL);
+	{
+		u64 __uncontained_tmp28;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (!in)
 		return -ENOMEM;
 
@@ -5397,6 +5414,10 @@ int mlx5_ib_create_rwq_ind_table(struct ib_rwq_ind_table *ib_rwq_ind_table,
 
 	inlen = MLX5_ST_SZ_BYTES(create_rqt_in) + sizeof(u32) * sz;
 	in = kvzalloc(inlen, GFP_KERNEL);
+	{
+		u32 __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!in)
 		return -ENOMEM;
 

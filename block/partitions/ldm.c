@@ -16,6 +16,11 @@
 #include <linux/uuid.h>
 #include <linux/msdos_partition.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ldm.h"
 #include "check.h"
 
@@ -1256,6 +1261,10 @@ static bool ldm_frag_add (const u8 *data, int size, struct list_head *frags)
 	}
 
 	f = kmalloc (sizeof (*f) + size*num, GFP_KERNEL);
+	{
+		typeof((*f)) __uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!f) {
 		ldm_crit ("Out of memory.");
 		return false;

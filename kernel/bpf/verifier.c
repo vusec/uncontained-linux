@@ -24,6 +24,11 @@
 #include <linux/bpf_lsm.h>
 #include <linux/btf_ids.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "disasm.h"
 
 static const struct bpf_verifier_ops * const bpf_verifier_ops[] = {
@@ -12237,6 +12242,10 @@ static struct bpf_prog *bpf_patch_insn_data(struct bpf_verifier_env *env, u32 of
 	if (len > 1) {
 		new_data = vzalloc(array_size(env->prog->len + len - 1,
 					      sizeof(struct bpf_insn_aux_data)));
+		{
+			struct bpf_insn_aux_data __uncontained_tmp164;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp164;
+		}
 		if (!new_data)
 			return NULL;
 	}
@@ -14232,6 +14241,10 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
 	len = (*prog)->len;
 	env->insn_aux_data =
 		vzalloc(array_size(sizeof(struct bpf_insn_aux_data), len));
+	{
+		struct bpf_insn_aux_data __uncontained_tmp165;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp165;
+	}
 	ret = -ENOMEM;
 	if (!env->insn_aux_data)
 		goto err_free_env;

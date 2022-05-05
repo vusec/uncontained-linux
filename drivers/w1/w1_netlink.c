@@ -8,6 +8,11 @@
 #include <linux/netlink.h>
 #include <linux/connector.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "w1_internal.h"
 #include "w1_netlink.h"
 
@@ -601,6 +606,22 @@ static void w1_cn_callback(struct cn_msg *cn, struct netlink_skb_parms *nsp)
 			/* replies */
 			sizeof(struct cn_msg) + reply_size;
 		block = kzalloc(size, GFP_KERNEL);
+		{
+			typeof((*cn)) __uncontained_tmp99;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp99;
+		}
+		{
+			struct cn_msg __uncontained_tmp96;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp96;
+		}
+		{
+			struct w1_cb_block __uncontained_tmp97;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp97;
+		}
+		{
+			struct w1_cb_node __uncontained_tmp98;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp98;
+		}
 		if (!block) {
 			/* if the system is already out of memory,
 			 * (A) will this work, and (B) would it be better

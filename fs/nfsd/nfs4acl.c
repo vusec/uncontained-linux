@@ -38,6 +38,11 @@
 #include <linux/slab.h>
 #include <linux/posix_acl.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "nfsfh.h"
 #include "nfsd.h"
 #include "acl.h"
@@ -466,6 +471,14 @@ init_state(struct posix_acl_state *state, int cnt)
 	alloc = sizeof(struct posix_ace_state_array)
 		+ cnt*sizeof(struct posix_user_ace_state);
 	state->users = kzalloc(alloc, GFP_KERNEL);
+	{
+		struct posix_ace_state_array __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
+	{
+		struct posix_user_ace_state __uncontained_tmp82;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!state->users)
 		return -ENOMEM;
 	state->groups = kzalloc(alloc, GFP_KERNEL);

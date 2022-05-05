@@ -4,6 +4,11 @@
  */
 #include "sched.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 DEFINE_MUTEX(sched_domains_mutex);
 
 /* Protected by sched_domains_mutex: */
@@ -919,6 +924,10 @@ build_group_from_child_sched_domain(struct sched_domain *sd, int cpu)
 
 	sg = kzalloc_node(sizeof(struct sched_group) + cpumask_size(),
 			GFP_KERNEL, cpu_to_node(cpu));
+	{
+		struct sched_group __uncontained_tmp131;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp131;
+	}
 
 	if (!sg)
 		return NULL;
@@ -1345,6 +1354,10 @@ static inline void asym_cpu_capacity_update_data(int cpu)
 	}
 
 	entry = kzalloc(sizeof(*entry) + cpumask_size(), GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp135;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp135;
+	}
 	if (WARN_ONCE(!entry, "Failed to allocate memory for asymmetry data\n"))
 		return;
 	entry->capacity = capacity;
@@ -2045,6 +2058,10 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
 
 			sd = kzalloc_node(sizeof(struct sched_domain) + cpumask_size(),
 					GFP_KERNEL, cpu_to_node(j));
+			{
+				struct sched_domain __uncontained_tmp132;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp132;
+			}
 			if (!sd)
 				return -ENOMEM;
 
@@ -2059,6 +2076,10 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
 
 			sg = kzalloc_node(sizeof(struct sched_group) + cpumask_size(),
 					GFP_KERNEL, cpu_to_node(j));
+			{
+				struct sched_group __uncontained_tmp133;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp133;
+			}
 			if (!sg)
 				return -ENOMEM;
 
@@ -2068,6 +2089,10 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
 
 			sgc = kzalloc_node(sizeof(struct sched_group_capacity) + cpumask_size(),
 					GFP_KERNEL, cpu_to_node(j));
+			{
+				struct sched_group_capacity __uncontained_tmp134;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp134;
+			}
 			if (!sgc)
 				return -ENOMEM;
 

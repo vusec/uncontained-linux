@@ -10,6 +10,11 @@
 
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ccid.h"
 #include "ccids/lib/tfrc.h"
 
@@ -87,6 +92,10 @@ static __printf(3, 4) struct kmem_cache *ccid_kmem_cache_create(int obj_size, ch
 
 	slab = kmem_cache_create(slab_name_fmt, sizeof(struct ccid) + obj_size, 0,
 				 SLAB_HWCACHE_ALIGN, NULL);
+	{
+		struct ccid __uncontained_tmp129;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp129;
+	}
 	return slab;
 }
 

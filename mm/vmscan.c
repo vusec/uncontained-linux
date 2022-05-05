@@ -62,6 +62,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/vmscan.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct scan_control {
 	/* How many pages shrink_list() should reclaim */
 	unsigned long nr_to_reclaim;
@@ -229,6 +234,10 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
 			return 0;
 
 		new = kvmalloc_node(sizeof(*new) + size, GFP_KERNEL, nid);
+		{
+			typeof((*new)) __uncontained_tmp172;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp172;
+		}
 		if (!new)
 			return -ENOMEM;
 
@@ -276,6 +285,10 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
 	size = map_size + defer_size;
 	for_each_node(nid) {
 		info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
+		{
+			typeof((*info)) __uncontained_tmp173;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp173;
+		}
 		if (!info) {
 			free_shrinker_info(memcg);
 			ret = -ENOMEM;

@@ -10,6 +10,11 @@
 #include <linux/interrupt.h>
 #include <linux/aer.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "qlcnic.h"
 #include "qlcnic_sriov.h"
 
@@ -388,6 +393,10 @@ int qlcnic_83xx_setup_intr(struct qlcnic_adapter *adapter)
 	ahw->intr_tbl =
 		vzalloc(array_size(num_msix,
 				   sizeof(struct qlcnic_intrpt_config)));
+	{
+		struct qlcnic_intrpt_config __uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!ahw->intr_tbl)
 		return -ENOMEM;
 

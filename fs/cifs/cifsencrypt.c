@@ -24,6 +24,11 @@
 #include "../smbfs_common/arc4.h"
 #include <crypto/aead.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 int __cifs_calc_signature(struct smb_rqst *rqst,
 			struct TCP_Server_Info *server, char *signature,
 			struct shash_desc *shash)
@@ -608,6 +613,10 @@ setup_ntlmv2_rsp(struct cifs_ses *ses, const struct nls_table *nls_cp)
 	tiblob = ses->auth_key.response;
 
 	ses->auth_key.response = kmalloc(baselen + tilen, GFP_KERNEL);
+	{
+		struct ntlmv2_resp __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!ses->auth_key.response) {
 		rc = -ENOMEM;
 		ses->auth_key.len = 0;

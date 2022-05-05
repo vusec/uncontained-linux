@@ -22,6 +22,11 @@
 
 #include <linux/w1.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Matrox G400 DDC registers.
  */
@@ -123,6 +128,14 @@ static int matrox_w1_probe(struct pci_dev *pdev, const struct pci_device_id *ent
 
 	dev = kzalloc(sizeof(struct matrox_device) +
 		       sizeof(struct w1_bus_master), GFP_KERNEL);
+	{
+		struct matrox_device __uncontained_tmp138;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp138;
+	}
+	{
+		struct w1_bus_master __uncontained_tmp139;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!dev) {
 		dev_err(&pdev->dev,
 			"%s: Failed to create new matrox_device object.\n",

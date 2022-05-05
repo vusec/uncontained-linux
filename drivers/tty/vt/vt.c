@@ -107,6 +107,11 @@
 #include <linux/bsearch.h>
 #include <linux/gcd.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define MAX_NR_CON_DRIVER 16
 
 #define CON_DRIVER_FLAG_MODULE 1
@@ -345,6 +350,10 @@ static struct uni_screen *vc_uniscr_alloc(unsigned int cols, unsigned int rows)
 	memsize = cols * rows * sizeof(char32_t);
 	memsize += rows * sizeof(char32_t *);
 	p = vmalloc(memsize);
+	{
+		char32_t __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!p)
 		return NULL;
 

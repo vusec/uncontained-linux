@@ -29,6 +29,11 @@
 #include "xfs_quota.h"
 #include "xfs_reflink.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define BLK_AVG(blk1, blk2)	((blk1+blk2) >> 1)
 
 STATIC int
@@ -2178,6 +2183,10 @@ xlog_recover_add_to_trans(
 		item->ri_buf =
 			kmem_zalloc(item->ri_total * sizeof(xfs_log_iovec_t),
 				    0);
+		{
+			typeof((xfs_log_iovec_t)) __uncontained_tmp127;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp127;
+		}
 	}
 
 	if (item->ri_total <= item->ri_cnt) {
@@ -3255,6 +3264,10 @@ xlog_do_log_recovery(
 	log->l_buf_cancel_table = kmem_zalloc(XLOG_BC_TABLE_SIZE *
 						 sizeof(struct list_head),
 						 0);
+	{
+		struct list_head __uncontained_tmp126;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp126;
+	}
 	for (i = 0; i < XLOG_BC_TABLE_SIZE; i++)
 		INIT_LIST_HEAD(&log->l_buf_cancel_table[i]);
 

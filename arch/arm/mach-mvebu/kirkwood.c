@@ -22,6 +22,11 @@
 #include <asm/hardware/cache-feroceon-l2.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "kirkwood.h"
 #include "kirkwood-pm.h"
 #include "common.h"
@@ -110,6 +115,10 @@ static void __init kirkwood_dt_eth_fixup(void)
 
 		/* store MAC address register contents in local-mac-address */
 		pmac = kzalloc(sizeof(*pmac) + 6, GFP_KERNEL);
+		{
+			typeof((*pmac)) __uncontained_tmp0;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+		}
 		if (!pmac)
 			goto eth_fixup_no_mem;
 

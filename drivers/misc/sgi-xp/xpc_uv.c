@@ -24,6 +24,11 @@
 #include <linux/slab.h>
 #include <linux/numa.h>
 #include <asm/uv/uv_hub.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #if defined CONFIG_X86_64
 #include <asm/uv/bios.h>
 #include <asm/uv/uv_irq.h>
@@ -1095,6 +1100,10 @@ xpc_allocate_send_msg_slot_uv(struct xpc_channel *ch)
 	for (nentries = ch->local_nentries; nentries > 0; nentries--) {
 		nbytes = nentries * sizeof(struct xpc_send_msg_slot_uv);
 		ch_uv->send_msg_slots = kzalloc(nbytes, GFP_KERNEL);
+		{
+			struct xpc_send_msg_slot_uv __uncontained_tmp29;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+		}
 		if (ch_uv->send_msg_slots == NULL)
 			continue;
 

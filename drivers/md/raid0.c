@@ -15,6 +15,11 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <trace/events/block.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "md.h"
 #include "raid0.h"
 #include "raid5.h"
@@ -165,6 +170,10 @@ static int create_strip_zones(struct mddev *mddev, struct r0conf **private_conf)
 					    conf->nr_strip_zones,
 					    mddev->raid_disks),
 				GFP_KERNEL);
+	{
+		struct md_rdev *__uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!conf->devlist)
 		goto abort;
 

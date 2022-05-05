@@ -34,6 +34,11 @@
 #include <asm/schid.h>
 #include <asm/chpid.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "dasd_int.h"
 #include "dasd_eckd.h"
 
@@ -3452,6 +3457,10 @@ static int dasd_eckd_check_device_format(struct dasd_device *base,
 	fmt_buffer_size = trkcount * rpt_max * sizeof(struct eckd_count);
 
 	fmt_buffer = kzalloc(fmt_buffer_size, GFP_KERNEL | GFP_DMA);
+	{
+		struct eckd_count __uncontained_tmp84;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!fmt_buffer)
 		return -ENOMEM;
 

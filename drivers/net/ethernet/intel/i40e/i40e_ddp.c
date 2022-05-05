@@ -5,6 +5,11 @@
 
 #include <linux/firmware.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  * i40e_ddp_profiles_eq - checks if DDP profiles are the equivalent
  * @a: new profile info
@@ -457,6 +462,10 @@ int i40e_ddp_flash(struct net_device *netdev, struct ethtool_flash *flash)
 			list_entry =
 			  kzalloc(sizeof(struct i40e_ddp_old_profile_list) +
 				  ddp_config->size, GFP_KERNEL);
+			{
+				struct i40e_ddp_old_profile_list __uncontained_tmp50;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+			}
 			if (!list_entry) {
 				netdev_info(netdev, "Failed to allocate memory for previous DDP profile data.");
 				netdev_info(netdev, "New profile loaded but roll-back will be impossible.");

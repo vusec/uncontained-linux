@@ -39,6 +39,11 @@
 #include <linux/bug.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* List of available DOI definitions */
 /* XXX - This currently assumes a minimal number of different DOIs in use,
  * if in practice there are a lot of different DOIs this list should
@@ -1865,6 +1870,10 @@ int cipso_v4_sock_setattr(struct sock *sk,
 	 * set the IPOPT_CIPSO option. */
 	opt_len = (buf_len + 3) & ~3;
 	opt = kzalloc(sizeof(*opt) + opt_len, GFP_ATOMIC);
+	{
+		typeof((*opt)) __uncontained_tmp139;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!opt) {
 		ret_val = -ENOMEM;
 		goto socket_setattr_failure;
@@ -1942,6 +1951,10 @@ int cipso_v4_req_setattr(struct request_sock *req,
 	 * set the IPOPT_CIPSO option. */
 	opt_len = (buf_len + 3) & ~3;
 	opt = kzalloc(sizeof(*opt) + opt_len, GFP_ATOMIC);
+	{
+		typeof((*opt)) __uncontained_tmp140;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!opt) {
 		ret_val = -ENOMEM;
 		goto req_setattr_failure;

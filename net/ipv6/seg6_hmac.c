@@ -40,6 +40,11 @@
 #include <net/seg6_hmac.h>
 #include <linux/random.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static DEFINE_PER_CPU(char [SEG6_HMAC_RING_SIZE], hmac_ring);
 
 static int seg6_hmac_cmpfn(struct rhashtable_compare_arg *arg, const void *obj)
@@ -386,6 +391,10 @@ static int seg6_hmac_init_algo(void)
 		for_each_possible_cpu(cpu) {
 			shash = kzalloc_node(shsize, GFP_KERNEL,
 					     cpu_to_node(cpu));
+			{
+				typeof((*shash)) __uncontained_tmp105;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp105;
+			}
 			if (!shash)
 				return -ENOMEM;
 			*per_cpu_ptr(algo->shashs, cpu) = shash;

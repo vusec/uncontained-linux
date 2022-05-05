@@ -29,6 +29,11 @@
 #include <linux/backing-dev.h>
 #include <linux/device-mapper.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "dm.h"
 #include "dm-clone-metadata.h"
 
@@ -581,6 +586,10 @@ static int hash_table_init(struct clone *clone)
 	sz = 1 << HASH_TABLE_BITS;
 
 	clone->ht = kvmalloc(sz * sizeof(struct hash_table_bucket), GFP_KERNEL);
+	{
+		struct hash_table_bucket __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!clone->ht)
 		return -ENOMEM;
 

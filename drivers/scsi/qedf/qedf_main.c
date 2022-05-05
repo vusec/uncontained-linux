@@ -24,6 +24,11 @@
 #include "qedf_dbg.h"
 #include <uapi/linux/pci_regs.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 const struct qed_fcoe_ops *qed_ops;
 
 static int qedf_probe(struct pci_dev *pdev, const struct pci_device_id *id);
@@ -3034,6 +3039,10 @@ static int qedf_alloc_global_queues(struct qedf_ctx *qedf)
 
 	qedf->global_queues = kzalloc((sizeof(struct global_queue *)
 	    * qedf->num_queues), GFP_KERNEL);
+	{
+		struct global_queue *__uncontained_tmp94;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!qedf->global_queues) {
 		QEDF_ERR(&(qedf->dbg_ctx), "Unable to allocate global "
 			  "queues array ptr memory\n");

@@ -29,6 +29,11 @@
 
 #include <sound/tlv.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define AUDIO_SRAM_CHANNEL	SRAM_CH07
 
 #define dprintk(level, fmt, arg...) do {				\
@@ -88,6 +93,10 @@ static int cx23885_alsa_dma_init(struct cx23885_audio_dev *chip,
 	buf->nr_pages = nr_pages;
 
 	buf->sglist = vzalloc(array_size(sizeof(*buf->sglist), buf->nr_pages));
+	{
+		typeof((*buf->sglist)) __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (NULL == buf->sglist)
 		goto vzalloc_err;
 

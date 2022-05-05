@@ -26,6 +26,11 @@
 #include <core/device.h>
 #include <core/tegra.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "priv.h"
 #include "gk20a.h"
 
@@ -1026,6 +1031,14 @@ gm20b_clk_new(struct nvkm_device *device, enum nvkm_subdev_type type, int inst,
 
 	/* Speedo >= 1, use NAPLL */
 	clk = kzalloc(sizeof(*clk) + sizeof(*clk_params), GFP_KERNEL);
+	{
+		typeof((*clk)) __uncontained_tmp38;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+	}
+	{
+		typeof((*clk_params)) __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!clk)
 		return -ENOMEM;
 	*pclk = &clk->base.base;

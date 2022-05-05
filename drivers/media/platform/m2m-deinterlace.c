@@ -17,6 +17,11 @@
 #include <media/v4l2-ioctl.h>
 #include <media/videobuf2-dma-contig.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define MEM2MEM_TEST_MODULE_NAME "mem2mem-deinterlace"
 
 MODULE_DESCRIPTION("mem2mem device which supports deinterlacing using dmaengine");
@@ -844,6 +849,10 @@ static int deinterlace_open(struct file *file)
 	struct deinterlace_ctx *ctx = NULL;
 
 	ctx = kzalloc(sizeof *ctx, GFP_KERNEL);
+	{
+		typeof(*ctx) __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!ctx)
 		return -ENOMEM;
 
@@ -861,6 +870,14 @@ static int deinterlace_open(struct file *file)
 
 	ctx->xt = kzalloc(sizeof(struct dma_interleaved_template) +
 				sizeof(struct data_chunk), GFP_KERNEL);
+	{
+		struct data_chunk __uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
+	{
+		struct dma_interleaved_template __uncontained_tmp59;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!ctx->xt) {
 		kfree(ctx);
 		return -ENOMEM;

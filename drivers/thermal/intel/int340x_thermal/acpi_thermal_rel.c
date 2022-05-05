@@ -20,6 +20,11 @@
 #include <linux/uaccess.h>
 #include <linux/miscdevice.h>
 #include <linux/fs.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "acpi_thermal_rel.h"
 
 static acpi_handle acpi_thermal_rel_handle;
@@ -231,6 +236,10 @@ static int fill_art(char __user *ubuf)
 		goto free_art;
 	art_len = count * sizeof(union art_object);
 	art_user = kzalloc(art_len, GFP_KERNEL);
+	{
+		union art_object __uncontained_tmp71;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (!art_user) {
 		ret = -ENOMEM;
 		goto free_art;
@@ -268,6 +277,10 @@ static int fill_trt(char __user *ubuf)
 		goto free_trt;
 	trt_len = count * sizeof(union trt_object);
 	trt_user = kzalloc(trt_len, GFP_KERNEL);
+	{
+		union trt_object __uncontained_tmp72;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp72;
+	}
 	if (!trt_user) {
 		ret = -ENOMEM;
 		goto free_trt;

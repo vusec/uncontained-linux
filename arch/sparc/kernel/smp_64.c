@@ -55,6 +55,11 @@
 #include <asm/hypervisor.h>
 #include <asm/pcr.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "cpumap.h"
 #include "kernel.h"
 
@@ -301,6 +306,14 @@ static void ldom_startcpu_cpuid(unsigned int cpu, unsigned long thread_reg,
 			(sizeof(struct hvtramp_mapping) *
 			 num_kernel_image_mappings - 1),
 			GFP_KERNEL);
+	{
+		typeof((*hdesc)) __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
+	{
+		struct hvtramp_mapping __uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!hdesc) {
 		printk(KERN_ERR "ldom_startcpu_cpuid: Cannot allocate "
 		       "hvtramp_descr.\n");

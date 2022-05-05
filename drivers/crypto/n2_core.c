@@ -31,6 +31,11 @@
 #include <asm/hypervisor.h>
 #include <asm/mdesc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "n2_core.h"
 
 #define DRV_MODULE_NAME		"n2_crypto"
@@ -1772,6 +1777,10 @@ static int get_irq_props(struct mdesc_handle *mdesc, u64 node,
 	ip->ino_table = kzalloc((sizeof(struct ino_blob) *
 				 ip->num_intrs),
 				GFP_KERNEL);
+	{
+		struct ino_blob __uncontained_tmp16;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!ip->ino_table)
 		return -ENOMEM;
 

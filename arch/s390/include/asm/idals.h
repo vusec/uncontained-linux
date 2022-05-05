@@ -20,6 +20,11 @@
 #include <asm/cio.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define IDA_SIZE_LOG 12 /* 11 for 2k , 12 for 4k */
 #define IDA_BLOCK_SIZE (1L<<IDA_SIZE_LOG)
 
@@ -79,6 +84,10 @@ set_normalized_cda(struct ccw1 * ccw, void *vaddr)
 	if (nridaws > 0) {
 		idal = kmalloc(nridaws * sizeof(unsigned long),
 			       GFP_ATOMIC | GFP_DMA );
+		{
+			unsigned long __uncontained_tmp1;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+		}
 		if (idal == NULL)
 			return -ENOMEM;
 		idal_create_words(idal, vaddr, ccw->count);

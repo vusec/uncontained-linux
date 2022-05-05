@@ -46,6 +46,16 @@
 #include <asm/cacheflush.h>
 #include <asm/iommu.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "../irq_remapping.h"
 #include "../iommu-sva-lib.h"
 #include "pasid.h"
@@ -1860,10 +1870,18 @@ static int iommu_init_domains(struct intel_iommu *iommu)
 
 	size = (ALIGN(ndomains, 256) >> 8) * sizeof(struct dmar_domain **);
 	iommu->domains = kzalloc(size, GFP_KERNEL);
+	{
+		struct dmar_domain **__uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 
 	if (iommu->domains) {
 		size = 256 * sizeof(struct dmar_domain *);
 		iommu->domains[0] = kzalloc(size, GFP_KERNEL);
+		{
+			struct dmar_domain *__uncontained_tmp7;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp7;
+		}
 	}
 
 	if (!iommu->domains || !iommu->domains[0]) {
@@ -3776,6 +3794,10 @@ int dmar_parse_one_atsr(struct acpi_dmar_header *hdr, void *arg)
 		return 0;
 
 	atsru = kzalloc(sizeof(*atsru) + hdr->length, GFP_KERNEL);
+	{
+		typeof((*atsru)) __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!atsru)
 		return -ENOMEM;
 
@@ -3878,6 +3900,10 @@ int dmar_parse_one_satc(struct acpi_dmar_header *hdr, void *arg)
 		return 0;
 
 	satcu = kzalloc(sizeof(*satcu) + hdr->length, GFP_KERNEL);
+	{
+		typeof((*satcu)) __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!satcu)
 		return -ENOMEM;
 

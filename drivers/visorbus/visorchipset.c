@@ -8,6 +8,11 @@
 #include <linux/crash_dump.h>
 #include <linux/visorbus.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "visorbus_private.h"
 
 /* {72120008-4AAB-11DC-8530-444553544200} */
@@ -1326,6 +1331,14 @@ static struct parser_context *parser_init_stream(u64 addr, u32 bytes,
 		return NULL;
 	}
 	ctx = kzalloc(allocbytes, GFP_KERNEL);
+	{
+		struct parser_context __uncontained_tmp85;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp85;
+	}
+	{
+		struct visor_controlvm_parameters_header __uncontained_tmp86;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!ctx) {
 		*retry = true;
 		return NULL;

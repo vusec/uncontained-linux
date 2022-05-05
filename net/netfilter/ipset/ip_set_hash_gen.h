@@ -10,6 +10,11 @@
 #include <linux/netfilter/nfnetlink.h>
 #include <linux/netfilter/ipset/ip_set.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define __ipset_dereference(p)		\
 	rcu_dereference_protected(p, 1)
 #define ipset_dereference_nfnl(p)	\
@@ -541,6 +546,10 @@ mtype_gc_do(struct ip_set *set, struct htype *h, struct htable *t, u32 r)
 			tmp = kzalloc(sizeof(*tmp) +
 				(n->size - AHASH_INIT_SIZE) * dsize,
 				GFP_ATOMIC);
+			{
+				typeof((*tmp)) __uncontained_tmp142;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp142;
+			}
 			if (!tmp)
 				/* Still try to delete expired elements. */
 				continue;
@@ -709,6 +718,10 @@ retry:
 					m = kzalloc(sizeof(*m) +
 					    AHASH_INIT_SIZE * dsize,
 					    GFP_ATOMIC);
+					{
+						typeof((*m)) __uncontained_tmp143;
+						__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp143;
+					}
 					if (!m) {
 						ret = -ENOMEM;
 						goto cleanup;
@@ -728,6 +741,10 @@ retry:
 						(m->size + AHASH_INIT_SIZE)
 						* dsize,
 						GFP_ATOMIC);
+						{
+							typeof((*ht)) __uncontained_tmp144;
+							__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp144;
+						}
 						if (!ht)
 							ret = -ENOMEM;
 					}
@@ -882,6 +899,10 @@ mtype_add(struct ip_set *set, void *value, const struct ip_set_ext *ext,
 		old = NULL;
 		n = kzalloc(sizeof(*n) + AHASH_INIT_SIZE * set->dsize,
 			    GFP_ATOMIC);
+		{
+			typeof((*n)) __uncontained_tmp145;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp145;
+		}
 		if (!n) {
 			ret = -ENOMEM;
 			goto unlock;
@@ -947,6 +968,10 @@ mtype_add(struct ip_set *set, void *value, const struct ip_set_ext *ext,
 		n = kzalloc(sizeof(*n) +
 			    (old->size + AHASH_INIT_SIZE) * set->dsize,
 			    GFP_ATOMIC);
+		{
+			typeof((*n)) __uncontained_tmp146;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp146;
+		}
 		if (!n) {
 			ret = -ENOMEM;
 			goto unlock;

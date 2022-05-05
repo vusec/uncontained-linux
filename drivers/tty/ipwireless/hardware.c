@@ -23,6 +23,11 @@
 #include <linux/list.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hardware.h"
 #include "setup_protocol.h"
 #include "network.h"
@@ -579,6 +584,10 @@ static struct ipw_rx_packet *pool_allocate(struct ipw_hardware *hw,
 				 : min_capacity);
 			packet = kmalloc(sizeof(struct ipw_rx_packet)
 					+ new_capacity, GFP_ATOMIC);
+			{
+				struct ipw_rx_packet __uncontained_tmp118;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp118;
+			}
 			if (!packet)
 				return NULL;
 			packet->capacity = new_capacity;
@@ -592,6 +601,10 @@ static struct ipw_rx_packet *pool_allocate(struct ipw_hardware *hw,
 		packet = kmalloc(sizeof(struct ipw_rx_packet) +
 				old_packet->length + minimum_free_space,
 				GFP_ATOMIC);
+		{
+			struct ipw_rx_packet __uncontained_tmp119;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp119;
+		}
 		if (!packet) {
 			kfree(old_packet);
 			return NULL;

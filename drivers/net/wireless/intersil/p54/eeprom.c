@@ -22,6 +22,16 @@
 #include <linux/crc-ccitt.h>
 #include <linux/export.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "p54.h"
 #include "eeprom.h"
 #include "lmac.h"
@@ -431,6 +441,18 @@ static int p54_convert_rev0(struct ieee80211_hw *dev,
 
 	priv->curve_data = kmalloc(sizeof(*priv->curve_data) + cd_len,
 				   GFP_KERNEL);
+	{
+		typeof((*curve_data)) __uncontained_tmp73;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
+	}
+	{
+		typeof((*dst)) __uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
+	{
+		typeof((*priv->curve_data)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!priv->curve_data)
 		return -ENOMEM;
 
@@ -483,6 +505,18 @@ static int p54_convert_rev1(struct ieee80211_hw *dev,
 
 	priv->curve_data = kzalloc(cd_len + sizeof(*priv->curve_data),
 				   GFP_KERNEL);
+	{
+		typeof((*curve_data)) __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
+	{
+		typeof((*dst)) __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
+	{
+		typeof((*priv->curve_data)) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!priv->curve_data)
 		return -ENOMEM;
 
@@ -549,6 +583,14 @@ static int p54_parse_rssical(struct ieee80211_hw *dev,
 
 	db_len = sizeof(*entry) * entries;
 	priv->rssi_db = kzalloc(db_len + sizeof(*priv->rssi_db), GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp77;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp77;
+	}
+	{
+		typeof((*priv->rssi_db)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!priv->rssi_db)
 		return -ENOMEM;
 
@@ -681,6 +723,14 @@ static int p54_convert_output_limits(struct ieee80211_hw *dev,
 	priv->output_limit = kmalloc(data[1] *
 		sizeof(struct pda_channel_output_limit) +
 		sizeof(*priv->output_limit), GFP_KERNEL);
+	{
+		typeof((*priv->output_limit)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
+	{
+		struct pda_channel_output_limit __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 
 	if (!priv->output_limit)
 		return -ENOMEM;
@@ -714,6 +764,10 @@ static struct p54_cal_database *p54_convert_db(struct pda_custom_wrapper *src,
 		return NULL;
 
 	dst = kmalloc(sizeof(*dst) + payload_len, GFP_KERNEL);
+	{
+		typeof((*dst)) __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!dst)
 		return NULL;
 

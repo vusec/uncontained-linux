@@ -36,6 +36,11 @@
 #include <linux/bitops.h>
 #include <linux/vmalloc.h>
 #include <linux/aer.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "qede.h"
 #include "qede_ptp.h"
 
@@ -1560,6 +1565,14 @@ static int qede_alloc_mem_rxq(struct qede_dev *edev, struct qede_rx_queue *rxq)
 	/* Allocate the parallel driver ring for Rx buffers */
 	size = sizeof(*rxq->sw_rx_ring) * RX_RING_SIZE;
 	rxq->sw_rx_ring = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*rxq->sw_rx_ring)) __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
+	{
+		struct skb_shared_info __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!rxq->sw_rx_ring) {
 		DP_ERR(edev, "Rx buffers ring allocation failed\n");
 		rc = -ENOMEM;
@@ -1632,11 +1645,19 @@ static int qede_alloc_mem_txq(struct qede_dev *edev, struct qede_tx_queue *txq)
 	if (txq->is_xdp) {
 		size = sizeof(*txq->sw_tx_ring.xdp) * txq->num_tx_buffers;
 		txq->sw_tx_ring.xdp = kzalloc(size, GFP_KERNEL);
+		{
+			typeof((*txq->sw_tx_ring.xdp)) __uncontained_tmp32;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+		}
 		if (!txq->sw_tx_ring.xdp)
 			goto err;
 	} else {
 		size = sizeof(*txq->sw_tx_ring.skbs) * txq->num_tx_buffers;
 		txq->sw_tx_ring.skbs = kzalloc(size, GFP_KERNEL);
+		{
+			typeof((*txq->sw_tx_ring.skbs)) __uncontained_tmp33;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+		}
 		if (!txq->sw_tx_ring.skbs)
 			goto err;
 	}

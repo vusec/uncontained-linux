@@ -10,6 +10,11 @@
 
 #include "mv_sas.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 int interrupt_coalescing = 0x80;
 
 static struct scsi_transport_template *mvs_stt;
@@ -354,6 +359,14 @@ static struct mvs_info *mvs_pci_alloc(struct pci_dev *pdev,
 	mvi = kzalloc(sizeof(*mvi) +
 		(1L << mvs_chips[ent->driver_data].slot_width) *
 		sizeof(struct mvs_slot_info), GFP_KERNEL);
+	{
+		typeof((*mvi)) __uncontained_tmp82;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp82;
+	}
+	{
+		struct mvs_slot_info __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!mvi)
 		return NULL;
 

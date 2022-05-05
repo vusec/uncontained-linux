@@ -16,6 +16,11 @@
 #include <linux/wireless.h>
 #include <net/cfg80211.h>
 #include <net/iw_handler.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "core.h"
 #include "nl80211.h"
 #include "rdev-ops.h"
@@ -546,6 +551,10 @@ int cfg80211_mlme_register_mgmt(struct wireless_dev *wdev, u32 snd_portid,
 	}
 
 	nreg = kzalloc(sizeof(*reg) + match_len, GFP_KERNEL);
+	{
+		typeof((*reg)) __uncontained_tmp151;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp151;
+	}
 	if (!nreg)
 		return -ENOMEM;
 

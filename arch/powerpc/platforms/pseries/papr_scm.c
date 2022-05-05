@@ -20,6 +20,11 @@
 #include <asm/mce.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define BIND_ANY_ADDR (~0ul)
 
 #define PAPR_SCM_DIMM_CMD_MASK \
@@ -579,6 +584,14 @@ static int papr_pdsm_fuel_gauge(struct papr_scm_priv *p,
 		sizeof(struct papr_scm_perf_stat);
 
 	stats = kzalloc(size, GFP_KERNEL);
+	{
+		struct papr_scm_perf_stat __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
+	{
+		struct papr_scm_perf_stats __uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!stats)
 		return -ENOMEM;
 

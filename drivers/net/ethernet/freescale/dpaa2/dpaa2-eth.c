@@ -19,6 +19,11 @@
 #include <net/pkt_cls.h>
 #include <net/sock.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "dpaa2-eth.h"
 
 /* CREATE_TRACE_POINTS only needs to be defined once. Other dpa files
@@ -887,9 +892,14 @@ static int dpaa2_eth_build_sg_fd_single_buf(struct dpaa2_eth_priv *priv,
 	sgt_cache = this_cpu_ptr(priv->sgt_cache);
 	sgt_buf_size = priv->tx_data_offset + sizeof(struct dpaa2_sg_entry);
 
-	if (sgt_cache->count == 0)
+	if (sgt_cache->count == 0) {
 		sgt_buf = kzalloc(sgt_buf_size + DPAA2_ETH_TX_BUF_ALIGN,
 				  GFP_ATOMIC);
+		{
+			struct dpaa2_sg_entry __uncontained_tmp18;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+		}
+	}
 	else
 		sgt_buf = sgt_cache->buf[--sgt_cache->count];
 	if (unlikely(!sgt_buf))

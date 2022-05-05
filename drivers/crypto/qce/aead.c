@@ -12,6 +12,11 @@
 #include <crypto/sha1.h>
 #include <crypto/sha2.h>
 #include <crypto/scatterwalk.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "aead.h"
 
 #define CCM_NONCE_ADATA_SHIFT		6
@@ -205,6 +210,10 @@ qce_aead_ccm_prepare_buf_assoclen(struct aead_request *req)
 
 	rctx->adata = kzalloc((ALIGN(assoclen, 16) + MAX_CCM_ADATA_HEADER_LEN) *
 			       sizeof(unsigned char), GFP_ATOMIC);
+	{
+		unsigned char __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!rctx->adata)
 		return -ENOMEM;
 

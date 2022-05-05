@@ -33,6 +33,16 @@
 #include <net/bluetooth/l2cap.h>
 #include <net/bluetooth/mgmt.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hci_request.h"
 #include "smp.h"
 #include "mgmt_util.h"
@@ -391,6 +401,14 @@ static int read_commands(struct sock *sk, struct hci_dev *hdev, void *data,
 	rp_size = sizeof(*rp) + ((num_commands + num_events) * sizeof(u16));
 
 	rp = kmalloc(rp_size, GFP_KERNEL);
+	{
+		typeof((*rp)) __uncontained_tmp95;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp95;
+	}
+	{
+		u16 __uncontained_tmp93;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!rp)
 		return -ENOMEM;
 
@@ -444,6 +462,10 @@ static int read_index_list(struct sock *sk, struct hci_dev *hdev, void *data,
 
 	rp_len = sizeof(*rp) + (2 * count);
 	rp = kmalloc(rp_len, GFP_ATOMIC);
+	{
+		typeof((*rp)) __uncontained_tmp96;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!rp) {
 		read_unlock(&hci_dev_list_lock);
 		return -ENOMEM;
@@ -504,6 +526,10 @@ static int read_unconf_index_list(struct sock *sk, struct hci_dev *hdev,
 
 	rp_len = sizeof(*rp) + (2 * count);
 	rp = kmalloc(rp_len, GFP_ATOMIC);
+	{
+		typeof((*rp)) __uncontained_tmp97;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!rp) {
 		read_unlock(&hci_dev_list_lock);
 		return -ENOMEM;
@@ -4608,6 +4634,14 @@ static int read_adv_mon_features(struct sock *sk, struct hci_dev *hdev,
 
 	rp_size = sizeof(*rp) + (num_handles * sizeof(u16));
 	rp = kmalloc(rp_size, GFP_KERNEL);
+	{
+		typeof((*rp)) __uncontained_tmp98;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp98;
+	}
+	{
+		u16 __uncontained_tmp94;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!rp)
 		return -ENOMEM;
 
@@ -7570,6 +7604,10 @@ static void read_local_oob_ext_data_complete(struct hci_dev *hdev, void *data,
 	}
 
 	mgmt_rp = kmalloc(sizeof(*mgmt_rp) + eir_len, GFP_KERNEL);
+	{
+		typeof((*mgmt_rp)) __uncontained_tmp128;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp128;
+	}
 	if (!mgmt_rp)
 		goto done;
 
@@ -7678,6 +7716,10 @@ static int read_local_oob_ext_data(struct sock *sk, struct hci_dev *hdev,
 
 	rp_len = sizeof(*rp) + eir_len;
 	rp = kmalloc(rp_len, GFP_ATOMIC);
+	{
+		typeof((*rp)) __uncontained_tmp99;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp99;
+	}
 	if (!rp)
 		return -ENOMEM;
 
@@ -7857,6 +7899,10 @@ static int read_adv_features(struct sock *sk, struct hci_dev *hdev,
 
 	rp_len = sizeof(*rp) + hdev->adv_instance_cnt;
 	rp = kmalloc(rp_len, GFP_ATOMIC);
+	{
+		typeof((*rp)) __uncontained_tmp100;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (!rp) {
 		hci_dev_unlock(hdev);
 		return -ENOMEM;

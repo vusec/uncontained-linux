@@ -31,6 +31,11 @@
 #include <linux/uaccess.h>
 #include <linux/if_vlan.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "rtllib.h"
 
 /* 802.11 Data Frame
@@ -207,6 +212,14 @@ static struct rtllib_txb *rtllib_alloc_txb(int nr_frags, int txb_size,
 
 	txb = kmalloc(sizeof(struct rtllib_txb) + (sizeof(u8 *) * nr_frags),
 		      gfp_mask);
+	{
+		u8 *__uncontained_tmp113;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp113;
+	}
+	{
+		struct rtllib_txb __uncontained_tmp114;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!txb)
 		return NULL;
 

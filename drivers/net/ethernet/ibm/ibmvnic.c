@@ -67,6 +67,11 @@
 #include <linux/if_vlan.h>
 #include <linux/utsname.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ibmvnic.h"
 
 static const char ibmvnic_driver_name[] = "ibmvnic";
@@ -4325,6 +4330,14 @@ static int send_login(struct ibmvnic_adapter *adapter)
 	    client_data_len;
 
 	login_buffer = kzalloc(buffer_size, GFP_ATOMIC);
+	{
+		struct ibmvnic_login_buffer __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
+	{
+		u64 __uncontained_tmp52;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!login_buffer)
 		goto buf_alloc_failed;
 
@@ -4342,6 +4355,18 @@ static int send_login(struct ibmvnic_adapter *adapter)
 			  sizeof(u8) * IBMVNIC_TX_DESC_VERSIONS;
 
 	login_rsp_buffer = kmalloc(rsp_buffer_size, GFP_ATOMIC);
+	{
+		struct ibmvnic_login_rsp_buffer __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
+	{
+		u64 __uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
+	{
+		u8 __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!login_rsp_buffer)
 		goto buf_rsp_alloc_failed;
 

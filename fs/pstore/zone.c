@@ -20,6 +20,11 @@
 #include <linux/fcntl.h>
 #include <linux/uio.h>
 #include <linux/writeback.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "internal.h"
 
 /**
@@ -531,6 +536,10 @@ static int psz_recover_zone(struct psz_context *cxt, struct pstore_zone *zone)
 
 	len = atomic_read(&tmpbuf.datalen) + sizeof(*oldbuf);
 	oldbuf = kzalloc(len, GFP_KERNEL);
+	{
+		typeof((*oldbuf)) __uncontained_tmp94;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!oldbuf)
 		return -ENOMEM;
 
@@ -762,6 +771,10 @@ static inline int notrace psz_kmsg_write_record(struct psz_context *cxt,
 		len = zone->buffer_size + sizeof(*zone->buffer);
 		zone->oldbuf = zone->buffer;
 		zone->buffer = kzalloc(len, GFP_KERNEL);
+		{
+			typeof((*zone->buffer)) __uncontained_tmp95;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp95;
+		}
 		if (!zone->buffer) {
 			zone->buffer = zone->oldbuf;
 			return -ENOMEM;

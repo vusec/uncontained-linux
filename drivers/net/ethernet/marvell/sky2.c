@@ -38,6 +38,11 @@
 
 #include <asm/irq.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "sky2.h"
 
 #define DRV_NAME		"sky2"
@@ -4889,6 +4894,10 @@ static int sky2_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	hw = kzalloc(sizeof(*hw) + strlen(DRV_NAME "@pci:")
 		     + strlen(pci_name(pdev)) + 1, GFP_KERNEL);
+	{
+		typeof((*hw)) __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!hw)
 		goto err_out_free_regions;
 

@@ -29,6 +29,16 @@
 
 #include <asm/local.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static void update_pages_handler(struct work_struct *work);
 
 /*
@@ -1557,6 +1567,10 @@ static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
 
 		bpage = kzalloc_node(ALIGN(sizeof(*bpage), cache_line_size()),
 				    mflags, cpu_to_node(cpu_buffer->cpu));
+		{
+			typeof((*bpage)) __uncontained_tmp132;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp132;
+		}
 		if (!bpage)
 			goto free_pages;
 
@@ -1624,6 +1638,10 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
 
 	cpu_buffer = kzalloc_node(ALIGN(sizeof(*cpu_buffer), cache_line_size()),
 				  GFP_KERNEL, cpu_to_node(cpu));
+	{
+		typeof((*cpu_buffer)) __uncontained_tmp133;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp133;
+	}
 	if (!cpu_buffer)
 		return NULL;
 
@@ -1640,6 +1658,10 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
 
 	bpage = kzalloc_node(ALIGN(sizeof(*bpage), cache_line_size()),
 			    GFP_KERNEL, cpu_to_node(cpu));
+	{
+		typeof((*bpage)) __uncontained_tmp134;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp134;
+	}
 	if (!bpage)
 		goto fail_free_buffer;
 
@@ -1719,6 +1741,10 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
 	/* keep it in its own cache line */
 	buffer = kzalloc(ALIGN(sizeof(*buffer), cache_line_size()),
 			 GFP_KERNEL);
+	{
+		typeof((*buffer)) __uncontained_tmp131;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp131;
+	}
 	if (!buffer)
 		return NULL;
 
@@ -1742,6 +1768,10 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
 	bsize = sizeof(void *) * nr_cpu_ids;
 	buffer->buffers = kzalloc(ALIGN(bsize, cache_line_size()),
 				  GFP_KERNEL);
+	{
+		void *__uncontained_tmp92;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!buffer->buffers)
 		goto fail_free_cpumask;
 

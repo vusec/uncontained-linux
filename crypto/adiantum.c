@@ -40,6 +40,11 @@
 #include <crypto/scatterwalk.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Size of right-hand part of input data, in bytes; also the size of the block
  * cipher's block size and the hash function's output.
@@ -140,6 +145,10 @@ static int adiantum_setkey(struct crypto_skcipher *tfm, const u8 *key,
 	/* Derive the subkeys */
 	data = kzalloc(sizeof(*data) +
 		       crypto_skcipher_reqsize(tctx->streamcipher), GFP_KERNEL);
+	{
+		typeof((*data)) __uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!data)
 		return -ENOMEM;
 	data->iv[0] = 1;
@@ -505,6 +514,14 @@ static int adiantum_create(struct crypto_template *tmpl, struct rtattr **tb)
 		return err;
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*ictx), GFP_KERNEL);
+	{
+		typeof((*ictx)) __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
+	{
+		typeof((*inst)) __uncontained_tmp7;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!inst)
 		return -ENOMEM;
 	ictx = skcipher_instance_ctx(inst);

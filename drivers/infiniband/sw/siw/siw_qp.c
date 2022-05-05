@@ -11,6 +11,16 @@
 #include <asm/barrier.h>
 #include <net/tcp.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "siw.h"
 #include "siw_verbs.h"
 #include "siw_mem.h"
@@ -202,6 +212,10 @@ static int siw_qp_readq_init(struct siw_qp *qp, int irq_size, int orq_size)
 	if (irq_size) {
 		irq_size = roundup_pow_of_two(irq_size);
 		qp->irq = vzalloc(irq_size * sizeof(struct siw_sqe));
+		{
+			struct siw_sqe __uncontained_tmp47;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+		}
 		if (!qp->irq) {
 			qp->attrs.irq_size = 0;
 			return -ENOMEM;
@@ -210,6 +224,10 @@ static int siw_qp_readq_init(struct siw_qp *qp, int irq_size, int orq_size)
 	if (orq_size) {
 		orq_size = roundup_pow_of_two(orq_size);
 		qp->orq = vzalloc(orq_size * sizeof(struct siw_sqe));
+		{
+			struct siw_sqe __uncontained_tmp48;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+		}
 		if (!qp->orq) {
 			qp->attrs.orq_size = 0;
 			qp->attrs.irq_size = 0;
@@ -236,6 +254,10 @@ static int siw_qp_enable_crc(struct siw_qp *qp)
 		sizeof(struct shash_desc);
 
 	c_tx->mpa_crc_hd = kzalloc(size, GFP_KERNEL);
+	{
+		struct shash_desc __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
 	c_rx->mpa_crc_hd = kzalloc(size, GFP_KERNEL);
 	if (!c_tx->mpa_crc_hd || !c_rx->mpa_crc_hd) {
 		kfree(c_tx->mpa_crc_hd);

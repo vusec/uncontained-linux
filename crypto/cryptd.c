@@ -27,6 +27,11 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static unsigned int cryptd_max_cpu_qlen = 1000;
 module_param(cryptd_max_cpu_qlen, uint, 0);
 MODULE_PARM_DESC(cryptd_max_cpu_qlen, "Set cryptd Max queue depth");
@@ -380,6 +385,14 @@ static int cryptd_create_skcipher(struct crypto_template *tmpl,
 	cryptd_type_and_mask(algt, &type, &mask);
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*ctx), GFP_KERNEL);
+	{
+		typeof((*ctx)) __uncontained_tmp8;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+	}
+	{
+		typeof((*inst)) __uncontained_tmp9;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!inst)
 		return -ENOMEM;
 
@@ -646,6 +659,14 @@ static int cryptd_create_hash(struct crypto_template *tmpl, struct rtattr **tb,
 	cryptd_type_and_mask(algt, &type, &mask);
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*ctx), GFP_KERNEL);
+	{
+		typeof((*ctx)) __uncontained_tmp10;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp10;
+	}
+	{
+		typeof((*inst)) __uncontained_tmp11;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp11;
+	}
 	if (!inst)
 		return -ENOMEM;
 
@@ -833,6 +854,14 @@ static int cryptd_create_aead(struct crypto_template *tmpl,
 	cryptd_type_and_mask(algt, &type, &mask);
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*ctx), GFP_KERNEL);
+	{
+		typeof((*ctx)) __uncontained_tmp12;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+	}
+	{
+		typeof((*inst)) __uncontained_tmp13;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!inst)
 		return -ENOMEM;
 

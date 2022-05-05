@@ -21,6 +21,16 @@
 #include <linux/rtnetlink.h>
 #include <net/mac80211.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ieee80211_i.h"
 #include "driver-ops.h"
 #include "rate.h"
@@ -68,6 +78,30 @@ ieee80211_ibss_build_presp(struct ieee80211_sub_if_data *sdata,
 		    2 + sizeof(struct ieee80211_vht_operation) +
 		    ifibss->ie_len;
 	presp = kzalloc(sizeof(*presp) + frame_len, GFP_KERNEL);
+	{
+		struct ieee80211_hdr_3addr __uncontained_tmp97;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp97;
+	}
+	{
+		struct ieee80211_ht_cap __uncontained_tmp98;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp98;
+	}
+	{
+		struct ieee80211_ht_operation __uncontained_tmp99;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp99;
+	}
+	{
+		struct ieee80211_vht_cap __uncontained_tmp100;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp100;
+	}
+	{
+		struct ieee80211_vht_operation __uncontained_tmp101;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp101;
+	}
+	{
+		typeof((*presp)) __uncontained_tmp162;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp162;
+	}
 	if (!presp)
 		return NULL;
 

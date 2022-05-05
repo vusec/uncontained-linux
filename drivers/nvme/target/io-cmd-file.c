@@ -9,6 +9,11 @@
 #include <linux/falloc.h>
 #include <linux/file.h>
 #include <linux/fs.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "nvmet.h"
 
 #define NVMET_MAX_MPOOL_BVEC		16
@@ -62,6 +67,10 @@ int nvmet_file_ns_enable(struct nvmet_ns *ns)
 	ns->bvec_cache = kmem_cache_create("nvmet-bvec",
 			NVMET_MAX_MPOOL_BVEC * sizeof(struct bio_vec),
 			0, SLAB_HWCACHE_ALIGN, NULL);
+	{
+		struct bio_vec __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!ns->bvec_cache) {
 		ret = -ENOMEM;
 		goto err;

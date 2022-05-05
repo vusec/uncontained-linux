@@ -17,6 +17,11 @@
 #include <asm/firmware.h>
 #include <asm/lv1call.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "vuart.h"
 
 MODULE_AUTHOR("Sony Corporation");
@@ -511,6 +516,10 @@ int ps3_vuart_write(struct ps3_system_bus_device *dev, const void *buf,
 		spin_unlock_irqrestore(&priv->tx_list.lock, flags);
 
 	lb = kmalloc(sizeof(struct list_buffer) + bytes, GFP_KERNEL);
+	{
+		struct list_buffer __uncontained_tmp101;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp101;
+	}
 
 	if (!lb)
 		return -ENOMEM;
@@ -565,6 +574,10 @@ static int ps3_vuart_queue_rx_bytes(struct ps3_system_bus_device *dev,
 	bytes += 128;
 
 	lb = kmalloc(sizeof(struct list_buffer) + bytes, GFP_ATOMIC);
+	{
+		struct list_buffer __uncontained_tmp102;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp102;
+	}
 
 	if (!lb)
 		return -ENOMEM;

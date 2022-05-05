@@ -10,6 +10,11 @@
 #include <linux/slab.h>
 #include <linux/greybus.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "greybus_trace.h"
 
 EXPORT_TRACEPOINT_SYMBOL_GPL(gb_hd_create);
@@ -159,6 +164,10 @@ struct gb_host_device *gb_hd_create(struct gb_hd_driver *driver,
 	}
 
 	hd = kzalloc(sizeof(*hd) + driver->hd_priv_size, GFP_KERNEL);
+	{
+		typeof((*hd)) __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!hd)
 		return ERR_PTR(-ENOMEM);
 

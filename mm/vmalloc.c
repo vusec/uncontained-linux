@@ -43,6 +43,11 @@
 #include <asm/tlbflush.h>
 #include <asm/shmparam.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "internal.h"
 #include "pgalloc-track.h"
 
@@ -2946,6 +2951,10 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
 					area->caller);
 	} else {
 		area->pages = kmalloc_node(array_size, nested_gfp, node);
+		{
+			struct page *__uncontained_tmp78;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+		}
 	}
 
 	if (!area->pages) {

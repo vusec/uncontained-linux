@@ -40,6 +40,11 @@
 #include <linux/mfd/syscon.h>
 #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "dmaengine.h"
 #include "virt-dma.h"
 
@@ -1406,6 +1411,10 @@ static struct sdma_desc *sdma_transfer_init(struct sdma_channel *sdmac,
 	}
 
 	desc = kzalloc((sizeof(*desc)), GFP_NOWAIT);
+	{
+		typeof((*desc)) __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!desc)
 		goto err_out;
 

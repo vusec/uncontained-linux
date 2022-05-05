@@ -16,6 +16,11 @@
 #include <linux/uaccess.h>
 #include <linux/sched.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "util.h"
 
 DEFINE_SPINLOCK(mq_lock);
@@ -51,6 +56,10 @@ static struct msg_msg *alloc_msg(size_t len)
 
 	alen = min(len, DATALEN_MSG);
 	msg = kmalloc(sizeof(*msg) + alen, GFP_KERNEL_ACCOUNT);
+	{
+		typeof((*msg)) __uncontained_tmp128;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp128;
+	}
 	if (msg == NULL)
 		return NULL;
 
@@ -66,6 +75,10 @@ static struct msg_msg *alloc_msg(size_t len)
 
 		alen = min(len, DATALEN_SEG);
 		seg = kmalloc(sizeof(*seg) + alen, GFP_KERNEL_ACCOUNT);
+		{
+			typeof((*seg)) __uncontained_tmp129;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp129;
+		}
 		if (seg == NULL)
 			goto out_err;
 		*pseg = seg;

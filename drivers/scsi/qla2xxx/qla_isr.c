@@ -17,6 +17,11 @@
 #include <scsi/fc/fc_fs.h>
 #include <linux/nvme-fc-driver.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static void qla2x00_mbx_completion(scsi_qla_host_t *, uint16_t);
 static void qla2x00_status_entry(scsi_qla_host_t *, struct rsp_que *, void *);
 static void qla2x00_status_cont_entry(struct rsp_que *, sts_cont_entry_t *);
@@ -937,12 +942,20 @@ qla24xx_alloc_purex_item(scsi_qla_host_t *vha, uint16_t size)
 	if (size > QLA_DEFAULT_PAYLOAD_SIZE) {
 		item = kzalloc(item_hdr_size +
 		    (size - QLA_DEFAULT_PAYLOAD_SIZE), GFP_ATOMIC);
+		{
+			typeof((*item)) __uncontained_tmp67;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+		}
 	} else {
 		if (atomic_inc_return(&vha->default_item.in_use) == 1) {
 			item = &vha->default_item;
 			goto initialize_purex_header;
 		} else {
 			item = kzalloc(item_hdr_size, GFP_ATOMIC);
+			{
+				typeof((*item)) __uncontained_tmp68;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+			}
 		}
 	}
 	if (!item) {

@@ -13,6 +13,11 @@
 #include <linux/slab.h>
 #include <linux/swap.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "btree.h"
 
 void hfs_bnode_read(struct hfs_bnode *node, void *buf, int off, int len)
@@ -264,6 +269,14 @@ static struct hfs_bnode *__hfs_bnode_create(struct hfs_btree *tree, u32 cnid)
 	size = sizeof(struct hfs_bnode) + tree->pages_per_bnode *
 		sizeof(struct page *);
 	node = kzalloc(size, GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp73;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
+	}
+	{
+		struct hfs_bnode __uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!node)
 		return NULL;
 	node->tree = tree;

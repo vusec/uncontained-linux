@@ -28,6 +28,11 @@
 #include <asm/switch_to.h>
 #include <asm/nmi.h>
 #include <asm/airq.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "kvm-s390.h"
 #include "gaccess.h"
 #include "trace-s390.h"
@@ -2423,6 +2428,10 @@ static int enqueue_floating_irq(struct kvm_device *dev,
 
 	while (len >= sizeof(struct kvm_s390_irq)) {
 		inti = kzalloc(sizeof(*inti), GFP_KERNEL_ACCOUNT);
+		{
+			typeof((*inti)) __uncontained_tmp2;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+		}
 		if (!inti)
 			return -ENOMEM;
 

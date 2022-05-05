@@ -1661,6 +1661,11 @@ struct tcp_md5sig_key *tcp_v4_md5_lookup(const struct sock *sk,
 
 #ifdef CONFIG_TCP_MD5SIG
 #include <linux/jump_label.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 extern struct static_key_false tcp_md5_needed;
 struct tcp_md5sig_key *__tcp_md5_do_lookup(const struct sock *sk, int l3index,
 					   const union tcp_md5_addr *addr,
@@ -2132,6 +2137,10 @@ static inline struct ip_options_rcu *tcp_v4_save_options(struct net *net,
 		int opt_size = sizeof(*dopt) + opt->optlen;
 
 		dopt = kmalloc(opt_size, GFP_ATOMIC);
+		{
+			typeof((*dopt)) __uncontained_tmp76;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+		}
 		if (dopt && __ip_options_echo(net, &dopt->opt, skb, opt)) {
 			kfree(dopt);
 			dopt = NULL;

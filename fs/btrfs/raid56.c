@@ -13,6 +13,11 @@
 #include <linux/list_sort.h>
 #include <linux/raid/xor.h>
 #include <linux/mm.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "misc.h"
 #include "ctree.h"
 #include "disk-io.h"
@@ -977,6 +982,30 @@ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
 		       sizeof(*rbio->finish_pbitmap) *
 				BITS_TO_LONGS(stripe_npages),
 		       GFP_NOFS);
+	{
+		typeof((*rbio)) __uncontained_tmp131;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp131;
+	}
+	{
+		typeof((*rbio->bio_pages)) __uncontained_tmp132;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp132;
+	}
+	{
+		typeof((*rbio->dbitmap)) __uncontained_tmp133;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp133;
+	}
+	{
+		typeof((*rbio->finish_pbitmap)) __uncontained_tmp134;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp134;
+	}
+	{
+		typeof((*rbio->finish_pointers)) __uncontained_tmp135;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp135;
+	}
+	{
+		typeof((*rbio->stripe_pages)) __uncontained_tmp136;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp136;
+	}
 	if (!rbio)
 		return ERR_PTR(-ENOMEM);
 

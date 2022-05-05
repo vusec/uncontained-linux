@@ -20,6 +20,11 @@
 #include <linux/compiler.h>
 #include <net/netlink.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "internal.h"
 
 static const struct crypto_type crypto_ahash_type;
@@ -206,6 +211,10 @@ static int ahash_save_req(struct ahash_request *req, crypto_completion_t cplt)
 	priv = kmalloc(sizeof(*priv) + ahash_align_buffer_size(ds, alignmask),
 		       (req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP) ?
 		       GFP_KERNEL : GFP_ATOMIC);
+	{
+		typeof((*priv)) __uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!priv)
 		return -ENOMEM;
 

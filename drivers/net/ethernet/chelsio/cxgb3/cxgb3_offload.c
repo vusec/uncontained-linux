@@ -44,6 +44,11 @@
 #include <linux/vmalloc.h>
 #include <linux/export.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "common.h"
 #include "regs.h"
 #include "cxgb3_ioctl.h"
@@ -1162,6 +1167,18 @@ static int init_tid_tabs(struct tid_info *t, unsigned int ntids,
 	    natids * sizeof(*t->atid_tab) + nstids * sizeof(*t->stid_tab);
 
 	t->tid_tab = kvzalloc(size, GFP_KERNEL);
+	{
+		typeof((*t->atid_tab)) __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
+	{
+		typeof((*t->stid_tab)) __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
+	{
+		typeof((*t->tid_tab)) __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!t->tid_tab)
 		return -ENOMEM;
 

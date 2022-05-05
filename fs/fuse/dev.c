@@ -22,6 +22,11 @@
 #include <linux/splice.h>
 #include <linux/sched.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 MODULE_ALIAS_MISCDEV(FUSE_MINOR);
 MODULE_ALIAS("devname:fuse");
 
@@ -1695,6 +1700,10 @@ static int fuse_retrieve(struct fuse_mount *fm, struct inode *inode,
 	args_size += num_pages * (sizeof(ap->pages[0]) + sizeof(ap->descs[0]));
 
 	ra = kzalloc(args_size, GFP_KERNEL);
+	{
+		typeof((*ra)) __uncontained_tmp84;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!ra)
 		return -ENOMEM;
 

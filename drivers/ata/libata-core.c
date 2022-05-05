@@ -61,6 +61,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/libata.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "libata.h"
 #include "libata-transport.h"
 
@@ -5437,6 +5442,14 @@ struct ata_host *ata_host_alloc(struct device *dev, int max_ports)
 	/* alloc a container for our list of ATA ports (buses) */
 	sz = sizeof(struct ata_host) + (max_ports + 1) * sizeof(void *);
 	host = kzalloc(sz, GFP_KERNEL);
+	{
+		void *__uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
+	{
+		struct ata_host __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!host)
 		return NULL;
 

@@ -14,6 +14,11 @@
 
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "internals.h"
 
 #define ONFI_PARAM_PAGES 3
@@ -163,6 +168,10 @@ int nand_onfi_detect(struct nand_chip *chip)
 
 	/* ONFI chip: allocate a buffer to hold its parameter page */
 	pbuf = kzalloc((sizeof(*pbuf) * ONFI_PARAM_PAGES), GFP_KERNEL);
+	{
+		typeof((*pbuf)) __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!pbuf)
 		return -ENOMEM;
 

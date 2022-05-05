@@ -3,6 +3,11 @@
 
 #include "dr_types.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DR_ICM_MODIFY_HDR_ALIGN_BASE 64
 
 struct mlx5dr_icm_pool {
@@ -205,6 +210,10 @@ static int dr_icm_buddy_init_ste_cache(struct mlx5dr_icm_buddy_mem *buddy)
 		goto free_ste_arr;
 
 	buddy->miss_list = kvmalloc(num_of_entries * sizeof(struct list_head), GFP_KERNEL);
+	{
+		struct list_head __uncontained_tmp53;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp53;
+	}
 	if (!buddy->miss_list)
 		goto free_hw_ste_arr;
 

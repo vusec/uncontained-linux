@@ -23,6 +23,11 @@
 #include <linux/clk/ti.h>
 #include <linux/list.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "clock.h"
 
 #undef pr_fmt
@@ -254,12 +259,20 @@ int __init ti_clk_add_component(struct device_node *node, struct clk_hw *hw,
 	}
 
 	parent_names = kzalloc((sizeof(char *) * num_parents), GFP_KERNEL);
+	{
+		char *__uncontained_tmp13;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!parent_names)
 		return -ENOMEM;
 
 	of_clk_parent_fill(node, parent_names, num_parents);
 
 	clk = kzalloc(sizeof(*clk), GFP_KERNEL);
+	{
+		typeof((*clk)) __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!clk) {
 		kfree(parent_names);
 		return -ENOMEM;

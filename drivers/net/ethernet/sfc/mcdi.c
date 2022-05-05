@@ -7,6 +7,11 @@
 #include <linux/delay.h>
 #include <linux/moduleparam.h>
 #include <linux/atomic.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "net_driver.h"
 #include "nic.h"
 #include "io.h"
@@ -990,6 +995,10 @@ static int _efx_mcdi_rpc_async(struct efx_nic *efx, unsigned int cmd,
 
 	async = kmalloc(sizeof(*async) + ALIGN(max(inlen, outlen), 4),
 			GFP_ATOMIC);
+	{
+		typeof((*async)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!async)
 		return -ENOMEM;
 

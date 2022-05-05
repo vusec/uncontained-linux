@@ -39,6 +39,11 @@
 #include <asm/irq.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DRIVER_AUTHOR "Yuan-Hsin Chen"
 #define DRIVER_DESC "FOTG210 Host Controller (EHCI) Driver"
 static const char hcd_name[] = "fotg210_hcd";
@@ -4018,6 +4023,10 @@ static struct fotg210_iso_sched *iso_sched_alloc(unsigned packets,
 
 	size += packets * sizeof(struct fotg210_iso_packet);
 	iso_sched = kzalloc(size, mem_flags);
+	{
+		typeof((*iso_sched)) __uncontained_tmp84;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (likely(iso_sched != NULL))
 		INIT_LIST_HEAD(&iso_sched->td_list);
 

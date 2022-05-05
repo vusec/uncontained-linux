@@ -18,6 +18,11 @@
 #include <linux/platform_device.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hns_dsaf_mac.h"
 #include "hns_dsaf_main.h"
 #include "hns_dsaf_ppe.h"
@@ -1465,6 +1470,10 @@ static int hns_dsaf_init(struct dsaf_device *dsaf_dev)
 	/* malloc mem for tcam mac key(vlan+mac) */
 	priv->soft_mac_tbl = vzalloc(array_size(DSAF_TCAM_SUM,
 						sizeof(*priv->soft_mac_tbl)));
+	{
+		typeof((*priv->soft_mac_tbl)) __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!priv->soft_mac_tbl) {
 		ret = -ENOMEM;
 		goto remove_hw;

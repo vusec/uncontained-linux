@@ -14,6 +14,11 @@
 #include <rdma/opa_addr.h>
 #include <linux/nospec.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hfi.h"
 #include "common.h"
 #include "device.h"
@@ -1630,6 +1635,10 @@ static int init_cntr_names(const char *names_in, const size_t names_len,
 	names_out =
 		kzalloc((n + num_extra_names) * sizeof(*q) + names_len,
 			GFP_KERNEL);
+	{
+		typeof((*q)) __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!names_out) {
 		*num_cntrs = 0;
 		*cntr_descs = NULL;

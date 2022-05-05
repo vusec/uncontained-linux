@@ -20,6 +20,11 @@
 #include <linux/ctype.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  * uclogic_params_pen_inrange_to_str() - Convert a pen in-range reporting type
  *                                       to a string.
@@ -740,6 +745,10 @@ static int uclogic_params_huion_init(struct uclogic_params *params,
 
 	/* Try to get firmware version */
 	ver_ptr = kzalloc(ver_len, GFP_KERNEL);
+	{
+		typeof((transition_ver)) __uncontained_tmp16;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (ver_ptr == NULL) {
 		rc = -ENOMEM;
 		goto cleanup;

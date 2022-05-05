@@ -40,6 +40,11 @@
 #include <linux/vmalloc.h>
 #include <linux/rcupdate_trace.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "rcu.h"
 
 MODULE_LICENSE("GPL");
@@ -672,6 +677,10 @@ kfree_scale_thread(void *arg)
 
 		for (i = 0; i < kfree_alloc_num; i++) {
 			alloc_ptr = kmalloc(kfree_mult * sizeof(struct kfree_obj), GFP_KERNEL);
+			{
+				struct kfree_obj __uncontained_tmp157;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp157;
+			}
 			if (!alloc_ptr)
 				return -ENOMEM;
 

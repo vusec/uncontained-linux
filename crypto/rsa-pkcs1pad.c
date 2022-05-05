@@ -16,6 +16,11 @@
 #include <linux/random.h>
 #include <linux/scatterlist.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Hash algorithm OIDs plus ASN.1 DER wrappings [RFC4880 sec 5.2.2].
  */
@@ -612,6 +617,14 @@ static int pkcs1pad_create(struct crypto_template *tmpl, struct rtattr **tb)
 		return err;
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*ctx), GFP_KERNEL);
+	{
+		typeof((*ctx)) __uncontained_tmp8;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+	}
+	{
+		typeof((*inst)) __uncontained_tmp9;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!inst)
 		return -ENOMEM;
 

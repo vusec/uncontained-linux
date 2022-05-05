@@ -4,6 +4,11 @@
 #include <linux/ethtool.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "nfp_asm.h"
 #include "nfp_main.h"
 #include "nfpcore/nfp.h"
@@ -167,6 +172,10 @@ nfp_net_dump_load_dumpspec(struct nfp_cpp *cpp, struct nfp_rtsym_table *rtbl)
 
 	/* expected size of this buffer is in the order of tens of kilobytes */
 	dumpspec = vmalloc(sizeof(*dumpspec) + sym_size);
+	{
+		typeof((*dumpspec)) __uncontained_tmp73;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
+	}
 	if (!dumpspec)
 		return NULL;
 	dumpspec->size = sym_size;
