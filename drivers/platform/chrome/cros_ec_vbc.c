@@ -11,6 +11,11 @@
 #include <linux/platform_data/cros_ec_proto.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DRV_NAME "cros-ec-vbc"
 
 static ssize_t vboot_context_read(struct file *filp, struct kobject *kobj,
@@ -28,6 +33,10 @@ static ssize_t vboot_context_read(struct file *filp, struct kobject *kobj,
 	const size_t payload = max(para_sz, resp_sz);
 
 	msg = kmalloc(sizeof(*msg) + payload, GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!msg)
 		return -ENOMEM;
 
@@ -71,6 +80,10 @@ static ssize_t vboot_context_write(struct file *filp, struct kobject *kobj,
 		return -EINVAL;
 
 	msg = kmalloc(sizeof(*msg) + para_sz, GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp38;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!msg)
 		return -ENOMEM;
 

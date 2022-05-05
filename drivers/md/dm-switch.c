@@ -16,6 +16,11 @@
 #include <linux/init.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DM_MSG_PREFIX "switch"
 
 /*
@@ -115,6 +120,10 @@ static int alloc_region_table(struct dm_target *ti, unsigned nr_paths)
 
 	sctx->region_table = vmalloc(array_size(nr_slots,
 						sizeof(region_table_slot_t)));
+	{
+		region_table_slot_t __uncontained_tmp9;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!sctx->region_table) {
 		ti->error = "Cannot allocate region table";
 		return -ENOMEM;

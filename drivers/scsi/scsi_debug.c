@@ -55,6 +55,11 @@
 #include <scsi/scsi_tcq.h>
 #include <scsi/scsi_dbg.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "sd.h"
 #include "scsi_logging.h"
 
@@ -7010,6 +7015,10 @@ static int sdebug_add_store(void)
 	struct xa_limit xal = { .max = 1 << 16, .min = 0 };
 
 	sip = kzalloc(sizeof(*sip), GFP_KERNEL);
+	{
+		typeof((*sip)) __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!sip)
 		return -ENOMEM;
 
@@ -7056,6 +7065,10 @@ static int sdebug_add_store(void)
 		map_size = lba_to_map_index(sdebug_store_sectors - 1) + 1;
 		sip->map_storep = vmalloc(array_size(sizeof(long),
 						     BITS_TO_LONGS(map_size)));
+		{
+			long __uncontained_tmp36;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+		}
 
 		pr_info("%lu provisioning blocks\n", map_size);
 

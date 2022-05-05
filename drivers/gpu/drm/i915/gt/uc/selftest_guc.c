@@ -149,6 +149,10 @@ static int intel_guc_steal_guc_ids(void *arg)
 	int number_guc_id_stolen = guc->number_guc_id_stolen;
 
 	ce = kzalloc(sizeof(*ce) * GUC_MAX_LRC_DESCRIPTORS, GFP_KERNEL);
+	{
+		typeof((*ce)) __uncontained_tmp13;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!ce) {
 		pr_err("Context array allocation failed\n");
 		return -ENOMEM;

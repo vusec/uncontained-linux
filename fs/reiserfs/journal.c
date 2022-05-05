@@ -52,6 +52,11 @@
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 
 /* gets a struct reiserfs_journal_list * from a list head */
 #define JOURNAL_LIST_ENTRY(h) (list_entry((h), struct reiserfs_journal_list, \
@@ -350,6 +355,10 @@ static struct reiserfs_journal_cnode *allocate_cnodes(int num_cnodes)
 	}
 	head = vzalloc(array_size(num_cnodes,
 				  sizeof(struct reiserfs_journal_cnode)));
+	{
+		struct reiserfs_journal_cnode __uncontained_tmp56;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!head) {
 		return NULL;
 	}

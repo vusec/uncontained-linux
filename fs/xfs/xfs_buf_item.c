@@ -764,6 +764,10 @@ xfs_buf_item_get_format(
 
 	bip->bli_formats = kmem_zalloc(count * sizeof(struct xfs_buf_log_format),
 				0);
+	{
+		struct xfs_buf_log_format __uncontained_tmp106;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp106;
+	}
 }
 
 STATIC void

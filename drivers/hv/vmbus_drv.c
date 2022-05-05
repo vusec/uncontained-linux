@@ -35,6 +35,11 @@
 #include <linux/syscore_ops.h>
 #include <linux/dma-map-ops.h>
 #include <clocksource/hyperv_timer.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "hyperv_vmbus.h"
 
 struct vmbus_dynid {
@@ -1130,6 +1135,10 @@ void vmbus_on_msg_dpc(unsigned long data)
 
 	if (entry->handler_type	== VMHT_BLOCKING) {
 		ctx = kmalloc(sizeof(*ctx) + payload_size, GFP_ATOMIC);
+		{
+			typeof((*ctx)) __uncontained_tmp12;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+		}
 		if (ctx == NULL)
 			return;
 
@@ -1220,6 +1229,14 @@ static void vmbus_force_channel_rescinded(struct vmbus_channel *channel)
 	 */
 	ctx = kzalloc(sizeof(*ctx) + sizeof(*rescind),
 		      GFP_KERNEL | __GFP_NOFAIL);
+	{
+		typeof((*ctx)) __uncontained_tmp13;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+	}
+	{
+		typeof((*rescind)) __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
 
 	/*
 	 * So far, these are not really used by Linux. Just set them to the

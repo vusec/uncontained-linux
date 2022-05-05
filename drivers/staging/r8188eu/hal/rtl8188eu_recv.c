@@ -43,6 +43,10 @@ int	rtl8188eu_init_recv_priv(struct adapter *padapter)
 
 	precvpriv->pallocated_recv_buf = kzalloc(NR_RECVBUFF * sizeof(struct recv_buf) + 4,
 						 GFP_KERNEL);
+	{
+		struct recv_buf __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!precvpriv->pallocated_recv_buf) {
 		res = _FAIL;
 		goto exit;

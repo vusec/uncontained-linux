@@ -41,6 +41,11 @@
 #include <drm/drm_cache.h>
 #include <drm/drm_device.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "drm_legacy.h"
 
 #if IS_ENABLED(CONFIG_AGP)
@@ -86,6 +91,10 @@ static void *agp_remap(unsigned long offset, unsigned long size,
 	 */
 	/* note: use vmalloc() because num_pages could be large... */
 	page_map = vmalloc(array_size(num_pages, sizeof(struct page *)));
+	{
+		struct page *__uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!page_map)
 		return NULL;
 

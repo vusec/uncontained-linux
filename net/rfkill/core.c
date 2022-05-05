@@ -22,6 +22,11 @@
 #include <linux/fs.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "rfkill.h"
 
 #define POLL_INTERVAL		(5 * HZ)
@@ -981,6 +986,10 @@ struct rfkill * __must_check rfkill_alloc(const char *name,
 		return NULL;
 
 	rfkill = kzalloc(sizeof(*rfkill) + strlen(name) + 1, GFP_KERNEL);
+	{
+		typeof((*rfkill)) __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!rfkill)
 		return NULL;
 

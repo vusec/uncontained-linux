@@ -9,6 +9,11 @@
 #include "gve_utils.h"
 #include <linux/etherdevice.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static void gve_rx_free_buffer(struct device *dev,
 			       struct gve_rx_slot_page_info *page_info,
 			       union gve_rx_data_slot *data_slot)
@@ -109,6 +114,10 @@ static int gve_prefill_rx_pages(struct gve_rx_ring *rx)
 
 	rx->data.page_info = kvzalloc(slots *
 				      sizeof(*rx->data.page_info), GFP_KERNEL);
+	{
+		typeof((*rx->data.page_info)) __uncontained_tmp27;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!rx->data.page_info)
 		return -ENOMEM;
 

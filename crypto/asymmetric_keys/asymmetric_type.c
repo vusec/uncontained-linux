@@ -15,6 +15,11 @@
 #include <linux/ctype.h>
 #include <keys/system_keyring.h>
 #include <keys/user-type.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "asymmetric_keys.h"
 
 MODULE_LICENSE("GPL");
@@ -154,6 +159,10 @@ struct asymmetric_key_id *asymmetric_key_generate_id(const void *val_1,
 
 	kid = kmalloc(sizeof(struct asymmetric_key_id) + len_1 + len_2,
 		      GFP_KERNEL);
+	{
+		struct asymmetric_key_id __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!kid)
 		return ERR_PTR(-ENOMEM);
 	kid->len = len_1 + len_2;
@@ -246,6 +255,10 @@ struct asymmetric_key_id *asymmetric_key_hex_to_key_id(const char *id)
 
 	match_id = kmalloc(sizeof(struct asymmetric_key_id) + asciihexlen / 2,
 			   GFP_KERNEL);
+	{
+		struct asymmetric_key_id __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!match_id)
 		return ERR_PTR(-ENOMEM);
 	ret = __asymmetric_key_hex_to_key_id(id, match_id, asciihexlen / 2);

@@ -19,6 +19,11 @@
 #include <linux/usb/typec_dp.h>
 
 #include <asm/unaligned.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ucsi.h"
 
 enum enum_fw_mode {
@@ -277,6 +282,10 @@ static int ccg_write(struct ucsi_ccg *uc, u16 rab, const u8 *data, u32 len)
 	int status;
 
 	buf = kzalloc(len + sizeof(rab), GFP_KERNEL);
+	{
+		typeof((rab)) __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!buf)
 		return -ENOMEM;
 

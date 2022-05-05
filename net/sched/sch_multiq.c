@@ -16,6 +16,11 @@
 #include <net/pkt_sched.h>
 #include <net/pkt_cls.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct multiq_sched_data {
 	u16 bands;
 	u16 max_bands;
@@ -188,6 +193,10 @@ static int multiq_tune(struct Qdisc *sch, struct nlattr *opt,
 
 	removed = kmalloc(sizeof(*removed) * (q->max_bands - q->bands),
 			  GFP_KERNEL);
+	{
+		typeof((*removed)) __uncontained_tmp70;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!removed)
 		return -ENOMEM;
 

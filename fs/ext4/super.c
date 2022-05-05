@@ -60,6 +60,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/ext4.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct ext4_lazy_init *ext4_li_info;
 static DEFINE_MUTEX(ext4_li_mtx);
 static struct ratelimit_state ext4_mount_msg_ratelimit;
@@ -3166,6 +3171,10 @@ int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
 
 	new_groups = kvzalloc(roundup_pow_of_two(size *
 			      sizeof(*sbi->s_flex_groups)), GFP_KERNEL);
+	{
+		typeof((*sbi->s_flex_groups)) __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!new_groups) {
 		ext4_msg(sb, KERN_ERR,
 			 "not enough memory for %d flex group pointers", size);
@@ -3175,6 +3184,10 @@ int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
 		new_groups[i] = kvzalloc(roundup_pow_of_two(
 					 sizeof(struct flex_groups)),
 					 GFP_KERNEL);
+		{
+			struct flex_groups __uncontained_tmp61;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+		}
 		if (!new_groups[i]) {
 			for (j = sbi->s_flex_groups_allocated; j < i; j++)
 				kvfree(new_groups[j]);

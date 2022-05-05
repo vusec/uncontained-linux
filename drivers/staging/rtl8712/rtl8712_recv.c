@@ -20,6 +20,11 @@
 #include <linux/ip.h>
 #include <net/cfg80211.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "osdep_service.h"
 #include "drv_types.h"
 #include "recv_osdep.h"
@@ -43,6 +48,10 @@ void r8712_init_recv_priv(struct recv_priv *precvpriv,
 	_init_queue(&precvpriv->free_recv_buf_queue);
 	precvpriv->pallocated_recv_buf =
 		kzalloc(NR_RECVBUFF * sizeof(struct recv_buf) + 4, GFP_ATOMIC);
+	{
+		struct recv_buf __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!precvpriv->pallocated_recv_buf)
 		return;
 	precvpriv->precv_buf = precvpriv->pallocated_recv_buf + 4 -

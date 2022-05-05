@@ -28,6 +28,11 @@
 
 #include <asm/byteorder.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "core.h"
 
 #define HEADER_PRI(pri)			((pri) << 0)
@@ -778,6 +783,10 @@ static struct fw_request *allocate_request(struct fw_card *card,
 	}
 
 	request = kmalloc(sizeof(*request) + length, GFP_ATOMIC);
+	{
+		typeof((*request)) __uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (request == NULL)
 		return NULL;
 

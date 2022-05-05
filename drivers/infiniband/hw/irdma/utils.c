@@ -1328,6 +1328,10 @@ enum irdma_status_code irdma_init_hash_desc(struct shash_desc **desc)
 
 	tdesc = kzalloc(sizeof(*tdesc) + crypto_shash_descsize(tfm),
 			GFP_KERNEL);
+	{
+		typeof((*tdesc)) __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!tdesc) {
 		crypto_free_shash(tfm);
 		return IRDMA_ERR_MPA_CRC;

@@ -52,6 +52,11 @@
 #include <linux/inetdevice.h>
 #include <rdma/ib_cache.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 MODULE_AUTHOR("Roland Dreier");
 MODULE_DESCRIPTION("IP-over-InfiniBand net driver");
 MODULE_LICENSE("Dual BSD/GPL");
@@ -1709,6 +1714,10 @@ static int ipoib_dev_init_default(struct net_device *dev)
 
 	priv->tx_ring = vzalloc(array_size(ipoib_sendq_size,
 					   sizeof(*priv->tx_ring)));
+	{
+		typeof((*priv->tx_ring)) __uncontained_tmp19;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!priv->tx_ring) {
 		pr_warn("%s: failed to allocate TX ring (%d entries)\n",
 			priv->ca->name, ipoib_sendq_size);

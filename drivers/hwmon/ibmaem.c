@@ -25,6 +25,11 @@
 #include <linux/time.h>
 #include <linux/err.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define REFRESH_INTERVAL	(HZ)
 #define IPMI_TIMEOUT		(30 * HZ)
 #define DRVNAME			"aem"
@@ -572,6 +577,10 @@ static int aem_init_aem1_inst(struct aem_ipmi_data *probe, u8 module_handle)
 
 	data->update = update_aem1_sensors;
 	data->rs_resp = kzalloc(sizeof(*(data->rs_resp)) + 8, GFP_KERNEL);
+	{
+		typeof((*(data->rs_resp))) __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!data->rs_resp) {
 		res = -ENOMEM;
 		goto alloc_resp_err;
@@ -712,6 +721,10 @@ static int aem_init_aem2_inst(struct aem_ipmi_data *probe,
 
 	data->update = update_aem2_sensors;
 	data->rs_resp = kzalloc(sizeof(*(data->rs_resp)) + 8, GFP_KERNEL);
+	{
+		typeof((*(data->rs_resp))) __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!data->rs_resp) {
 		res = -ENOMEM;
 		goto alloc_resp_err;

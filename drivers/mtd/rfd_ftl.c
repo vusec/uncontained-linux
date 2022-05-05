@@ -23,6 +23,11 @@
 
 #include <asm/types.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int block_size = 0;
 module_param(block_size, int, 0);
 MODULE_PARM_DESC(block_size, "Block size to use by RFD, defaults to erase unit size");
@@ -192,6 +197,10 @@ static int scan_header(struct partition *part)
 
 	part->sector_map = vmalloc(array_size(sizeof(u_long),
 					      part->sector_count));
+	{
+		u_long __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!part->sector_map)
 		goto err;
 

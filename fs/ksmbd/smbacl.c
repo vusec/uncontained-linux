@@ -11,6 +11,11 @@
 #include <linux/string.h>
 #include <linux/mnt_idmapping.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "smbacl.h"
 #include "smb_common.h"
 #include "server.h"
@@ -1000,6 +1005,10 @@ int smb_inherit_dacl(struct ksmbd_conn *conn,
 	pntsd_type = le16_to_cpu(parent_pntsd->type);
 
 	aces_base = kmalloc(sizeof(struct smb_ace) * num_aces * 2, GFP_KERNEL);
+	{
+		struct smb_ace __uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (!aces_base) {
 		rc = -ENOMEM;
 		goto free_parent_pntsd;
@@ -1081,6 +1090,14 @@ pass:
 		pntsd = kzalloc(sizeof(struct smb_ntsd) + powner_sid_size +
 				pgroup_sid_size + sizeof(struct smb_acl) +
 				nt_size, GFP_KERNEL);
+		{
+			struct smb_acl __uncontained_tmp50;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+		}
+		{
+			struct smb_ntsd __uncontained_tmp51;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+		}
 		if (!pntsd) {
 			rc = -ENOMEM;
 			goto free_aces_base;

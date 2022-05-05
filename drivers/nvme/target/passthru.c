@@ -10,6 +10,11 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "../host/nvme.h"
 #include "nvmet.h"
 
@@ -316,6 +321,10 @@ static void nvmet_passthru_set_host_behaviour(struct nvmet_req *req)
 	int ret;
 
 	host = kzalloc(sizeof(*host) * 2, GFP_KERNEL);
+	{
+		typeof((*host)) __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!host)
 		goto out_complete_req;
 

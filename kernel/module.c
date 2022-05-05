@@ -63,6 +63,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/module.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef ARCH_SHF_SMALL
 #define ARCH_SHF_SMALL 0
 #endif
@@ -1757,6 +1762,10 @@ static int module_add_modinfo_attrs(struct module *mod)
 	mod->modinfo_attrs = kzalloc((sizeof(struct module_attribute) *
 					(ARRAY_SIZE(modinfo_attrs) + 1)),
 					GFP_KERNEL);
+	{
+		struct module_attribute __uncontained_tmp69;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!mod->modinfo_attrs)
 		return -ENOMEM;
 

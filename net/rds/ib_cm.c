@@ -38,6 +38,11 @@
 #include <net/addrconf.h>
 #include <rdma/ib_cm.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "rds_single_path.h"
 #include "rds.h"
 #include "ib.h"
@@ -473,11 +478,19 @@ static struct rds_header **rds_dma_hdrs_alloc(struct rds_ib_device *dev,
 
 	hdrs = kvmalloc_node(sizeof(*hdrs) * num_hdrs, GFP_KERNEL,
 			     ibdev_to_node(dev->dev));
+	{
+		typeof((*hdrs)) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!hdrs)
 		return NULL;
 
 	hdr_daddrs = kvmalloc_node(sizeof(*hdr_daddrs) * num_hdrs, GFP_KERNEL,
 				   ibdev_to_node(dev->dev));
+	{
+		typeof((*hdr_daddrs)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!hdr_daddrs) {
 		kvfree(hdrs);
 		return NULL;
@@ -632,6 +645,10 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
 	ic->i_sends = vzalloc_node(array_size(sizeof(struct rds_ib_send_work),
 					      ic->i_send_ring.w_nr),
 				   ibdev_to_node(dev));
+	{
+		struct rds_ib_send_work __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!ic->i_sends) {
 		ret = -ENOMEM;
 		rdsdebug("send allocation failed\n");
@@ -641,6 +658,10 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
 	ic->i_recvs = vzalloc_node(array_size(sizeof(struct rds_ib_recv_work),
 					      ic->i_recv_ring.w_nr),
 				   ibdev_to_node(dev));
+	{
+		struct rds_ib_recv_work __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!ic->i_recvs) {
 		ret = -ENOMEM;
 		rdsdebug("recv allocation failed\n");

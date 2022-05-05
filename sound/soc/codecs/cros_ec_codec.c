@@ -26,6 +26,11 @@
 #include <sound/soc.h>
 #include <sound/tlv.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct cros_ec_codec_priv {
 	struct device *dev;
 	struct cros_ec_device *ec_device;
@@ -79,6 +84,10 @@ static int send_ec_host_command(struct cros_ec_device *ec_dev, uint32_t cmd,
 	struct cros_ec_command *msg;
 
 	msg = kmalloc(sizeof(*msg) + max(outsize, insize), GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!msg)
 		return -ENOMEM;
 

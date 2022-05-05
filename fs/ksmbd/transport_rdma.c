@@ -28,6 +28,11 @@
 #include <rdma/rdma_cm.h>
 #include <rdma/rw.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "glob.h"
 #include "connection.h"
 #include "smb_common.h"
@@ -1367,6 +1372,10 @@ static int smb_direct_rdma_xmit(struct smb_direct_transport *t, void *buf,
 	/* TODO: mempool */
 	msg = kmalloc(offsetof(struct smb_direct_rdma_rw_msg, sg_list) +
 		      sizeof(struct scatterlist) * SG_CHUNK_SIZE, GFP_KERNEL);
+	{
+		struct scatterlist __uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!msg) {
 		atomic_inc(&t->rw_avail_ops);
 		return -ENOMEM;

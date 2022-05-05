@@ -7,6 +7,11 @@
 #include <linux/ratelimit.h>
 #include <linux/sched/mm.h>
 #include <crypto/hash.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ctree.h"
 #include "discard.h"
 #include "volumes.h"
@@ -2927,6 +2932,10 @@ static noinline_for_stack int scrub_raid56_parity(struct scrub_ctx *sctx,
 	bitmap_len = scrub_calc_parity_bitmap_len(nsectors);
 	sparity = kzalloc(sizeof(struct scrub_parity) + 2 * bitmap_len,
 			  GFP_NOFS);
+	{
+		struct scrub_parity __uncontained_tmp90;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (!sparity) {
 		spin_lock(&sctx->stat_lock);
 		sctx->stat.malloc_errors++;

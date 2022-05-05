@@ -52,6 +52,11 @@
 #include <asm/io-unit.h>
 #include <asm/leon.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static void __iomem *_sparc_ioremap(struct resource *res, u32 bus, u32 pa, int sz);
 static void __iomem *_sparc_alloc_io(unsigned int busno, unsigned long phys,
     unsigned long size, char *name);
@@ -185,6 +190,10 @@ static void __iomem *_sparc_alloc_io(unsigned int busno, unsigned long phys,
 		}
 		tlen = strlen(name);
 		tack = kmalloc(sizeof (struct resource) + tlen + 1, GFP_KERNEL);
+		{
+			struct resource __uncontained_tmp1;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+		}
 		if (tack == NULL) return NULL;
 		memset(tack, 0, sizeof(struct resource));
 		res = (struct resource *) tack;

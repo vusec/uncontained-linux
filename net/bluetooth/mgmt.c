@@ -33,6 +33,11 @@
 #include <net/bluetooth/l2cap.h>
 #include <net/bluetooth/mgmt.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hci_request.h"
 #include "smp.h"
 #include "mgmt_util.h"
@@ -7570,6 +7575,10 @@ static void read_local_oob_ext_data_complete(struct hci_dev *hdev, void *data,
 	}
 
 	mgmt_rp = kmalloc(sizeof(*mgmt_rp) + eir_len, GFP_KERNEL);
+	{
+		typeof((*mgmt_rp)) __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!mgmt_rp)
 		goto done;
 

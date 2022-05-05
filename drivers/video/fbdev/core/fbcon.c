@@ -78,6 +78,11 @@
 #include <asm/fb.h>
 #include <asm/irq.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "fbcon.h"
 
 /*
@@ -2492,6 +2497,10 @@ static int fbcon_set_font(struct vc_data *vc, struct console_font *font,
 	size = CALC_FONTSZ(h, pitch, charcount);
 
 	new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size, GFP_USER);
+	{
+		int __uncontained_tmp91;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp91;
+	}
 
 	if (!new_data)
 		return -ENOMEM;

@@ -21,6 +21,11 @@
 #include <linux/firmware.h>
 #include <linux/bitops.h>
 #include <linux/rpmsg.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "smd.h"
 
 struct wcn36xx_cfg_val {
@@ -1095,6 +1100,10 @@ int wcn36xx_smd_process_ptt_msg(struct wcn36xx *wcn,
 	p_msg_body = kmalloc(
 		sizeof(struct wcn36xx_hal_process_ptt_msg_req_msg) + len,
 		GFP_ATOMIC);
+	{
+		struct wcn36xx_hal_process_ptt_msg_req_msg __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!p_msg_body) {
 		ret = -ENOMEM;
 		goto out_nomem;
@@ -3348,6 +3357,10 @@ int wcn36xx_smd_rsp_process(struct rpmsg_device *rpdev,
 	case WCN36XX_HAL_PRINT_REG_INFO_IND:
 	case WCN36XX_HAL_SCAN_OFFLOAD_IND:
 		msg_ind = kmalloc(sizeof(*msg_ind) + len, GFP_ATOMIC);
+		{
+			typeof((*msg_ind)) __uncontained_tmp41;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+		}
 		if (!msg_ind) {
 			wcn36xx_err("Run out of memory while handling SMD_EVENT (%d)\n",
 				    msg_header->msg_type);

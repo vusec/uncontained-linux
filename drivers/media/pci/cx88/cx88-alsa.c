@@ -31,6 +31,11 @@
 #include <sound/tlv.h>
 #include <media/i2c/wm8775.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define dprintk(level, fmt, arg...) do {				\
 	if (debug + 1 > level)						\
 		printk(KERN_DEBUG pr_fmt("%s: alsa: " fmt),		\
@@ -290,6 +295,10 @@ static int cx88_alsa_dma_init(struct cx88_audio_dev *chip,
 	buf->nr_pages = nr_pages;
 
 	buf->sglist = vzalloc(array_size(sizeof(*buf->sglist), buf->nr_pages));
+	{
+		typeof((*buf->sglist)) __uncontained_tmp25;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!buf->sglist)
 		goto vzalloc_err;
 

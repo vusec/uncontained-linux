@@ -40,6 +40,11 @@
 #include <linux/filter.h>
 #include <net/page_pool.h>
 #include <net/xdp_sock_drv.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "eswitch.h"
 #include "en.h"
 #include "en/txrx.h"
@@ -245,6 +250,10 @@ static int mlx5e_rq_shampo_hd_info_alloc(struct mlx5e_rq *rq, int node)
 	shampo->info = kvzalloc_node(array_size(shampo->hd_per_wq,
 						sizeof(*shampo->info)),
 				     GFP_KERNEL, node);
+	{
+		typeof((*shampo->info)) __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!shampo->info) {
 		kvfree(shampo->bitmap);
 		return -ENOMEM;
@@ -265,6 +274,10 @@ static int mlx5e_rq_alloc_mpwqe_info(struct mlx5e_rq *rq, int node)
 	rq->mpwqe.info = kvzalloc_node(array_size(wq_sz,
 						  sizeof(*rq->mpwqe.info)),
 				       GFP_KERNEL, node);
+	{
+		typeof((*rq->mpwqe.info)) __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!rq->mpwqe.info)
 		return -ENOMEM;
 
@@ -421,6 +434,10 @@ int mlx5e_init_di_list(struct mlx5e_rq *rq, int wq_sz, int node)
 	int len = wq_sz << rq->wqe.info.log_num_frags;
 
 	rq->wqe.di = kvzalloc_node(array_size(len, sizeof(*rq->wqe.di)), GFP_KERNEL, node);
+	{
+		typeof((*rq->wqe.di)) __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!rq->wqe.di)
 		return -ENOMEM;
 
@@ -628,6 +645,10 @@ static int mlx5e_alloc_rq(struct mlx5e_params *params,
 			kvzalloc_node(array_size(sizeof(*rq->wqe.frags),
 					(wq_sz << rq->wqe.info.log_num_frags)),
 				      GFP_KERNEL, node);
+		{
+			typeof((*rq->wqe.frags)) __uncontained_tmp34;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+		}
 		if (!rq->wqe.frags) {
 			err = -ENOMEM;
 			goto err_rq_wq_destroy;
@@ -1280,12 +1301,24 @@ int mlx5e_alloc_txqsq_db(struct mlx5e_txqsq *sq, int numa)
 	sq->db.dma_fifo = kvzalloc_node(array_size(df_sz,
 						   sizeof(*sq->db.dma_fifo)),
 					GFP_KERNEL, numa);
+	{
+		typeof((*sq->db.dma_fifo)) __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	sq->db.skb_fifo.fifo = kvzalloc_node(array_size(df_sz,
 							sizeof(*sq->db.skb_fifo.fifo)),
 					GFP_KERNEL, numa);
+	{
+		typeof((*sq->db.skb_fifo.fifo)) __uncontained_tmp36;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+	}
 	sq->db.wqe_info = kvzalloc_node(array_size(wq_sz,
 						   sizeof(*sq->db.wqe_info)),
 					GFP_KERNEL, numa);
+	{
+		typeof((*sq->db.wqe_info)) __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!sq->db.dma_fifo || !sq->db.skb_fifo.fifo || !sq->db.wqe_info) {
 		mlx5e_free_txqsq_db(sq);
 		return -ENOMEM;

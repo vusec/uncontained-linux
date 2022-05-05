@@ -20,6 +20,11 @@
 #include "hmm.h"
 
 #include <math_support.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "platform_support.h"
 #include "sh_css_firmware.h"
 
@@ -252,6 +257,10 @@ sh_css_load_firmware(struct device *dev, const char *fw_data,
 		sh_css_blob_info = kmalloc(
 		    (sh_css_num_binaries - NUM_OF_SPS) *
 		    sizeof(*sh_css_blob_info), GFP_KERNEL);
+		{
+			typeof((*sh_css_blob_info)) __uncontained_tmp81;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+		}
 		if (!sh_css_blob_info)
 			return -ENOMEM;
 	} else {

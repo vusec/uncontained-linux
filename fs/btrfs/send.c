@@ -16,6 +16,11 @@
 #include <linux/compat.h>
 #include <linux/crc32c.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "send.h"
 #include "backref.h"
 #include "locking.h"
@@ -2230,6 +2235,10 @@ out_cache:
 	 * Store the result of the lookup in the name cache.
 	 */
 	nce = kmalloc(sizeof(*nce) + fs_path_len(dest) + 1, GFP_KERNEL);
+	{
+		typeof((*nce)) __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!nce) {
 		ret = -ENOMEM;
 		goto out;

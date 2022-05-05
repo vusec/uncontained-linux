@@ -11,6 +11,11 @@
 #include <asm/barrier.h>
 #include <net/tcp.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "siw.h"
 #include "siw_verbs.h"
 #include "siw_mem.h"
@@ -202,6 +207,10 @@ static int siw_qp_readq_init(struct siw_qp *qp, int irq_size, int orq_size)
 	if (irq_size) {
 		irq_size = roundup_pow_of_two(irq_size);
 		qp->irq = vzalloc(irq_size * sizeof(struct siw_sqe));
+		{
+			struct siw_sqe __uncontained_tmp17;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+		}
 		if (!qp->irq) {
 			qp->attrs.irq_size = 0;
 			return -ENOMEM;
@@ -210,6 +219,10 @@ static int siw_qp_readq_init(struct siw_qp *qp, int irq_size, int orq_size)
 	if (orq_size) {
 		orq_size = roundup_pow_of_two(orq_size);
 		qp->orq = vzalloc(orq_size * sizeof(struct siw_sqe));
+		{
+			struct siw_sqe __uncontained_tmp18;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+		}
 		if (!qp->orq) {
 			qp->attrs.orq_size = 0;
 			qp->attrs.irq_size = 0;

@@ -18,6 +18,11 @@
 #include <net/mrp.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static unsigned int mrp_join_time __read_mostly = 200;
 module_param(mrp_join_time, uint, 0644);
 MODULE_PARM_DESC(mrp_join_time, "Join time in ms (default 200ms)");
@@ -274,6 +279,10 @@ static struct mrp_attr *mrp_attr_create(struct mrp_applicant *app,
 		}
 	}
 	attr = kmalloc(sizeof(*attr) + len, GFP_ATOMIC);
+	{
+		typeof((*attr)) __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!attr)
 		return attr;
 	attr->state = MRP_APPLICANT_VO;

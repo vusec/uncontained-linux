@@ -22,6 +22,11 @@
 #include <linux/netfilter/nfnetlink.h>
 #include <linux/netfilter/nfnetlink_acct.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Pablo Neira Ayuso <pablo@netfilter.org>");
 MODULE_DESCRIPTION("nfacct: Extended Netfilter accounting infrastructure");
@@ -113,6 +118,10 @@ static int nfnl_acct_new(struct sk_buff *skb, const struct nfnl_info *info,
 	}
 
 	nfacct = kzalloc(sizeof(struct nf_acct) + size, GFP_KERNEL);
+	{
+		struct nf_acct __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (nfacct == NULL)
 		return -ENOMEM;
 

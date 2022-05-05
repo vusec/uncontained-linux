@@ -60,6 +60,11 @@
 #include <asm/byteorder.h>
 #include <linux/atomic.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "l2tp_core.h"
 #include "trace.h"
 
@@ -1581,6 +1586,10 @@ struct l2tp_session *l2tp_session_create(int priv_size, struct l2tp_tunnel *tunn
 	struct l2tp_session *session;
 
 	session = kzalloc(sizeof(*session) + priv_size, GFP_KERNEL);
+	{
+		typeof((*session)) __uncontained_tmp112;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (session) {
 		session->magic = L2TP_SESSION_MAGIC;
 		session->tunnel = tunnel;

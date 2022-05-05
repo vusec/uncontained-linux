@@ -96,6 +96,11 @@
 #include <net/checksum.h>
 #include <net/inet_common.h>
 #include <linux/netfilter_ipv4.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #ifdef CONFIG_IP_MROUTE
 #include <linux/mroute.h>
 #endif
@@ -1394,6 +1399,10 @@ static void ip_mc_hash_add(struct in_device *in_dev,
 
 	mc_hash = kzalloc(sizeof(struct ip_mc_list *) << MC_HASH_SZ_LOG,
 			  GFP_KERNEL);
+	{
+		struct ip_mc_list *__uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!mc_hash)
 		return;
 

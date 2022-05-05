@@ -37,6 +37,11 @@
 #include <linux/mmc/host.h>
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "host.h"
 #include "decl.h"
 #include "defs.h"
@@ -929,6 +934,10 @@ static int if_sdio_host_to_card(struct lbs_private *priv,
 
 	packet = kzalloc(sizeof(struct if_sdio_packet) + size,
 			GFP_ATOMIC);
+	{
+		struct if_sdio_packet __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!packet) {
 		ret = -ENOMEM;
 		goto out;

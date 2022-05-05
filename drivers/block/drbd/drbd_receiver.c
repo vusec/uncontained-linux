@@ -34,6 +34,11 @@
 #include <linux/string.h>
 #include <linux/scatterlist.h>
 #include <linux/part_stat.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "drbd_int.h"
 #include "drbd_protocol.h"
 #include "drbd_req.h"
@@ -2913,6 +2918,10 @@ static int receive_DataRequest(struct drbd_connection *connection, struct packet
 	case P_CSUM_RS_REQUEST:
 		fault_type = DRBD_FAULT_RS_RD;
 		di = kmalloc(sizeof(*di) + pi->size, GFP_NOIO);
+		{
+			typeof((*di)) __uncontained_tmp2;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+		}
 		if (!di)
 			goto out_free_e;
 
@@ -5411,6 +5420,10 @@ static int drbd_do_auth(struct drbd_connection *connection)
 	desc = kmalloc(sizeof(struct shash_desc) +
 		       crypto_shash_descsize(connection->cram_hmac_tfm),
 		       GFP_KERNEL);
+	{
+		struct shash_desc __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!desc) {
 		rv = -1;
 		goto fail;

@@ -35,6 +35,11 @@
 #include <linux/prefetch.h>
 #include <asm/irq.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "skge.h"
 
 #define DRV_NAME		"skge"
@@ -3930,6 +3935,10 @@ static int skge_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	/* space for skge@pci:0000:04:00.0 */
 	hw = kzalloc(sizeof(*hw) + strlen(DRV_NAME "@pci:")
 		     + strlen(pci_name(pdev)) + 1, GFP_KERNEL);
+	{
+		typeof((*hw)) __uncontained_tmp18;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!hw)
 		goto err_out_free_regions;
 

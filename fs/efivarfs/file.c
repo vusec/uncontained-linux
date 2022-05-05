@@ -10,6 +10,11 @@
 #include <linux/slab.h>
 #include <linux/mount.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "internal.h"
 
 static ssize_t efivarfs_file_write(struct file *file,
@@ -88,6 +93,10 @@ static ssize_t efivarfs_file_read(struct file *file, char __user *userbuf,
 		return err;
 
 	data = kmalloc(datasize + sizeof(attributes), GFP_KERNEL);
+	{
+		typeof((attributes)) __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
 
 	if (!data)
 		return -ENOMEM;

@@ -58,6 +58,10 @@ xchk_setup_xattr_buf(
 	 * All users must be careful never to read uninitialized contents.
 	 */
 	ab = kvmalloc(sizeof(*ab) + sz, flags);
+	{
+		typeof((*ab)) __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!ab)
 		return -ENOMEM;
 

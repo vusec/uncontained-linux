@@ -14,6 +14,11 @@
 #include <linux/slab.h>
 #include <linux/sysfs.h>
 #include <asm/sgx.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "driver.h"
 #include "encl.h"
 #include "encls.h"
@@ -661,6 +666,10 @@ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
 		return false;
 
 	section->pages = vmalloc(nr_pages * sizeof(struct sgx_epc_page));
+	{
+		struct sgx_epc_page __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!section->pages) {
 		memunmap(section->virt_addr);
 		return false;

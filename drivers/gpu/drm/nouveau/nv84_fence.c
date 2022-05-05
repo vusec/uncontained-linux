@@ -32,6 +32,11 @@
 
 #include <nvhw/class/cl826f.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int
 nv84_fence_emit32(struct nouveau_channel *chan, u64 virtual, u32 sequence)
 {
@@ -153,6 +158,10 @@ nv84_fence_suspend(struct nouveau_drm *drm)
 	int i;
 
 	priv->suspend = vmalloc(array_size(sizeof(u32), drm->chan.nr));
+	{
+		u32 __uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (priv->suspend) {
 		for (i = 0; i < drm->chan.nr; i++)
 			priv->suspend[i] = nouveau_bo_rd32(priv->bo, i*4);

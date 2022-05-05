@@ -11,6 +11,11 @@
 #include <linux/io.h>
 #include <linux/fs.h>
 #include <linux/mm.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "nd-core.h"
 #include "label.h"
 #include "pmem.h"
@@ -99,6 +104,10 @@ int nvdimm_get_config_data(struct nvdimm_drvdata *ndd, void *buf,
 
 	max_cmd_size = min_t(u32, len, ndd->nsarea.max_xfer);
 	cmd = kvzalloc(max_cmd_size + sizeof(*cmd), GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!cmd)
 		return -ENOMEM;
 
@@ -145,6 +154,14 @@ int nvdimm_set_config_data(struct nvdimm_drvdata *ndd, size_t offset,
 
 	max_cmd_size = min_t(u32, len, ndd->nsarea.max_xfer);
 	cmd = kvzalloc(max_cmd_size + sizeof(*cmd) + sizeof(u32), GFP_KERNEL);
+	{
+		typeof((u32)) __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
+	{
+		typeof((*cmd)) __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!cmd)
 		return -ENOMEM;
 

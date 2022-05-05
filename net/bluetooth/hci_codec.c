@@ -4,6 +4,11 @@
 
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "hci_codec.h"
 
 static int hci_codec_list_add(struct list_head *list,
@@ -15,6 +20,10 @@ static int hci_codec_list_add(struct list_head *list,
 	struct codec_list *entry;
 
 	entry = kzalloc(sizeof(*entry) + len, GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp107;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp107;
+	}
 	if (!entry)
 		return -ENOMEM;
 

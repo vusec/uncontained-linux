@@ -339,6 +339,11 @@
 #include <linux/bitmap.h>
 #include <linux/bitops.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "nft_set_pipapo_avx2.h"
 #include "nft_set_pipapo.h"
 
@@ -642,6 +647,10 @@ static int pipapo_resize(struct nft_pipapo_field *f, int old_rules, int rules)
 			  new_bucket_size * sizeof(*new_lt) +
 			  NFT_PIPAPO_ALIGN_HEADROOM,
 			  GFP_KERNEL);
+	{
+		typeof((*new_lt)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!new_lt)
 		return -ENOMEM;
 
@@ -663,6 +672,10 @@ static int pipapo_resize(struct nft_pipapo_field *f, int old_rules, int rules)
 
 mt:
 	new_mt = kvmalloc(rules * sizeof(*new_mt), GFP_KERNEL);
+	{
+		typeof((*new_mt)) __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!new_mt) {
 		kvfree(new_lt);
 		return -ENOMEM;
@@ -1117,6 +1130,10 @@ static int pipapo_realloc_scratch(struct nft_pipapo_match *clone,
 		scratch = kzalloc_node(bsize_max * sizeof(*scratch) * 2 +
 				       NFT_PIPAPO_ALIGN_HEADROOM,
 				       GFP_KERNEL, cpu_to_node(i));
+		{
+			typeof((*scratch)) __uncontained_tmp64;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+		}
 		if (!scratch) {
 			/* On failure, there's no need to undo previous
 			 * allocations: this means that some scratch maps have

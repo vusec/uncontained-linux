@@ -2178,6 +2178,10 @@ xlog_recover_add_to_trans(
 		item->ri_buf =
 			kmem_zalloc(item->ri_total * sizeof(xfs_log_iovec_t),
 				    0);
+		{
+			typeof((xfs_log_iovec_t)) __uncontained_tmp50;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+		}
 	}
 
 	if (item->ri_total <= item->ri_cnt) {
@@ -3255,6 +3259,10 @@ xlog_do_log_recovery(
 	log->l_buf_cancel_table = kmem_zalloc(XLOG_BC_TABLE_SIZE *
 						 sizeof(struct list_head),
 						 0);
+	{
+		struct list_head __uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
 	for (i = 0; i < XLOG_BC_TABLE_SIZE; i++)
 		INIT_LIST_HEAD(&log->l_buf_cancel_table[i]);
 

@@ -32,6 +32,11 @@
  */
 
 #include <linux/mlx5/device.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "fpga/tls.h"
 #include "fpga/cmd.h"
 #include "fpga/sdk.h"
@@ -244,6 +249,10 @@ static void mlx5_fpga_tls_send_teardown_cmd(struct mlx5_core_dev *mdev,
 	void *cmd;
 
 	ctx = kzalloc(sizeof(*ctx) + MLX5_TLS_COMMAND_SIZE, flags);
+	{
+		typeof((*ctx)) __uncontained_tmp15;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!ctx)
 		return;
 

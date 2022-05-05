@@ -20,6 +20,11 @@
 #include <linux/slab.h>
 #include <linux/wait.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "nfp_arm.h"
 #include "nfp_cpp.h"
 #include "nfp6000/nfp6000.h"
@@ -302,6 +307,10 @@ nfp_cpp_area_alloc_with_name(struct nfp_cpp *cpp, u32 dest, const char *name,
 	name_len = strlen(name) + 1;
 	area = kzalloc(sizeof(*area) + cpp->op->area_priv_size + name_len,
 		       GFP_KERNEL);
+	{
+		typeof((*area)) __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!area)
 		return NULL;
 
@@ -1317,6 +1326,10 @@ struct nfp_cpp_explicit *nfp_cpp_explicit_acquire(struct nfp_cpp *cpp)
 	int err;
 
 	expl = kzalloc(sizeof(*expl) + cpp->op->explicit_priv_size, GFP_KERNEL);
+	{
+		typeof((*expl)) __uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!expl)
 		return NULL;
 

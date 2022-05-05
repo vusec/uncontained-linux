@@ -18,6 +18,11 @@
 #include <linux/rcupdate.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define __param(type, name, init, msg)		\
 	static type name = init;				\
 	module_param(name, type, 0444);			\
@@ -173,6 +178,10 @@ static int long_busy_list_alloc_test(void)
 	int i;
 
 	ptr = vmalloc(sizeof(void *) * 15000);
+	{
+		void *__uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!ptr)
 		return rv;
 
@@ -219,10 +228,18 @@ static int full_fit_alloc_test(void)
 	junk_length *= (32 * 1024 * 1024 / PAGE_SIZE);
 
 	ptr = vmalloc(sizeof(void *) * junk_length);
+	{
+		void *__uncontained_tmp43;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+	}
 	if (!ptr)
 		return rv;
 
 	junk_ptr = vmalloc(sizeof(void *) * junk_length);
+	{
+		void *__uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!junk_ptr) {
 		vfree(ptr);
 		return rv;
@@ -288,6 +305,10 @@ pcpu_alloc_test(void)
 	int i;
 
 	pcpu = vmalloc(sizeof(void __percpu *) * 35000);
+	{
+		void __percpu *__uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!pcpu)
 		return -1;
 

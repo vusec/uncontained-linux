@@ -790,6 +790,10 @@ dr_action_create_generic(enum mlx5dr_action_type action_type)
 		return NULL;
 
 	action = kzalloc(sizeof(*action) + extra_size, GFP_KERNEL);
+	{
+		typeof((*action)) __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!action)
 		return NULL;
 

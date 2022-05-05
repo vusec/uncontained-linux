@@ -17,6 +17,11 @@
 #include <linux/sched/topology.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Mutex serializing the registrations of performance domains and letting
  * callbacks defined by drivers sleep.
@@ -205,6 +210,10 @@ static int em_create_pd(struct device *dev, int nr_states,
 
 	if (_is_cpu_device(dev)) {
 		pd = kzalloc(sizeof(*pd) + cpumask_size(), GFP_KERNEL);
+		{
+			typeof((*pd)) __uncontained_tmp106;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp106;
+		}
 		if (!pd)
 			return -ENOMEM;
 

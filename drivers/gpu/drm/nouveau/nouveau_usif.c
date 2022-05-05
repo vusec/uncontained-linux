@@ -35,6 +35,11 @@
 #include <nvif/class.h>
 #include <nvif/cl0080.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct usif_notify_p {
 	struct drm_pending_event base;
 	struct {
@@ -210,6 +215,10 @@ usif_notify_get(struct drm_file *f, void *data, u32 size, void *argv, u32 argc)
 		return 0;
 
 	ntfy->p = kmalloc(sizeof(*ntfy->p) + ntfy->reply, GFP_KERNEL);
+	{
+		typeof((*ntfy->p)) __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (ret = -ENOMEM, !ntfy->p)
 		goto done;
 	ntfy->p->base.event = &ntfy->p->e.base;

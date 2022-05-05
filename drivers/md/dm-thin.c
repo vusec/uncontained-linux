@@ -22,6 +22,11 @@
 #include <linux/sort.h>
 #include <linux/rbtree.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define	DM_MSG_PREFIX	"thin"
 
 /*
@@ -3010,6 +3015,10 @@ static struct pool *pool_create(struct mapped_device *pool_md,
 	pool->cell_sort_array =
 		vmalloc(array_size(CELL_SORT_ARRAY_SIZE,
 				   sizeof(*pool->cell_sort_array)));
+	{
+		typeof((*pool->cell_sort_array)) __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!pool->cell_sort_array) {
 		*error = "Error allocating cell sort array";
 		err_p = ERR_PTR(-ENOMEM);

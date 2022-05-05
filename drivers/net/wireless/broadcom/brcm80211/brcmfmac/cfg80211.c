@@ -16,6 +16,11 @@
 #include <brcmu_utils.h>
 #include <defs.h>
 #include <brcmu_wifi.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "core.h"
 #include "debug.h"
 #include "tracepoint.h"
@@ -6379,17 +6384,37 @@ static void brcmf_deinit_priv_mem(struct brcmf_cfg80211_info *cfg)
 static s32 brcmf_init_priv_mem(struct brcmf_cfg80211_info *cfg)
 {
 	cfg->conf = kzalloc(sizeof(*cfg->conf), GFP_KERNEL);
+	{
+		typeof((*cfg->conf)) __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!cfg->conf)
 		goto init_priv_mem_out;
 	cfg->extra_buf = kzalloc(WL_EXTRA_BUF_MAX, GFP_KERNEL);
 	if (!cfg->extra_buf)
 		goto init_priv_mem_out;
 	cfg->wowl.nd = kzalloc(sizeof(*cfg->wowl.nd) + sizeof(u32), GFP_KERNEL);
+	{
+		typeof((*cfg->wowl.nd)) __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
+	{
+		u32 __uncontained_tmp43;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+	}
 	if (!cfg->wowl.nd)
 		goto init_priv_mem_out;
 	cfg->wowl.nd_info = kzalloc(sizeof(*cfg->wowl.nd_info) +
 				    sizeof(struct cfg80211_wowlan_nd_match *),
 				    GFP_KERNEL);
+	{
+		typeof((*cfg->wowl.nd_info)) __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
+	{
+		struct cfg80211_wowlan_nd_match *__uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!cfg->wowl.nd_info)
 		goto init_priv_mem_out;
 	cfg->escan_info.escan_buf = kzalloc(BRCMF_ESCAN_BUF_SIZE, GFP_KERNEL);

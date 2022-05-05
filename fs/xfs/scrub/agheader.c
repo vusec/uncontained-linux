@@ -728,6 +728,10 @@ xchk_agfl(
 	sai.sz_entries = agflcount;
 	sai.entries = kmem_zalloc(sizeof(xfs_agblock_t) * agflcount,
 			KM_MAYFAIL);
+	{
+		xfs_agblock_t __uncontained_tmp95;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (!sai.entries) {
 		error = -ENOMEM;
 		goto out;

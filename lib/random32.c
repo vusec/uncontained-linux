@@ -42,6 +42,11 @@
 #include <linux/slab.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  *	prandom_u32_state - seeded pseudo-random number generator.
  *	@state: pointer to state structure holding seeded state.
@@ -577,6 +582,10 @@ static int __init prandom32_state_selftest(void)
 	u32 *data;
 
 	data = kmalloc(sizeof(*data) * TEST_SIZE, GFP_KERNEL);
+	{
+		typeof((*data)) __uncontained_tmp56;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!data)
 		return 0;
 

@@ -22,6 +22,11 @@
 #include <linux/mtd/partitions.h>
 #include <linux/of.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifdef CONFIG_MIPS
 #include <asm/bootinfo.h>
 #include <asm/fw/cfe/cfe_api.h>
@@ -94,6 +99,10 @@ static int bcm63xx_parse_cfe_nor_partitions(struct mtd_info *master,
 	nvramlen = roundup(nvramlen, cfe_erasesize);
 
 	parts = kzalloc(sizeof(*parts) * nrparts + 10 * nrparts, GFP_KERNEL);
+	{
+		typeof((*parts)) __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!parts)
 		return -ENOMEM;
 

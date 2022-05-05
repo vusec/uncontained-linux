@@ -312,6 +312,10 @@ static struct rsa_edesc *rsa_edesc_alloc(struct akcipher_request *req,
 	/* allocate space for base edesc, hw desc commands and link tables */
 	edesc = kzalloc(sizeof(*edesc) + desclen + sec4_sg_bytes,
 			GFP_DMA | flags);
+	{
+		typeof((*edesc)) __uncontained_tmp11;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp11;
+	}
 	if (!edesc)
 		goto dst_fail;
 

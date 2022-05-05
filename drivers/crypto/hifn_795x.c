@@ -24,6 +24,11 @@
 #include <crypto/internal/des.h>
 #include <crypto/internal/skcipher.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static char hifn_pll_ref[sizeof("extNNN")] = "ext";
 module_param_string(hifn_pll_ref, hifn_pll_ref, sizeof(hifn_pll_ref), 0444);
 MODULE_PARM_DESC(hifn_pll_ref,
@@ -2493,6 +2498,14 @@ static int hifn_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 
 	dev = kzalloc(sizeof(struct hifn_device) + sizeof(struct crypto_alg),
 			GFP_KERNEL);
+	{
+		struct crypto_alg __uncontained_tmp8;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+	}
+	{
+		struct hifn_device __uncontained_tmp9;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!dev) {
 		err = -ENOMEM;
 		goto err_out_free_regions;

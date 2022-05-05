@@ -19,6 +19,11 @@
 #include <linux/of_irq.h>
 #include <linux/regulator/consumer.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "wlcore.h"
 #include "wl12xx_80211.h"
 #include "io.h"
@@ -308,6 +313,10 @@ static int __wl12xx_spi_raw_write(struct device *child, int addr,
 
 	/* SPI write buffers - 2 for each chunk */
 	t = kzalloc(sizeof(*t) * 2 * WSPI_MAX_NUM_OF_CHUNKS, GFP_KERNEL);
+	{
+		typeof((*t)) __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!t)
 		return -ENOMEM;
 

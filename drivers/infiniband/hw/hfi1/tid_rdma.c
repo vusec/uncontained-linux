@@ -371,6 +371,10 @@ int hfi1_qp_priv_init(struct rvt_dev_info *rdi, struct rvt_qp *qp,
 		qpriv->pages = kzalloc_node(TID_RDMA_MAX_PAGES *
 						sizeof(*qpriv->pages),
 					    GFP_KERNEL, dd->node);
+		{
+			typeof((*qpriv->pages)) __uncontained_tmp31;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+		}
 		if (!qpriv->pages)
 			return -ENOMEM;
 		for (i = 0; i < qp->s_size; i++) {
@@ -1638,6 +1642,10 @@ static int hfi1_kern_exp_rcv_alloc_flows(struct tid_rdma_request *req,
 		return 0;
 	flows = kmalloc_node(MAX_FLOWS * sizeof(*flows), gfp,
 			     req->rcd->numa_id);
+	{
+		typeof((*flows)) __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!flows)
 		return -ENOMEM;
 	/* mini init */

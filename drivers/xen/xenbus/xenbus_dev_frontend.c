@@ -61,6 +61,11 @@
 #include <xen/xen.h>
 #include <asm/xen/hypervisor.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "xenbus.h"
 
 unsigned int xb_dev_generation_id;
@@ -196,6 +201,10 @@ static int queue_reply(struct list_head *queue, const void *data, size_t len)
 		return -EINVAL;
 
 	rb = kmalloc(sizeof(*rb) + len, GFP_KERNEL);
+	{
+		typeof((*rb)) __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (rb == NULL)
 		return -ENOMEM;
 

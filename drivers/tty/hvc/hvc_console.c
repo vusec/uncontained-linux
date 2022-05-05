@@ -30,6 +30,11 @@
 
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hvc_console.h"
 
 #define HVC_MAJOR	229
@@ -924,6 +929,14 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
 
 	hp = kzalloc(ALIGN(sizeof(*hp), sizeof(long)) + outbuf_size,
 			GFP_KERNEL);
+	{
+		typeof((*hp)) __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
+	{
+		long __uncontained_tmp36;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!hp)
 		return ERR_PTR(-ENOMEM);
 

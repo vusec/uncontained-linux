@@ -1891,6 +1891,10 @@ int bnx2fc_setup_task_ctx(struct bnx2fc_hba *hba)
 	task_ctx_arr_sz = (hba->max_tasks / BNX2FC_TASKS_PER_PAGE);
 	hba->task_ctx = kzalloc((task_ctx_arr_sz * sizeof(void *)),
 				 GFP_KERNEL);
+	{
+		void *__uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!hba->task_ctx) {
 		printk(KERN_ERR PFX "unable to allocate task context array\n");
 		rc = -1;
@@ -1902,6 +1906,10 @@ int bnx2fc_setup_task_ctx(struct bnx2fc_hba *hba)
 	 */
 	hba->task_ctx_dma = kmalloc((task_ctx_arr_sz *
 					sizeof(dma_addr_t)), GFP_KERNEL);
+	{
+		dma_addr_t __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!hba->task_ctx_dma) {
 		printk(KERN_ERR PFX "unable to alloc context mapping array\n");
 		rc = -1;

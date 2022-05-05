@@ -13,6 +13,11 @@
 #include <linux/slab.h>
 #include <linux/of.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "pinctrl-lantiq.h"
 
 static int ltq_get_group_count(struct pinctrl_dev *pctrldev)
@@ -157,6 +162,10 @@ static int ltq_pinctrl_dt_node_to_map(struct pinctrl_dev *pctldev,
 		max_maps += ltq_pinctrl_dt_subnode_size(np);
 	*map = kzalloc(array3_size(max_maps, sizeof(struct pinctrl_map), 2),
 		       GFP_KERNEL);
+	{
+		struct pinctrl_map __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!*map)
 		return -ENOMEM;
 	tmp = *map;

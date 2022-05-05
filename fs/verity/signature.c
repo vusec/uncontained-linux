@@ -12,6 +12,11 @@
 #include <linux/slab.h>
 #include <linux/verification.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * /proc/sys/fs/verity/require_signatures
  * If 1, all verity files must have a valid builtin signature.
@@ -55,6 +60,10 @@ int fsverity_verify_signature(const struct fsverity_info *vi,
 	}
 
 	d = kzalloc(sizeof(*d) + hash_alg->digest_size, GFP_KERNEL);
+	{
+		typeof((*d)) __uncontained_tmp52;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!d)
 		return -ENOMEM;
 	memcpy(d->magic, "FSVerity", 8);

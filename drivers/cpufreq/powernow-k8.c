@@ -44,6 +44,11 @@
 #include <linux/mutex.h>
 #include <acpi/processor.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define VERSION "version 2.20.00"
 #include "powernow-k8.h"
 
@@ -586,6 +591,10 @@ static int fill_powernow_table(struct powernow_k8_data *data,
 
 	powernow_table = kzalloc((sizeof(*powernow_table)
 		* (data->numps + 1)), GFP_KERNEL);
+	{
+		typeof((*powernow_table)) __uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!powernow_table)
 		return -ENOMEM;
 
@@ -753,6 +762,10 @@ static int powernow_k8_cpu_init_acpi(struct powernow_k8_data *data)
 	/* fill in data->powernow_table */
 	powernow_table = kzalloc((sizeof(*powernow_table)
 		* (data->acpi_data.state_count + 1)), GFP_KERNEL);
+	{
+		typeof((*powernow_table)) __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!powernow_table)
 		goto err_out;
 

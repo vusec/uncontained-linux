@@ -19,6 +19,11 @@
 #include <linux/rtnetlink.h>
 #include <net/switchdev.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static LIST_HEAD(deferred);
 static DEFINE_SPINLOCK(deferred_lock);
 
@@ -86,6 +91,10 @@ static int switchdev_deferred_enqueue(struct net_device *dev,
 	struct switchdev_deferred_item *dfitem;
 
 	dfitem = kmalloc(sizeof(*dfitem) + data_len, GFP_ATOMIC);
+	{
+		typeof((*dfitem)) __uncontained_tmp95;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (!dfitem)
 		return -ENOMEM;
 	dfitem->dev = dev;

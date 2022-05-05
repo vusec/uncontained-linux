@@ -14,6 +14,11 @@
 #include <linux/mmc/sdio_func.h>
 #include <linux/module.h>
 #include <linux/workqueue.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ks_wlan.h"
 #include "ks_hostif.h"
 
@@ -1060,6 +1065,10 @@ static int send_stop_request(struct sdio_func *func)
 	card = sdio_get_drvdata(func);
 
 	pp = kzalloc(hif_align_size(sizeof(*pp)), GFP_KERNEL);
+	{
+		typeof((*pp)) __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!pp)
 		return -ENOMEM;
 

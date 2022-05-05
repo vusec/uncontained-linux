@@ -26,6 +26,11 @@
 #include <linux/device.h>
 #include <linux/math64.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define MTDSWAP_PREFIX "mtdswap"
 
 /*
@@ -1286,10 +1291,18 @@ static int mtdswap_init(struct mtdswap_dev *d, unsigned int eblocks,
 		d->trees[i].root = RB_ROOT;
 
 	d->page_data = vmalloc(array_size(pages, sizeof(int)));
+	{
+		int __uncontained_tmp12;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!d->page_data)
 		goto page_data_fail;
 
 	d->revmap = vmalloc(array_size(blocks, sizeof(int)));
+	{
+		int __uncontained_tmp13;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!d->revmap)
 		goto revmap_fail;
 

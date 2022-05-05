@@ -11,6 +11,11 @@
 #include <net/pkt_sched.h>
 #include <net/tso.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int enetc_num_stack_tx_queues(struct enetc_ndev_priv *priv)
 {
 	int num_tx_rings = priv->num_tx_rings;
@@ -1752,6 +1757,10 @@ static int enetc_alloc_txbdr(struct enetc_bdr *txr)
 	int err;
 
 	txr->tx_swbd = vzalloc(txr->bd_count * sizeof(struct enetc_tx_swbd));
+	{
+		struct enetc_tx_swbd __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!txr->tx_swbd)
 		return -ENOMEM;
 
@@ -1838,6 +1847,10 @@ static int enetc_alloc_rxbdr(struct enetc_bdr *rxr, bool extended)
 	int err;
 
 	rxr->rx_swbd = vzalloc(rxr->bd_count * sizeof(struct enetc_rx_swbd));
+	{
+		struct enetc_rx_swbd __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!rxr->rx_swbd)
 		return -ENOMEM;
 

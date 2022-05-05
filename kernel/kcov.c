@@ -25,6 +25,11 @@
 #include <linux/log2.h>
 #include <asm/setup.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define kcov_debug(fmt, ...) pr_debug("%s: " fmt, __func__, ##__VA_ARGS__)
 
 /* Number of 64-bit words written per one comparison: */
@@ -879,6 +884,10 @@ void kcov_remote_start(u64 handle)
 	if (!area) {
 		local_unlock_irqrestore(&kcov_percpu_data.lock, flags);
 		area = vmalloc(size * sizeof(unsigned long));
+		{
+			unsigned long __uncontained_tmp49;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+		}
 		if (!area) {
 			kcov_put(kcov);
 			return;

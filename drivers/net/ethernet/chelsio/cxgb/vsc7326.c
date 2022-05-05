@@ -686,6 +686,14 @@ static struct cmac *vsc7326_mac_create(adapter_t *adapter, int index)
 	int i;
 
 	mac = kzalloc(sizeof(*mac) + sizeof(cmac_instance), GFP_KERNEL);
+	{
+		typeof((*mac)) __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
+	{
+		cmac_instance __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!mac)
 		return NULL;
 

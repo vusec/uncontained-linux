@@ -89,6 +89,10 @@ int vmw_devcaps_create(struct vmw_private *vmw)
 
 	if (gb_objects) {
 		vmw->devcaps = vzalloc(sizeof(uint32_t) * SVGA3D_DEVCAP_MAX);
+		{
+			uint32_t __uncontained_tmp25;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+		}
 		if (!vmw->devcaps)
 			return -ENOMEM;
 		for (i = 0; i < SVGA3D_DEVCAP_MAX; ++i) {

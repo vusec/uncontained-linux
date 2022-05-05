@@ -15,6 +15,11 @@
 #include <linux/slab.h>
 #include <linux/syscalls.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  * process_vm_rw_pages - read/write pages from task specified
  * @pages: array of pointers to pages we want to copy
@@ -187,6 +192,10 @@ static ssize_t process_vm_rw_core(pid_t pid, struct iov_iter *iter,
 		process_pages = kmalloc(min_t(size_t, PVM_MAX_KMALLOC_PAGES,
 					      sizeof(struct pages *)*nr_pages),
 					GFP_KERNEL);
+		{
+			struct pages *__uncontained_tmp61;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+		}
 
 		if (!process_pages)
 			return -ENOMEM;

@@ -33,6 +33,11 @@
 #include <linux/of_address.h>
 #include <linux/spinlock.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* ====== MHUv2 Registers ====== */
 
 /* Maximum number of channel windows */
@@ -354,6 +359,10 @@ static void *mhuv2_data_transfer_read_data(struct mhuv2 *mhu,
 	int i, idx;
 
 	msg = kzalloc(sizeof(*msg) + windows * MHUV2_STAT_BYTES, GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!msg)
 		return ERR_PTR(-ENOMEM);
 

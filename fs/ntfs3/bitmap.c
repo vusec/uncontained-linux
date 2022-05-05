@@ -14,6 +14,11 @@
 #include <linux/fs.h>
 #include <linux/kernel.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ntfs.h"
 #include "ntfs_fs.h"
 
@@ -1330,6 +1335,10 @@ int wnd_extend(struct wnd_bitmap *wnd, size_t new_bits)
 
 	if (new_wnd != wnd->nwnd) {
 		new_free = kmalloc(new_wnd * sizeof(u16), GFP_NOFS);
+		{
+			u16 __uncontained_tmp53;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp53;
+		}
 		if (!new_free)
 			return -ENOMEM;
 

@@ -12,6 +12,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/objagg.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct objagg_hints {
 	struct rhashtable node_ht;
 	struct rhashtable_params ht_params;
@@ -368,6 +373,10 @@ static struct objagg_obj *objagg_obj_create(struct objagg *objagg, void *obj)
 
 	objagg_obj = kzalloc(sizeof(*objagg_obj) + objagg->ops->obj_size,
 			     GFP_KERNEL);
+	{
+		typeof((*objagg_obj)) __uncontained_tmp70;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!objagg_obj)
 		return ERR_PTR(-ENOMEM);
 	objagg_obj_ref_inc(objagg_obj);
@@ -655,6 +664,10 @@ objagg_hints_node_create(struct objagg_hints *objagg_hints,
 	int err;
 
 	hnode = kzalloc(sizeof(*hnode) + obj_size, GFP_KERNEL);
+	{
+		typeof((*hnode)) __uncontained_tmp71;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (!hnode)
 		return ERR_PTR(-ENOMEM);
 	memcpy(hnode->obj, &objagg_obj->obj, obj_size);

@@ -25,6 +25,11 @@
 #include <linux/firmware.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define MWL8K_DESC	"Marvell TOPDOG(R) 802.11 Wireless Network Driver"
 #define MWL8K_NAME	KBUILD_MODNAME
 #define MWL8K_VERSION	"0.13"
@@ -649,6 +654,10 @@ static int mwl8k_load_fw_image(struct mwl8k_priv *priv,
 	int rc = 0;
 
 	cmd = kmalloc(sizeof(*cmd) + 256, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (cmd == NULL)
 		return -ENOMEM;
 
@@ -2970,6 +2979,10 @@ static int mwl8k_cmd_set_beacon(struct ieee80211_hw *hw,
 	int rc;
 
 	cmd = kzalloc(sizeof(*cmd) + len, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp27;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (cmd == NULL)
 		return -ENOMEM;
 

@@ -18,6 +18,11 @@
 #include <net/iw_handler.h>
 #include <net/cfg80211.h>
 #include <net/rtnetlink.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "nl80211.h"
 #include "reg.h"
 #include "rdev-ops.h"
@@ -80,6 +85,18 @@ static int cfg80211_conn_scan(struct wireless_dev *wdev)
 	request = kzalloc(sizeof(*request) + sizeof(request->ssids[0]) +
 			  sizeof(request->channels[0]) * n_channels,
 			  GFP_KERNEL);
+	{
+		typeof((*request)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
+	{
+		typeof((request->channels[0])) __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
+	{
+		typeof((request->ssids[0])) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!request)
 		return -ENOMEM;
 
@@ -831,6 +848,10 @@ void cfg80211_connect_done(struct net_device *dev,
 		     params->req_ie_len + params->resp_ie_len +
 		     params->fils.kek_len + params->fils.pmk_len +
 		     (params->fils.pmkid ? WLAN_PMKID_LEN : 0), gfp);
+	{
+		typeof((*ev)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!ev) {
 		cfg80211_put_bss(wdev->wiphy, params->bss);
 		return;
@@ -975,6 +996,10 @@ void cfg80211_roamed(struct net_device *dev, struct cfg80211_roam_info *info,
 	ev = kzalloc(sizeof(*ev) + info->req_ie_len + info->resp_ie_len +
 		     info->fils.kek_len + info->fils.pmk_len +
 		     (info->fils.pmkid ? WLAN_PMKID_LEN : 0), gfp);
+	{
+		typeof((*ev)) __uncontained_tmp69;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!ev) {
 		cfg80211_put_bss(wdev->wiphy, info->bss);
 		return;
@@ -1146,6 +1171,10 @@ void cfg80211_disconnected(struct net_device *dev, u16 reason,
 	unsigned long flags;
 
 	ev = kzalloc(sizeof(*ev) + ie_len, gfp);
+	{
+		typeof((*ev)) __uncontained_tmp70;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!ev)
 		return;
 

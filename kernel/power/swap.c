@@ -31,6 +31,11 @@
 #include <linux/crc32.h>
 #include <linux/ktime.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "power.h"
 
 #define HIBERNATE_SIG	"S1SUSPEND"
@@ -710,6 +715,10 @@ static int save_image_lzo(struct swap_map_handle *handle,
 	}
 
 	data = vzalloc(array_size(nr_threads, sizeof(*data)));
+	{
+		typeof((*data)) __uncontained_tmp77;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp77;
+	}
 	if (!data) {
 		pr_err("Failed to allocate LZO data\n");
 		ret = -ENOMEM;
@@ -1193,6 +1202,10 @@ static int load_image_lzo(struct swap_map_handle *handle,
 	nr_threads = clamp_val(nr_threads, 1, LZO_THREADS);
 
 	page = vmalloc(array_size(LZO_MAX_RD_PAGES, sizeof(*page)));
+	{
+		typeof((*page)) __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (!page) {
 		pr_err("Failed to allocate LZO page\n");
 		ret = -ENOMEM;
@@ -1200,6 +1213,10 @@ static int load_image_lzo(struct swap_map_handle *handle,
 	}
 
 	data = vzalloc(array_size(nr_threads, sizeof(*data)));
+	{
+		typeof((*data)) __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!data) {
 		pr_err("Failed to allocate LZO data\n");
 		ret = -ENOMEM;

@@ -46,6 +46,11 @@
 #include <linux/ethtool.h>
 #include <linux/mdio.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "t4vf_common.h"
 #include "t4vf_defs.h"
 
@@ -2936,6 +2941,10 @@ static int cxgb4vf_pci_probe(struct pci_dev *pdev,
 	 * Allocate our adapter data structure and attach it to the device.
 	 */
 	adapter = kzalloc(sizeof(*adapter), GFP_KERNEL);
+	{
+		typeof((*adapter)) __uncontained_tmp25;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!adapter) {
 		err = -ENOMEM;
 		goto err_release_regions;
@@ -2948,6 +2957,14 @@ static int cxgb4vf_pci_probe(struct pci_dev *pdev,
 				    (sizeof(struct mbox_cmd) *
 				     T4VF_OS_LOG_MBOX_CMDS),
 				    GFP_KERNEL);
+	{
+		typeof((*adapter->mbox_log)) __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
+	{
+		struct mbox_cmd __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!adapter->mbox_log) {
 		err = -ENOMEM;
 		goto err_free_adapter;

@@ -32,6 +32,11 @@
 #include <crypto/sha2.h>
 #include <crypto/skcipher.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "encrypted.h"
 #include "ecryptfs_format.h"
 
@@ -669,6 +674,10 @@ static struct encrypted_key_payload *encrypted_key_alloc(struct key *key,
 
 	epayload = kzalloc(sizeof(*epayload) + payload_datalen +
 			   datablob_len + HASH_SIZE + 1, GFP_KERNEL);
+	{
+		typeof((*epayload)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!epayload)
 		return ERR_PTR(-ENOMEM);
 

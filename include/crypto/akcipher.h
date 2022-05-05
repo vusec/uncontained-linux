@@ -9,6 +9,11 @@
 #define _CRYPTO_AKCIPHER_H
 #include <linux/crypto.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  * struct akcipher_request - public key request
  *
@@ -196,6 +201,10 @@ static inline struct akcipher_request *akcipher_request_alloc(
 	struct akcipher_request *req;
 
 	req = kmalloc(sizeof(*req) + crypto_akcipher_reqsize(tfm), gfp);
+	{
+		typeof((*req)) __uncontained_tmp96;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (likely(req))
 		akcipher_request_set_tfm(req, tfm);
 

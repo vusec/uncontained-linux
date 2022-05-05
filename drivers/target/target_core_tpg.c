@@ -25,6 +25,11 @@
 #include <target/target_core_backend.h>
 #include <target/target_core_fabric.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "target_core_internal.h"
 #include "target_core_alua.h"
 #include "target_core_pr.h"
@@ -174,6 +179,10 @@ static struct se_node_acl *target_alloc_node_acl(struct se_portal_group *tpg,
 
 	acl = kzalloc(max(sizeof(*acl), tpg->se_tpg_tfo->node_acl_size),
 			GFP_KERNEL);
+	{
+		typeof((*acl)) __uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!acl)
 		return NULL;
 

@@ -8,6 +8,11 @@
 #include <linux/remoteproc.h>
 #include <linux/firmware.h>
 #include <linux/of.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "core.h"
 #include "dp_tx.h"
 #include "dp_rx.h"
@@ -1415,6 +1420,10 @@ struct ath11k_base *ath11k_core_alloc(struct device *dev, size_t priv_size,
 	struct ath11k_base *ab;
 
 	ab = kzalloc(sizeof(*ab) + priv_size, GFP_KERNEL);
+	{
+		typeof((*ab)) __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!ab)
 		return NULL;
 

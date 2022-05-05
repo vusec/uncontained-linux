@@ -24,6 +24,11 @@
 #include <linux/wait.h>
 #include <asm/byteorder.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "sms-cards.h"
 #include "smsir.h"
 
@@ -787,6 +792,10 @@ static int smscore_init_ir(struct smscore_device_t *coredev)
 			buffer = kmalloc(sizeof(struct sms_msg_data2) +
 						SMS_DMA_ALIGNMENT,
 						GFP_KERNEL | coredev->gfp_buf_flags);
+			{
+				struct sms_msg_data2 __uncontained_tmp21;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+			}
 			if (buffer) {
 				struct sms_msg_data2 *msg =
 				(struct sms_msg_data2 *)
@@ -1159,6 +1168,10 @@ static int smscore_load_firmware_from_file(struct smscore_device_t *coredev,
 	pr_debug("read fw %s, buffer size=0x%zx\n", fw_filename, fw->size);
 	fw_buf = kmalloc(ALIGN(fw->size + sizeof(struct sms_firmware),
 			 SMS_ALLOC_ALIGNMENT), GFP_KERNEL | coredev->gfp_buf_flags);
+	{
+		struct sms_firmware __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!fw_buf) {
 		pr_err("failed to allocate firmware buffer\n");
 		rc = -ENOMEM;
@@ -1300,6 +1313,10 @@ static int smscore_init_device(struct smscore_device_t *coredev, int mode)
 
 	buffer = kmalloc(sizeof(struct sms_msg_data) +
 			SMS_DMA_ALIGNMENT, GFP_KERNEL | coredev->gfp_buf_flags);
+	{
+		struct sms_msg_data __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!buffer)
 		return -ENOMEM;
 
@@ -1389,6 +1406,10 @@ int smscore_set_device_mode(struct smscore_device_t *coredev, int mode)
 
 		buffer = kmalloc(sizeof(struct sms_msg_data) +
 				 SMS_DMA_ALIGNMENT, GFP_KERNEL | coredev->gfp_buf_flags);
+		{
+			struct sms_msg_data __uncontained_tmp24;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+		}
 		if (buffer) {
 			struct sms_msg_data *msg = (struct sms_msg_data *) SMS_ALIGN_ADDRESS(buffer);
 

@@ -66,6 +66,11 @@
 #include <linux/crash_dump.h>
 #include <net/udp_tunnel.h>
 #include <net/xfrm.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #if IS_ENABLED(CONFIG_CHELSIO_TLS_DEVICE)
 #include <net/tls.h>
 #endif
@@ -6636,6 +6641,10 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	}
 
 	adapter = kzalloc(sizeof(*adapter), GFP_KERNEL);
+	{
+		typeof((*adapter)) __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!adapter) {
 		err = -ENOMEM;
 		goto out_unmap_bar0;
@@ -6671,6 +6680,14 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 				    (sizeof(struct mbox_cmd) *
 				     T4_OS_LOG_MBOX_CMDS),
 				    GFP_KERNEL);
+	{
+		typeof((*adapter->mbox_log)) __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
+	{
+		struct mbox_cmd __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!adapter->mbox_log) {
 		err = -ENOMEM;
 		goto out_free_adapter;

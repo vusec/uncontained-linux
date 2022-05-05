@@ -23,6 +23,11 @@
 
 #include <asm/ioctls.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "../../mount.h"
 #include "../fdinfo.h"
 #include "fanotify.h"
@@ -1245,6 +1250,10 @@ static struct hlist_head *fanotify_alloc_merge_hash(void)
 
 	hash = kmalloc(sizeof(struct hlist_head) << FANOTIFY_HTABLE_BITS,
 		       GFP_KERNEL_ACCOUNT);
+	{
+		struct hlist_head __uncontained_tmp38;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!hash)
 		return NULL;
 

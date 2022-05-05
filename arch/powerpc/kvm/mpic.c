@@ -35,6 +35,11 @@
 #include <asm/kvm_ppc.h>
 #include <kvm/iodev.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define MAX_CPU     32
 #define MAX_SRC     256
 #define MAX_TMR     4
@@ -1643,6 +1648,10 @@ static int mpic_set_default_irq_routing(struct openpic *opp)
 
 	/* Create a nop default map, so that dereferencing it still works */
 	routing = kzalloc((sizeof(*routing)), GFP_KERNEL);
+	{
+		typeof((*routing)) __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!routing)
 		return -ENOMEM;
 

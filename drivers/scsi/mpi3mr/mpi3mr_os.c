@@ -193,6 +193,10 @@ static struct mpi3mr_fwevt *mpi3mr_alloc_fwevt(int len)
 	struct mpi3mr_fwevt *fwevt;
 
 	fwevt = kzalloc(sizeof(*fwevt) + len, GFP_ATOMIC);
+	{
+		typeof((*fwevt)) __uncontained_tmp56;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!fwevt)
 		return NULL;
 

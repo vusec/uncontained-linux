@@ -21,6 +21,11 @@
 #include <asm/byteorder.h>
 #include <asm/barrier.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hinic_common.h"
 #include "hinic_hw_if.h"
 #include "hinic_hw_eqs.h"
@@ -752,11 +757,19 @@ static int init_cmdq(struct hinic_cmdq *cmdq, struct hinic_wq *wq,
 	spin_lock_init(&cmdq->cmdq_lock);
 
 	cmdq->done = vzalloc(array_size(sizeof(*cmdq->done), wq->q_depth));
+	{
+		typeof((*cmdq->done)) __uncontained_tmp16;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!cmdq->done)
 		return -ENOMEM;
 
 	cmdq->errcode = vzalloc(array_size(sizeof(*cmdq->errcode),
 					   wq->q_depth));
+	{
+		typeof((*cmdq->errcode)) __uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!cmdq->errcode) {
 		err = -ENOMEM;
 		goto err_errcode;

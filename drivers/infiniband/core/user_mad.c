@@ -134,6 +134,11 @@ struct ib_umad_packet {
 #define CREATE_TRACE_POINTS
 #include <trace/events/ib_umad.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static const dev_t base_umad_dev = MKDEV(IB_UMAD_MAJOR, IB_UMAD_MINOR_BASE);
 static const dev_t base_issm_dev = MKDEV(IB_UMAD_MAJOR, IB_UMAD_MINOR_BASE) +
 				   IB_UMAD_NUM_FIXED_MINOR;
@@ -507,6 +512,10 @@ static ssize_t ib_umad_write(struct file *filp, const char __user *buf,
 		return -EINVAL;
 
 	packet = kzalloc(sizeof *packet + IB_MGMT_RMPP_HDR, GFP_KERNEL);
+	{
+		typeof(*packet) __uncontained_tmp16;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!packet)
 		return -ENOMEM;
 

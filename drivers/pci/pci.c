@@ -32,6 +32,11 @@
 #include <asm/dma.h>
 #include <linux/aer.h>
 #include <linux/bitfield.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "pci.h"
 
 DEFINE_MUTEX(pci_slot_mutex);
@@ -3387,6 +3392,10 @@ static int _pci_add_cap_save_buffer(struct pci_dev *dev, u16 cap,
 		return 0;
 
 	save_state = kzalloc(sizeof(*save_state) + size, GFP_KERNEL);
+	{
+		typeof((*save_state)) __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!save_state)
 		return -ENOMEM;
 

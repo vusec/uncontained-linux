@@ -43,6 +43,11 @@
 #endif
 #include <rdma/rdma_vt.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "qib.h"
 #include "qib_common.h"
 #include "qib_mad.h"
@@ -369,11 +374,19 @@ static void init_shadow_tids(struct qib_devdata *dd)
 
 	pages = vzalloc(array_size(sizeof(struct page *),
 				   dd->cfgctxts * dd->rcvtidcnt));
+	{
+		struct page *__uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!pages)
 		goto bail;
 
 	addrs = vzalloc(array_size(sizeof(dma_addr_t),
 				   dd->cfgctxts * dd->rcvtidcnt));
+	{
+		dma_addr_t __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!addrs)
 		goto bail_free;
 

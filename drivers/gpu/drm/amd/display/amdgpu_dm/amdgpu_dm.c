@@ -83,6 +83,11 @@
 #include <drm/drm_vblank.h>
 #include <drm/drm_audio_component.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #if defined(CONFIG_DRM_AMD_DC_DCN)
 #include "ivsrcid/dcn/irqsrcs_dcn_1_0.h"
 
@@ -5206,6 +5211,10 @@ get_plane_modifiers(const struct amdgpu_device *adev, unsigned int plane_type, u
 		return 0;
 
 	*mods = kmalloc(capacity * sizeof(uint64_t), GFP_KERNEL);
+	{
+		uint64_t __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 
 	if (plane_type == DRM_PLANE_TYPE_CURSOR) {
 		add_modifier(mods, &size, &capacity, DRM_FORMAT_MOD_LINEAR);

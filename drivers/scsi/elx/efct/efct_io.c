@@ -57,6 +57,10 @@ efct_io_pool_create(struct efct *efct, u32 num_sgl)
 
 		/* Allocate SGL */
 		io->sgl = kzalloc(sizeof(*io->sgl) * num_sgl, GFP_KERNEL);
+		{
+			typeof((*io->sgl)) __uncontained_tmp26;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+		}
 		if (!io->sgl) {
 			efct_io_pool_free(io_pool);
 			return NULL;

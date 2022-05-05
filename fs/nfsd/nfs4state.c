@@ -45,6 +45,11 @@
 #include <linux/string_helpers.h>
 #include <linux/fsnotify.h>
 #include <linux/nfs_ssc.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "xdr4.h"
 #include "xdr4cb.h"
 #include "vfs.h"
@@ -1738,6 +1743,10 @@ static struct nfsd4_session *alloc_session(struct nfsd4_channel_attrs *fattrs,
 	mem = numslots * sizeof(struct nfsd4_slot *);
 
 	new = kzalloc(sizeof(*new) + mem, GFP_KERNEL);
+	{
+		typeof((*new)) __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!new)
 		return NULL;
 	/* allocate each struct nfsd4_slot and data cache in one piece */

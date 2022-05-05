@@ -19,6 +19,11 @@
 #include <linux/pm_domain.h>
 #include <linux/regulator/consumer.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "opp.h"
 
 /*
@@ -1588,6 +1593,10 @@ struct dev_pm_opp *_opp_allocate(struct opp_table *table)
 
 	/* allocate new OPP node and supplies structures */
 	opp = kzalloc(sizeof(*opp) + supply_size + icc_size, GFP_KERNEL);
+	{
+		typeof((*opp)) __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 
 	if (!opp)
 		return NULL;

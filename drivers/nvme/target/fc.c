@@ -14,6 +14,11 @@
 #include "nvmet.h"
 #include <linux/nvme-fc-driver.h>
 #include <linux/nvme-fc.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "../host/fc.h"
 
 
@@ -495,6 +500,18 @@ nvmet_fc_xmt_disconnect_assoc(struct nvmet_fc_tgt_assoc *assoc)
 	lsop = kzalloc((sizeof(*lsop) +
 			sizeof(*discon_rqst) + sizeof(*discon_acc) +
 			tgtport->ops->lsrqst_priv_sz), GFP_KERNEL);
+	{
+		typeof((*discon_acc)) __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
+	{
+		typeof((*discon_rqst)) __uncontained_tmp52;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+	}
+	{
+		typeof((*lsop)) __uncontained_tmp53;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp53;
+	}
 	if (!lsop) {
 		dev_info(tgtport->dev,
 			"{%d:%d} send Disconnect Association failed: ENOMEM\n",
@@ -551,6 +568,14 @@ nvmet_fc_alloc_ls_iodlist(struct nvmet_fc_tgtport *tgtport)
 		iod->rqstbuf = kzalloc(sizeof(union nvmefc_ls_requests) +
 				       sizeof(union nvmefc_ls_responses),
 				       GFP_KERNEL);
+		{
+			union nvmefc_ls_requests __uncontained_tmp49;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+		}
+		{
+			union nvmefc_ls_responses __uncontained_tmp50;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+		}
 		if (!iod->rqstbuf)
 			goto out_fail;
 
@@ -1378,6 +1403,10 @@ nvmet_fc_register_targetport(struct nvmet_fc_port_info *pinfo,
 
 	newrec = kzalloc((sizeof(*newrec) + template->target_priv_sz),
 			 GFP_KERNEL);
+	{
+		typeof((*newrec)) __uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!newrec) {
 		ret = -ENOMEM;
 		goto out_regtgt_failed;

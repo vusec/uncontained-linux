@@ -1333,6 +1333,10 @@ int efx_mcdi_filter_table_probe(struct efx_nic *efx, bool multicast_chaining)
 
 	table->entry = vzalloc(array_size(EFX_MCDI_FILTER_TBL_ROWS,
 					  sizeof(*table->entry)));
+	{
+		typeof((*table->entry)) __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!table->entry) {
 		rc = -ENOMEM;
 		goto fail;

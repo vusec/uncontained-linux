@@ -17,6 +17,11 @@
 
 #include <linux/connector.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct cb_id cn_test_id = { CN_NETLINK_USERS + 3, 0x456 };
 static char cn_test_name[] = "cn_test";
 static struct sock *nls;
@@ -120,6 +125,14 @@ static void cn_test_timer_func(struct timer_list *unused)
 	pr_debug("%s: timer fired\n", __func__);
 
 	m = kzalloc(sizeof(*m) + sizeof(data), GFP_ATOMIC);
+	{
+		typeof((data)) __uncontained_tmp71;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp71;
+	}
+	{
+		typeof((*m)) __uncontained_tmp72;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp72;
+	}
 	if (m) {
 
 		memcpy(&m->id, &cn_test_id, sizeof(m->id));

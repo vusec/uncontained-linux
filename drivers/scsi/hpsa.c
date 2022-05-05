@@ -53,6 +53,11 @@
 #include <linux/percpu.h>
 #include <asm/unaligned.h>
 #include <asm/div64.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "hpsa_cmd.h"
 #include "hpsa.h"
 
@@ -9391,6 +9396,10 @@ static int hpsa_alloc_ioaccel1_cmd_and_bft(struct ctlr_info *h)
 	h->ioaccel1_blockFetchTable =
 		kmalloc(((h->ioaccel_maxsg + 1) *
 				sizeof(u32)), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
 
 	if ((h->ioaccel_cmd_pool == NULL) ||
 		(h->ioaccel1_blockFetchTable == NULL))
@@ -9444,6 +9453,10 @@ static int hpsa_alloc_ioaccel2_cmd_and_bft(struct ctlr_info *h)
 	h->ioaccel2_blockFetchTable =
 		kmalloc(((h->ioaccel_maxsg + 1) *
 				sizeof(u32)), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
 
 	if ((h->ioaccel2_cmd_pool == NULL) ||
 		(h->ioaccel2_blockFetchTable == NULL)) {
@@ -9528,6 +9541,10 @@ static int hpsa_put_ctlr_into_performant_mode(struct ctlr_info *h)
 	/* Need a block fetch table for performant mode */
 	h->blockFetchTable = kmalloc(((SG_ENTRIES_IN_CMD + 1) *
 				sizeof(u32)), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!h->blockFetchTable) {
 		rc = -ENOMEM;
 		goto clean1;	/* rq, ioaccel */

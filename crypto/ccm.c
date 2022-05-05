@@ -16,6 +16,11 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct ccm_instance_ctx {
 	struct crypto_skcipher_spawn ctr;
 	struct crypto_ahash_spawn mac;
@@ -460,6 +465,14 @@ static int crypto_ccm_create_common(struct crypto_template *tmpl,
 		return err;
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*ictx), GFP_KERNEL);
+	{
+		typeof((*ictx)) __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
+	{
+		typeof((*inst)) __uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!inst)
 		return -ENOMEM;
 	ictx = aead_instance_ctx(inst);
@@ -717,6 +730,14 @@ static int crypto_rfc4309_create(struct crypto_template *tmpl,
 		return err;
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
+	{
+		typeof((*inst)) __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
+	{
+		typeof((*spawn)) __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!inst)
 		return -ENOMEM;
 
@@ -873,6 +894,14 @@ static int cbcmac_create(struct crypto_template *tmpl, struct rtattr **tb)
 		return err;
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
+	{
+		typeof((*inst)) __uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
+	{
+		typeof((*spawn)) __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!inst)
 		return -ENOMEM;
 	spawn = shash_instance_ctx(inst);

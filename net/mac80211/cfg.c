@@ -17,6 +17,11 @@
 #include <linux/fips.h>
 #include <linux/if_ether.h>
 #include <net/cfg80211.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ieee80211_i.h"
 #include "driver-ops.h"
 #include "rate.h"
@@ -874,6 +879,10 @@ ieee80211_set_probe_resp(struct ieee80211_sub_if_data *sdata,
 	old = sdata_dereference(sdata->u.ap.probe_resp, sdata);
 
 	new = kzalloc(sizeof(struct probe_resp) + resp_len, GFP_KERNEL);
+	{
+		struct probe_resp __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!new)
 		return -ENOMEM;
 
@@ -909,6 +918,10 @@ static int ieee80211_set_fils_discovery(struct ieee80211_sub_if_data *sdata,
 
 	old = sdata_dereference(sdata->u.ap.fils_discovery, sdata);
 	new = kzalloc(sizeof(*new) + params->tmpl_len, GFP_KERNEL);
+	{
+		typeof((*new)) __uncontained_tmp61;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!new)
 		return -ENOMEM;
 	new->len = params->tmpl_len;
@@ -932,6 +945,10 @@ ieee80211_set_unsol_bcast_probe_resp(struct ieee80211_sub_if_data *sdata,
 
 	old = sdata_dereference(sdata->u.ap.unsol_bcast_probe_resp, sdata);
 	new = kzalloc(sizeof(*new) + params->tmpl_len, GFP_KERNEL);
+	{
+		typeof((*new)) __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!new)
 		return -ENOMEM;
 	new->len = params->tmpl_len;
@@ -965,6 +982,10 @@ static int ieee80211_set_ftm_responder_params(
 	len = lci_len + civicloc_len;
 
 	new = kzalloc(sizeof(*new) + len, GFP_KERNEL);
+	{
+		typeof((*new)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!new)
 		return -ENOMEM;
 
@@ -3133,6 +3154,10 @@ cfg80211_beacon_dup(struct cfg80211_beacon_data *beacon)
 	      beacon->probe_resp_len + beacon->lci_len + beacon->civicloc_len;
 
 	new_beacon = kzalloc(sizeof(*new_beacon) + len, GFP_KERNEL);
+	{
+		typeof((*new_beacon)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!new_beacon)
 		return NULL;
 

@@ -15,6 +15,11 @@
 #include <pmu.h>
 #include <d11.h>
 #include <phy_shim.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "phy_int.h"
 #include "phy_hal.h"
 #include "phy_radio.h"
@@ -24637,6 +24642,10 @@ wlc_phy_a1_nphy(struct brcms_phy *pi, u8 core, u32 winsz, u32 start,
 	sz = end - start + 1;
 
 	buf = kmalloc(2 * sizeof(u32) * NPHY_PAPD_EPS_TBL_SIZE, GFP_ATOMIC);
+	{
+		u32 __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (NULL == buf)
 		return;
 

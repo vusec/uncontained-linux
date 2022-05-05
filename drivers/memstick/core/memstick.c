@@ -16,6 +16,11 @@
 #include <linux/module.h>
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DRIVER_NAME "memstick"
 
 static unsigned int cmd_retries = 3;
@@ -492,6 +497,10 @@ struct memstick_host *memstick_alloc_host(unsigned int extra,
 	struct memstick_host *host;
 
 	host = kzalloc(sizeof(struct memstick_host) + extra, GFP_KERNEL);
+	{
+		struct memstick_host __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (host) {
 		mutex_init(&host->lock);
 		INIT_WORK(&host->media_checker, memstick_check);

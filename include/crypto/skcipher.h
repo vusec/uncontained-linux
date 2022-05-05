@@ -14,6 +14,11 @@
 #include <linux/string.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct scatterlist;
 
 /**
@@ -501,6 +506,10 @@ static inline struct skcipher_request *skcipher_request_alloc(
 
 	req = kmalloc(sizeof(struct skcipher_request) +
 		      crypto_skcipher_reqsize(tfm), gfp);
+	{
+		struct skcipher_request __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 
 	if (likely(req))
 		skcipher_request_set_tfm(req, tfm);

@@ -26,6 +26,11 @@
 #include <scsi/scsi_eh.h>
 #include <scsi/scsi_transport_sas.h>
 #include <asm/unaligned.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "smartpqi.h"
 #include "smartpqi_sis.h"
 
@@ -1243,6 +1248,10 @@ static int pqi_get_device_lists(struct pqi_ctrl_info *ctrl_info,
 
 	internal_logdev_list = kmalloc(logdev_data_length +
 		sizeof(struct report_log_lun), GFP_KERNEL);
+	{
+		struct report_log_lun __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!internal_logdev_list) {
 		kfree(*logdev_list);
 		*logdev_list = NULL;

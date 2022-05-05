@@ -16,6 +16,11 @@
 #include <linux/ceph/decode.h>
 #include <linux/ceph/messenger.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Capability management
  *
@@ -2257,6 +2262,10 @@ retry:
 		int i;
 
 		sessions = kzalloc(max_sessions * sizeof(s), GFP_KERNEL);
+		{
+			typeof((s)) __uncontained_tmp49;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+		}
 		if (!sessions) {
 			err = -ENOMEM;
 			goto out;

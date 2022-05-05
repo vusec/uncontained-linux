@@ -919,6 +919,10 @@ build_group_from_child_sched_domain(struct sched_domain *sd, int cpu)
 
 	sg = kzalloc_node(sizeof(struct sched_group) + cpumask_size(),
 			GFP_KERNEL, cpu_to_node(cpu));
+	{
+		struct sched_group __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
 
 	if (!sg)
 		return NULL;
@@ -1345,6 +1349,10 @@ static inline void asym_cpu_capacity_update_data(int cpu)
 	}
 
 	entry = kzalloc(sizeof(*entry) + cpumask_size(), GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (WARN_ONCE(!entry, "Failed to allocate memory for asymmetry data\n"))
 		return;
 	entry->capacity = capacity;
@@ -2045,6 +2053,10 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
 
 			sd = kzalloc_node(sizeof(struct sched_domain) + cpumask_size(),
 					GFP_KERNEL, cpu_to_node(j));
+			{
+				struct sched_domain __uncontained_tmp52;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+			}
 			if (!sd)
 				return -ENOMEM;
 
@@ -2059,6 +2071,10 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
 
 			sg = kzalloc_node(sizeof(struct sched_group) + cpumask_size(),
 					GFP_KERNEL, cpu_to_node(j));
+			{
+				struct sched_group __uncontained_tmp53;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp53;
+			}
 			if (!sg)
 				return -ENOMEM;
 
@@ -2068,6 +2084,10 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
 
 			sgc = kzalloc_node(sizeof(struct sched_group_capacity) + cpumask_size(),
 					GFP_KERNEL, cpu_to_node(j));
+			{
+				struct sched_group_capacity __uncontained_tmp54;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+			}
 			if (!sgc)
 				return -ENOMEM;
 

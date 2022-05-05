@@ -25,6 +25,11 @@
 #include <linux/audit.h>
 #include <net/sock.h>
 #include <net/netns/generic.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 /* needed for logical [in,out]-dev filtering */
 #include "../br_private.h"
 
@@ -922,6 +927,10 @@ static int translate_table(struct net *net, const char *name,
 		newinfo->chainstack =
 			vmalloc(array_size(nr_cpu_ids,
 					   sizeof(*(newinfo->chainstack))));
+		{
+			typeof((*(newinfo->chainstack))) __uncontained_tmp64;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+		}
 		if (!newinfo->chainstack)
 			return -ENOMEM;
 		for_each_possible_cpu(i) {
@@ -929,6 +938,10 @@ static int translate_table(struct net *net, const char *name,
 			  vmalloc_node(array_size(udc_cnt,
 					  sizeof(*(newinfo->chainstack[0]))),
 				       cpu_to_node(i));
+			{
+				typeof((*(newinfo->chainstack[0]))) __uncontained_tmp70;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+			}
 			if (!newinfo->chainstack[i]) {
 				while (i)
 					vfree(newinfo->chainstack[--i]);
@@ -939,6 +952,10 @@ static int translate_table(struct net *net, const char *name,
 		}
 
 		cl_s = vmalloc(array_size(udc_cnt, sizeof(*cl_s)));
+		{
+			typeof((*cl_s)) __uncontained_tmp65;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+		}
 		if (!cl_s)
 			return -ENOMEM;
 		i = 0; /* the i'th udc */
@@ -1201,6 +1218,10 @@ int ebt_register_table(struct net *net, const struct ebt_table *input_table,
 
 	countersize = COUNTER_OFFSET(repl->nentries) * nr_cpu_ids;
 	newinfo = vmalloc(sizeof(*newinfo) + countersize);
+	{
+		typeof((*newinfo)) __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 	ret = -ENOMEM;
 	if (!newinfo)
 		goto free_table;
@@ -1389,6 +1410,10 @@ static int do_update_counters(struct net *net, const char *name,
 		return -EINVAL;
 
 	tmp = vmalloc(array_size(num_counters, sizeof(*tmp)));
+	{
+		typeof((*tmp)) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!tmp)
 		return -ENOMEM;
 
@@ -1527,6 +1552,10 @@ static int copy_counters_to_user(struct ebt_table *t,
 		return -EINVAL;
 
 	counterstmp = vmalloc(array_size(nentries, sizeof(*counterstmp)));
+	{
+		typeof((*counterstmp)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!counterstmp)
 		return -ENOMEM;
 
@@ -2268,6 +2297,10 @@ static int compat_do_replace(struct net *net, sockptr_t arg, unsigned int len)
 
 	countersize = COUNTER_OFFSET(tmp.nentries) * nr_cpu_ids;
 	newinfo = vmalloc(sizeof(*newinfo) + countersize);
+	{
+		typeof((*newinfo)) __uncontained_tmp69;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!newinfo)
 		return -ENOMEM;
 

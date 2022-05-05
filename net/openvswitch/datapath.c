@@ -38,6 +38,11 @@
 #include <net/net_namespace.h>
 #include <net/netns/generic.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "datapath.h"
 #include "flow.h"
 #include "flow_table.h"
@@ -1615,6 +1620,10 @@ static int ovs_dp_set_upcall_portids(struct datapath *dp,
 
 	dp_nlsk_pids = kmalloc(sizeof(*dp_nlsk_pids) + nla_len(ids),
 			       GFP_KERNEL);
+	{
+		typeof((*dp_nlsk_pids)) __uncontained_tmp94;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!dp_nlsk_pids)
 		return -ENOMEM;
 

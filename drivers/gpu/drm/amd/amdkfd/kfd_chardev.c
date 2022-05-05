@@ -35,6 +35,11 @@
 #include <linux/mman.h>
 #include <linux/dma-buf.h>
 #include <asm/processor.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "kfd_priv.h"
 #include "kfd_device_queue_manager.h"
 #include "kfd_dbgmgr.h"
@@ -943,6 +948,10 @@ static int kfd_ioctl_get_process_apertures_new(struct file *filp,
 	 */
 	pa = kzalloc((sizeof(struct kfd_process_device_apertures) *
 				args->num_of_nodes), GFP_KERNEL);
+	{
+		struct kfd_process_device_apertures __uncontained_tmp9;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!pa)
 		return -ENOMEM;
 

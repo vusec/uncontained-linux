@@ -339,6 +339,10 @@ xfs_mru_cache_create(
 	/* An extra list is needed to avoid reaping up to a grp_time early. */
 	mru->grp_count = grp_count + 1;
 	mru->lists = kmem_zalloc(mru->grp_count * sizeof(*mru->lists), 0);
+	{
+		typeof((*mru->lists)) __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 
 	if (!mru->lists) {
 		err = -ENOMEM;

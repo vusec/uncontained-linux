@@ -43,6 +43,11 @@
 #include <net/sock.h>
 #include <net/raw.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define TCPUDP_MIB_MAX max_t(u32, UDP_MIB_MAX, TCP_MIB_MAX)
 
 /*
@@ -479,6 +484,14 @@ static int netstat_seq_show(struct seq_file *seq, void *v)
 	seq_puts(seq, "\nTcpExt:");
 	buff = kzalloc(max(tcp_cnt * sizeof(long), ip_cnt * sizeof(u64)),
 		       GFP_KERNEL);
+	{
+		long __uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
+	{
+		u64 __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (buff) {
 		snmp_get_cpu_field_batch(buff, snmp4_net_list,
 					 net->mib.net_statistics);

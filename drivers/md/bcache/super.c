@@ -26,6 +26,11 @@
 #include <linux/reboot.h>
 #include <linux/sysfs.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 unsigned int bch_cutoff_writeback;
 unsigned int bch_cutoff_writeback_sync;
 
@@ -2290,6 +2295,10 @@ static int cache_alloc(struct cache *ca)
 
 	ca->buckets = vzalloc(array_size(sizeof(struct bucket),
 			      ca->sb.nbuckets));
+	{
+		struct bucket __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!ca->buckets) {
 		err = "ca->buckets alloc failed";
 		goto err_buckets_alloc;
@@ -2298,6 +2307,10 @@ static int cache_alloc(struct cache *ca)
 	ca->prio_buckets = kzalloc(array3_size(sizeof(uint64_t),
 				   prio_buckets(ca), 2),
 				   GFP_KERNEL);
+	{
+		uint64_t __uncontained_tmp19;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!ca->prio_buckets) {
 		err = "ca->prio_buckets alloc failed";
 		goto err_prio_buckets_alloc;

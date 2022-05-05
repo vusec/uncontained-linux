@@ -151,6 +151,11 @@
 #include <linux/prandom.h>
 #include <linux/once_lite.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "net-sysfs.h"
 
 
@@ -1237,6 +1242,10 @@ int dev_set_alias(struct net_device *dev, const char *alias, size_t len)
 
 	if (len) {
 		new_alias = kmalloc(sizeof(*new_alias) + len + 1, GFP_KERNEL);
+		{
+			typeof((*new_alias)) __uncontained_tmp102;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp102;
+		}
 		if (!new_alias)
 			return -ENOMEM;
 

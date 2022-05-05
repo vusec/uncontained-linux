@@ -620,6 +620,10 @@ static int mana_hwc_establish_channel(struct gdma_context *gc, u16 *q_depth,
 		return -EPROTO;
 
 	gc->cq_table = vzalloc(gc->max_num_cqs * sizeof(struct gdma_queue *));
+	{
+		struct gdma_queue *__uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!gc->cq_table)
 		return -ENOMEM;
 

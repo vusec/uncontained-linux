@@ -11,6 +11,11 @@
 #include <net/nfc/nci.h>
 #include <net/nfc/nci_core.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "st-nci.h"
 
 struct st_nci_pipe_info {
@@ -530,6 +535,14 @@ static int st_nci_hci_network_init(struct nci_dev *ndev)
 	dest_params =
 		kzalloc(sizeof(struct core_conn_create_dest_spec_params) +
 			sizeof(struct dest_spec_params), GFP_KERNEL);
+	{
+		struct core_conn_create_dest_spec_params __uncontained_tmp28;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+	}
+	{
+		struct dest_spec_params __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (dest_params == NULL)
 		return -ENOMEM;
 

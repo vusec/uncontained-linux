@@ -952,6 +952,10 @@ sh_css_set_black_frame(struct ia_css_stream *stream,
 	if (!params->fpn_config.data) {
 		params->fpn_config.data = kvmalloc(height * width *
 						   sizeof(short), GFP_KERNEL);
+		{
+			short __uncontained_tmp60;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+		}
 		if (!params->fpn_config.data) {
 			IA_CSS_ERROR("out of memory");
 			IA_CSS_LEAVE_ERR_PRIVATE(-ENOMEM);
@@ -1384,9 +1388,17 @@ struct ia_css_morph_table *ia_css_morph_table_allocate(
 		me->coordinates_x[i] = kvmalloc(height * width *
 						sizeof(*me->coordinates_x[i]),
 						GFP_KERNEL);
+		{
+			typeof((*me->coordinates_x[i])) __uncontained_tmp65;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+		}
 		me->coordinates_y[i] = kvmalloc(height * width *
 						sizeof(*me->coordinates_y[i]),
 						GFP_KERNEL);
+		{
+			typeof((*me->coordinates_y[i])) __uncontained_tmp66;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+		}
 
 		if ((!me->coordinates_x[i]) ||
 		    (!me->coordinates_y[i])) {
@@ -4140,6 +4152,10 @@ ia_css_3a_statistics_allocate(const struct ia_css_3a_grid_info *grid)
 	me->grid = *grid;
 	grid_size = grid->width * grid->height;
 	me->data = kvmalloc(grid_size * sizeof(*me->data), GFP_KERNEL);
+	{
+		typeof((*me->data)) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!me->data)
 		goto err;
 	/* No weighted histogram, no structure, treat the histogram data as a byte dump in a byte array */
@@ -4178,11 +4194,19 @@ ia_css_dvs_statistics_allocate(const struct ia_css_dvs_grid_info *grid)
 	me->grid = *grid;
 	me->hor_proj = kvmalloc(grid->height * IA_CSS_DVS_NUM_COEF_TYPES *
 				sizeof(*me->hor_proj), GFP_KERNEL);
+	{
+		typeof((*me->hor_proj)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!me->hor_proj)
 		goto err;
 
 	me->ver_proj = kvmalloc(grid->width * IA_CSS_DVS_NUM_COEF_TYPES *
 				sizeof(*me->ver_proj), GFP_KERNEL);
+	{
+		typeof((*me->ver_proj)) __uncontained_tmp69;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!me->ver_proj)
 		goto err;
 
@@ -4218,12 +4242,20 @@ ia_css_dvs_coefficients_allocate(const struct ia_css_dvs_grid_info *grid)
 	me->hor_coefs = kvmalloc(grid->num_hor_coefs *
 				 IA_CSS_DVS_NUM_COEF_TYPES *
 				 sizeof(*me->hor_coefs), GFP_KERNEL);
+	{
+		typeof((*me->hor_coefs)) __uncontained_tmp70;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!me->hor_coefs)
 		goto err;
 
 	me->ver_coefs = kvmalloc(grid->num_ver_coefs *
 				 IA_CSS_DVS_NUM_COEF_TYPES *
 				 sizeof(*me->ver_coefs), GFP_KERNEL);
+	{
+		typeof((*me->ver_coefs)) __uncontained_tmp71;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (!me->ver_coefs)
 		goto err;
 
@@ -4260,6 +4292,10 @@ ia_css_dvs2_statistics_allocate(const struct ia_css_dvs_grid_info *grid)
 					 grid->aligned_height *
 					 sizeof(*me->hor_prod.odd_real),
 					 GFP_KERNEL);
+	{
+		typeof((*me->hor_prod.odd_real)) __uncontained_tmp72;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp72;
+	}
 	if (!me->hor_prod.odd_real)
 		goto err;
 
@@ -4267,6 +4303,10 @@ ia_css_dvs2_statistics_allocate(const struct ia_css_dvs_grid_info *grid)
 					 grid->aligned_height *
 					 sizeof(*me->hor_prod.odd_imag),
 					 GFP_KERNEL);
+	{
+		typeof((*me->hor_prod.odd_imag)) __uncontained_tmp73;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
+	}
 	if (!me->hor_prod.odd_imag)
 		goto err;
 
@@ -4274,6 +4314,10 @@ ia_css_dvs2_statistics_allocate(const struct ia_css_dvs_grid_info *grid)
 					  grid->aligned_height *
 					  sizeof(*me->hor_prod.even_real),
 					  GFP_KERNEL);
+	{
+		typeof((*me->hor_prod.even_real)) __uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!me->hor_prod.even_real)
 		goto err;
 
@@ -4281,6 +4325,10 @@ ia_css_dvs2_statistics_allocate(const struct ia_css_dvs_grid_info *grid)
 					  grid->aligned_height *
 					  sizeof(*me->hor_prod.even_imag),
 					  GFP_KERNEL);
+	{
+		typeof((*me->hor_prod.even_imag)) __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (!me->hor_prod.even_imag)
 		goto err;
 
@@ -4288,6 +4336,10 @@ ia_css_dvs2_statistics_allocate(const struct ia_css_dvs_grid_info *grid)
 					 grid->aligned_height *
 					 sizeof(*me->ver_prod.odd_real),
 					 GFP_KERNEL);
+	{
+		typeof((*me->ver_prod.odd_real)) __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (!me->ver_prod.odd_real)
 		goto err;
 
@@ -4295,6 +4347,10 @@ ia_css_dvs2_statistics_allocate(const struct ia_css_dvs_grid_info *grid)
 					 grid->aligned_height *
 					 sizeof(*me->ver_prod.odd_imag),
 					 GFP_KERNEL);
+	{
+		typeof((*me->ver_prod.odd_imag)) __uncontained_tmp77;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp77;
+	}
 	if (!me->ver_prod.odd_imag)
 		goto err;
 
@@ -4302,6 +4358,10 @@ ia_css_dvs2_statistics_allocate(const struct ia_css_dvs_grid_info *grid)
 					  grid->aligned_height *
 					  sizeof(*me->ver_prod.even_real),
 					  GFP_KERNEL);
+	{
+		typeof((*me->ver_prod.even_real)) __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!me->ver_prod.even_real)
 		goto err;
 
@@ -4309,6 +4369,10 @@ ia_css_dvs2_statistics_allocate(const struct ia_css_dvs_grid_info *grid)
 					  grid->aligned_height *
 					  sizeof(*me->ver_prod.even_imag),
 					  GFP_KERNEL);
+	{
+		typeof((*me->ver_prod.even_imag)) __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!me->ver_prod.even_imag)
 		goto err;
 
@@ -4350,48 +4414,80 @@ ia_css_dvs2_coefficients_allocate(const struct ia_css_dvs_grid_info *grid)
 	me->hor_coefs.odd_real = kvmalloc(grid->num_hor_coefs *
 					  sizeof(*me->hor_coefs.odd_real),
 					  GFP_KERNEL);
+	{
+		typeof((*me->hor_coefs.odd_real)) __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!me->hor_coefs.odd_real)
 		goto err;
 
 	me->hor_coefs.odd_imag = kvmalloc(grid->num_hor_coefs *
 					  sizeof(*me->hor_coefs.odd_imag),
 					  GFP_KERNEL);
+	{
+		typeof((*me->hor_coefs.odd_imag)) __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!me->hor_coefs.odd_imag)
 		goto err;
 
 	me->hor_coefs.even_real = kvmalloc(grid->num_hor_coefs *
 					   sizeof(*me->hor_coefs.even_real),
 					   GFP_KERNEL);
+	{
+		typeof((*me->hor_coefs.even_real)) __uncontained_tmp82;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!me->hor_coefs.even_real)
 		goto err;
 
 	me->hor_coefs.even_imag = kvmalloc(grid->num_hor_coefs *
 					   sizeof(*me->hor_coefs.even_imag),
 					   GFP_KERNEL);
+	{
+		typeof((*me->hor_coefs.even_imag)) __uncontained_tmp83;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!me->hor_coefs.even_imag)
 		goto err;
 
 	me->ver_coefs.odd_real = kvmalloc(grid->num_ver_coefs *
 					  sizeof(*me->ver_coefs.odd_real),
 					  GFP_KERNEL);
+	{
+		typeof((*me->ver_coefs.odd_real)) __uncontained_tmp84;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!me->ver_coefs.odd_real)
 		goto err;
 
 	me->ver_coefs.odd_imag = kvmalloc(grid->num_ver_coefs *
 					  sizeof(*me->ver_coefs.odd_imag),
 					  GFP_KERNEL);
+	{
+		typeof((*me->ver_coefs.odd_imag)) __uncontained_tmp85;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!me->ver_coefs.odd_imag)
 		goto err;
 
 	me->ver_coefs.even_real = kvmalloc(grid->num_ver_coefs *
 					   sizeof(*me->ver_coefs.even_real),
 					   GFP_KERNEL);
+	{
+		typeof((*me->ver_coefs.even_real)) __uncontained_tmp86;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!me->ver_coefs.even_real)
 		goto err;
 
 	me->ver_coefs.even_imag = kvmalloc(grid->num_ver_coefs *
 					   sizeof(*me->ver_coefs.even_imag),
 					   GFP_KERNEL);
+	{
+		typeof((*me->ver_coefs.even_imag)) __uncontained_tmp87;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (!me->ver_coefs.even_imag)
 		goto err;
 
@@ -4451,23 +4547,39 @@ ia_css_dvs2_6axis_config_allocate(const struct ia_css_stream *stream)
 	IA_CSS_LOG("table UV: W %d H %d", width_uv, height_uv);
 	dvs_config->xcoords_y = kvmalloc(width_y * height_y * sizeof(uint32_t),
 					 GFP_KERNEL);
+	{
+		uint32_t __uncontained_tmp61;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!dvs_config->xcoords_y)
 		goto err;
 
 	dvs_config->ycoords_y = kvmalloc(width_y * height_y * sizeof(uint32_t),
 					 GFP_KERNEL);
+	{
+		uint32_t __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!dvs_config->ycoords_y)
 		goto err;
 
 	dvs_config->xcoords_uv = kvmalloc(width_uv * height_uv *
 					  sizeof(uint32_t),
 					  GFP_KERNEL);
+	{
+		uint32_t __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!dvs_config->xcoords_uv)
 		goto err;
 
 	dvs_config->ycoords_uv = kvmalloc(width_uv * height_uv *
 					  sizeof(uint32_t),
 					  GFP_KERNEL);
+	{
+		uint32_t __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!dvs_config->ycoords_uv)
 		goto err;
 

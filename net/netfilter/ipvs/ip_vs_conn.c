@@ -36,6 +36,11 @@
 #include <net/net_namespace.h>
 #include <net/ip_vs.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 
 #ifndef CONFIG_IP_VS_TAB_BITS
 #define CONFIG_IP_VS_TAB_BITS	12
@@ -1480,6 +1485,10 @@ int __init ip_vs_conn_init(void)
 	 */
 	ip_vs_conn_tab = vmalloc(array_size(ip_vs_conn_tab_size,
 					    sizeof(*ip_vs_conn_tab)));
+	{
+		typeof((*ip_vs_conn_tab)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!ip_vs_conn_tab)
 		return -ENOMEM;
 

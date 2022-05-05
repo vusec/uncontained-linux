@@ -57,6 +57,10 @@ int _rtw_init_mlme_priv(struct adapter *padapter)
 	memset(&pmlmepriv->assoc_ssid, 0, sizeof(struct ndis_802_11_ssid));
 
 	pbuf = vzalloc(MAX_BSS_CNT * (sizeof(struct wlan_network)));
+	{
+		struct wlan_network __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
 
 	if (!pbuf) {
 		res = _FAIL;

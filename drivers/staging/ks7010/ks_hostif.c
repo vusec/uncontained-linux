@@ -11,6 +11,11 @@
 #include <linux/if_arp.h>
 #include <net/iw_handler.h>
 #include <uapi/linux/llc.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "eap_packet.h"
 #include "ks_wlan.h"
 #include "ks_hostif.h"
@@ -212,6 +217,10 @@ michael_mic(u8 *key, u8 *data, unsigned int len, u8 priority, u8 *result)
 		goto err_free_tfm;
 
 	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(tfm), GFP_KERNEL);
+	{
+		typeof((*desc)) __uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!desc) {
 		ret = -ENOMEM;
 		goto err_free_tfm;

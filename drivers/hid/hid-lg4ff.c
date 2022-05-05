@@ -16,6 +16,11 @@
 #include <linux/usb.h>
 #include <linux/hid.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "usbhid/usbhid.h"
 #include "hid-lg.h"
 #include "hid-lg4ff.h"
@@ -1283,6 +1288,10 @@ int lg4ff_init(struct hid_device *hid)
 		return -1;
 	}
 	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp15;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!entry)
 		return -ENOMEM;
 	spin_lock_init(&entry->report_lock);
@@ -1402,6 +1411,10 @@ int lg4ff_init(struct hid_device *hid)
 
 		for (j = 0; j < 5; j++) {
 			led = kzalloc(sizeof(struct led_classdev)+name_sz, GFP_KERNEL);
+			{
+				struct led_classdev __uncontained_tmp14;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+			}
 			if (!led) {
 				hid_err(hid, "can't allocate memory for LED %d\n", j);
 				goto err_leds;

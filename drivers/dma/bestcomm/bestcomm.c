@@ -25,6 +25,11 @@
 
 #include <linux/fsl/bestcomm/sram.h>
 #include <linux/fsl/bestcomm/bestcomm_priv.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "linux/fsl/bestcomm/bestcomm.h"
 
 #define DRIVER_NAME "bestcomm-core"
@@ -73,6 +78,10 @@ bcom_task_alloc(int bd_count, int bd_size, int priv_size)
 
 	/* Allocate our structure */
 	tsk = kzalloc(sizeof(struct bcom_task) + priv_size, GFP_KERNEL);
+	{
+		struct bcom_task __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!tsk)
 		goto error;
 

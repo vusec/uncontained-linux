@@ -29,6 +29,11 @@
 #include <target/target_core_base.h>
 #include <target/target_core_backend.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "target_core_alua.h"
 #include "target_core_internal.h"
 #include "target_core_pscsi.h"
@@ -971,6 +976,10 @@ pscsi_execute_cmd(struct se_cmd *cmd)
 	 * TCM_MAX_COMMAND_SIZE
 	 */
 	pt = kzalloc(sizeof(*pt) + scsi_command_size(cmd->t_task_cdb), GFP_KERNEL);
+	{
+		typeof((*pt)) __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!pt) {
 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
 	}

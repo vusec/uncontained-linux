@@ -31,6 +31,11 @@
 #include <linux/of_irq.h>
 #include <linux/spi/spi.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* SPI register offsets */
 #define BCM2835_SPI_CS			0x00
 #define BCM2835_SPI_FIFO		0x04
@@ -1220,6 +1225,10 @@ static int bcm2835_spi_setup(struct spi_device *spi)
 	if (!slv) {
 		slv = kzalloc(ALIGN(sizeof(*slv), dma_get_cache_alignment()),
 			      GFP_KERNEL);
+		{
+			typeof((*slv)) __uncontained_tmp53;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp53;
+		}
 		if (!slv)
 			return -ENOMEM;
 

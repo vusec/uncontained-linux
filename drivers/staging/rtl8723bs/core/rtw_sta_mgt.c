@@ -7,6 +7,11 @@
 #include <drv_types.h>
 #include <rtw_debug.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 void _rtw_init_stainfo(struct sta_info *psta);
 void _rtw_init_stainfo(struct sta_info *psta)
 {
@@ -56,6 +61,10 @@ u32 _rtw_init_sta_priv(struct	sta_priv *pstapriv)
 	s32 i;
 
 	pstapriv->pallocated_stainfo_buf = vzalloc(sizeof(struct sta_info) * NUM_STA+4);
+	{
+		struct sta_info __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
 
 	if (!pstapriv->pallocated_stainfo_buf)
 		return _FAIL;

@@ -175,6 +175,10 @@ static int mt7601u_init_wcid_mem(struct mt7601u_dev *dev)
 	int i, ret;
 
 	vals = kmalloc(sizeof(*vals) * N_WCIDS * 2, GFP_KERNEL);
+	{
+		typeof((*vals)) __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!vals)
 		return -ENOMEM;
 
@@ -204,6 +208,10 @@ static int mt7601u_init_wcid_attr_mem(struct mt7601u_dev *dev)
 	int i, ret;
 
 	vals = kmalloc(sizeof(*vals) * N_WCIDS * 2, GFP_KERNEL);
+	{
+		typeof((*vals)) __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!vals)
 		return -ENOMEM;
 

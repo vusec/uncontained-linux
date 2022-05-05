@@ -83,6 +83,10 @@ int ia_css_refcount_init(uint32_t size)
 	}
 	myrefcount.items =
 	    kvmalloc(sizeof(struct ia_css_refcount_entry) * size, GFP_KERNEL);
+	{
+		struct ia_css_refcount_entry __uncontained_tmp56;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!myrefcount.items)
 		err = -ENOMEM;
 	if (!err) {

@@ -4,6 +4,11 @@
  */
 
 #include <linux/delay.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "hfi.h"
 #include "qp.h"
 #include "trace.h"
@@ -1898,6 +1903,14 @@ int pio_map_init(struct hfi1_devdata *dd, u8 port, u8 num_vls, u8 *vl_scontexts)
 			 roundup_pow_of_two(num_vls) *
 			 sizeof(struct pio_map_elem *),
 			 GFP_KERNEL);
+	{
+		typeof((*newmap)) __uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
+	{
+		struct pio_map_elem *__uncontained_tmp15;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!newmap)
 		goto bail;
 	newmap->actual_vls = num_vls;
@@ -1915,6 +1928,14 @@ int pio_map_init(struct hfi1_devdata *dd, u8 port, u8 num_vls, u8 *vl_scontexts)
 						 sz * sizeof(struct
 							     send_context *),
 						 GFP_KERNEL);
+			{
+				typeof((*newmap->map[i])) __uncontained_tmp18;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+			}
+			{
+				struct send_context *__uncontained_tmp16;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+			}
 			if (!newmap->map[i])
 				goto bail;
 			newmap->map[i]->mask = (1 << ilog2(sz)) - 1;

@@ -38,6 +38,11 @@
 #include <linux/usb/hcd.h>
 #include <linux/usb/otg.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "usb.h"
 #include "phy.h"
 
@@ -2574,6 +2579,10 @@ struct usb_hcd *__usb_create_hcd(const struct hc_driver *driver,
 	struct usb_hcd *hcd;
 
 	hcd = kzalloc(sizeof(*hcd) + driver->hcd_priv_size, GFP_KERNEL);
+	{
+		typeof((*hcd)) __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!hcd)
 		return NULL;
 	if (primary_hcd == NULL) {

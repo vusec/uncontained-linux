@@ -1108,6 +1108,10 @@ int qman_alloc_fq_table(u32 _num_fqids)
 
 	fq_table = vzalloc(array3_size(sizeof(struct qman_fq *),
 				       num_fqids, 2));
+	{
+		struct qman_fq *__uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!fq_table)
 		return -ENOMEM;
 

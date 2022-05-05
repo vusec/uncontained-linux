@@ -9,6 +9,11 @@
 
 #include <linux/nfsd/debug.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "blocklayoutxdr.h"
 #include "pnfs.h"
 #include "filecache.h"
@@ -147,6 +152,14 @@ nfsd4_block_get_device_info_simple(struct super_block *sb,
 
 	dev = kzalloc(sizeof(struct pnfs_block_deviceaddr) +
 		      sizeof(struct pnfs_block_volume), GFP_KERNEL);
+	{
+		struct pnfs_block_deviceaddr __uncontained_tmp43;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+	}
+	{
+		struct pnfs_block_volume __uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!dev)
 		return -ENOMEM;
 	gdp->gd_device = dev;
@@ -255,6 +268,14 @@ nfsd4_block_get_device_info_scsi(struct super_block *sb,
 
 	dev = kzalloc(sizeof(struct pnfs_block_deviceaddr) +
 		      sizeof(struct pnfs_block_volume), GFP_KERNEL);
+	{
+		struct pnfs_block_deviceaddr __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
+	{
+		struct pnfs_block_volume __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!dev)
 		return -ENOMEM;
 	gdp->gd_device = dev;

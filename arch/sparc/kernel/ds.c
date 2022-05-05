@@ -24,6 +24,11 @@
 #include <asm/head.h>
 #include <asm/irq.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "kernel.h"
 
 #define DRV_MODULE_NAME		"ds"
@@ -1050,6 +1055,10 @@ static int ds_data(struct ds_info *dp, struct ds_msg_tag *pkt, int len)
 	struct ds_queue_entry *qp;
 
 	qp = kmalloc(sizeof(struct ds_queue_entry) + len, GFP_ATOMIC);
+	{
+		struct ds_queue_entry __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!qp) {
 		__send_ds_nack(dp, dpkt->handle);
 	} else {

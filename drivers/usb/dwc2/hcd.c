@@ -53,6 +53,11 @@
 #include <linux/usb/hcd.h>
 #include <linux/usb/ch11.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "core.h"
 #include "hcd.h"
 
@@ -4061,6 +4066,10 @@ struct dwc2_tt *dwc2_host_get_tt_info(struct dwc2_hsotg *hsotg, void *context,
 
 			dwc_tt = kzalloc(sizeof(*dwc_tt) + bitmap_size,
 					 mem_flags);
+			{
+				typeof((*dwc_tt)) __uncontained_tmp40;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+			}
 			if (!dwc_tt)
 				return NULL;
 

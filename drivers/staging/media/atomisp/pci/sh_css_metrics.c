@@ -70,14 +70,26 @@ make_histogram(struct sh_css_pc_histogram *histogram, unsigned int length)
 		return;
 	histogram->run = kvmalloc(length * sizeof(*histogram->run),
 				  GFP_KERNEL);
+	{
+		typeof((*histogram->run)) __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!histogram->run)
 		return;
 	histogram->stall = kvmalloc(length * sizeof(*histogram->stall),
 				    GFP_KERNEL);
+	{
+		typeof((*histogram->stall)) __uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!histogram->stall)
 		return;
 	histogram->msink = kvmalloc(length * sizeof(*histogram->msink),
 				    GFP_KERNEL);
+	{
+		typeof((*histogram->msink)) __uncontained_tmp59;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!histogram->msink)
 		return;
 

@@ -12,6 +12,11 @@
 #include <sound/core.h>
 #include <sound/util_mem.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 MODULE_AUTHOR("Takashi Iwai");
 MODULE_DESCRIPTION("Generic memory management routines for soundcard memory allocation");
 MODULE_LICENSE("GPL");
@@ -101,6 +106,10 @@ __snd_util_memblk_new(struct snd_util_memhdr *hdr, unsigned int units,
 
 	blk = kmalloc(sizeof(struct snd_util_memblk) + hdr->block_extra_size,
 		      GFP_KERNEL);
+	{
+		struct snd_util_memblk __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (blk == NULL)
 		return NULL;
 

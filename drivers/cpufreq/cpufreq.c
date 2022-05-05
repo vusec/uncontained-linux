@@ -30,6 +30,11 @@
 #include <linux/tick.h>
 #include <trace/events/power.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static LIST_HEAD(cpufreq_policy_list);
 
 /* Macros to iterate over CPU policies */
@@ -1397,6 +1402,10 @@ static int cpufreq_online(unsigned int cpu)
 
 		policy->min_freq_req = kzalloc(2 * sizeof(*policy->min_freq_req),
 					       GFP_KERNEL);
+		{
+			typeof((*policy->min_freq_req)) __uncontained_tmp13;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+		}
 		if (!policy->min_freq_req) {
 			ret = -ENOMEM;
 			goto out_destroy_policy;

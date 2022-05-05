@@ -36,6 +36,11 @@
 #include <scsi/fc/fc_fs.h>
 #include <linux/aer.h>
 #include <linux/crash_dump.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #ifdef CONFIG_X86
 #include <asm/set_memory.h>
 #endif
@@ -15886,6 +15891,14 @@ lpfc_sli4_queue_alloc(struct lpfc_hba *phba, uint32_t page_size,
 
 	queue = kzalloc_node(sizeof(*queue) + (sizeof(void *) * pgcnt),
 			     GFP_KERNEL, cpu_to_node(cpu));
+	{
+		typeof((*queue)) __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
+	{
+		void *__uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!queue)
 		return NULL;
 
@@ -15911,6 +15924,10 @@ lpfc_sli4_queue_alloc(struct lpfc_hba *phba, uint32_t page_size,
 	for (x = 0; x < queue->page_count; x++) {
 		dmabuf = kzalloc_node(sizeof(*dmabuf), GFP_KERNEL,
 				      dev_to_node(&phba->pcidev->dev));
+		{
+			typeof((*dmabuf)) __uncontained_tmp35;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+		}
 		if (!dmabuf)
 			goto out_fail;
 		dmabuf->virt = dma_alloc_coherent(&phba->pcidev->dev,

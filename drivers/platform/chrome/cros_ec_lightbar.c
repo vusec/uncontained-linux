@@ -17,6 +17,11 @@
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DRV_NAME "cros-ec-lightbar"
 
 /* Rate-limit the lightbar interface to prevent DoS. */
@@ -91,6 +96,10 @@ static struct cros_ec_command *alloc_lightbar_cmd_msg(struct cros_ec_dev *ec)
 		  sizeof(struct ec_response_lightbar));
 
 	msg = kmalloc(sizeof(*msg) + len, GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!msg)
 		return NULL;
 

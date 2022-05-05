@@ -54,6 +54,10 @@ u32	_rtw_init_sta_priv(struct	sta_priv *pstapriv)
 	s32 i;
 
 	pstapriv->pallocated_stainfo_buf = vzalloc(sizeof(struct sta_info) * NUM_STA + 4);
+	{
+		struct sta_info __uncontained_tmp38;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+	}
 
 	if (!pstapriv->pallocated_stainfo_buf)
 		return _FAIL;

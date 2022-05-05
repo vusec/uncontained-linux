@@ -20,6 +20,11 @@
 #include <linux/workqueue.h>
 #include <linux/mailbox_client.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "rpmsg_internal.h"
 #include "qcom_glink_native.h"
 
@@ -793,6 +798,10 @@ static int qcom_glink_rx_defer(struct qcom_glink *glink, size_t extra)
 	}
 
 	dcmd = kzalloc(sizeof(*dcmd) + extra, GFP_ATOMIC);
+	{
+		typeof((*dcmd)) __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!dcmd)
 		return -ENOMEM;
 

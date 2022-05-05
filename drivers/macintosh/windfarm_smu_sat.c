@@ -17,6 +17,11 @@
 #include <asm/smu.h>
 #include <asm/pmac_low_i2c.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "windfarm.h"
 
 #define VERSION "1.0"
@@ -262,6 +267,10 @@ static int wf_sat_probe(struct i2c_client *client,
 
 		/* the +16 is enough for "cpu-voltage-n" */
 		sens = kzalloc(sizeof(struct wf_sat_sensor) + 16, GFP_KERNEL);
+		{
+			struct wf_sat_sensor __uncontained_tmp9;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp9;
+		}
 		if (sens == NULL) {
 			printk(KERN_ERR "wf_sat_create: couldn't create "
 			       "%s sensor %d (no memory)\n", name, cpu);
@@ -289,6 +298,10 @@ static int wf_sat_probe(struct i2c_client *client,
 			continue;
 		cpu = 2 * sat->nr + core;
 		sens = kzalloc(sizeof(struct wf_sat_sensor) + 16, GFP_KERNEL);
+		{
+			struct wf_sat_sensor __uncontained_tmp10;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp10;
+		}
 		if (sens == NULL) {
 			printk(KERN_ERR "wf_sat_create: couldn't create power "
 			       "sensor %d (no memory)\n", cpu);

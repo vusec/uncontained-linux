@@ -14,6 +14,11 @@
 
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "mcp251xfd.h"
 
 static inline u8
@@ -237,6 +242,10 @@ int mcp251xfd_ring_alloc(struct mcp251xfd_priv *priv)
 
 		rx_ring = kzalloc(sizeof(*rx_ring) + rx_obj_size * rx_obj_num,
 				  GFP_KERNEL);
+		{
+			typeof((*rx_ring)) __uncontained_tmp18;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+		}
 		if (!rx_ring) {
 			mcp251xfd_ring_free(priv);
 			return -ENOMEM;

@@ -15,6 +15,11 @@
 #include <linux/slab.h>
 #include <linux/log2.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "aops.h"
 #include "attrib.h"
 #include "bitmap.h"
@@ -125,6 +130,10 @@ static int ntfs_init_locked_inode(struct inode *vi, void *data)
 		BUG_ON(!na->name);
 		i = na->name_len * sizeof(ntfschar);
 		ni->name = kmalloc(i + sizeof(ntfschar), GFP_ATOMIC);
+		{
+			typeof((ntfschar)) __uncontained_tmp104;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp104;
+		}
 		if (!ni->name)
 			return -ENOMEM;
 		memcpy(ni->name, na->name, i);

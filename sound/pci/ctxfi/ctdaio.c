@@ -18,6 +18,11 @@
 #include <linux/slab.h>
 #include <linux/kernel.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DAIO_OUT_MAX		SPDIFOO
 
 struct daio_usage {
@@ -160,6 +165,10 @@ static int dao_set_left_input(struct dao *dao, struct rsc *input)
 	int i;
 
 	entry = kzalloc((sizeof(*entry) * daio->rscl.msr), GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!entry)
 		return -ENOMEM;
 
@@ -189,6 +198,10 @@ static int dao_set_right_input(struct dao *dao, struct rsc *input)
 	int i;
 
 	entry = kzalloc((sizeof(*entry) * daio->rscr.msr), GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!entry)
 		return -ENOMEM;
 
@@ -396,6 +409,10 @@ static int dao_rsc_init(struct dao *dao,
 
 	dao->imappers = kzalloc(array3_size(sizeof(void *), desc->msr, 2),
 				GFP_KERNEL);
+	{
+		void *__uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!dao->imappers) {
 		err = -ENOMEM;
 		goto error1;

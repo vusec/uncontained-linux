@@ -17,6 +17,11 @@
 #include <linux/platform_device.h>
 #include <linux/skbuff.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hnae.h"
 #include "hns_enet.h"
 #include "hns_dsaf_mac.h"
@@ -2100,6 +2105,10 @@ static int hns_nic_init_ring_data(struct hns_nic_priv *priv)
 	priv->ring_data = kzalloc(array3_size(h->q_num,
 					      sizeof(*priv->ring_data), 2),
 				  GFP_KERNEL);
+	{
+		typeof((*priv->ring_data)) __uncontained_tmp16;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!priv->ring_data)
 		return -ENOMEM;
 

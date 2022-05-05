@@ -104,6 +104,14 @@ static struct dma_buf *mock_dmabuf(int npages)
 
 	mock = kmalloc(sizeof(*mock) + npages * sizeof(struct page *),
 		       GFP_KERNEL);
+	{
+		typeof((*mock)) __uncontained_tmp18;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+	}
+	{
+		struct page *__uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!mock)
 		return ERR_PTR(-ENOMEM);
 

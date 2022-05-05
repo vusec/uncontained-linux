@@ -14,6 +14,11 @@
 #include <net/pkt_sched.h>
 #include <net/pkt_cls.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* 1 band FIFO pseudo-"scheduler" */
 
 static int bfifo_enqueue(struct sk_buff *skb, struct Qdisc *sch,
@@ -237,6 +242,10 @@ int fifo_set_limit(struct Qdisc *q, unsigned int limit)
 		return 0;
 
 	nla = kmalloc(nla_attr_size(sizeof(struct tc_fifo_qopt)), GFP_KERNEL);
+	{
+		struct tc_fifo_qopt __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (nla) {
 		nla->nla_type = RTM_NEWQDISC;
 		nla->nla_len = nla_attr_size(sizeof(struct tc_fifo_qopt));

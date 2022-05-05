@@ -101,6 +101,10 @@ uint r8712_alloc_io_queue(struct _adapter *adapter)
 	struct io_req *pio_req;
 
 	pio_queue = kmalloc(sizeof(*pio_queue), GFP_ATOMIC);
+	{
+		typeof((*pio_queue)) __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!pio_queue)
 		goto alloc_io_queue_fail;
 	INIT_LIST_HEAD(&pio_queue->free_ioreqs);
@@ -110,6 +114,10 @@ uint r8712_alloc_io_queue(struct _adapter *adapter)
 	pio_queue->pallocated_free_ioreqs_buf = kzalloc(NUM_IOREQ *
 						(sizeof(struct io_req)) + 4,
 						GFP_ATOMIC);
+	{
+		struct io_req __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if ((pio_queue->pallocated_free_ioreqs_buf) == NULL)
 		goto alloc_io_queue_fail;
 	pio_queue->free_ioreqs_buf = pio_queue->pallocated_free_ioreqs_buf + 4

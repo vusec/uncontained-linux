@@ -18,6 +18,11 @@
 #include <uapi/linux/spi/spi.h>
 #include <linux/acpi.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct dma_chan;
 struct software_node;
 struct ptp_system_timestamp;
@@ -1080,6 +1085,14 @@ static inline struct spi_message *spi_message_alloc(unsigned ntrans, gfp_t flags
 	m = kzalloc(sizeof(struct spi_message)
 			+ ntrans * sizeof(struct spi_transfer),
 			flags);
+	{
+		struct spi_message __uncontained_tmp70;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+	}
+	{
+		struct spi_transfer __uncontained_tmp71;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (m) {
 		unsigned i;
 		struct spi_transfer *t = (struct spi_transfer *)(m + 1);

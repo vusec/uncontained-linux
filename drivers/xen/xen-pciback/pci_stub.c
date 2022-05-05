@@ -23,6 +23,11 @@
 #include <xen/xen.h>
 #include <asm/xen/hypervisor.h>
 #include <xen/interface/physdev.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "pciback.h"
 #include "conf_space.h"
 #include "conf_space_quirks.h"
@@ -370,6 +375,10 @@ static int pcistub_init_device(struct pci_dev *dev)
 	 */
 	dev_data = kzalloc(sizeof(*dev_data) +  strlen(DRV_NAME "[]")
 				+ strlen(pci_name(dev)) + 1, GFP_KERNEL);
+	{
+		typeof((*dev_data)) __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!dev_data) {
 		err = -ENOMEM;
 		goto out;

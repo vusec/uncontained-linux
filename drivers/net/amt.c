@@ -30,6 +30,11 @@
 #include <net/inet_common.h>
 #include <net/ip6_checksum.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct workqueue_struct *amt_wq;
 
 static HLIST_HEAD(source_gc_list);
@@ -475,6 +480,14 @@ static struct amt_group_node *amt_add_group(struct amt_dev *amt,
 	gnode = kzalloc(sizeof(*gnode) +
 			(sizeof(struct hlist_head) * amt->hash_buckets),
 			GFP_ATOMIC);
+	{
+		typeof((*gnode)) __uncontained_tmp28;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+	}
+	{
+		struct hlist_head __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (unlikely(!gnode))
 		return ERR_PTR(-ENOMEM);
 
@@ -2624,6 +2637,14 @@ static bool amt_request_handler(struct amt_dev *amt, struct sk_buff *skb)
 	tunnel = kzalloc(sizeof(*tunnel) +
 			 (sizeof(struct hlist_head) * amt->hash_buckets),
 			 GFP_ATOMIC);
+	{
+		typeof((*tunnel)) __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
+	{
+		struct hlist_head __uncontained_tmp27;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!tunnel)
 		return true;
 

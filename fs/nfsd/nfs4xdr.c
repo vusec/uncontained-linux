@@ -44,6 +44,11 @@
 #include <linux/xattr.h>
 #include <uapi/linux/xattr.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "idmap.h"
 #include "acl.h"
 #include "xdr4.h"
@@ -121,6 +126,10 @@ svcxdr_tmpalloc(struct nfsd4_compoundargs *argp, u32 len)
 	struct svcxdr_tmpbuf *tb;
 
 	tb = kmalloc(sizeof(*tb) + len, GFP_KERNEL);
+	{
+		typeof((*tb)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!tb)
 		return NULL;
 	tb->next = argp->to_free;
@@ -2351,6 +2360,10 @@ nfsd4_decode_compound(struct nfsd4_compoundargs *argp)
 
 	if (argp->opcnt > ARRAY_SIZE(argp->iops)) {
 		argp->ops = kzalloc(argp->opcnt * sizeof(*argp->ops), GFP_KERNEL);
+		{
+			typeof((*argp->ops)) __uncontained_tmp64;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+		}
 		if (!argp->ops) {
 			argp->ops = argp->iops;
 			dprintk("nfsd: couldn't allocate room for COMPOUND\n");

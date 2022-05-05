@@ -28,6 +28,11 @@
 #include <linux/pm_runtime.h>
 #include <linux/msi.h>
 #include <linux/of.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "pci.h"
 
 static int sysfs_initialized;	/* = 0 */
@@ -1192,6 +1197,10 @@ static int pci_create_attr(struct pci_dev *pdev, int num, int write_combine)
 	int retval;
 
 	res_attr = kzalloc(sizeof(*res_attr) + name_len, GFP_ATOMIC);
+	{
+		typeof((*res_attr)) __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!res_attr)
 		return -ENOMEM;
 

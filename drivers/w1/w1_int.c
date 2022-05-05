@@ -12,6 +12,11 @@
 #include <linux/export.h>
 #include <linux/moduleparam.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "w1_internal.h"
 #include "w1_netlink.h"
 
@@ -32,6 +37,14 @@ static struct w1_master *w1_alloc_dev(u32 id, int slave_count, int slave_ttl,
 	 * We are in process context(kernel thread), so can sleep.
 	 */
 	dev = kzalloc(sizeof(struct w1_master) + sizeof(struct w1_bus_master), GFP_KERNEL);
+	{
+		struct w1_bus_master __uncontained_tmp61;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+	}
+	{
+		struct w1_master __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!dev) {
 		pr_err("Failed to allocate %zd bytes for new w1 device.\n",
 			sizeof(struct w1_master));

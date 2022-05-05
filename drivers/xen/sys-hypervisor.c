@@ -17,6 +17,11 @@
 #include <xen/xenbus.h>
 #include <xen/interface/xen.h>
 #include <xen/interface/version.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #ifdef CONFIG_XEN_HAVE_VPMU
 #include <xen/interface/xenpmu.h>
 #endif
@@ -366,6 +371,10 @@ static ssize_t buildid_show(struct hyp_sysfs_attr *attr, char *buffer)
 	}
 
 	buildid = kmalloc(sizeof(*buildid) + ret, GFP_KERNEL);
+	{
+		typeof((*buildid)) __uncontained_tmp38;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!buildid)
 		return -ENOMEM;
 

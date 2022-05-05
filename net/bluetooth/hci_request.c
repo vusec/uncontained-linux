@@ -27,6 +27,11 @@
 #include <net/bluetooth/hci_core.h>
 #include <net/bluetooth/mgmt.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "smp.h"
 #include "hci_request.h"
 #include "msft.h"
@@ -2434,6 +2439,10 @@ int hci_req_configure_datapath(struct hci_dev *hdev, struct bt_codec *codec)
 		goto error;
 
 	cmd = kzalloc(sizeof(*cmd) + vnd_len, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp52;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!cmd) {
 		err = -ENOMEM;
 		goto error;

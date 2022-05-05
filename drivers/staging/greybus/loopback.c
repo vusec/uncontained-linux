@@ -28,6 +28,11 @@
 #include <linux/greybus.h>
 #include <asm/div64.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define NSEC_PER_DAY 86400000000000ULL
 
 struct gb_loopback_stats {
@@ -512,6 +517,10 @@ static int gb_loopback_sync_sink(struct gb_loopback *gb, u32 len)
 	int retval;
 
 	request = kmalloc(len + sizeof(*request), GFP_KERNEL);
+	{
+		typeof((*request)) __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!request)
 		return -ENOMEM;
 
@@ -533,9 +542,17 @@ static int gb_loopback_sync_transfer(struct gb_loopback *gb, u32 len)
 	gb->gbphy_latency_ts = 0;
 
 	request = kmalloc(len + sizeof(*request), GFP_KERNEL);
+	{
+		typeof((*request)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!request)
 		return -ENOMEM;
 	response = kmalloc(len + sizeof(*response), GFP_KERNEL);
+	{
+		typeof((*response)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!response) {
 		kfree(request);
 		return -ENOMEM;
@@ -577,6 +594,10 @@ static int gb_loopback_async_sink(struct gb_loopback *gb, u32 len)
 	int retval;
 
 	request = kmalloc(len + sizeof(*request), GFP_KERNEL);
+	{
+		typeof((*request)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!request)
 		return -ENOMEM;
 
@@ -625,6 +646,10 @@ static int gb_loopback_async_transfer(struct gb_loopback *gb, u32 len)
 	int retval, response_len;
 
 	request = kmalloc(len + sizeof(*request), GFP_KERNEL);
+	{
+		typeof((*request)) __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!request)
 		return -ENOMEM;
 

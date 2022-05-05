@@ -11,6 +11,11 @@
 #include <linux/spinlock.h>
 #include <linux/intel-iommu.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "perf.h"
 
 static DEFINE_SPINLOCK(latency_lock);
@@ -35,6 +40,10 @@ int dmar_latency_enable(struct intel_iommu *iommu, enum latency_type type)
 	if (!iommu->perf_statistic) {
 		iommu->perf_statistic = kzalloc(sizeof(*lstat) * DMAR_LATENCY_NUM,
 						GFP_ATOMIC);
+		{
+			typeof((*lstat)) __uncontained_tmp25;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+		}
 		if (!iommu->perf_statistic) {
 			ret = -ENOMEM;
 			goto unlock_out;

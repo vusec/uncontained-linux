@@ -24,6 +24,11 @@
 #include <scsi/scsi_host.h>
 #include <scsi/scsi.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "qedi.h"
 #include "qedi_gbl.h"
 #include "qedi_iscsi.h"
@@ -616,6 +621,10 @@ static int qedi_cm_alloc_mem(struct qedi_ctx *qedi)
 
 	qedi->ep_tbl = kzalloc((qedi->max_active_conns *
 				sizeof(struct qedi_endpoint *)), GFP_KERNEL);
+	{
+		struct qedi_endpoint *__uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!qedi->ep_tbl)
 		return -ENOMEM;
 	port_id = prandom_u32() % QEDI_LOCAL_PORT_RANGE;
@@ -1643,6 +1652,10 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
 
 	qedi->global_queues = kzalloc((sizeof(struct global_queue *) *
 				       qedi->num_queues), GFP_KERNEL);
+	{
+		struct global_queue *__uncontained_tmp43;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+	}
 	if (!qedi->global_queues) {
 		QEDI_ERR(&qedi->dbg_ctx,
 			 "Unable to allocate global queues array ptr memory\n");
@@ -1668,6 +1681,10 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
 		qedi->global_queues[i] =
 					kzalloc(sizeof(*qedi->global_queues[0]),
 						GFP_KERNEL);
+		{
+			typeof((*qedi->global_queues[0])) __uncontained_tmp44;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+		}
 		if (!qedi->global_queues[i]) {
 			QEDI_ERR(&qedi->dbg_ctx,
 				 "Unable to allocation global queue %d.\n", i);

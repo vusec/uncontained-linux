@@ -26,6 +26,11 @@
 
 #include <asm/set_memory.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "atomisp_internal.h"
 #include "hmm/hmm_pool.h"
 
@@ -94,6 +99,10 @@ static int hmm_reserved_pool_setup(struct hmm_reserved_pool_info **repool_info,
 
 	pool_info->pages = kmalloc(sizeof(struct page *) * pool_size,
 				   GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (unlikely(!pool_info->pages)) {
 		kfree(pool_info);
 		return -ENOMEM;

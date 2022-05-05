@@ -18,6 +18,11 @@
 #include <scsi/scsi_transport_fc.h>
 #include <linux/blk-mq-pci.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* *************************** Data Structures/Defines ****************** */
 
 
@@ -394,6 +399,10 @@ nvme_fc_register_localport(struct nvme_fc_port_info *pinfo,
 
 	newrec = kmalloc((sizeof(*newrec) + template->local_priv_sz),
 			 GFP_KERNEL);
+	{
+		typeof((*newrec)) __uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!newrec) {
 		ret = -ENOMEM;
 		goto out_reghost_failed;
@@ -708,6 +717,10 @@ nvme_fc_register_remoteport(struct nvme_fc_local_port *localport,
 
 	newrec = kmalloc((sizeof(*newrec) + lport->ops->remote_priv_sz),
 			 GFP_KERNEL);
+	{
+		typeof((*newrec)) __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!newrec) {
 		ret = -ENOMEM;
 		goto out_lport_put;
@@ -1187,6 +1200,18 @@ nvme_fc_connect_admin_queue(struct nvme_fc_ctrl *ctrl,
 	lsop = kzalloc((sizeof(*lsop) +
 			 sizeof(*assoc_rqst) + sizeof(*assoc_acc) +
 			 ctrl->lport->ops->lsrqst_priv_sz), GFP_KERNEL);
+	{
+		typeof((*assoc_acc)) __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
+	{
+		typeof((*assoc_rqst)) __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
+	{
+		typeof((*lsop)) __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!lsop) {
 		dev_info(ctrl->ctrl.device,
 			"NVME-FC{%d}: send Create Association failed: ENOMEM\n",
@@ -1303,6 +1328,18 @@ nvme_fc_connect_queue(struct nvme_fc_ctrl *ctrl, struct nvme_fc_queue *queue,
 	lsop = kzalloc((sizeof(*lsop) +
 			 sizeof(*conn_rqst) + sizeof(*conn_acc) +
 			 ctrl->lport->ops->lsrqst_priv_sz), GFP_KERNEL);
+	{
+		typeof((*conn_acc)) __uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
+	{
+		typeof((*conn_rqst)) __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
+	{
+		typeof((*lsop)) __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (!lsop) {
 		dev_info(ctrl->ctrl.device,
 			"NVME-FC{%d}: send Create Connection failed: ENOMEM\n",
@@ -1433,6 +1470,18 @@ nvme_fc_xmt_disconnect_assoc(struct nvme_fc_ctrl *ctrl)
 	lsop = kzalloc((sizeof(*lsop) +
 			sizeof(*discon_rqst) + sizeof(*discon_acc) +
 			ctrl->lport->ops->lsrqst_priv_sz), GFP_KERNEL);
+	{
+		typeof((*discon_acc)) __uncontained_tmp52;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+	}
+	{
+		typeof((*discon_rqst)) __uncontained_tmp53;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp53;
+	}
+	{
+		typeof((*lsop)) __uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!lsop) {
 		dev_info(ctrl->ctrl.device,
 			"NVME-FC{%d}: send Disconnect Association "
@@ -1755,6 +1804,18 @@ nvme_fc_rcv_ls_req(struct nvme_fc_remote_port *portptr,
 			sizeof(union nvmefc_ls_requests) +
 			sizeof(union nvmefc_ls_responses),
 			GFP_KERNEL);
+	{
+		typeof((*lsop)) __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
+	{
+		union nvmefc_ls_requests __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
+	{
+		union nvmefc_ls_responses __uncontained_tmp43;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+	}
 	if (!lsop) {
 		dev_info(lport->dev,
 			"RCV %s LS failed: No memory\n",

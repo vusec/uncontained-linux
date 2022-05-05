@@ -7,6 +7,11 @@
 
 #include <linux/vmalloc.h>
 #include <uapi/misc/habanalabs.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "habanalabs.h"
 
 /**
@@ -273,6 +278,10 @@ static u32 *hl_state_dump_read_sync_objects(struct hl_device *hdev, u32 index)
 			sds->props[SP_NEXT_SYNC_OBJ_ADDR] * index;
 
 	sync_objects = vmalloc(sds->props[SP_SYNC_OBJ_AMOUNT] * sizeof(u32));
+	{
+		u32 __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!sync_objects)
 		return NULL;
 
@@ -455,6 +464,10 @@ hl_state_dump_alloc_read_sm_block_monitors(struct hl_device *hdev, u32 index)
 
 	monitors = vmalloc(sds->props[SP_MONITORS_AMOUNT] *
 			   sizeof(struct hl_mon_state_dump));
+	{
+		struct hl_mon_state_dump __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!monitors)
 		return NULL;
 

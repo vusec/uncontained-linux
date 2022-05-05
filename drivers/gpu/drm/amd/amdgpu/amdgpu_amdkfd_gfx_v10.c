@@ -350,6 +350,10 @@ static int kgd_hqd_dump(struct amdgpu_device *adev,
 	} while (0)
 
 	*dump = kmalloc(HQD_N_REGS*2*sizeof(uint32_t), GFP_KERNEL);
+	{
+	uint32_t __uncontained_tmp13;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (*dump == NULL)
 		return -ENOMEM;
 
@@ -447,6 +451,10 @@ static int kgd_hqd_sdma_dump(struct amdgpu_device *adev,
 #define HQD_N_REGS (19+6+7+10)
 
 	*dump = kmalloc(HQD_N_REGS*2*sizeof(uint32_t), GFP_KERNEL);
+	{
+	uint32_t __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (*dump == NULL)
 		return -ENOMEM;
 

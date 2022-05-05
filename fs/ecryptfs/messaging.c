@@ -10,6 +10,11 @@
 #include <linux/slab.h>
 #include <linux/user_namespace.h>
 #include <linux/nsproxy.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ecryptfs_kernel.h"
 
 static LIST_HEAD(ecryptfs_msg_ctx_free_list);
@@ -368,6 +373,10 @@ int __init ecryptfs_init_messaging(void)
 	ecryptfs_daemon_hash = kmalloc((sizeof(struct hlist_head)
 					* (1 << ecryptfs_hash_bits)),
 				       GFP_KERNEL);
+	{
+		struct hlist_head __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!ecryptfs_daemon_hash) {
 		rc = -ENOMEM;
 		mutex_unlock(&ecryptfs_daemon_hash_mux);
@@ -379,6 +388,10 @@ int __init ecryptfs_init_messaging(void)
 	ecryptfs_msg_ctx_arr = kmalloc((sizeof(struct ecryptfs_msg_ctx)
 					* ecryptfs_message_buf_len),
 				       GFP_KERNEL);
+	{
+		struct ecryptfs_msg_ctx __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!ecryptfs_msg_ctx_arr) {
 		kfree(ecryptfs_daemon_hash);
 		rc = -ENOMEM;

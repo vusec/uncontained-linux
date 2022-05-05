@@ -6,6 +6,11 @@
  */
 #include <net/mac80211.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "mvm.h"
 #include "sta.h"
 #include "rs.h"
@@ -2572,6 +2577,10 @@ int iwl_mvm_sta_rx_agg(struct iwl_mvm *mvm, struct ieee80211_sta *sta,
 				    mvm->trans->num_rx_queues *
 				    reorder_buf_size,
 				    GFP_KERNEL);
+		{
+			typeof((*baid_data)) __uncontained_tmp45;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+		}
 		if (!baid_data)
 			return -ENOMEM;
 
@@ -3981,6 +3990,10 @@ int iwl_mvm_add_pasn_sta(struct iwl_mvm *mvm, struct ieee80211_vif *vif,
 		goto out;
 
 	keyconf = kzalloc(sizeof(*keyconf) + key_len, GFP_KERNEL);
+	{
+		typeof((*keyconf)) __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!keyconf) {
 		ret = -ENOBUFS;
 		goto out;

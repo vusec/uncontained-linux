@@ -29,6 +29,11 @@
 
 #include <net/sock.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define _X2KEY(x) ((x) == XFRM_INF ? 0 : (x))
 #define _KEY2X(x) ((x) == 0 ? XFRM_INF : (x))
 
@@ -467,6 +472,10 @@ static inline struct xfrm_user_sec_ctx *pfkey_sadb2xfrm_user_sec_ctx(const struc
 	int ctx_size = sec_ctx->sadb_x_ctx_len;
 
 	uctx = kmalloc((sizeof(*uctx)+ctx_size), gfp);
+	{
+		typeof((*uctx)) __uncontained_tmp72;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp72;
+	}
 
 	if (!uctx)
 		return NULL;
@@ -1175,6 +1184,10 @@ static struct xfrm_state * pfkey_msg2xfrm_state(struct net *net,
 		if (key)
 			keysize = (key->sadb_key_bits + 7) / 8;
 		x->aalg = kmalloc(sizeof(*x->aalg) + keysize, GFP_KERNEL);
+		{
+			typeof((*x->aalg)) __uncontained_tmp73;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
+		}
 		if (!x->aalg) {
 			err = -ENOMEM;
 			goto out;
@@ -1214,6 +1227,10 @@ static struct xfrm_state * pfkey_msg2xfrm_state(struct net *net,
 			if (key)
 				keysize = (key->sadb_key_bits + 7) / 8;
 			x->ealg = kmalloc(sizeof(*x->ealg) + keysize, GFP_KERNEL);
+			{
+				typeof((*x->ealg)) __uncontained_tmp74;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+			}
 			if (!x->ealg) {
 				err = -ENOMEM;
 				goto out;

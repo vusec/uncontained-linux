@@ -245,6 +245,10 @@ static int mlx5e_ptp_alloc_traffic_db(struct mlx5e_ptpsq *ptpsq, int numa)
 
 	ptpsq->skb_fifo.fifo = kvzalloc_node(array_size(wq_sz, sizeof(*ptpsq->skb_fifo.fifo)),
 					     GFP_KERNEL, numa);
+	{
+		typeof((*ptpsq->skb_fifo.fifo)) __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!ptpsq->skb_fifo.fifo)
 		return -ENOMEM;
 

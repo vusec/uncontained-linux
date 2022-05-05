@@ -2176,6 +2176,10 @@ xfs_da_grow_inode_int(
 		 * try without the CONTIG flag.  Loop until we get it all.
 		 */
 		mapp = kmem_alloc(sizeof(*mapp) * count, 0);
+		{
+			typeof((*mapp)) __uncontained_tmp54;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+		}
 		for (b = *bno, mapi = 0; b < *bno + count; ) {
 			nmap = min(XFS_BMAP_MAX_NMAP, count);
 			c = (int)(*bno + count - b);
@@ -2509,8 +2513,13 @@ xfs_dabuf_map(
 	xfs_fileoff_t		off = bno;
 	int			error = 0, nirecs, i;
 
-	if (nfsb > 1)
+	if (nfsb > 1) {
 		irecs = kmem_zalloc(sizeof(irec) * nfsb, KM_NOFS);
+		{
+			typeof((irec)) __uncontained_tmp55;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+		}
+	}
 
 	nirecs = nfsb;
 	error = xfs_bmapi_read(dp, bno, nfsb, irecs, &nirecs,
@@ -2524,6 +2533,10 @@ xfs_dabuf_map(
 	 */
 	if (nirecs > 1) {
 		map = kmem_zalloc(nirecs * sizeof(struct xfs_buf_map), KM_NOFS);
+		{
+			struct xfs_buf_map __uncontained_tmp53;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp53;
+		}
 		if (!map) {
 			error = -ENOMEM;
 			goto out_free_irecs;

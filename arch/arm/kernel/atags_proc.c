@@ -5,6 +5,11 @@
 #include <asm/types.h>
 #include <asm/page.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct buffer {
 	size_t size;
 	char data[];
@@ -55,6 +60,10 @@ static int __init init_atags_procfs(void)
 	WARN_ON(tag->hdr.tag != ATAG_NONE);
 
 	b = kmalloc(sizeof(*b) + size, GFP_KERNEL);
+	{
+		typeof((*b)) __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!b)
 		goto nomem;
 

@@ -12,6 +12,11 @@
 #include <net/net_namespace.h>
 #include <net/tc_act/tc_vlan.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "reg.h"
 #include "core.h"
 #include "resources.h"
@@ -727,6 +732,10 @@ mlxsw_sp_acl_rule_create(struct mlxsw_sp *mlxsw_sp,
 	mlxsw_sp_acl_ruleset_ref_inc(ruleset);
 	rule = kzalloc(sizeof(*rule) + ops->rule_priv_size,
 		       GFP_KERNEL);
+	{
+		typeof((*rule)) __uncontained_tmp56;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!rule) {
 		err = -ENOMEM;
 		goto err_alloc;

@@ -22,6 +22,11 @@
 #include <linux/of_platform.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * The idle-as-is "state" is not an actual state that may be selected, it
  * only implies that the state should not be changed. So, use that state
@@ -89,6 +94,14 @@ struct mux_chip *mux_chip_alloc(struct device *dev,
 	mux_chip = kzalloc(sizeof(*mux_chip) +
 			   controllers * sizeof(*mux_chip->mux) +
 			   sizeof_priv, GFP_KERNEL);
+	{
+		typeof((*mux_chip)) __uncontained_tmp19;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+	}
+	{
+		typeof((*mux_chip->mux)) __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!mux_chip)
 		return ERR_PTR(-ENOMEM);
 

@@ -24,6 +24,11 @@
 #include <linux/pm_wakeup.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hid-ids.h"
 
 /*
@@ -60,6 +65,18 @@ static int cbas_ec_query_base(struct cros_ec_device *ec_dev, bool get_state,
 
 	msg = kzalloc(sizeof(*msg) + max(sizeof(u32), sizeof(*params)),
 		      GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp27;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+	}
+	{
+		typeof((*params)) __uncontained_tmp28;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+	}
+	{
+		u32 __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!msg)
 		return -ENOMEM;
 

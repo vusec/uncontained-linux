@@ -15,6 +15,11 @@
 #include <linux/vmalloc.h>
 #include <linux/vdpa.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "iova_domain.h"
 
 static int vduse_iotlb_add_range(struct vduse_iova_domain *domain,
@@ -486,6 +491,10 @@ vduse_domain_create(unsigned long iova_limit, size_t bounce_size)
 		return NULL;
 
 	domain = kzalloc(sizeof(*domain), GFP_KERNEL);
+	{
+		typeof((*domain)) __uncontained_tmp86;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!domain)
 		return NULL;
 
@@ -497,6 +506,10 @@ vduse_domain_create(unsigned long iova_limit, size_t bounce_size)
 	domain->bounce_size = PAGE_ALIGN(bounce_size);
 	domain->bounce_maps = vzalloc(bounce_pfns *
 				sizeof(struct vduse_bounce_map));
+	{
+		struct vduse_bounce_map __uncontained_tmp85;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!domain->bounce_maps)
 		goto err_map;
 

@@ -11,6 +11,11 @@
 #include <linux/personality.h>
 #include <linux/uaccess.h>
 #include <linux/compat.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "internal.h"
 #include "mount.h"
 
@@ -39,6 +44,10 @@ static long do_sys_name_to_handle(struct path *path,
 
 	handle = kmalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
 			 GFP_KERNEL);
+	{
+		struct file_handle __uncontained_tmp77;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp77;
+	}
 	if (!handle)
 		return -ENOMEM;
 
@@ -191,6 +200,10 @@ static int handle_to_path(int mountdirfd, struct file_handle __user *ufh,
 	}
 	handle = kmalloc(sizeof(struct file_handle) + f_handle.handle_bytes,
 			 GFP_KERNEL);
+	{
+		struct file_handle __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!handle) {
 		retval = -ENOMEM;
 		goto out_err;

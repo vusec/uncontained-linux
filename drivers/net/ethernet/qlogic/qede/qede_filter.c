@@ -11,6 +11,11 @@
 #include <linux/vmalloc.h>
 
 #include <linux/qed/qed_if.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "qede.h"
 
 #define QEDE_FILTER_PRINT_MAX_LEN	(64)
@@ -315,6 +320,10 @@ int qede_alloc_arfs(struct qede_dev *edev)
 		return -EINVAL;
 
 	edev->arfs = vzalloc(sizeof(*edev->arfs));
+	{
+		typeof((*edev->arfs)) __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!edev->arfs)
 		return -ENOMEM;
 
@@ -326,6 +335,10 @@ int qede_alloc_arfs(struct qede_dev *edev)
 	edev->arfs->arfs_fltr_bmap =
 		vzalloc(array_size(sizeof(long),
 				   BITS_TO_LONGS(QEDE_RFS_MAX_FLTR)));
+	{
+		long __uncontained_tmp59;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!edev->arfs->arfs_fltr_bmap) {
 		vfree(edev->arfs);
 		edev->arfs = NULL;

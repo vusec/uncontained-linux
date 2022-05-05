@@ -11,6 +11,11 @@
 #include <linux/crush/hash.h>
 #include <linux/crush/mapper.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 char *ceph_osdmap_state_str(char *str, int len, u32 state)
 {
 	if (!len)
@@ -149,6 +154,10 @@ static struct crush_name_node *alloc_crush_name(size_t name_len)
 	struct crush_name_node *cn;
 
 	cn = kmalloc(sizeof(*cn) + name_len + 1, GFP_NOIO);
+	{
+		typeof((*cn)) __uncontained_tmp111;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (!cn)
 		return NULL;
 
@@ -693,6 +702,10 @@ static struct ceph_pg_mapping *alloc_pg_mapping(size_t payload_len)
 	struct ceph_pg_mapping *pg;
 
 	pg = kmalloc(sizeof(*pg) + payload_len, GFP_NOIO);
+	{
+		typeof((*pg)) __uncontained_tmp112;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (!pg)
 		return NULL;
 
@@ -1191,8 +1204,20 @@ static int osdmap_set_max_osd(struct ceph_osdmap *map, u32 max)
 		return 0;
 
 	state = kvmalloc(array_size(max, sizeof(*state)), GFP_NOFS);
+	{
+		typeof((*state)) __uncontained_tmp114;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp114;
+	}
 	weight = kvmalloc(array_size(max, sizeof(*weight)), GFP_NOFS);
+	{
+		typeof((*weight)) __uncontained_tmp115;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp115;
+	}
 	addr = kvmalloc(array_size(max, sizeof(*addr)), GFP_NOFS);
+	{
+		typeof((*addr)) __uncontained_tmp116;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (!state || !weight || !addr) {
 		kvfree(state);
 		kvfree(weight);
@@ -1224,6 +1249,10 @@ static int osdmap_set_max_osd(struct ceph_osdmap *map, u32 max)
 
 		affinity = kvmalloc(array_size(max, sizeof(*affinity)),
 					 GFP_NOFS);
+		{
+			typeof((*affinity)) __uncontained_tmp117;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp117;
+		}
 		if (!affinity)
 			return -ENOMEM;
 
@@ -1506,6 +1535,10 @@ static int set_primary_affinity(struct ceph_osdmap *map, int osd, u32 aff)
 		map->osd_primary_affinity = kvmalloc(
 		    array_size(map->max_osd, sizeof(*map->osd_primary_affinity)),
 		    GFP_NOFS);
+		{
+			typeof((*map->osd_primary_affinity)) __uncontained_tmp118;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp118;
+		}
 		if (!map->osd_primary_affinity)
 			return -ENOMEM;
 
@@ -2877,6 +2910,10 @@ static struct crush_loc_node *alloc_crush_loc(size_t type_name_len,
 	struct crush_loc_node *loc;
 
 	loc = kmalloc(sizeof(*loc) + type_name_len + name_len + 2, GFP_NOIO);
+	{
+		typeof((*loc)) __uncontained_tmp113;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!loc)
 		return NULL;
 

@@ -5,6 +5,11 @@
 
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "debugfs_sta.h"
 #include "core.h"
 #include "peer.h"
@@ -352,6 +357,10 @@ ath11k_dbg_sta_open_htt_peer_stats(struct inode *inode, struct file *file)
 		return -EPERM;
 
 	stats_req = vzalloc(sizeof(*stats_req) + ATH11K_HTT_STATS_BUF_SIZE);
+	{
+		typeof((*stats_req)) __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!stats_req)
 		return -ENOMEM;
 

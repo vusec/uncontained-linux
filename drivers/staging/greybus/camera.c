@@ -16,6 +16,11 @@
 #include <linux/vmalloc.h>
 #include <linux/greybus.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "gb-camera.h"
 #include "greybus_protocols.h"
 
@@ -1171,6 +1176,10 @@ static int gb_camera_debugfs_init(struct gb_camera *gcam)
 	gcam->debugfs.buffers =
 		vmalloc(array_size(GB_CAMERA_DEBUGFS_BUFFER_MAX,
 				   sizeof(*gcam->debugfs.buffers)));
+	{
+		typeof((*gcam->debugfs.buffers)) __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!gcam->debugfs.buffers)
 		return -ENOMEM;
 

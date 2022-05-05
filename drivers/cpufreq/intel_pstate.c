@@ -32,6 +32,11 @@
 #include <asm/cpu_device_id.h>
 #include <asm/cpufeature.h>
 #include <asm/intel-family.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "../drivers/thermal/intel/thermal_interrupt.h"
 
 #define INTEL_PSTATE_SAMPLING_INTERVAL	(10 * NSEC_PER_MSEC)
@@ -3489,6 +3494,10 @@ hwp_cpu_matched:
 	pr_info("Intel P-state driver initializing\n");
 
 	_all_cpu_data = vzalloc(array_size(sizeof(void *), num_possible_cpus()));
+	{
+		void *__uncontained_tmp7;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!_all_cpu_data)
 		return -ENOMEM;
 

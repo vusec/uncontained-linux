@@ -36,6 +36,11 @@
 #include <linux/slab.h>
 #include <linux/device.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define TEST_START_NUM_THREADS	50
 #define TEST_START_DRIVER	"test_module"
 #define TEST_START_TEST_FS	"xfs"
@@ -782,6 +787,10 @@ static int kmod_config_sync_info(struct kmod_test_device *test_dev)
 	test_dev->info =
 		vzalloc(array_size(sizeof(struct kmod_test_device_info),
 				   config->num_threads));
+	{
+		struct kmod_test_device_info __uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!test_dev->info)
 		return -ENOMEM;
 

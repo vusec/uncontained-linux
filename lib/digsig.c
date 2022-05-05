@@ -25,6 +25,11 @@
 #include <linux/mpi.h>
 #include <linux/digsig.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct crypto_shash *shash;
 
 static const char *pkcs_1_v1_5_decode_emsa(const unsigned char *msg,
@@ -233,6 +238,10 @@ int digsig_verify(struct key *keyring, const char *sig, int siglen,
 
 	desc = kzalloc(sizeof(*desc) + crypto_shash_descsize(shash),
 		       GFP_KERNEL);
+	{
+		typeof((*desc)) __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!desc)
 		goto err;
 

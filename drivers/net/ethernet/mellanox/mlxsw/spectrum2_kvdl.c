@@ -4,6 +4,11 @@
 #include <linux/kernel.h>
 #include <linux/bitops.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "spectrum.h"
 #include "core.h"
 #include "reg.h"
@@ -204,6 +209,10 @@ mlxsw_sp2_kvdl_part_init(struct mlxsw_sp *mlxsw_sp,
 
 	usage_size = BITS_TO_LONGS(usage_bit_count) * sizeof(unsigned long);
 	part = kzalloc(sizeof(*part) + usage_size, GFP_KERNEL);
+	{
+		typeof((*part)) __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!part)
 		return ERR_PTR(-ENOMEM);
 	part->info = info;

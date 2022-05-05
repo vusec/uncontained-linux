@@ -4320,6 +4320,10 @@ int mwifiex_init_channel_scan_gap(struct mwifiex_adapter *adapter)
 	adapter->num_in_chan_stats = 2 * (n_channels_bg + n_channels_a);
 	adapter->chan_stats = vmalloc(array_size(sizeof(*adapter->chan_stats),
 						 adapter->num_in_chan_stats));
+	{
+		typeof((*adapter->chan_stats)) __uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
 
 	if (!adapter->chan_stats)
 		return -ENOMEM;

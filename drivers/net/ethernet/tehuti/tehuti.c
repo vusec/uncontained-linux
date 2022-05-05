@@ -927,6 +927,18 @@ static struct rxdb *bdx_rxdb_create(int nelem)
 	db = vmalloc(sizeof(struct rxdb)
 		     + (nelem * sizeof(int))
 		     + (nelem * sizeof(struct rx_map)));
+	{
+		int __uncontained_tmp19;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+	}
+	{
+		struct rx_map __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
+	{
+		struct rxdb __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (likely(db != NULL)) {
 		db->stack = (int *)(db + 1);
 		db->elems = (void *)(db->stack + nelem);

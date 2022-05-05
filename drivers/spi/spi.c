@@ -36,6 +36,11 @@
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/spi.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 EXPORT_TRACEPOINT_SYMBOL(spi_transfer_start);
 EXPORT_TRACEPOINT_SYMBOL(spi_transfer_stop);
 
@@ -860,6 +865,10 @@ static void *spi_res_alloc(struct spi_device *spi, spi_res_release_t release,
 	struct spi_res *sres;
 
 	sres = kzalloc(sizeof(*sres) + size, gfp);
+	{
+		typeof((*sres)) __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!sres)
 		return NULL;
 

@@ -227,6 +227,10 @@ xfs_errortag_init(
 {
 	mp->m_errortag = kmem_zalloc(sizeof(unsigned int) * XFS_ERRTAG_MAX,
 			KM_MAYFAIL);
+	{
+		unsigned int __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!mp->m_errortag)
 		return -ENOMEM;
 

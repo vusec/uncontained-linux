@@ -24,6 +24,11 @@
 #include <linux/regulator/consumer.h>
 #include <linux/platform_data/dma-ste-dma40.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "dmaengine.h"
 #include "ste_dma40_ll.h"
 
@@ -3195,6 +3200,14 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 	base = kzalloc(ALIGN(sizeof(struct d40_base), 4) +
 		       (num_phy_chans + num_log_chans + num_memcpy_chans) *
 		       sizeof(struct d40_chan), GFP_KERNEL);
+	{
+		struct d40_base __uncontained_tmp13;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+	}
+	{
+		struct d40_chan __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
 
 	if (base == NULL)
 		goto unmap_io;

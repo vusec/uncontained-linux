@@ -12,6 +12,11 @@
 #include "acl.h"
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int __reiserfs_set_acl(struct reiserfs_transaction_handle *th,
 			    struct inode *inode, int type,
 			    struct posix_acl *acl);
@@ -145,6 +150,14 @@ static void *reiserfs_posix_acl_to_disk(const struct posix_acl *acl, size_t * si
 						  acl->a_count *
 						  sizeof(reiserfs_acl_entry),
 						  GFP_NOFS);
+	{
+		reiserfs_acl_entry __uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
+	{
+		reiserfs_acl_header __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!ext_acl)
 		return ERR_PTR(-ENOMEM);
 	ext_acl->a_version = cpu_to_le32(REISERFS_ACL_VERSION);

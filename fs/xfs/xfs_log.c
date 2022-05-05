@@ -1587,6 +1587,10 @@ xlog_alloc_log(
 				sizeof(struct bio_vec);
 
 		iclog = kmem_zalloc(sizeof(*iclog) + bvec_size, KM_MAYFAIL);
+		{
+			typeof((*iclog)) __uncontained_tmp81;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+		}
 		if (!iclog)
 			goto out_free_iclog;
 

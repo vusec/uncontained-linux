@@ -17,6 +17,11 @@
 #include <linux/serdev.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "serial.h"
 
 static int gnss_serial_open(struct gnss_device *gdev)
@@ -128,6 +133,10 @@ struct gnss_serial *gnss_serial_allocate(struct serdev_device *serdev,
 	int ret;
 
 	gserial = kzalloc(sizeof(*gserial) + data_size, GFP_KERNEL);
+	{
+		typeof((*gserial)) __uncontained_tmp15;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!gserial)
 		return ERR_PTR(-ENOMEM);
 

@@ -54,6 +54,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/ib_mad.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifdef CONFIG_TRACEPOINTS
 static void create_mad_addr_info(struct ib_mad_send_wr_private *mad_send_wr,
 			  struct ib_mad_qp_info *qp_info,
@@ -806,6 +811,10 @@ static int alloc_send_rmpp_list(struct ib_mad_send_wr_private *send_wr,
 	/* Allocate data segments. */
 	for (left = send_buf->data_len + pad; left > 0; left -= seg_size) {
 		seg = kmalloc(sizeof(*seg) + seg_size, gfp_mask);
+		{
+			typeof((*seg)) __uncontained_tmp26;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+		}
 		if (!seg) {
 			free_send_rmpp_list(send_wr);
 			return -ENOMEM;
@@ -870,6 +879,10 @@ struct ib_mad_send_buf *ib_create_send_mad(struct ib_mad_agent *mad_agent,
 
 	size = rmpp_active ? hdr_len : mad_size;
 	buf = kzalloc(sizeof *mad_send_wr + size, gfp_mask);
+	{
+		typeof(*mad_send_wr) __uncontained_tmp27;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!buf)
 		return ERR_PTR(-ENOMEM);
 

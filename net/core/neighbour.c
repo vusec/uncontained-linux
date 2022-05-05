@@ -41,6 +41,11 @@
 
 #include <trace/events/neigh.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define NEIGH_DEBUG 1
 #define neigh_dbg(level, fmt, ...)		\
 do {						\
@@ -764,6 +769,10 @@ struct pneigh_entry * pneigh_lookup(struct neigh_table *tbl,
 	ASSERT_RTNL();
 
 	n = kzalloc(sizeof(*n) + key_len, GFP_KERNEL);
+	{
+		typeof((*n)) __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!n)
 		goto out;
 

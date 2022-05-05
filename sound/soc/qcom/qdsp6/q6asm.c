@@ -16,6 +16,11 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/mm.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "q6asm.h"
 #include "q6core.h"
 #include "q6dsp-errno.h"
@@ -514,6 +519,10 @@ int q6asm_map_memory_regions(unsigned int dir, struct audio_client *ac,
 	}
 
 	buf = kzalloc(((sizeof(struct audio_buffer)) * periods), GFP_ATOMIC);
+	{
+		struct audio_buffer __uncontained_tmp107;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp107;
+	}
 	if (!buf) {
 		spin_unlock_irqrestore(&ac->lock, flags);
 		return -ENOMEM;

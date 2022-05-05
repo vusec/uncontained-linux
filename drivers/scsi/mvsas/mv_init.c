@@ -354,6 +354,14 @@ static struct mvs_info *mvs_pci_alloc(struct pci_dev *pdev,
 	mvi = kzalloc(sizeof(*mvi) +
 		(1L << mvs_chips[ent->driver_data].slot_width) *
 		sizeof(struct mvs_slot_info), GFP_KERNEL);
+	{
+		typeof((*mvi)) __uncontained_tmp53;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp53;
+	}
+	{
+		struct mvs_slot_info __uncontained_tmp52;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!mvi)
 		return NULL;
 

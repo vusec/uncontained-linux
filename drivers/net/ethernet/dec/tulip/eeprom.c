@@ -15,6 +15,11 @@
 #include "tulip.h"
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 
 
 /* Serial EEPROM section. */
@@ -119,6 +124,14 @@ static void tulip_build_fake_mediatable(struct tulip_private *tp)
 
 		tp->mtable = kmalloc(sizeof(struct mediatable) +
 				     sizeof(struct medialeaf), GFP_KERNEL);
+		{
+			  struct medialeaf __uncontained_tmp14;
+			  __uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+		}
+		{
+			struct mediatable __uncontained_tmp15;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+		}
 
 		if (tp->mtable == NULL)
 			return; /* Horrible, impossible failure. */

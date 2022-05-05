@@ -8,6 +8,11 @@
 
 #include <linux/slab.h>
 #include <asm/unaligned.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ieee80211_i.h"
 #include "mesh.h"
 #include "driver-ops.h"
@@ -851,6 +856,10 @@ ieee80211_mesh_build_beacon(struct ieee80211_if_mesh *ifmsh)
 		   ifmsh->ie_len;
 
 	bcn = kzalloc(sizeof(*bcn) + head_len + tail_len, GFP_KERNEL);
+	{
+		typeof((*bcn)) __uncontained_tmp88;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp88;
+	}
 	/* need an skb for IE builders to operate on */
 	skb = dev_alloc_skb(max(head_len, tail_len));
 

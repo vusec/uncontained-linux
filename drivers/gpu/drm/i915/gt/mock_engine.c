@@ -63,6 +63,10 @@ static struct intel_ring *mock_ring(struct intel_engine_cs *engine)
 	struct intel_ring *ring;
 
 	ring = kzalloc(sizeof(*ring) + sz, GFP_KERNEL);
+	{
+		typeof((*ring)) __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!ring)
 		return NULL;
 
@@ -348,6 +352,10 @@ struct intel_engine_cs *mock_engine(struct drm_i915_private *i915,
 	GEM_BUG_ON(!to_gt(i915)->uncore);
 
 	engine = kzalloc(sizeof(*engine) + PAGE_SIZE, GFP_KERNEL);
+	{
+		typeof((*engine)) __uncontained_tmp7;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!engine)
 		return NULL;
 

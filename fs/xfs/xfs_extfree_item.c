@@ -332,6 +332,14 @@ xfs_trans_get_efd(
 		efdp = kmem_zalloc(sizeof(struct xfs_efd_log_item) +
 				(nextents - 1) * sizeof(struct xfs_extent),
 				0);
+		{
+			struct xfs_efd_log_item __uncontained_tmp57;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+		}
+		{
+			struct xfs_extent __uncontained_tmp58;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+		}
 	} else {
 		efdp = kmem_cache_zalloc(xfs_efd_cache,
 					GFP_KERNEL | __GFP_NOFAIL);

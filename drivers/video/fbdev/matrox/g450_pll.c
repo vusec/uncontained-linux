@@ -497,6 +497,10 @@ int matroxfb_g450_setclk(struct matrox_fb_info *minfo, unsigned int fout,
 	unsigned int* arr;
 	
 	arr = kmalloc(sizeof(*arr) * MNP_TABLE_SIZE * 2, GFP_KERNEL);
+	{
+		typeof((*arr)) __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (arr) {
 		int r;
 

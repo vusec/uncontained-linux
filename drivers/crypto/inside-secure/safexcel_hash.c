@@ -18,6 +18,11 @@
 #include <linux/dma-mapping.h>
 #include <linux/dmapool.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "safexcel.h"
 
 struct safexcel_ahash_ctx {
@@ -2782,6 +2787,10 @@ static int safexcel_hmac_sha3_cra_init(struct crypto_tfm *tfm, const char *alg)
 
 	ctx->shdesc = kmalloc(sizeof(*ctx->shdesc) +
 			      crypto_shash_descsize(ctx->shpre), GFP_KERNEL);
+	{
+		typeof((*ctx->shdesc)) __uncontained_tmp12;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!ctx->shdesc) {
 		crypto_free_shash(ctx->shpre);
 		return -ENOMEM;
