@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
-/// If list_for_each_entry, etc complete a traversal of the list, the iterator
-/// variable ends up pointing to an address at an offset from the list head,
-/// and not a meaningful structure.  Thus this value should not be used after
-/// the end of the iterator.
-//#False positives arise when there is a goto in the iterator and the
-//#reported reference is at the label of this goto.  Some flag tests
-//#may also cause a report to be a false positive.
+/// Detect allocation that create custom objects by combining different sizeof()
+/// and mark the types with stores to __uncontained_complex_alloc easily parsable
+/// by llvm
 ///
 // Confidence: Moderate
 // Copyright: (C) 2012 Julia Lawall, INRIA/LIP6.
@@ -17,6 +13,7 @@
 virtual context
 virtual org
 virtual report
+virtual patch
 
 @alloc_function@
 expression c;
