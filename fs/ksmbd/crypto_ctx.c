@@ -10,6 +10,11 @@
 #include <linux/wait.h>
 #include <linux/sched.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "glob.h"
 #include "crypto_ctx.h"
 
@@ -90,6 +95,10 @@ static struct shash_desc *alloc_shash_desc(int id)
 
 	shash = kzalloc(sizeof(*shash) + crypto_shash_descsize(tfm),
 			GFP_KERNEL);
+	{
+		typeof((*shash)) __uncontained_tmp148;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (!shash)
 		crypto_free_shash(tfm);
 	else

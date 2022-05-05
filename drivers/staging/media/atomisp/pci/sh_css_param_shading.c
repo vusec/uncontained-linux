@@ -16,6 +16,11 @@
 #include <linux/slab.h>
 
 #include <math_support.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "sh_css_param_shading.h"
 #include "ia_css_shading.h"
 #include "assert_support.h"
@@ -351,6 +356,10 @@ ia_css_shading_table_alloc(
 		me->data[i] =
 		    kvmalloc(width * height * sizeof(*me->data[0]),
 			     GFP_KERNEL);
+		{
+			typeof((*me->data[0])) __uncontained_tmp86;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
+		}
 		if (!me->data[i]) {
 			unsigned int j;
 

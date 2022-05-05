@@ -30,6 +30,11 @@
 #include "processpptables.h"
 #include <atom-types.h>
 #include <atombios.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "pptable.h"
 #include "power_state.h"
 #include "hwmgr.h"
@@ -320,6 +325,14 @@ static int get_cac_tdp_table(struct pp_hwmgr *hwmgr,
 	table_size = sizeof(unsigned long) + sizeof(struct phm_cac_tdp_table);
 
 	tdp_table = kzalloc(table_size, GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp11;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp11;
+	}
+	{
+		struct phm_cac_tdp_table __uncontained_tmp12;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (NULL == tdp_table)
 		return -ENOMEM;
 

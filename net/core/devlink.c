@@ -31,6 +31,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/devlink.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DEVLINK_RELOAD_STATS_ARRAY_SIZE \
 	(__DEVLINK_RELOAD_LIMIT_MAX * __DEVLINK_RELOAD_ACTION_MAX)
 
@@ -6236,6 +6241,10 @@ static int devlink_fmsg_put_name(struct devlink_fmsg *fmsg, const char *name)
 		return -EMSGSIZE;
 
 	item = kzalloc(sizeof(*item) + strlen(name) + 1, GFP_KERNEL);
+	{
+		typeof((*item)) __uncontained_tmp136;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp136;
+	}
 	if (!item)
 		return -ENOMEM;
 
@@ -6349,6 +6358,10 @@ static int devlink_fmsg_put_value(struct devlink_fmsg *fmsg,
 		return -EMSGSIZE;
 
 	item = kzalloc(sizeof(*item) + value_len, GFP_KERNEL);
+	{
+		typeof((*item)) __uncontained_tmp137;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp137;
+	}
 	if (!item)
 		return -ENOMEM;
 
@@ -9031,6 +9044,10 @@ struct devlink *devlink_alloc_ns(const struct devlink_ops *ops,
 		return NULL;
 
 	devlink = kzalloc(sizeof(*devlink) + priv_size, GFP_KERNEL);
+	{
+		typeof((*devlink)) __uncontained_tmp138;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp138;
+	}
 	if (!devlink)
 		return NULL;
 

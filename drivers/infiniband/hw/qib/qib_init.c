@@ -43,6 +43,16 @@
 #endif
 #include <rdma/rdma_vt.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "qib.h"
 #include "qib_common.h"
 #include "qib_mad.h"
@@ -258,11 +268,19 @@ int qib_init_pportdata(struct qib_pportdata *ppd, struct qib_devdata *dd,
 	size = IB_CC_TABLE_CAP_DEFAULT * sizeof(struct ib_cc_table_entry)
 		* IB_CCT_ENTRIES;
 	ppd->ccti_entries = kzalloc(size, GFP_KERNEL);
+	{
+		struct ib_cc_table_entry __uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!ppd->ccti_entries)
 		goto bail;
 
 	size = IB_CC_CCS_ENTRIES * sizeof(struct ib_cc_congestion_entry);
 	ppd->congestion_entries = kzalloc(size, GFP_KERNEL);
+	{
+		struct ib_cc_congestion_entry __uncontained_tmp18;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!ppd->congestion_entries)
 		goto bail_1;
 
@@ -369,11 +387,19 @@ static void init_shadow_tids(struct qib_devdata *dd)
 
 	pages = vzalloc(array_size(sizeof(struct page *),
 				   dd->cfgctxts * dd->rcvtidcnt));
+	{
+		struct page *__uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!pages)
 		goto bail;
 
 	addrs = vzalloc(array_size(sizeof(dma_addr_t),
 				   dd->cfgctxts * dd->rcvtidcnt));
+	{
+		dma_addr_t __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!addrs)
 		goto bail_free;
 

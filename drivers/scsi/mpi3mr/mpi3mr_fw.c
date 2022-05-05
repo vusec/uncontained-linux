@@ -10,6 +10,11 @@
 #include "mpi3mr.h"
 #include <linux/io-64-nonatomic-lo-hi.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int
 mpi3mr_issue_reset(struct mpi3mr_ioc *mrioc, u16 reset_type, u32 reset_reason);
 static int mpi3mr_setup_admin_qpair(struct mpi3mr_ioc *mrioc);
@@ -811,6 +816,10 @@ static int mpi3mr_setup_isr(struct mpi3mr_ioc *mrioc, u8 setup_one)
 
 	mrioc->intr_info = kzalloc(sizeof(struct mpi3mr_intr_info) * max_vectors,
 	    GFP_KERNEL);
+	{
+		struct mpi3mr_intr_info __uncontained_tmp102;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (!mrioc->intr_info) {
 		retval = -ENOMEM;
 		pci_free_irq_vectors(mrioc->pdev);
@@ -2053,6 +2062,10 @@ static int mpi3mr_create_op_queues(struct mpi3mr_ioc *mrioc)
 
 		mrioc->op_reply_qinfo = kzalloc(sizeof(struct op_reply_qinfo) *
 		    num_queues, GFP_KERNEL);
+		{
+			struct op_reply_qinfo __uncontained_tmp103;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp103;
+		}
 		if (!mrioc->op_reply_qinfo) {
 			retval = -1;
 			goto out_failed;

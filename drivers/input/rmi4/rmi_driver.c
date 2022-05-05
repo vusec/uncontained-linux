@@ -21,6 +21,11 @@
 #include <linux/irqdomain.h>
 #include <uapi/linux/input.h>
 #include <linux/rmi.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "rmi_bus.h"
 #include "rmi_driver.h"
 
@@ -841,6 +846,14 @@ static int rmi_create_function(struct rmi_device *rmi_dev,
 	fn = kzalloc(sizeof(struct rmi_function) +
 			BITS_TO_LONGS(data->irq_count) * sizeof(unsigned long),
 		     GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp25;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+	}
+	{
+		struct rmi_function __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!fn) {
 		dev_err(dev, "Failed to allocate memory for F%02X\n",
 			pdt->function_number);

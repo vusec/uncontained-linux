@@ -80,6 +80,11 @@
 #include <linux/root_dev.h>
 #include <net/ipconfig.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "internal.h"
 
 #define NFSDBG_FACILITY NFSDBG_ROOT
@@ -229,6 +234,10 @@ static int __init root_nfs_data(char *cmdline)
 	const size_t tmplen = sizeof(nfs_export_path);
 
 	tmp = kzalloc(tmplen, GFP_KERNEL);
+	{
+		typeof((nfs_export_path)) __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (tmp == NULL)
 		goto out_nomem;
 	strcpy(tmp, NFS_ROOT);

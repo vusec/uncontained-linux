@@ -30,6 +30,11 @@
 #include <linux/completion.h>
 #include <linux/greybus.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "gbphy.h"
 
 #define GB_NUM_MINORS	16	/* 16 is more than enough */
@@ -836,6 +841,10 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
 			sizeof(struct gb_uart_send_data_request);
 
 	gb_tty->buffer = kzalloc(gb_tty->buffer_payload_max, GFP_KERNEL);
+	{
+		struct gb_uart_send_data_request __uncontained_tmp83;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!gb_tty->buffer) {
 		retval = -ENOMEM;
 		goto exit_put_port;

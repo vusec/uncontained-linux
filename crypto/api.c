@@ -21,6 +21,11 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 #include <linux/completion.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "internal.h"
 
 LIST_HEAD(crypto_alg_list);
@@ -405,6 +410,10 @@ struct crypto_tfm *__crypto_alloc_tfm(struct crypto_alg *alg, u32 type,
 
 	tfm_size = sizeof(*tfm) + crypto_ctxsize(alg, type, mask);
 	tfm = kzalloc(tfm_size, GFP_KERNEL);
+	{
+		typeof((*tfm)) __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (tfm == NULL)
 		goto out_err;
 
@@ -502,6 +511,10 @@ void *crypto_create_tfm_node(struct crypto_alg *alg,
 	total = tfmsize + sizeof(*tfm) + frontend->extsize(alg);
 
 	mem = kzalloc_node(total, GFP_KERNEL, node);
+	{
+		typeof((*tfm)) __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (mem == NULL)
 		goto out_err;
 

@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: ISC
 
 #include <linux/firmware.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "mt7603.h"
 #include "mcu.h"
 #include "eeprom.h"
@@ -320,6 +325,10 @@ int mt7603_mcu_set_eeprom(struct mt7603_dev *dev)
 	BUILD_BUG_ON(ARRAY_SIZE(req_fields) * sizeof(*data) > size);
 
 	req = kmalloc(len, GFP_KERNEL);
+	{
+		typeof((req_hdr)) __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!req)
 		return -ENOMEM;
 

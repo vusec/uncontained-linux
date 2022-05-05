@@ -25,6 +25,16 @@
 #include <linux/slab.h>
 #include <video/edid.h>
 #include <video/uvesafb.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #ifdef CONFIG_X86
 #include <video/vga.h>
 #endif
@@ -159,6 +169,14 @@ static int uvesafb_exec(struct uvesafb_ktask *task)
 	}
 
 	m = kzalloc(sizeof(*m) + len, GFP_KERNEL);
+	{
+		typeof((task->t)) __uncontained_tmp52;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+	}
+	{
+		typeof((*m)) __uncontained_tmp105;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!m)
 		return -ENOMEM;
 

@@ -39,6 +39,11 @@
  */
 
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "pm8001_sas.h"
 #include "pm8001_chips.h"
 #include "pm80xx_hwi.h"
@@ -408,6 +413,10 @@ static int pm8001_alloc(struct pm8001_hba_info *pm8001_ha,
 	/* Memory region for devices*/
 	pm8001_ha->devices = kzalloc(PM8001_MAX_DEVICES
 				* sizeof(struct pm8001_device), GFP_KERNEL);
+	{
+		struct pm8001_device __uncontained_tmp90;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (!pm8001_ha->devices) {
 		rc = -ENOMEM;
 		goto err_out_nodev;

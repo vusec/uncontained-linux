@@ -24,6 +24,11 @@
 
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "i915_syncmap.h"
 
 #include "i915_gem.h" /* GEM_BUG_ON() */
@@ -201,6 +206,14 @@ __sync_alloc_leaf(struct i915_syncmap *parent, u64 id)
 	struct i915_syncmap *p;
 
 	p = kmalloc(sizeof(*p) + KSYNCMAP * sizeof(u32), GFP_KERNEL);
+	{
+		typeof((*p)) __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
+	{
+		u32 __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (unlikely(!p))
 		return NULL;
 
@@ -284,6 +297,14 @@ static noinline int __sync_set(struct i915_syncmap **root, u64 id, u32 seqno)
 			/* Insert a join above the current layer */
 			next = kzalloc(sizeof(*next) + KSYNCMAP * sizeof(next),
 				       GFP_KERNEL);
+			{
+				typeof((next)) __uncontained_tmp25;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+			}
+			{
+				typeof((*next)) __uncontained_tmp26;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+			}
 			if (unlikely(!next))
 				return -ENOMEM;
 

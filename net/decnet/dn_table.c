@@ -40,6 +40,11 @@
 #include <net/dn_neigh.h>
 #include <net/dn_dev.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct dn_zone
 {
 	struct dn_zone		*dz_next;
@@ -864,6 +869,14 @@ struct dn_fib_table *dn_fib_get_table(u32 n, int create)
 
 	t = kzalloc(sizeof(struct dn_fib_table) + sizeof(struct dn_hash),
 		    GFP_KERNEL);
+	{
+		struct dn_fib_table __uncontained_tmp171;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp171;
+	}
+	{
+		struct dn_hash __uncontained_tmp172;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp172;
+	}
 	if (t == NULL)
 		return NULL;
 

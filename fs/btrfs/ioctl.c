@@ -28,6 +28,11 @@
 #include <linux/iversion.h>
 #include <linux/fileattr.h>
 #include <linux/fsverity.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ctree.h"
 #include "disk-io.h"
 #include "export.h"
@@ -3876,6 +3881,10 @@ static long btrfs_ioctl_space_info(struct btrfs_fs_info *fs_info,
 
 	space_args.total_spaces = 0;
 	dest = kmalloc(alloc_size, GFP_KERNEL);
+	{
+		typeof((*dest)) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!dest)
 		return -ENOMEM;
 	dest_orig = dest;

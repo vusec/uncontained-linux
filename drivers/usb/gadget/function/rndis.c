@@ -33,6 +33,11 @@
 #include <asm/byteorder.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "u_rndis.h"
 
 #undef	VERBOSE_DEBUG
@@ -1055,6 +1060,10 @@ static rndis_resp_t *rndis_add_response(struct rndis_params *params, u32 length)
 
 	/* NOTE: this gets copied into ether.c USB_BUFSIZ bytes ... */
 	r = kmalloc(sizeof(rndis_resp_t) + length, GFP_ATOMIC);
+	{
+		rndis_resp_t __uncontained_tmp126;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp126;
+	}
 	if (!r) return NULL;
 
 	r->buf = (u8 *)(r + 1);

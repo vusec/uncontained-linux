@@ -53,6 +53,11 @@
 #include <net/netns/hash.h>
 #include <net/ip.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "nf_internals.h"
 
 __cacheline_aligned_in_smp spinlock_t nf_conntrack_locks[CONNTRACK_LOCKS];
@@ -568,6 +573,10 @@ struct nf_conn *nf_ct_tmpl_alloc(struct net *net,
 
 	if (ARCH_KMALLOC_MINALIGN <= NFCT_INFOMASK) {
 		tmpl = kzalloc(sizeof(*tmpl) + NFCT_INFOMASK, flags);
+		{
+			typeof((*tmpl)) __uncontained_tmp149;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp149;
+		}
 		if (!tmpl)
 			return NULL;
 

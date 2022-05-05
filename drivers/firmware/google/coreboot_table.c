@@ -19,6 +19,11 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "coreboot_table.h"
 
 #define CB_DEV(d) container_of(d, struct coreboot_device, dev)
@@ -94,6 +99,10 @@ static int coreboot_table_populate(struct device *dev, void *ptr)
 		entry = ptr_entry;
 
 		device = kzalloc(sizeof(struct device) + entry->size, GFP_KERNEL);
+		{
+			struct device __uncontained_tmp24;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+		}
 		if (!device)
 			return -ENOMEM;
 

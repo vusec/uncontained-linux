@@ -18,6 +18,11 @@
 
 #include <asm/set_memory.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ipu3-mmu.h"
 
 #define IPU3_PT_BITS		10
@@ -465,6 +470,10 @@ struct imgu_mmu_info *imgu_mmu_init(struct device *parent, void __iomem *base)
 	 * which means the dummy L2PT allocated above.
 	 */
 	mmu->l2pts = vzalloc(IPU3_PT_PTES * sizeof(*mmu->l2pts));
+	{
+		typeof((*mmu->l2pts)) __uncontained_tmp106;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!mmu->l2pts)
 		goto fail_l2pt;
 

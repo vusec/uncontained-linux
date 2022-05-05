@@ -5,6 +5,11 @@
 #include "iavf_prototype.h"
 #include "iavf_client.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* busy wait delay in msec */
 #define IAVF_BUSY_WAIT_DELAY 10
 #define IAVF_BUSY_WAIT_COUNT 50
@@ -679,6 +684,22 @@ void iavf_add_vlans(struct iavf_adapter *adapter)
 			more = true;
 		}
 		vvfl = kzalloc(len, GFP_ATOMIC);
+		{
+			typeof((*vvfl)) __uncontained_tmp44;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+		}
+		{
+			typeof((*vvfl)) __uncontained_tmp45;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+		}
+		{
+			u16 __uncontained_tmp32;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+		}
+		{
+			u16 __uncontained_tmp33;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+		}
 		if (!vvfl) {
 			spin_unlock_bh(&adapter->mac_vlan_list_lock);
 			return;
@@ -720,6 +741,22 @@ void iavf_add_vlans(struct iavf_adapter *adapter)
 		}
 
 		vvfl_v2 = kzalloc(len, GFP_ATOMIC);
+		{
+			typeof((*vvfl_v2)) __uncontained_tmp46;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+		}
+		{
+			typeof((*vvfl_v2)) __uncontained_tmp47;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+		}
+		{
+			struct virtchnl_vlan_filter __uncontained_tmp34;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+		}
+		{
+			struct virtchnl_vlan_filter __uncontained_tmp35;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+		}
 		if (!vvfl_v2) {
 			spin_unlock_bh(&adapter->mac_vlan_list_lock);
 			return;
@@ -815,6 +852,22 @@ void iavf_del_vlans(struct iavf_adapter *adapter)
 			more = true;
 		}
 		vvfl = kzalloc(len, GFP_ATOMIC);
+		{
+			typeof((*vvfl)) __uncontained_tmp48;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+		}
+		{
+			typeof((*vvfl)) __uncontained_tmp49;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+		}
+		{
+			u16 __uncontained_tmp36;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+		}
+		{
+			u16 __uncontained_tmp37;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+		}
 		if (!vvfl) {
 			spin_unlock_bh(&adapter->mac_vlan_list_lock);
 			return;
@@ -859,6 +912,22 @@ void iavf_del_vlans(struct iavf_adapter *adapter)
 		}
 
 		vvfl_v2 = kzalloc(len, GFP_ATOMIC);
+		{
+			typeof((*vvfl_v2)) __uncontained_tmp50;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+		}
+		{
+			typeof((*vvfl_v2)) __uncontained_tmp51;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+		}
+		{
+			struct virtchnl_vlan_filter __uncontained_tmp38;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+		}
+		{
+			struct virtchnl_vlan_filter __uncontained_tmp39;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+		}
 		if (!vvfl_v2) {
 			spin_unlock_bh(&adapter->mac_vlan_list_lock);
 			return;
@@ -1043,6 +1112,14 @@ void iavf_set_rss_key(struct iavf_adapter *adapter)
 	len = sizeof(struct virtchnl_rss_key) +
 	      (adapter->rss_key_size * sizeof(u8)) - 1;
 	vrk = kzalloc(len, GFP_KERNEL);
+	{
+		struct virtchnl_rss_key __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
+	{
+		u8 __uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!vrk)
 		return;
 	vrk->vsi_id = adapter->vsi.id;
@@ -1075,6 +1152,14 @@ void iavf_set_rss_lut(struct iavf_adapter *adapter)
 	len = sizeof(struct virtchnl_rss_lut) +
 	      (adapter->rss_lut_size * sizeof(u8)) - 1;
 	vrl = kzalloc(len, GFP_KERNEL);
+	{
+		struct virtchnl_rss_lut __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
+	{
+		u8 __uncontained_tmp43;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+	}
 	if (!vrl)
 		return;
 	vrl->vsi_id = adapter->vsi.id;
@@ -1261,6 +1346,10 @@ iavf_send_vlan_offload_v2(struct iavf_adapter *adapter, u16 tpid,
 	adapter->current_op = offload_op;
 
 	msg = kzalloc(len, GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp52;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!msg)
 		return;
 

@@ -21,6 +21,11 @@
 #include <linux/of.h>
 #include <linux/of_address.h>
 #include <linux/clk/ti.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "clock.h"
 
 #undef pr_fmt
@@ -188,6 +193,10 @@ static void of_mux_clk_setup(struct device_node *node)
 		return;
 	}
 	parent_names = kzalloc((sizeof(char *) * num_parents), GFP_KERNEL);
+	{
+		char *__uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!parent_names)
 		goto cleanup;
 

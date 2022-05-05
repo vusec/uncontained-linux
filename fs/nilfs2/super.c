@@ -35,6 +35,11 @@
 #include <linux/writeback.h>
 #include <linux/seq_file.h>
 #include <linux/mount.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "nilfs.h"
 #include "export.h"
 #include "mdt.h"
@@ -1425,6 +1430,10 @@ static int __init nilfs_init_cachep(void)
 	nilfs_btree_path_cache = kmem_cache_create("nilfs2_btree_path_cache",
 			sizeof(struct nilfs_btree_path) * NILFS_BTREE_LEVEL_MAX,
 			0, 0, NULL);
+	{
+		struct nilfs_btree_path __uncontained_tmp112;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (!nilfs_btree_path_cache)
 		goto fail;
 

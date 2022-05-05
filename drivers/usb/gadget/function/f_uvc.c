@@ -24,6 +24,11 @@
 #include <media/v4l2-dev.h>
 #include <media/v4l2-event.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "u_uvc.h"
 #include "uvc.h"
 #include "uvc_configfs.h"
@@ -546,6 +551,10 @@ uvc_copy_descriptors(struct uvc_device *uvc, enum usb_device_speed speed)
 	}
 
 	mem = kmalloc((n_desc + 1) * sizeof(*src) + bytes, GFP_KERNEL);
+	{
+		typeof((*src)) __uncontained_tmp120;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (mem == NULL)
 		return NULL;
 

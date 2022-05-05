@@ -28,6 +28,11 @@
 #include <rdma/rdma_cm.h>
 #include <rdma/rw.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "glob.h"
 #include "connection.h"
 #include "smb_common.h"
@@ -1367,6 +1372,10 @@ static int smb_direct_rdma_xmit(struct smb_direct_transport *t, void *buf,
 	/* TODO: mempool */
 	msg = kmalloc(offsetof(struct smb_direct_rdma_rw_msg, sg_list) +
 		      sizeof(struct scatterlist) * SG_CHUNK_SIZE, GFP_KERNEL);
+	{
+		struct scatterlist __uncontained_tmp134;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp134;
+	}
 	if (!msg) {
 		atomic_inc(&t->rw_avail_ops);
 		return -ENOMEM;
@@ -1757,6 +1766,22 @@ static int smb_direct_create_pools(struct smb_direct_transport *t)
 					     sizeof(struct smb_direct_sendmsg) +
 					      sizeof(struct smb_direct_negotiate_resp),
 					     0, SLAB_HWCACHE_ALIGN, NULL);
+	{
+		struct smb_direct_negotiate_resp __uncontained_tmp138;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp138;
+	}
+	{
+		struct smb_direct_sendmsg __uncontained_tmp139;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp139;
+	}
+	{
+		struct smb_direct_negotiate_resp __uncontained_tmp135;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp135;
+	}
+	{
+		struct smb_direct_sendmsg __uncontained_tmp136;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp136;
+	}
 	if (!t->sendmsg_cache)
 		return -ENOMEM;
 
@@ -1771,6 +1796,14 @@ static int smb_direct_create_pools(struct smb_direct_transport *t)
 					     sizeof(struct smb_direct_recvmsg) +
 					      t->max_recv_size,
 					     0, SLAB_HWCACHE_ALIGN, NULL);
+	{
+		struct smb_direct_recvmsg __uncontained_tmp140;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp140;
+	}
+	{
+		struct smb_direct_recvmsg __uncontained_tmp137;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp137;
+	}
 	if (!t->recvmsg_cache)
 		goto err;
 

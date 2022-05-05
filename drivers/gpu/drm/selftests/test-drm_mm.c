@@ -14,6 +14,11 @@
 
 #include <drm/drm_mm.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "../lib/drm_random.h"
 
 #define TESTS "drm_mm_selftests.h"
@@ -392,6 +397,10 @@ static int __igt_reserve(unsigned int count, u64 size)
 		goto err;
 
 	nodes = vzalloc(array_size(count, sizeof(*nodes)));
+	{
+		typeof((*nodes)) __uncontained_tmp28;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (!nodes)
 		goto err_order;
 
@@ -582,6 +591,10 @@ static int __igt_insert(unsigned int count, u64 size, bool replace)
 
 	ret = -ENOMEM;
 	nodes = vmalloc(array_size(count, sizeof(*nodes)));
+	{
+		typeof((*nodes)) __uncontained_tmp27;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!nodes)
 		goto err;
 
@@ -892,6 +905,10 @@ static int __igt_insert_range(unsigned int count, u64 size, u64 start, u64 end)
 
 	ret = -ENOMEM;
 	nodes = vzalloc(array_size(count, sizeof(*nodes)));
+	{
+		typeof((*nodes)) __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!nodes)
 		goto err;
 
@@ -1096,6 +1113,10 @@ static int igt_frag(void *ignored)
 	 * 2 times for get_insert_time()
 	 */
 	nodes = vzalloc(array_size(insert_size * 4, sizeof(*nodes)));
+	{
+		typeof((*nodes)) __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!nodes)
 		return -ENOMEM;
 
@@ -1165,6 +1186,10 @@ static int igt_align(void *ignored)
 	 */
 
 	nodes = vzalloc(array_size(max_count, sizeof(*nodes)));
+	{
+		typeof((*nodes)) __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!nodes)
 		goto err;
 
@@ -1535,6 +1560,10 @@ static int igt_evict(void *ignored)
 
 	ret = -ENOMEM;
 	nodes = vzalloc(array_size(size, sizeof(*nodes)));
+	{
+		typeof((*nodes)) __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!nodes)
 		goto err;
 
@@ -1645,6 +1674,10 @@ static int igt_evict_range(void *ignored)
 
 	ret = -ENOMEM;
 	nodes = vzalloc(array_size(size, sizeof(*nodes)));
+	{
+		typeof((*nodes)) __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!nodes)
 		goto err;
 
@@ -1746,6 +1779,10 @@ static int igt_topdown(void *ignored)
 
 	ret = -ENOMEM;
 	nodes = vzalloc(array_size(count, sizeof(*nodes)));
+	{
+		typeof((*nodes)) __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!nodes)
 		goto err;
 
@@ -1859,6 +1896,10 @@ static int igt_bottomup(void *ignored)
 
 	ret = -ENOMEM;
 	nodes = vzalloc(array_size(count, sizeof(*nodes)));
+	{
+		typeof((*nodes)) __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!nodes)
 		goto err;
 
@@ -2275,6 +2316,10 @@ static int igt_color_evict(void *ignored)
 
 	ret = -ENOMEM;
 	nodes = vzalloc(array_size(total_size, sizeof(*nodes)));
+	{
+		typeof((*nodes)) __uncontained_tmp36;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!nodes)
 		goto err;
 
@@ -2376,6 +2421,10 @@ static int igt_color_evict_range(void *ignored)
 
 	ret = -ENOMEM;
 	nodes = vzalloc(array_size(total_size, sizeof(*nodes)));
+	{
+		typeof((*nodes)) __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!nodes)
 		goto err;
 

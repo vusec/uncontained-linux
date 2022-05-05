@@ -20,6 +20,16 @@
 #include "scrub/dabtree.h"
 #include "scrub/attr.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Allocate enough memory to hold an attr value and attr block bitmaps,
  * reallocating the buffer if necessary.  Buffer contents are not preserved
@@ -58,6 +68,14 @@ xchk_setup_xattr_buf(
 	 * All users must be careful never to read uninitialized contents.
 	 */
 	ab = kvmalloc(sizeof(*ab) + sz, flags);
+	{
+		long __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
+	{
+		typeof((*ab)) __uncontained_tmp155;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp155;
+	}
 	if (!ab)
 		return -ENOMEM;
 

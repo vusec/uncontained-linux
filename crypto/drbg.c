@@ -102,6 +102,11 @@
 #include <linux/kernel.h>
 #include <linux/jiffies.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /***************************************************************
  * Backend cipher definitions available to DRBG
  ***************************************************************/
@@ -1690,6 +1695,10 @@ static int drbg_init_hash_kernel(struct drbg_state *drbg)
 	BUG_ON(drbg_blocklen(drbg) != crypto_shash_digestsize(tfm));
 	sdesc = kzalloc(sizeof(struct shash_desc) + crypto_shash_descsize(tfm),
 			GFP_KERNEL);
+	{
+		struct shash_desc __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!sdesc) {
 		crypto_free_shash(tfm);
 		return -ENOMEM;

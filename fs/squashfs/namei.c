@@ -46,6 +46,11 @@
 #include <linux/dcache.h>
 #include <linux/xattr.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "squashfs_fs.h"
 #include "squashfs_fs_sb.h"
 #include "squashfs_fs_i.h"
@@ -74,6 +79,10 @@ static int get_dir_index_using_name(struct super_block *sb,
 	TRACE("Entered get_dir_index_using_name, i_count %d\n", i_count);
 
 	index = kmalloc(sizeof(*index) + SQUASHFS_NAME_LEN * 2 + 2, GFP_KERNEL);
+	{
+		typeof((*index)) __uncontained_tmp120;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (index == NULL) {
 		ERROR("Failed to allocate squashfs_dir_index\n");
 		goto out;
@@ -140,6 +149,10 @@ static struct dentry *squashfs_lookup(struct inode *dir, struct dentry *dentry,
 	TRACE("Entered squashfs_lookup [%llx:%x]\n", block, offset);
 
 	dire = kmalloc(sizeof(*dire) + SQUASHFS_NAME_LEN + 1, GFP_KERNEL);
+	{
+		typeof((*dire)) __uncontained_tmp121;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp121;
+	}
 	if (dire == NULL) {
 		ERROR("Failed to allocate squashfs_dir_entry\n");
 		return ERR_PTR(-ENOMEM);

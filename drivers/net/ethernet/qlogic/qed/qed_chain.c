@@ -5,6 +5,11 @@
 #include <linux/qed/qed_chain.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "qed_dev_api.h"
 
 static void qed_chain_init(struct qed_chain *chain,
@@ -263,6 +268,10 @@ static int qed_chain_alloc_pbl(struct qed_dev *cdev, struct qed_chain *chain)
 		return -EOVERFLOW;
 
 	addr_tbl = vzalloc(size);
+	{
+		typeof((*addr_tbl)) __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!addr_tbl)
 		return -ENOMEM;
 

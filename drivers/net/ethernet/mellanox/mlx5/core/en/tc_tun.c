@@ -6,6 +6,11 @@
 #include <net/gre.h>
 #include <net/geneve.h>
 #include <net/bareudp.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "en/tc_tun.h"
 #include "en/tc_priv.h"
 #include "en_tc.h"
@@ -258,6 +263,10 @@ int mlx5e_tc_tun_create_header_ipv4(struct mlx5e_priv *priv,
 	}
 
 	encap_header = kzalloc(ipv4_encap_size, GFP_KERNEL);
+	{
+		struct iphdr __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!encap_header) {
 		err = -ENOMEM;
 		goto release_neigh;
@@ -373,6 +382,10 @@ int mlx5e_tc_tun_update_header_ipv4(struct mlx5e_priv *priv,
 	}
 
 	encap_header = kzalloc(ipv4_encap_size, GFP_KERNEL);
+	{
+		struct iphdr __uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!encap_header) {
 		err = -ENOMEM;
 		goto release_neigh;
@@ -527,6 +540,10 @@ int mlx5e_tc_tun_create_header_ipv6(struct mlx5e_priv *priv,
 	}
 
 	encap_header = kzalloc(ipv6_encap_size, GFP_KERNEL);
+	{
+		struct ipv6hdr __uncontained_tmp59;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!encap_header) {
 		err = -ENOMEM;
 		goto release_neigh;
@@ -641,6 +658,10 @@ int mlx5e_tc_tun_update_header_ipv6(struct mlx5e_priv *priv,
 	}
 
 	encap_header = kzalloc(ipv6_encap_size, GFP_KERNEL);
+	{
+		struct ipv6hdr __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!encap_header) {
 		err = -ENOMEM;
 		goto release_neigh;

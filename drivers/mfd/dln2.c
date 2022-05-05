@@ -21,6 +21,11 @@
 #include <linux/mfd/dln2.h>
 #include <linux/rculist.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct dln2_header {
 	__le16 size;
 	__le16 id;
@@ -314,6 +319,10 @@ static void *dln2_prep_buf(u16 handle, u16 cmd, u16 echo, const void *obuf,
 
 	len = *obuf_len + sizeof(*hdr);
 	buf = kmalloc(len, gfp);
+	{
+		typeof((*hdr)) __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!buf)
 		return NULL;
 

@@ -20,6 +20,11 @@
 #include <net/cfg80211.h>
 #include <net/cfg80211-wext.h>
 #include <net/iw_handler.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "core.h"
 #include "nl80211.h"
 #include "wext-compat.h"
@@ -640,6 +645,10 @@ static int cfg80211_parse_colocated_ap(const struct cfg80211_bss_ies *ies,
 
 			entry = kzalloc(sizeof(*entry) + IEEE80211_MAX_SSID_LEN,
 					GFP_ATOMIC);
+			{
+				typeof((*entry)) __uncontained_tmp172;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp172;
+			}
 
 			if (!entry)
 				break;
@@ -761,6 +770,14 @@ static int cfg80211_scan_6ghz(struct cfg80211_registered_device *rdev)
 			  sizeof(*request->scan_6ghz_params) * count +
 			  sizeof(*request->ssids) * rdev_req->n_ssids,
 			  GFP_KERNEL);
+	{
+		typeof((*request->scan_6ghz_params)) __uncontained_tmp173;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp173;
+	}
+	{
+		typeof((*request->ssids)) __uncontained_tmp174;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp174;
+	}
 	if (!request) {
 		cfg80211_free_coloc_ap_list(&coloc_ap_list);
 		return -ENOMEM;
@@ -1719,6 +1736,10 @@ cfg80211_bss_update(struct cfg80211_registered_device *rdev,
 		 */
 		new = kzalloc(sizeof(*new) + rdev->wiphy.bss_priv_size,
 			      GFP_ATOMIC);
+		{
+			typeof((*new)) __uncontained_tmp175;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp175;
+		}
 		if (!new) {
 			ies = (void *)rcu_dereference(tmp->pub.beacon_ies);
 			if (ies)
@@ -1972,6 +1993,10 @@ cfg80211_inform_single_bss_data(struct wiphy *wiphy,
 	 * indication of Probe Response data.
 	 */
 	ies = kzalloc(sizeof(*ies) + ielen, gfp);
+	{
+		typeof((*ies)) __uncontained_tmp176;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp176;
+	}
 	if (!ies)
 		return NULL;
 	ies->len = ielen;
@@ -2306,6 +2331,10 @@ cfg80211_update_notlisted_nontrans(struct wiphy *wiphy,
 		return;
 
 	new_ies = kzalloc(sizeof(*new_ies) + new_ie_len, GFP_ATOMIC);
+	{
+		typeof((*new_ies)) __uncontained_tmp177;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp177;
+	}
 	if (!new_ies)
 		goto out_free;
 
@@ -2434,6 +2463,10 @@ cfg80211_inform_single_bss_frame_data(struct wiphy *wiphy,
 	}
 
 	ies = kzalloc(sizeof(*ies) + ielen, gfp);
+	{
+		typeof((*ies)) __uncontained_tmp178;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp178;
+	}
 	if (!ies)
 		return NULL;
 	ies->len = ielen;
@@ -2755,6 +2788,18 @@ int cfg80211_wext_siwscan(struct net_device *dev,
 	creq = kzalloc(sizeof(*creq) + sizeof(struct cfg80211_ssid) +
 		       n_channels * sizeof(void *),
 		       GFP_ATOMIC);
+	{
+		typeof((*creq)) __uncontained_tmp179;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp179;
+	}
+	{
+		void *__uncontained_tmp170;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp170;
+	}
+	{
+		struct cfg80211_ssid __uncontained_tmp171;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp171;
+	}
 	if (!creq)
 		return -ENOMEM;
 

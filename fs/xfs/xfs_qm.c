@@ -26,6 +26,11 @@
 #include "xfs_ag.h"
 #include "xfs_ialloc.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * The global quota manager. There is only one of these for the entire
  * system, _not_ one per file system. XQM keeps track of the overall
@@ -996,6 +1001,10 @@ xfs_qm_reset_dqcounts_buf(
 		return 0;
 
 	map = kmem_alloc(XFS_DQITER_MAP_SIZE * sizeof(*map), 0);
+	{
+		typeof((*map)) __uncontained_tmp123;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp123;
+	}
 
 	lblkno = 0;
 	maxlblkcnt = XFS_B_TO_FSB(mp, mp->m_super->s_maxbytes);

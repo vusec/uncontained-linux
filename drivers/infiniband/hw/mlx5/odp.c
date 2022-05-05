@@ -42,6 +42,11 @@
 
 #include <linux/mlx5/eq.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* Contains the details of a pagefault. */
 struct mlx5_pagefault {
 	u32			bytes_committed;
@@ -881,6 +886,10 @@ next_mr:
 		if (outlen > cur_outlen) {
 			kfree(out);
 			out = kzalloc(outlen, GFP_KERNEL);
+			{
+				typeof((*pklm)) __uncontained_tmp5;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+			}
 			if (!out) {
 				ret = -ENOMEM;
 				goto end;

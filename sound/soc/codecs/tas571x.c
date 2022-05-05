@@ -29,6 +29,11 @@
 #include <sound/tlv.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "tas571x.h"
 
 #define TAS571X_MAX_SUPPLIES		6
@@ -151,6 +156,10 @@ static int tas571x_reg_write_multiword(struct i2c_client *client,
 	size_t send_size = 1 + len * sizeof(uint32_t);
 
 	buf = kzalloc(send_size, GFP_KERNEL | GFP_DMA);
+	{
+		typeof((uint32_t)) __uncontained_tmp109;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp109;
+	}
 	if (!buf)
 		return -ENOMEM;
 	buf[0] = reg;
@@ -184,6 +193,10 @@ static int tas571x_reg_read_multiword(struct i2c_client *client,
 	int ret;
 
 	recv_buf = kzalloc(recv_size, GFP_KERNEL | GFP_DMA);
+	{
+		typeof((uint32_t)) __uncontained_tmp110;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (!recv_buf)
 		return -ENOMEM;
 

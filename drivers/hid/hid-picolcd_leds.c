@@ -26,6 +26,11 @@
 #include <linux/uaccess.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hid-picolcd.h"
 
 
@@ -111,6 +116,10 @@ int picolcd_init_leds(struct picolcd_data *data, struct hid_report *report)
 
 	for (i = 0; i < 8; i++) {
 		led = kzalloc(sizeof(struct led_classdev)+name_sz, GFP_KERNEL);
+		{
+			struct led_classdev __uncontained_tmp41;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+		}
 		if (!led) {
 			dev_err(dev, "can't allocate memory for LED %d\n", i);
 			ret = -ENOMEM;

@@ -34,6 +34,11 @@
 #include <asm/byteorder.h>
 #include <asm/page.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifdef CONFIG_PPC_PMAC
 #include <asm/pmac_feature.h>
 #endif
@@ -3659,6 +3664,10 @@ static int pci_probe(struct pci_dev *dev,
 	ohci->n_ir = hweight32(ohci->ir_context_mask);
 	size = sizeof(struct iso_context) * ohci->n_ir;
 	ohci->ir_context_list = kzalloc(size, GFP_KERNEL);
+	{
+		struct iso_context __uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 
 	reg_write(ohci, OHCI1394_IsoXmitIntMaskSet, ~0);
 	ohci->it_context_support = reg_read(ohci, OHCI1394_IsoXmitIntMaskSet);
@@ -3672,6 +3681,10 @@ static int pci_probe(struct pci_dev *dev,
 	ohci->n_it = hweight32(ohci->it_context_mask);
 	size = sizeof(struct iso_context) * ohci->n_it;
 	ohci->it_context_list = kzalloc(size, GFP_KERNEL);
+	{
+		struct iso_context __uncontained_tmp18;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+	}
 
 	if (ohci->it_context_list == NULL || ohci->ir_context_list == NULL) {
 		err = -ENOMEM;

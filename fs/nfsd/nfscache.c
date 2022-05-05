@@ -18,6 +18,11 @@
 #include <linux/hash.h>
 #include <net/checksum.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "nfsd.h"
 #include "cache.h"
 #include "trace.h"
@@ -188,6 +193,10 @@ int nfsd_reply_cache_init(struct nfsd_net *nn)
 
 	nn->drc_hashtbl = kvzalloc(array_size(hashsize,
 				sizeof(*nn->drc_hashtbl)), GFP_KERNEL);
+	{
+		typeof((*nn->drc_hashtbl)) __uncontained_tmp148;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (!nn->drc_hashtbl)
 		goto out_shrinker;
 

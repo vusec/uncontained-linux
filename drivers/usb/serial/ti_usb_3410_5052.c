@@ -30,6 +30,11 @@
 #include <linux/usb.h>
 #include <linux/usb/serial.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* Configuration ids */
 #define TI_BOOT_CONFIG			1
 #define TI_ACTIVE_CONFIG		2
@@ -1520,6 +1525,10 @@ static int ti_write_byte(struct usb_serial_port *port,
 
 	size = sizeof(struct ti_write_data_bytes) + 2;
 	data = kmalloc(size, GFP_KERNEL);
+	{
+		struct ti_write_data_bytes __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (!data)
 		return -ENOMEM;
 
@@ -1641,6 +1650,10 @@ check_firmware:
 
 	buffer_size = TI_FIRMWARE_BUF_SIZE + sizeof(struct ti_firmware_header);
 	buffer = kmalloc(buffer_size, GFP_KERNEL);
+	{
+		struct ti_firmware_header __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (buffer) {
 		memcpy(buffer, fw_p->data, fw_p->size);
 		memset(buffer + fw_p->size, 0xff, buffer_size - fw_p->size);

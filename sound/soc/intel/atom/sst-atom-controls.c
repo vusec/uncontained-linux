@@ -17,6 +17,11 @@
 #include <linux/slab.h>
 #include <sound/soc.h>
 #include <sound/tlv.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "sst-mfld-platform.h"
 #include "sst-atom-controls.h"
 
@@ -272,6 +277,14 @@ static int sst_send_algo_cmd(struct sst_data *drv,
 	len = sizeof(cmd->dst) + sizeof(cmd->command_id) + bc->max;
 
 	cmd = kzalloc(len, GFP_KERNEL);
+	{
+		typeof((cmd->command_id)) __uncontained_tmp70;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+	}
+	{
+		typeof((cmd->dst)) __uncontained_tmp71;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (cmd == NULL)
 		return -ENOMEM;
 

@@ -25,6 +25,11 @@
 #include <asm/uv/uv.h>
 #include <asm/apic.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static enum uv_system_type	uv_system_type;
 static int			uv_hubbed_system;
 static int			uv_hubless_system;
@@ -611,6 +616,10 @@ static __init void build_uv_gr_table(void)
 
 	bytes = _gr_table_len * sizeof(struct uv_gam_range_s);
 	grt = kzalloc(bytes, GFP_KERNEL);
+	{
+		struct uv_gam_range_s __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	BUG_ON(!grt);
 	_gr_table = grt;
 
@@ -1504,11 +1513,19 @@ static void __init build_socket_tables(void)
 	num = maxsock - minsock + 1;
 	bytes = num * sizeof(_socket_to_node[0]);
 	_socket_to_node = kmalloc(bytes, GFP_KERNEL);
+	{
+		typeof((_socket_to_node[0])) __uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
 	_socket_to_pnode = kmalloc(bytes, GFP_KERNEL);
 
 	nump = maxpnode - minpnode + 1;
 	bytes = nump * sizeof(_pnode_to_socket[0]);
 	_pnode_to_socket = kmalloc(bytes, GFP_KERNEL);
+	{
+		typeof((_pnode_to_socket[0])) __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
 	BUG_ON(!_socket_to_node || !_socket_to_pnode || !_pnode_to_socket);
 
 	for (i = 0; i < num; i++)
@@ -1556,6 +1573,10 @@ static void __init build_socket_tables(void)
 	/* Set up physical blade to pnode translation from GAM Range Table: */
 	bytes = num_possible_nodes() * sizeof(_node_to_pnode[0]);
 	_node_to_pnode = kmalloc(bytes, GFP_KERNEL);
+	{
+		typeof((_node_to_pnode[0])) __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	BUG_ON(!_node_to_pnode);
 
 	for (lnid = 0; lnid < num_possible_nodes(); lnid++) {
@@ -1723,6 +1744,10 @@ static void __init uv_system_init_hub(void)
 
 	bytes = sizeof(void *) * uv_num_possible_blades();
 	__uv_hub_info_list = kzalloc(bytes, GFP_KERNEL);
+	{
+		void *__uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
 	BUG_ON(!__uv_hub_info_list);
 
 	bytes = sizeof(struct uv_hub_info_s);

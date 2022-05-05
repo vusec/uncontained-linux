@@ -52,6 +52,11 @@
 #include <linux/slab.h>
 #include <linux/compiler.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct crypto_cts_ctx {
 	struct crypto_skcipher *child;
 };
@@ -334,6 +339,14 @@ static int crypto_cts_create(struct crypto_template *tmpl, struct rtattr **tb)
 		return err;
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
+	{
+		typeof((*inst)) __uncontained_tmp7;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp7;
+	}
+	{
+		typeof((*spawn)) __uncontained_tmp8;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+	}
 	if (!inst)
 		return -ENOMEM;
 

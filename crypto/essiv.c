@@ -36,6 +36,11 @@
 #include <crypto/scatterwalk.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "internal.h"
 
 struct essiv_instance_ctx {
@@ -473,6 +478,14 @@ static int essiv_create(struct crypto_template *tmpl, struct rtattr **tb)
 	case CRYPTO_ALG_TYPE_SKCIPHER:
 		skcipher_inst = kzalloc(sizeof(*skcipher_inst) +
 					sizeof(*ictx), GFP_KERNEL);
+		{
+			typeof((*ictx)) __uncontained_tmp9;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp9;
+		}
+		{
+			typeof((*skcipher_inst)) __uncontained_tmp10;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp10;
+		}
 		if (!skcipher_inst)
 			return -ENOMEM;
 		inst = skcipher_crypto_instance(skcipher_inst);
@@ -492,6 +505,14 @@ static int essiv_create(struct crypto_template *tmpl, struct rtattr **tb)
 	case CRYPTO_ALG_TYPE_AEAD:
 		aead_inst = kzalloc(sizeof(*aead_inst) +
 				    sizeof(*ictx), GFP_KERNEL);
+		{
+			typeof((*aead_inst)) __uncontained_tmp11;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp11;
+		}
+		{
+			typeof((*ictx)) __uncontained_tmp12;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+		}
 		if (!aead_inst)
 			return -ENOMEM;
 		inst = aead_crypto_instance(aead_inst);

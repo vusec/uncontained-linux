@@ -1169,6 +1169,10 @@ iso_sched_alloc(unsigned packets, gfp_t mem_flags)
 
 	size += packets * sizeof(struct ehci_iso_packet);
 	iso_sched = kzalloc(size, mem_flags);
+	{
+		typeof((*iso_sched)) __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (likely(iso_sched != NULL))
 		INIT_LIST_HEAD(&iso_sched->td_list);
 

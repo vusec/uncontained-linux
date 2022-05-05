@@ -19,6 +19,11 @@
 #include <asm/pte-walk.h>
 #include <linux/mm_inline.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static DEFINE_MUTEX(mem_list_mutex);
 
 #define MM_IOMMU_TABLE_GROUP_PAGE_DIRTY	0x1
@@ -90,6 +95,10 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
 	 */
 	mem->pageshift = __ffs(ua | (entries << PAGE_SHIFT));
 	mem->hpas = vzalloc(array_size(entries, sizeof(mem->hpas[0])));
+	{
+		typeof((mem->hpas[0])) __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!mem->hpas) {
 		kfree(mem);
 		ret = -ENOMEM;

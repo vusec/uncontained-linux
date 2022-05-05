@@ -27,6 +27,11 @@
 #include <linux/slab.h>
 #include <linux/iversion.h>
 #include <linux/unicode.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ext4.h"
 #include "xattr.h"
 
@@ -472,6 +477,10 @@ int ext4_htree_store_dirent(struct file *dir_file, __u32 hash,
 	/* Create and allocate the fname structure */
 	len = sizeof(struct fname) + ent_name->len + 1;
 	new_fn = kzalloc(len, GFP_KERNEL);
+	{
+		struct fname __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!new_fn)
 		return -ENOMEM;
 	new_fn->hash = hash;

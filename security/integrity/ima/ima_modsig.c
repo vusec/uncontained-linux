@@ -13,6 +13,11 @@
 #include <keys/asymmetric-type.h>
 #include <crypto/pkcs7.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ima.h"
 
 struct modsig {
@@ -66,6 +71,10 @@ int ima_read_modsig(enum ima_hooks func, const void *buf, loff_t buf_len,
 
 	/* Allocate sig_len additional bytes to hold the raw PKCS#7 data. */
 	hdr = kzalloc(sizeof(*hdr) + sig_len, GFP_KERNEL);
+	{
+		typeof((*hdr)) __uncontained_tmp143;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp143;
+	}
 	if (!hdr)
 		return -ENOMEM;
 

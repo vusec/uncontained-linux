@@ -19,6 +19,11 @@
 #include <linux/mutex.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "dell-smbios.h"
 
 static u32 da_supported_commands;
@@ -480,6 +485,10 @@ static int build_tokens_sysfs(struct platform_device *dev)
 	/* (number of tokens  + 1 for null terminated */
 	size = sizeof(struct device_attribute) * (da_num_tokens + 1);
 	token_location_attrs = kzalloc(size, GFP_KERNEL);
+	{
+		struct device_attribute __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!token_location_attrs)
 		return -ENOMEM;
 	token_value_attrs = kzalloc(size, GFP_KERNEL);
@@ -489,6 +498,10 @@ static int build_tokens_sysfs(struct platform_device *dev)
 	/* need to store both location and value + terminator*/
 	size = sizeof(struct attribute *) * ((2 * da_num_tokens) + 1);
 	token_attrs = kzalloc(size, GFP_KERNEL);
+	{
+		struct attribute *__uncontained_tmp61;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!token_attrs)
 		goto out_allocate_attrs;
 

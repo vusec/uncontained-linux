@@ -22,6 +22,11 @@
 #include <core/event.h>
 #include <core/notify.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 void
 nvkm_event_put(struct nvkm_event *event, u32 types, int index)
 {
@@ -87,6 +92,10 @@ nvkm_event_init(const struct nvkm_event_func *func, int types_nr, int index_nr,
 	event->refs = kzalloc(array3_size(index_nr, types_nr,
 					  sizeof(*event->refs)),
 			      GFP_KERNEL);
+	{
+		typeof((*event->refs)) __uncontained_tmp25;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!event->refs)
 		return -ENOMEM;
 

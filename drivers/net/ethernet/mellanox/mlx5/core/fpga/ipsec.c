@@ -37,6 +37,11 @@
 #include <linux/mlx5/fs.h>
 #include <linux/rbtree.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "mlx5_core.h"
 #include "fs_cmd.h"
 #include "fpga/ipsec.h"
@@ -231,6 +236,10 @@ static void *mlx5_fpga_ipsec_cmd_exec(struct mlx5_core_dev *mdev,
 		return ERR_PTR(-EINVAL);
 
 	context = kzalloc(sizeof(*context) + cmd_size, GFP_ATOMIC);
+	{
+		typeof((*context)) __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!context)
 		return ERR_PTR(-ENOMEM);
 
@@ -391,6 +400,10 @@ static int mlx5_fpga_ipsec_counters_read(struct mlx5_core_dev *mdev, u64 *counte
 	count = mlx5_fpga_ipsec_counters_count(mdev);
 
 	data = kzalloc(array3_size(sizeof(*data), count, 2), GFP_KERNEL);
+	{
+		typeof((*data)) __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!data) {
 		ret = -ENOMEM;
 		goto out;

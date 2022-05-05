@@ -22,6 +22,11 @@
 
 #include <linux/pci.h>
 #include <linux/acpi.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "kfd_crat.h"
 #include "kfd_priv.h"
 #include "kfd_topology.h"
@@ -2290,6 +2295,22 @@ int kfd_create_crat_image_virtual(void **crat_image, size_t *size,
 			sizeof(struct crat_subtype_memory) +
 			(num_nodes - 1) * sizeof(struct crat_subtype_iolink));
 		pcrat_image = kvmalloc(dyn_size, GFP_KERNEL);
+		{
+			struct crat_header __uncontained_tmp12;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+		}
+		{
+			struct crat_subtype_computeunit __uncontained_tmp13;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+		}
+		{
+			struct crat_subtype_iolink __uncontained_tmp14;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+		}
+		{
+			struct crat_subtype_memory __uncontained_tmp15;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+		}
 		if (!pcrat_image)
 			return -ENOMEM;
 		*size = dyn_size;

@@ -18,6 +18,11 @@
 #include <linux/ktime.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define PCH_EVENT_SET	0	/* I2C Interrupt Event Set Status */
 #define PCH_EVENT_NONE	1	/* I2C Interrupt Event Clear Status */
 #define PCH_MAX_CLK		100000	/* Maximum Clock speed in MHz */
@@ -739,6 +744,10 @@ static int pch_i2c_probe(struct pci_dev *pdev,
 	pch_pci_dbg(pdev, "Entered.\n");
 
 	adap_info = kzalloc((sizeof(struct adapter_info)), GFP_KERNEL);
+	{
+		struct adapter_info __uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (adap_info == NULL)
 		return -ENOMEM;
 

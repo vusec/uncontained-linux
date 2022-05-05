@@ -14,6 +14,11 @@
  */
 
 #include <linux/drbd_limits.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "drbd_int.h"
 #include "drbd_protocol.h"
 #include "drbd_req.h"
@@ -65,6 +70,22 @@ static struct drbd_state_change *alloc_state_change(unsigned int n_devices, unsi
 	       n_connections * sizeof(struct drbd_connection_state_change) +
 	       n_devices * n_connections * sizeof(struct drbd_peer_device_state_change);
 	state_change = kmalloc(size, gfp);
+	{
+		struct drbd_connection_state_change __uncontained_tmp7;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp7;
+	}
+	{
+		struct drbd_device_state_change __uncontained_tmp8;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+	}
+	{
+		struct drbd_peer_device_state_change __uncontained_tmp9;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp9;
+	}
+	{
+		struct drbd_state_change __uncontained_tmp10;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!state_change)
 		return NULL;
 	state_change->n_devices = n_devices;

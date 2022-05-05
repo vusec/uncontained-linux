@@ -43,6 +43,11 @@
 
 #include <target/iscsi/iscsi_transport.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static LIST_HEAD(g_tiqn_list);
 static LIST_HEAD(g_np_list);
 static DEFINE_SPINLOCK(tiqn_lock);
@@ -699,6 +704,10 @@ static int __init iscsi_target_init_module(void)
 
 	size = BITS_TO_LONGS(ISCSIT_BITMAP_BITS) * sizeof(long);
 	iscsit_global->ts_bitmap = vzalloc(size);
+	{
+		long __uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!iscsit_global->ts_bitmap)
 		goto configfs_out;
 

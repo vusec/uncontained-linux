@@ -5,6 +5,11 @@
 #include <linux/mutex.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "spectrum.h"
 
 struct mlxsw_sp_kvdl {
@@ -22,6 +27,10 @@ int mlxsw_sp_kvdl_init(struct mlxsw_sp *mlxsw_sp)
 
 	kvdl = kzalloc(sizeof(*mlxsw_sp->kvdl) + kvdl_ops->priv_size,
 		       GFP_KERNEL);
+	{
+		typeof((*mlxsw_sp->kvdl)) __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (!kvdl)
 		return -ENOMEM;
 	mutex_init(&kvdl->kvdl_lock);

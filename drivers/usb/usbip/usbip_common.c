@@ -15,6 +15,11 @@
 #include <linux/moduleparam.h>
 #include <net/sock.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "usbip_common.h"
 
 #define DRIVER_AUTHOR "Takahiro Hirofuchi <hirofuchi@users.sourceforge.net>"
@@ -556,6 +561,10 @@ usbip_alloc_iso_desc_pdu(struct urb *urb, ssize_t *bufflen)
 	int i;
 
 	iso = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*iso)) __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!iso)
 		return NULL;
 
@@ -589,6 +598,10 @@ int usbip_recv_iso(struct usbip_device *ud, struct urb *urb)
 		return 0;
 
 	buff = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*iso)) __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (!buff)
 		return -ENOMEM;
 

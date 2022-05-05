@@ -3,6 +3,11 @@
 
 #include <linux/prefetch.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "iavf.h"
 #include "iavf_trace.h"
 #include "iavf_prototype.h"
@@ -623,6 +628,10 @@ int iavf_setup_tx_descriptors(struct iavf_ring *tx_ring)
 	WARN_ON(tx_ring->tx_bi);
 	bi_size = sizeof(struct iavf_tx_buffer) * tx_ring->count;
 	tx_ring->tx_bi = kzalloc(bi_size, GFP_KERNEL);
+	{
+		struct iavf_tx_buffer __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!tx_ring->tx_bi)
 		goto err;
 
@@ -739,6 +748,10 @@ int iavf_setup_rx_descriptors(struct iavf_ring *rx_ring)
 	WARN_ON(rx_ring->rx_bi);
 	bi_size = sizeof(struct iavf_rx_buffer) * rx_ring->count;
 	rx_ring->rx_bi = kzalloc(bi_size, GFP_KERNEL);
+	{
+		struct iavf_rx_buffer __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!rx_ring->rx_bi)
 		goto err;
 

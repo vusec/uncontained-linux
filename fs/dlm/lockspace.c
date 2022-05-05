@@ -11,6 +11,11 @@
 
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "dlm_internal.h"
 #include "lockspace.h"
 #include "member.h"
@@ -475,6 +480,10 @@ static int new_lockspace(const char *name, const char *cluster,
 	error = -ENOMEM;
 
 	ls = kzalloc(sizeof(struct dlm_ls) + namelen, GFP_NOFS);
+	{
+		struct dlm_ls __uncontained_tmp99;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp99;
+	}
 	if (!ls)
 		goto out;
 	memcpy(ls->ls_name, name, namelen);
@@ -502,6 +511,10 @@ static int new_lockspace(const char *name, const char *cluster,
 	ls->ls_rsbtbl_size = size;
 
 	ls->ls_rsbtbl = vmalloc(array_size(size, sizeof(struct dlm_rsbtable)));
+	{
+		struct dlm_rsbtable __uncontained_tmp100;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (!ls->ls_rsbtbl)
 		goto out_lsfree;
 	for (i = 0; i < size; i++) {

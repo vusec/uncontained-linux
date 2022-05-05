@@ -39,6 +39,11 @@
 #include <net/bluetooth/l2cap.h>
 #include <net/bluetooth/mgmt.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hci_request.h"
 #include "hci_debugfs.h"
 #include "smp.h"
@@ -831,6 +836,14 @@ int hci_get_dev_list(void __user *arg)
 	size = sizeof(*dl) + dev_num * sizeof(*dr);
 
 	dl = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*dl)) __uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
+	{
+		typeof((*dr)) __uncontained_tmp59;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!dl)
 		return -ENOMEM;
 

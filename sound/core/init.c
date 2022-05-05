@@ -21,6 +21,11 @@
 #include <sound/control.h>
 #include <sound/info.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* monitor files for graceful shutdown (hotplug) */
 struct snd_monitor_file {
 	struct file *file;
@@ -174,6 +179,10 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
 	if (extra_size < 0)
 		extra_size = 0;
 	card = kzalloc(sizeof(*card) + extra_size, GFP_KERNEL);
+	{
+		typeof((*card)) __uncontained_tmp181;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp181;
+	}
 	if (!card)
 		return -ENOMEM;
 

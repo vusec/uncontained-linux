@@ -21,6 +21,11 @@
 #include <uapi/linux/tc_act/tc_pedit.h>
 #include <net/pkt_cls.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static unsigned int pedit_net_id;
 static struct tc_action_ops act_pedit_ops;
 
@@ -218,6 +223,10 @@ static int tcf_pedit_init(struct net *net, struct nlattr *nla,
 	if (ret == ACT_P_CREATED ||
 	    (p->tcfp_nkeys && p->tcfp_nkeys != parm->nkeys)) {
 		keys = kmalloc(ksize, GFP_ATOMIC);
+		{
+			struct tc_pedit_key __uncontained_tmp131;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp131;
+		}
 		if (!keys) {
 			spin_unlock_bh(&p->tcf_lock);
 			ret = -ENOMEM;

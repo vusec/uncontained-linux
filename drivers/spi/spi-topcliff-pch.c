@@ -19,6 +19,11 @@
 #include <linux/dmaengine.h>
 #include <linux/pch_dma.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* Register offsets */
 #define PCH_SPCR		0x00	/* SPI control register */
 #define PCH_SPBRR		0x04	/* SPI baud rate register */
@@ -579,6 +584,10 @@ static void pch_spi_set_tx(struct pch_spi_data *data, int *bpw)
 
 	/* allocate memory for pkt_tx_buff & pkt_rx_buffer */
 	data->pkt_tx_buff = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*data->pkt_tx_buff)) __uncontained_tmp71;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (data->pkt_tx_buff != NULL) {
 		data->pkt_rx_buff = kzalloc(size, GFP_KERNEL);
 		if (!data->pkt_rx_buff) {

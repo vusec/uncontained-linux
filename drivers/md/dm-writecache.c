@@ -16,6 +16,16 @@
 #include <linux/pfn_t.h>
 #include <linux/libnvdimm.h>
 #include <linux/delay.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "dm-io-tracker.h"
 
 #define DM_MSG_PREFIX "writecache"
@@ -960,6 +970,10 @@ static int writecache_alloc_entries(struct dm_writecache *wc)
 	if (wc->entries)
 		return 0;
 	wc->entries = vmalloc(array_size(sizeof(struct wc_entry), wc->n_blocks));
+	{
+		struct wc_entry __uncontained_tmp56;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!wc->entries)
 		return -ENOMEM;
 	for (b = 0; b < wc->n_blocks; b++) {
@@ -2536,6 +2550,10 @@ invalid_optional:
 		wc->dirty_bitmap_size = (n_bitmap_bits + BITS_PER_LONG - 1) /
 			BITS_PER_LONG * sizeof(unsigned long);
 		wc->dirty_bitmap = vzalloc(wc->dirty_bitmap_size);
+		{
+			unsigned long __uncontained_tmp24;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+		}
 		if (!wc->dirty_bitmap) {
 			r = -ENOMEM;
 			ti->error = "Unable to allocate dirty bitmap";

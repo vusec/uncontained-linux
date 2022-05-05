@@ -5,6 +5,11 @@
  * Copyright (C) 2015-2017 Intel Deutschland GmbH
  */
 #include <linux/devcoredump.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "iwl-drv.h"
 #include "runtime.h"
 #include "dbg.h"
@@ -2010,6 +2015,14 @@ static u32 iwl_dump_ini_mem(struct iwl_fw_runtime *fwrt, struct list_head *list,
 		return 0;
 
 	entry = vzalloc(sizeof(*entry) + sizeof(*tlv) + size);
+	{
+		typeof((*entry)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
+	{
+		typeof((*tlv)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!entry)
 		return 0;
 
@@ -2082,6 +2095,10 @@ static u32 iwl_dump_ini_info(struct iwl_fw_runtime *fwrt,
 	}
 
 	entry = vzalloc(sizeof(*entry) + size);
+	{
+		typeof((*entry)) __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!entry)
 		return 0;
 
@@ -2345,6 +2362,14 @@ static u32 iwl_dump_ini_file_gen(struct iwl_fw_runtime *fwrt,
 		return 0;
 
 	entry = vzalloc(sizeof(*entry) + sizeof(*hdr));
+	{
+		typeof((*entry)) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
+	{
+		typeof((*hdr)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!entry)
 		return 0;
 
@@ -2590,6 +2615,10 @@ int iwl_fw_dbg_collect(struct iwl_fw_runtime *fwrt,
 	}
 
 	desc = kzalloc(sizeof(*desc) + len, GFP_ATOMIC);
+	{
+		typeof((*desc)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!desc)
 		return -ENOMEM;
 

@@ -23,6 +23,11 @@
 #include <linux/spinlock.h>
 #include <linux/string.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 
 /*
  * GPIO Aggregator sysfs interface
@@ -118,6 +123,10 @@ static ssize_t new_device_store(struct device_driver *driver, const char *buf,
 
 	/* kernfs guarantees string termination, so count + 1 is safe */
 	aggr = kzalloc(sizeof(*aggr) + count + 1, GFP_KERNEL);
+	{
+		typeof((*aggr)) __uncontained_tmp25;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!aggr)
 		return -ENOMEM;
 

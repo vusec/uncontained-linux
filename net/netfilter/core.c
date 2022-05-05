@@ -26,6 +26,11 @@
 #include <net/netfilter/nf_queue.h>
 #include <net/sock.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "nf_internals.h"
 
 const struct nf_ipv6_ops __rcu *nf_ipv6_ops __read_mostly;
@@ -59,6 +64,10 @@ static struct nf_hook_entries *allocate_hook_entries_size(u16 num)
 		return NULL;
 
 	e = kvzalloc(alloc, GFP_KERNEL);
+	{
+		typeof((*e)) __uncontained_tmp102;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (e)
 		e->num_hook_entries = num;
 	return e;

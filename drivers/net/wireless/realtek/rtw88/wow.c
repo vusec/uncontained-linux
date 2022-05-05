@@ -10,6 +10,11 @@
 #include "mac.h"
 #include "ps.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static void rtw_wow_show_wakeup_reason(struct rtw_dev *rtwdev)
 {
 	struct cfg80211_wowlan_nd_info nd_info;
@@ -551,6 +556,14 @@ static void rtw_wow_check_pno(struct rtw_dev *rtwdev,
 	pno_req->channel_cnt = nd_config->n_channels;
 	size = sizeof(*nd_config->channels[0]) * nd_config->n_channels;
 	pno_req->channels = kmalloc(size, GFP_KERNEL);
+	{
+		typeof((*pno_req->match_sets)) __uncontained_tmp59;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+	}
+	{
+		typeof((*nd_config->channels[0])) __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!pno_req->channels)
 		goto channel_err;
 

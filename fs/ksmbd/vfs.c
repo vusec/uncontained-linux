@@ -18,6 +18,11 @@
 #include <linux/sched/xacct.h>
 #include <linux/crc32c.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "../internal.h"	/* for vfs_path_lookup */
 
 #include "glob.h"
@@ -1373,6 +1378,14 @@ static struct xattr_smb_acl *ksmbd_vfs_make_xattr_posix_acl(struct user_namespac
 	smb_acl = kzalloc(sizeof(struct xattr_smb_acl) +
 			  sizeof(struct xattr_acl_entry) * posix_acls->a_count,
 			  GFP_KERNEL);
+	{
+		struct xattr_acl_entry __uncontained_tmp105;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp105;
+	}
+	{
+		struct xattr_smb_acl __uncontained_tmp106;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!smb_acl)
 		goto out;
 

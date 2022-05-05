@@ -13,6 +13,16 @@
 #include <linux/quotaops.h>
 #include <linux/xattr.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "internal.h"
 
 #define CACHEFILES_COOKIE_TYPE_DATA 1
@@ -51,6 +61,10 @@ int cachefiles_set_object_xattr(struct cachefiles_object *object)
 	_enter("%x,#%d", object->debug_id, len);
 
 	buf = kmalloc(sizeof(struct cachefiles_xattr) + len, GFP_KERNEL);
+	{
+		struct cachefiles_xattr __uncontained_tmp107;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp107;
+	}
 	if (!buf)
 		return -ENOMEM;
 
@@ -103,6 +117,10 @@ int cachefiles_check_auxdata(struct cachefiles_object *object, struct file *file
 
 	tlen = sizeof(struct cachefiles_xattr) + len;
 	buf = kmalloc(tlen, GFP_KERNEL);
+	{
+		struct cachefiles_xattr __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!buf)
 		return -ENOMEM;
 

@@ -14,6 +14,11 @@
 #include "nic.h"
 #include "rx_common.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* The maximum size of a shared RSS context */
 /* TODO: this should really be from the mcdi protocol export */
 #define EFX_EF10_MAX_SHARED_RSS_CONTEXT_SIZE 64UL
@@ -1333,6 +1338,10 @@ int efx_mcdi_filter_table_probe(struct efx_nic *efx, bool multicast_chaining)
 
 	table->entry = vzalloc(array_size(EFX_MCDI_FILTER_TBL_ROWS,
 					  sizeof(*table->entry)));
+	{
+		typeof((*table->entry)) __uncontained_tmp82;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!table->entry) {
 		rc = -ENOMEM;
 		goto fail;

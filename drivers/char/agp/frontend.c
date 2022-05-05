@@ -39,6 +39,11 @@
 #include <linux/fs.h>
 #include <linux/sched.h>
 #include <linux/uaccess.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "agp.h"
 
 struct agp_front_data agp_fe;
@@ -166,6 +171,10 @@ int agp_create_segment(struct agp_client *client, struct agp_region *region)
 	size_t i;
 
 	seg = kzalloc((sizeof(struct agp_segment_priv) * region->seg_count), GFP_KERNEL);
+	{
+		struct agp_segment_priv __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (seg == NULL) {
 		kfree(region->seg_list);
 		region->seg_list = NULL;
@@ -830,6 +839,10 @@ static int agpioc_reserve_wrap(struct agp_file_private *priv, void __user *arg)
 
 		segment = kmalloc((sizeof(struct agp_segment) * reserve.seg_count),
 				  GFP_KERNEL);
+		{
+			struct agp_segment __uncontained_tmp5;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+		}
 
 		if (segment == NULL)
 			return -ENOMEM;

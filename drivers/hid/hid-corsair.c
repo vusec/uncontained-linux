@@ -21,6 +21,11 @@
 #include <linux/usb.h>
 #include <linux/leds.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hid-ids.h"
 
 #define CORSAIR_USE_K90_MACRO	(1<<0)
@@ -436,6 +441,10 @@ static int k90_init_backlight(struct hid_device *dev)
 	name_sz =
 	    strlen(dev_name(&dev->dev)) + sizeof(K90_BACKLIGHT_LED_SUFFIX);
 	name = kzalloc(name_sz, GFP_KERNEL);
+	{
+		typeof((K90_BACKLIGHT_LED_SUFFIX)) __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!name) {
 		ret = -ENOMEM;
 		goto fail_name_alloc;
@@ -481,6 +490,10 @@ static int k90_init_macro_functions(struct hid_device *dev)
 	/* Init LED device for record LED */
 	name_sz = strlen(dev_name(&dev->dev)) + sizeof(K90_RECORD_LED_SUFFIX);
 	name = kzalloc(name_sz, GFP_KERNEL);
+	{
+		typeof((K90_RECORD_LED_SUFFIX)) __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!name) {
 		ret = -ENOMEM;
 		goto fail_record_led_alloc;

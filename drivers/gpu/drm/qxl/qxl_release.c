@@ -24,6 +24,11 @@
 
 #include <trace/events/dma_fence.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "qxl_drv.h"
 #include "qxl_object.h"
 
@@ -89,6 +94,10 @@ qxl_release_alloc(struct qxl_device *qdev, int type,
 	size_t size = sizeof(*release);
 
 	release = kmalloc(size, GFP_KERNEL);
+	{
+		typeof((*release)) __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!release) {
 		DRM_ERROR("Out of memory\n");
 		return -ENOMEM;

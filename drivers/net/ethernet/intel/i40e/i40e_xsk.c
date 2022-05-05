@@ -6,6 +6,11 @@
 #include <net/xdp_sock_drv.h>
 #include <net/xdp.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "i40e.h"
 #include "i40e_txrx_common.h"
 #include "i40e_xsk.h"
@@ -15,6 +20,10 @@ int i40e_alloc_rx_bi_zc(struct i40e_ring *rx_ring)
 	unsigned long sz = sizeof(*rx_ring->rx_bi_zc) * rx_ring->count;
 
 	rx_ring->rx_bi_zc = kzalloc(sz, GFP_KERNEL);
+	{
+		typeof((*rx_ring->rx_bi_zc)) __uncontained_tmp38;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+	}
 	return rx_ring->rx_bi_zc ? 0 : -ENOMEM;
 }
 

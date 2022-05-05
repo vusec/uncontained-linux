@@ -33,6 +33,11 @@
 #include <linux/slab.h>
 #include <linux/mutex.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 MODULE_AUTHOR("Takashi Iwai <tiwai@suse.de>");
 MODULE_DESCRIPTION("ALSA sequencer device management");
 MODULE_LICENSE("GPL");
@@ -213,6 +218,10 @@ int snd_seq_device_new(struct snd_card *card, int device, const char *id,
 		return -EINVAL;
 
 	dev = kzalloc(sizeof(*dev) + argsize, GFP_KERNEL);
+	{
+		typeof((*dev)) __uncontained_tmp154;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp154;
+	}
 	if (!dev)
 		return -ENOMEM;
 

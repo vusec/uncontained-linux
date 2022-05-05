@@ -15,6 +15,11 @@
 #include <linux/wait.h>
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "iwl-drv.h"
 #include "iwl-trans.h"
 #include "iwl-csr.h"
@@ -2629,6 +2634,10 @@ static ssize_t iwl_dbgfs_rx_queue_read(struct file *file,
 		return -EAGAIN;
 
 	buf = kzalloc(bufsz, GFP_KERNEL);
+	{
+		char __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!buf)
 		return -ENOMEM;
 

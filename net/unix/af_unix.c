@@ -116,6 +116,11 @@
 #include <linux/file.h>
 #include <linux/btf_ids.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "scm.h"
 
 spinlock_t unix_table_locks[2 * UNIX_HASH_SIZE];
@@ -247,6 +252,10 @@ static struct unix_address *unix_create_addr(struct sockaddr_un *sunaddr,
 	struct unix_address *addr;
 
 	addr = kmalloc(sizeof(*addr) + addr_len, GFP_KERNEL);
+	{
+		typeof((*addr)) __uncontained_tmp139;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!addr)
 		return NULL;
 
@@ -1088,6 +1097,10 @@ static int unix_autobind(struct sock *sk)
 	err = -ENOMEM;
 	addr = kzalloc(sizeof(*addr) +
 		       offsetof(struct sockaddr_un, sun_path) + 16, GFP_KERNEL);
+	{
+		typeof((*addr)) __uncontained_tmp140;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!addr)
 		goto out;
 

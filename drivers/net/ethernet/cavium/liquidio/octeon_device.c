@@ -18,6 +18,11 @@
 #include <linux/pci.h>
 #include <linux/netdevice.h>
 #include <linux/vmalloc.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "liquidio_common.h"
 #include "octeon_droq.h"
 #include "octeon_iq.h"
@@ -833,6 +838,10 @@ octeon_allocate_ioq_vector(struct octeon_device *oct, u32 num_ioqs)
 	size = sizeof(struct octeon_ioq_vector) * num_ioqs;
 
 	oct->ioq_vector = vzalloc(size);
+	{
+		struct octeon_ioq_vector __uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!oct->ioq_vector)
 		return -1;
 	for (i = 0; i < num_ioqs; i++) {

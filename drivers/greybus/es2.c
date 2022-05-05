@@ -14,6 +14,11 @@
 #include <linux/greybus.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "arpc.h"
 #include "greybus_trace.h"
 
@@ -189,6 +194,10 @@ static int output_async(struct es2_ap_dev *es2, void *req, u16 size, u8 cmd)
 		return -ENOMEM;
 
 	dr = kmalloc(sizeof(*dr) + size, GFP_ATOMIC);
+	{
+		typeof((*dr)) __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!dr) {
 		usb_free_urb(urb);
 		return -ENOMEM;
@@ -889,6 +898,10 @@ static struct arpc *arpc_alloc(void *payload, u16 size, u8 type)
 
 	INIT_LIST_HEAD(&rpc->list);
 	rpc->req = kzalloc(sizeof(*rpc->req) + size, GFP_KERNEL);
+	{
+		typeof((*rpc->req)) __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!rpc->req)
 		goto err_free_rpc;
 

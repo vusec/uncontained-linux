@@ -19,6 +19,11 @@
 #include <linux/pci.h>
 #include <linux/netdevice.h>
 #include <linux/vmalloc.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "liquidio_common.h"
 #include "octeon_droq.h"
 #include "octeon_iq.h"
@@ -97,8 +102,17 @@ int octeon_init_instr_queue(struct octeon_device *oct,
 	 */
 	iq->request_list = vzalloc_node(array_size(num_descs, sizeof(*iq->request_list)),
 					numa_node);
-	if (!iq->request_list)
+	{
+		typeof((*iq->request_list)) __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
+	if (!iq->request_list) {
 		iq->request_list = vzalloc(array_size(num_descs, sizeof(*iq->request_list)));
+		{
+			typeof((*iq->request_list)) __uncontained_tmp50;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+		}
+	}
 	if (!iq->request_list) {
 		lio_dma_free(oct, q_size, iq->base_addr, iq->base_addr_dma);
 		dev_err(&oct->pci_dev->dev, "Alloc failed for IQ[%d] nr free list\n",

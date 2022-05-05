@@ -41,6 +41,11 @@
 #include <asm/byteorder.h>
 #include <linux/platform_device.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "remoteproc_internal.h"
 
 #define HIGH_BITS_MASK 0xFFFFFFFF00000000ULL
@@ -2515,6 +2520,10 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
 		return NULL;
 
 	rproc = kzalloc(sizeof(struct rproc) + len, GFP_KERNEL);
+	{
+		struct rproc __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (!rproc)
 		return NULL;
 

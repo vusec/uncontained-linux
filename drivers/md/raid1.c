@@ -33,6 +33,11 @@
 
 #include <trace/events/block.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "md.h"
 #include "raid1.h"
 #include "md-bitmap.h"
@@ -2998,6 +3003,10 @@ static struct r1conf *setup_conf(struct mddev *mddev)
 	conf->mirrors = kzalloc(array3_size(sizeof(struct raid1_info),
 					    mddev->raid_disks, 2),
 				GFP_KERNEL);
+	{
+		struct raid1_info __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!conf->mirrors)
 		goto abort;
 
@@ -3006,6 +3015,10 @@ static struct r1conf *setup_conf(struct mddev *mddev)
 		goto abort;
 
 	conf->poolinfo = kzalloc(sizeof(*conf->poolinfo), GFP_KERNEL);
+	{
+		typeof((*conf->poolinfo)) __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!conf->poolinfo)
 		goto abort;
 	conf->poolinfo->raid_disks = mddev->raid_disks * 2;
@@ -3299,6 +3312,10 @@ static int raid1_reshape(struct mddev *mddev)
 	}
 
 	newpoolinfo = kmalloc(sizeof(*newpoolinfo), GFP_KERNEL);
+	{
+		typeof((*newpoolinfo)) __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!newpoolinfo)
 		return -ENOMEM;
 	newpoolinfo->mddev = mddev;
@@ -3313,6 +3330,10 @@ static int raid1_reshape(struct mddev *mddev)
 	newmirrors = kzalloc(array3_size(sizeof(struct raid1_info),
 					 raid_disks, 2),
 			     GFP_KERNEL);
+	{
+		struct raid1_info __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!newmirrors) {
 		kfree(newpoolinfo);
 		mempool_exit(&newpool);

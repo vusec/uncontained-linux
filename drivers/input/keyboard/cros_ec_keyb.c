@@ -27,6 +27,11 @@
 
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define MAX_NUM_TOP_ROW_KEYS   15
 
 /**
@@ -346,6 +351,14 @@ static int cros_ec_keyb_info(struct cros_ec_device *ec_dev,
 
 	msg = kzalloc(sizeof(*msg) + max_t(size_t, result_size,
 					   sizeof(*params)), GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
+	{
+		typeof((*params)) __uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (!msg)
 		return -ENOMEM;
 

@@ -27,6 +27,11 @@
 #include <linux/acpi.h>
 #include <linux/irq.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "internal.h"
 
 #define ACPI_PCI_LINK_CLASS		"pci_irq_routing"
@@ -289,6 +294,10 @@ static int acpi_pci_link_set(struct acpi_pci_link *link, int irq)
 		return -EINVAL;
 
 	resource = kzalloc(sizeof(*resource) + 1, irqs_disabled() ? GFP_ATOMIC: GFP_KERNEL);
+	{
+		typeof((*resource)) __uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!resource)
 		return -ENOMEM;
 

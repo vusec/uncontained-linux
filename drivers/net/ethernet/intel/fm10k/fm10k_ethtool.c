@@ -4,6 +4,11 @@
 #include <linux/ethtool.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "fm10k.h"
 
 struct fm10k_stats {
@@ -561,6 +566,10 @@ static int fm10k_set_ringparam(struct net_device *netdev,
 	/* allocate temporary buffer to store rings in */
 	i = max_t(int, interface->num_tx_queues, interface->num_rx_queues);
 	temp_ring = vmalloc(array_size(i, sizeof(struct fm10k_ring)));
+	{
+		struct fm10k_ring __uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
 
 	if (!temp_ring) {
 		err = -ENOMEM;

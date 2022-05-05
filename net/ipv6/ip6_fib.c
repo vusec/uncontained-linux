@@ -37,6 +37,11 @@
 #include <net/ip6_fib.h>
 #include <net/ip6_route.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct kmem_cache *fib6_node_kmem __read_mostly;
 
 struct fib6_cleaner {
@@ -154,6 +159,10 @@ struct fib6_info *fib6_info_alloc(gfp_t gfp_flags, bool with_fib6_nh)
 		sz += sizeof(struct fib6_nh);
 
 	f6i = kzalloc(sz, gfp_flags);
+	{
+		typeof((*f6i)) __uncontained_tmp83;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!f6i)
 		return NULL;
 

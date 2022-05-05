@@ -57,6 +57,11 @@
 #include <linux/uaccess.h>
 #include <acpi/video.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define dprintk(fmt, ...)			\
 do {						\
 	if (debug)				\
@@ -4493,6 +4498,10 @@ static int sony_pic_enable(struct acpi_device *device,
 
 	/* init acpi_buffer */
 	resource = kzalloc(sizeof(*resource) + 1, GFP_KERNEL);
+	{
+		typeof((*resource)) __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (!resource)
 		return -ENOMEM;
 

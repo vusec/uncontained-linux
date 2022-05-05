@@ -57,6 +57,11 @@
 #include <linux/jhash.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "gfs2.h"
 #include "incore.h"
 #include "bmap.h"
@@ -1363,6 +1368,10 @@ int gfs2_quota_init(struct gfs2_sbd *sdp)
 	bm_size *= sizeof(unsigned long);
 	error = -ENOMEM;
 	sdp->sd_quota_bitmap = kzalloc(bm_size, GFP_NOFS | __GFP_NOWARN);
+	{
+		unsigned long __uncontained_tmp72;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp72;
+	}
 	if (sdp->sd_quota_bitmap == NULL)
 		sdp->sd_quota_bitmap = __vmalloc(bm_size, GFP_NOFS |
 						 __GFP_ZERO);

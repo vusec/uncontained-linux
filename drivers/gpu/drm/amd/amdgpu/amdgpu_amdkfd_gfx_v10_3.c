@@ -20,6 +20,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 #include <linux/mmu_context.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "amdgpu.h"
 #include "amdgpu_amdkfd.h"
 #include "gc/gc_10_3_0_offset.h"
@@ -335,6 +340,10 @@ static int hqd_dump_v10_3(struct amdgpu_device *adev,
 	} while (0)
 
 	*dump = kmalloc(HQD_N_REGS*2*sizeof(uint32_t), GFP_KERNEL);
+	{
+	uint32_t __uncontained_tmp15;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (*dump == NULL)
 		return -ENOMEM;
 
@@ -432,6 +441,10 @@ static int hqd_sdma_dump_v10_3(struct amdgpu_device *adev,
 #define HQD_N_REGS (19+6+7+12)
 
 	*dump = kmalloc(HQD_N_REGS*2*sizeof(uint32_t), GFP_KERNEL);
+	{
+	uint32_t __uncontained_tmp16;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (*dump == NULL)
 		return -ENOMEM;
 

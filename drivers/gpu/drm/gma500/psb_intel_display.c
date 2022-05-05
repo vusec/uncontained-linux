@@ -11,6 +11,11 @@
 
 #include <drm/drm_plane_helper.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "framebuffer.h"
 #include "gem.h"
 #include "gma_display.h"
@@ -489,6 +494,14 @@ void psb_intel_crtc_init(struct drm_device *dev, int pipe,
 	gma_crtc = kzalloc(sizeof(struct gma_crtc) +
 			(INTELFB_CONN_LIMIT * sizeof(struct drm_connector *)),
 			GFP_KERNEL);
+	{
+		struct drm_connector *__uncontained_tmp28;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+	}
+	{
+		struct gma_crtc __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (gma_crtc == NULL)
 		return;
 

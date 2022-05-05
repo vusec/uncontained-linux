@@ -11,6 +11,11 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define I2C_MAX_RETRIES 3
 
 /**
@@ -198,6 +203,10 @@ static int ec_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg i2c_msgs[],
 
 	alloc_size = max(request_len, response_len);
 	msg = kmalloc(sizeof(*msg) + alloc_size, GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!msg)
 		return -ENOMEM;
 

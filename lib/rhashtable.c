@@ -26,6 +26,11 @@
 #include <linux/err.h>
 #include <linux/export.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define HASH_DEFAULT_SIZE	64UL
 #define HASH_MIN_SIZE		4U
 
@@ -158,6 +163,14 @@ static struct bucket_table *nested_bucket_table_alloc(struct rhashtable *ht,
 	size = sizeof(*tbl) + sizeof(tbl->buckets[0]);
 
 	tbl = kzalloc(size, gfp);
+	{
+		typeof((*tbl)) __uncontained_tmp88;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp88;
+	}
+	{
+		typeof((tbl->buckets[0])) __uncontained_tmp89;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp89;
+	}
 	if (!tbl)
 		return NULL;
 

@@ -37,6 +37,11 @@
 #include <drm/drm_print.h>
 #include <drm/r128_drm.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "r128_drv.h"
 
 /* ================================================================
@@ -1129,9 +1134,17 @@ static int r128_cce_dispatch_read_pixels(struct drm_device *dev,
 	xbuf_size = count * sizeof(*x);
 	ybuf_size = count * sizeof(*y);
 	x = kmalloc(xbuf_size, GFP_KERNEL);
+	{
+		typeof((*x)) __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (x == NULL)
 		return -ENOMEM;
 	y = kmalloc(ybuf_size, GFP_KERNEL);
+	{
+		typeof((*y)) __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (y == NULL) {
 		kfree(x);
 		return -ENOMEM;

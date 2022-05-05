@@ -18,6 +18,11 @@
 #include <type_support.h>
 #include <ia_css_err.h>
 #include <ia_css_types.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ia_css_debug.h"
 
 static struct ia_css_dvs_6axis_config *
@@ -60,6 +65,10 @@ alloc_dvs_6axis_table(const struct ia_css_resolution *frame_res,
 		/* Generate Y buffers  */
 		dvs_config->xcoords_y = kvmalloc(width_y * height_y * sizeof(uint32_t),
 						 GFP_KERNEL);
+		{
+			typeof((uint32_t)) __uncontained_tmp98;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp98;
+		}
 		if (!dvs_config->xcoords_y) {
 			IA_CSS_ERROR("out of memory");
 			err = -ENOMEM;
@@ -68,6 +77,10 @@ alloc_dvs_6axis_table(const struct ia_css_resolution *frame_res,
 
 		dvs_config->ycoords_y = kvmalloc(width_y * height_y * sizeof(uint32_t),
 						 GFP_KERNEL);
+		{
+			typeof((uint32_t)) __uncontained_tmp99;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp99;
+		}
 		if (!dvs_config->ycoords_y) {
 			IA_CSS_ERROR("out of memory");
 			err = -ENOMEM;
@@ -79,6 +92,10 @@ alloc_dvs_6axis_table(const struct ia_css_resolution *frame_res,
 
 		dvs_config->xcoords_uv = kvmalloc(width_uv * height_uv * sizeof(uint32_t),
 						  GFP_KERNEL);
+		{
+			typeof((uint32_t)) __uncontained_tmp100;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp100;
+		}
 		if (!dvs_config->xcoords_uv) {
 			IA_CSS_ERROR("out of memory");
 			err = -ENOMEM;
@@ -87,6 +104,10 @@ alloc_dvs_6axis_table(const struct ia_css_resolution *frame_res,
 
 		dvs_config->ycoords_uv = kvmalloc(width_uv * height_uv * sizeof(uint32_t),
 						  GFP_KERNEL);
+		{
+			typeof((uint32_t)) __uncontained_tmp101;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp101;
+		}
 		if (!dvs_config->ycoords_uv) {
 			IA_CSS_ERROR("out of memory");
 			err = -ENOMEM;

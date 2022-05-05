@@ -31,6 +31,11 @@
 
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define WORK_REGISTER_THRESHOLD		0x00
 #define WORK_REGISTER_REPORT_RATE	0x08
 #define WORK_REGISTER_GAIN		0x30
@@ -584,6 +589,10 @@ static int edt_ft5x06_factory_mode(struct edt_ft5x06_ts_data *tsdata)
 		tsdata->raw_bufsize = tsdata->num_x * tsdata->num_y *
 				      sizeof(u16);
 		tsdata->raw_buffer = kzalloc(tsdata->raw_bufsize, GFP_KERNEL);
+		{
+			u16 __uncontained_tmp30;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+		}
 		if (!tsdata->raw_buffer) {
 			error = -ENOMEM;
 			goto err_out;

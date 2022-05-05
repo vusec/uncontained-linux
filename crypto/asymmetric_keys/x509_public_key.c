@@ -13,6 +13,11 @@
 #include <keys/asymmetric-parser.h>
 #include <keys/system_keyring.h>
 #include <crypto/hash.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "asymmetric_keys.h"
 #include "x509_parser.h"
 
@@ -60,6 +65,10 @@ int x509_get_sig_params(struct x509_certificate *cert)
 		goto error;
 
 	desc = kzalloc(desc_size, GFP_KERNEL);
+	{
+		typeof((*desc)) __uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!desc)
 		goto error;
 

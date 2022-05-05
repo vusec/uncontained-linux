@@ -18,6 +18,11 @@
 
 #include <cluster/masklog.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ocfs2.h"
 
 #include "alloc.h"
@@ -115,6 +120,14 @@ int ocfs2_compute_replay_slots(struct ocfs2_super *osb)
 
 	replay_map = kzalloc(sizeof(struct ocfs2_replay_map) +
 			     (osb->max_slots * sizeof(char)), GFP_KERNEL);
+	{
+		char __uncontained_tmp149;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp149;
+	}
+	{
+		struct ocfs2_replay_map __uncontained_tmp150;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp150;
+	}
 
 	if (!replay_map) {
 		mlog_errno(-ENOMEM);
@@ -180,6 +193,14 @@ int ocfs2_recovery_init(struct ocfs2_super *osb)
 	rm = kzalloc(sizeof(struct ocfs2_recovery_map) +
 		     osb->max_slots * sizeof(unsigned int),
 		     GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp151;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp151;
+	}
+	{
+		struct ocfs2_recovery_map __uncontained_tmp152;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp152;
+	}
 	if (!rm) {
 		mlog_errno(-ENOMEM);
 		return -ENOMEM;

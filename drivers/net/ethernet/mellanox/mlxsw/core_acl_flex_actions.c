@@ -11,6 +11,11 @@
 #include <linux/refcount.h>
 #include <net/flow_offload.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "item.h"
 #include "trap.h"
 #include "core_acl_flex_actions.h"
@@ -734,6 +739,10 @@ mlxsw_afa_cookie_create(struct mlxsw_afa *mlxsw_afa,
 	int err;
 
 	cookie = kzalloc(sizeof(*cookie) + fa_cookie->cookie_len, GFP_KERNEL);
+	{
+		typeof((*cookie)) __uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!cookie)
 		return ERR_PTR(-ENOMEM);
 	refcount_set(&cookie->ref_count, 1);

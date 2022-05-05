@@ -24,6 +24,11 @@
 #include <linux/sched/signal.h>
 #include <linux/idr.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static DEFINE_MUTEX(pid_caches_mutex);
 static struct kmem_cache *pid_ns_cachep;
 /* Write once array, filled from the beginning. */
@@ -53,6 +58,14 @@ static struct kmem_cache *create_pid_cachep(unsigned int level)
 	if (!*pkc) {
 		*pkc = kmem_cache_create(name, len, 0,
 					 SLAB_HWCACHE_ALIGN | SLAB_ACCOUNT, 0);
+		{
+			struct pid __uncontained_tmp56;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+		}
+		{
+			struct upid __uncontained_tmp57;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+		}
 	}
 	mutex_unlock(&pid_caches_mutex);
 	/* current can fail, but someone else can succeed. */

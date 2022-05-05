@@ -13,6 +13,11 @@
 #include "mock_engine.h"
 #include "selftests/mock_request.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int mock_timeline_pin(struct intel_timeline *tl)
 {
 	int err;
@@ -63,6 +68,10 @@ static struct intel_ring *mock_ring(struct intel_engine_cs *engine)
 	struct intel_ring *ring;
 
 	ring = kzalloc(sizeof(*ring) + sz, GFP_KERNEL);
+	{
+		typeof((*ring)) __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!ring)
 		return NULL;
 
@@ -348,6 +357,10 @@ struct intel_engine_cs *mock_engine(struct drm_i915_private *i915,
 	GEM_BUG_ON(!to_gt(i915)->uncore);
 
 	engine = kzalloc(sizeof(*engine) + PAGE_SIZE, GFP_KERNEL);
+	{
+		typeof((*engine)) __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!engine)
 		return NULL;
 

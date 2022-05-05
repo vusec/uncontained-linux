@@ -4,6 +4,11 @@
 #include "dr_types.h"
 #include "dr_ste.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 enum dr_action_domain {
 	DR_ACTION_DOMAIN_NIC_INGRESS,
 	DR_ACTION_DOMAIN_NIC_EGRESS,
@@ -790,6 +795,10 @@ dr_action_create_generic(enum mlx5dr_action_type action_type)
 		return NULL;
 
 	action = kzalloc(sizeof(*action) + extra_size, GFP_KERNEL);
+	{
+		typeof((*action)) __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!action)
 		return NULL;
 

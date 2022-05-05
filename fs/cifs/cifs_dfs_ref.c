@@ -16,6 +16,11 @@
 #include <linux/vfs.h>
 #include <linux/fs.h>
 #include <linux/inet.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "cifsglob.h"
 #include "cifsproto.h"
 #include "cifsfs.h"
@@ -191,6 +196,10 @@ char *cifs_compose_mount_options(const char *sb_mountdata,
 	 */
 	md_len = strlen(sb_mountdata) + INET6_ADDRSTRLEN;
 	mountdata = kzalloc(md_len + sizeof("ip=") + 1, GFP_KERNEL);
+	{
+		typeof(("ip=")) __uncontained_tmp110;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (mountdata == NULL) {
 		rc = -ENOMEM;
 		goto compose_mount_options_err;

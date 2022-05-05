@@ -11,6 +11,11 @@
 #include <linux/regulator/of_regulator.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct cros_ec_regulator_data {
 	struct regulator_desc desc;
 	struct regulator_dev *dev;
@@ -29,6 +34,10 @@ static int cros_ec_cmd(struct cros_ec_device *ec, u32 version, u32 command,
 	int ret;
 
 	msg = kzalloc(sizeof(*msg) + max(outsize, insize), GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!msg)
 		return -ENOMEM;
 

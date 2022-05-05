@@ -25,6 +25,11 @@
 #include <asm/system_info.h>
 #include <asm/system_misc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "pm.h"
 
 /* MXS DIGCTL SAIF CLKMUX */
@@ -179,6 +184,10 @@ static void __init update_fec_mac_prop(enum mac_oui oui)
 			continue;
 
 		newmac = kzalloc(sizeof(*newmac) + 6, GFP_KERNEL);
+		{
+			typeof((*newmac)) __uncontained_tmp0;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+		}
 		if (!newmac)
 			return;
 		newmac->value = newmac + 1;

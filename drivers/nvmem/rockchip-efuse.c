@@ -17,6 +17,11 @@
 #include <linux/of_platform.h>
 #include <linux/platform_device.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define RK3288_A_SHIFT		6
 #define RK3288_A_MASK		0x3ff
 #define RK3288_PGENB		BIT(3)
@@ -116,6 +121,10 @@ static int rockchip_rk3328_efuse_read(void *context, unsigned int offset,
 
 	buf = kzalloc(array3_size(addr_len, RK3399_NBYTES, sizeof(*buf)),
 		      GFP_KERNEL);
+	{
+		typeof((*buf)) __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!buf) {
 		ret = -ENOMEM;
 		goto nomem;
@@ -169,6 +178,10 @@ static int rockchip_rk3399_efuse_read(void *context, unsigned int offset,
 
 	buf = kzalloc(array3_size(addr_len, RK3399_NBYTES, sizeof(*buf)),
 		      GFP_KERNEL);
+	{
+		typeof((*buf)) __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!buf) {
 		clk_disable_unprepare(efuse->clk);
 		return -ENOMEM;

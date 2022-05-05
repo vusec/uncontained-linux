@@ -23,6 +23,11 @@
 #include <linux/regmap.h>
 #include <linux/reset-controller.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define WIZ_SERDES_CTRL		0x404
 #define WIZ_SERDES_TOP_CTRL	0x408
 #define WIZ_SERDES_RST		0x40c
@@ -661,6 +666,10 @@ static int wiz_mux_clk_register(struct wiz *wiz, struct regmap_field *field,
 	num_parents = mux_sel->num_parents;
 
 	parent_names = kzalloc((sizeof(char *) * num_parents), GFP_KERNEL);
+	{
+		char *__uncontained_tmp91;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (!parent_names)
 		return -ENOMEM;
 

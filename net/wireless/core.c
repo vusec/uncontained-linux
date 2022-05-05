@@ -24,6 +24,11 @@
 #include <linux/sched.h>
 #include <net/genetlink.h>
 #include <net/cfg80211.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "nl80211.h"
 #include "core.h"
 #include "sysfs.h"
@@ -438,6 +443,10 @@ struct wiphy *wiphy_new_nm(const struct cfg80211_ops *ops, int sizeof_priv,
 	alloc_size = sizeof(*rdev) + sizeof_priv;
 
 	rdev = kzalloc(alloc_size, GFP_KERNEL);
+	{
+		typeof((*rdev)) __uncontained_tmp106;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!rdev)
 		return NULL;
 

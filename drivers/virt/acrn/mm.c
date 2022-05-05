@@ -13,6 +13,11 @@
 #include <linux/mm.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "acrn_drv.h"
 
 static int modify_region(struct acrn_vm *vm, struct vm_memory_region_op *region)
@@ -169,6 +174,10 @@ int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap)
 	/* Get the page number of the map region */
 	nr_pages = memmap->len >> PAGE_SHIFT;
 	pages = vzalloc(nr_pages * sizeof(struct page *));
+	{
+		struct page *__uncontained_tmp103;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!pages)
 		return -ENOMEM;
 
@@ -223,6 +232,14 @@ int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm_memmap *memmap)
 	regions_info = kzalloc(sizeof(*regions_info) +
 			       sizeof(*vm_region) * nr_regions,
 			       GFP_KERNEL);
+	{
+		typeof((*regions_info)) __uncontained_tmp104;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp104;
+	}
+	{
+		typeof((*vm_region)) __uncontained_tmp105;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!regions_info) {
 		ret = -ENOMEM;
 		goto unmap_kernel_map;

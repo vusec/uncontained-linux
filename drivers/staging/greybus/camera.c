@@ -16,6 +16,16 @@
 #include <linux/vmalloc.h>
 #include <linux/greybus.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "gb-camera.h"
 #include "greybus_protocols.h"
 
@@ -539,7 +549,23 @@ static int gb_camera_configure_streams(struct gb_camera *gcam,
 	resp_size = sizeof(*resp) + nstreams * sizeof(resp->config[0]);
 
 	req = kmalloc(req_size, GFP_KERNEL);
+	{
+		typeof((*req)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
+	{
+		typeof((req->config[0])) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	resp = kmalloc(resp_size, GFP_KERNEL);
+	{
+		typeof((*resp)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
+	{
+		typeof((resp->config[0])) __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!req || !resp) {
 		kfree(req);
 		kfree(resp);
@@ -664,6 +690,10 @@ static int gb_camera_capture(struct gb_camera *gcam, u32 request_id,
 
 	req_size = sizeof(*req) + settings_size;
 	req = kmalloc(req_size, GFP_KERNEL);
+	{
+		typeof((*req)) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!req)
 		return -ENOMEM;
 
@@ -1171,6 +1201,10 @@ static int gb_camera_debugfs_init(struct gb_camera *gcam)
 	gcam->debugfs.buffers =
 		vmalloc(array_size(GB_CAMERA_DEBUGFS_BUFFER_MAX,
 				   sizeof(*gcam->debugfs.buffers)));
+	{
+		typeof((*gcam->debugfs.buffers)) __uncontained_tmp104;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!gcam->debugfs.buffers)
 		return -ENOMEM;
 

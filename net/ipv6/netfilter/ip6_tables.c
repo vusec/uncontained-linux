@@ -30,6 +30,11 @@
 #include <linux/netfilter_ipv6/ip6_tables.h>
 #include <linux/netfilter/x_tables.h>
 #include <net/netfilter/nf_log.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "../../netfilter/xt_repldata.h"
 
 MODULE_LICENSE("GPL");
@@ -815,6 +820,10 @@ static struct xt_counters *alloc_counters(const struct xt_table *table)
 	   about). */
 	countersize = sizeof(struct xt_counters) * private->number;
 	counters = vzalloc(countersize);
+	{
+		struct xt_counters __uncontained_tmp61;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+	}
 
 	if (counters == NULL)
 		return ERR_PTR(-ENOMEM);

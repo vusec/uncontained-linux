@@ -35,6 +35,11 @@
 #include <linux/slab.h>
 #include <linux/livepatch.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static DEFINE_HASHTABLE(klp_shadow_hash, 12);
 
 /*
@@ -121,6 +126,10 @@ static void *__klp_shadow_get_or_alloc(void *obj, unsigned long id,
 	 * called only when the buffer is really used (under klp_shadow_lock).
 	 */
 	new_shadow = kzalloc(size + sizeof(*new_shadow), gfp_flags);
+	{
+		typeof((*new_shadow)) __uncontained_tmp127;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp127;
+	}
 	if (!new_shadow)
 		return NULL;
 

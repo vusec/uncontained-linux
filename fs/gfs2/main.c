@@ -18,6 +18,11 @@
 #include <linux/atomic.h>
 #include <linux/mempool.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "gfs2.h"
 #include "incore.h"
 #include "super.h"
@@ -107,6 +112,14 @@ static int __init init_gfs2_fs(void)
 					sizeof(struct gfs2_glock) +
 					sizeof(struct address_space),
 					0, 0, gfs2_init_gl_aspace_once);
+	{
+		struct address_space __uncontained_tmp144;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp144;
+	}
+	{
+		struct gfs2_glock __uncontained_tmp145;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp145;
+	}
 
 	if (!gfs2_glock_aspace_cachep)
 		goto fail_cachep2;

@@ -12,6 +12,11 @@
 #include "exp_rcv.h"
 #include "trace.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  * DOC: TID RDMA READ protocol
  *
@@ -371,6 +376,10 @@ int hfi1_qp_priv_init(struct rvt_dev_info *rdi, struct rvt_qp *qp,
 		qpriv->pages = kzalloc_node(TID_RDMA_MAX_PAGES *
 						sizeof(*qpriv->pages),
 					    GFP_KERNEL, dd->node);
+		{
+			typeof((*qpriv->pages)) __uncontained_tmp36;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+		}
 		if (!qpriv->pages)
 			return -ENOMEM;
 		for (i = 0; i < qp->s_size; i++) {
@@ -1638,6 +1647,10 @@ static int hfi1_kern_exp_rcv_alloc_flows(struct tid_rdma_request *req,
 		return 0;
 	flows = kmalloc_node(MAX_FLOWS * sizeof(*flows), gfp,
 			     req->rcd->numa_id);
+	{
+		typeof((*flows)) __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!flows)
 		return -ENOMEM;
 	/* mini init */

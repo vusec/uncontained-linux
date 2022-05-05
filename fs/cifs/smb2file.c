@@ -11,6 +11,11 @@
 #include <linux/slab.h>
 #include <linux/pagemap.h>
 #include <asm/div64.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "cifsfs.h"
 #include "cifspdu.h"
 #include "cifsglob.h"
@@ -40,6 +45,10 @@ smb2_open_file(const unsigned int xid, struct cifs_open_parms *oparms,
 
 	smb2_data = kzalloc(sizeof(struct smb2_file_all_info) + PATH_MAX * 2,
 			    GFP_KERNEL);
+	{
+		struct smb2_file_all_info __uncontained_tmp112;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (smb2_data == NULL) {
 		rc = -ENOMEM;
 		goto out;

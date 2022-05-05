@@ -9,6 +9,11 @@
 #include <linux/irq_work.h>
 #include <linux/dma-resv.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "i915_sw_fence.h"
 #include "i915_selftest.h"
 
@@ -494,6 +499,14 @@ int i915_sw_fence_await_dma_fence(struct i915_sw_fence *fence,
 		     sizeof(struct i915_sw_dma_fence_cb_timer) :
 		     sizeof(struct i915_sw_dma_fence_cb),
 		     gfp);
+	{
+		struct i915_sw_dma_fence_cb __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
+	{
+		struct i915_sw_dma_fence_cb_timer __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!cb) {
 		if (!gfpflags_allow_blocking(gfp))
 			return -ENOMEM;

@@ -15,6 +15,11 @@
 #include <sound/soc.h>
 #include <sound/soc-dapm.h>
 #include <sound/pcm.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "audioreach.h"
 #include "q6apm.h"
 
@@ -299,6 +304,10 @@ int q6apm_map_memory_regions(struct q6apm_graph *graph, unsigned int dir, phys_a
 	}
 
 	buf = kzalloc(((sizeof(struct audio_buffer)) * periods), GFP_KERNEL);
+	{
+		struct audio_buffer __uncontained_tmp145;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp145;
+	}
 	if (!buf) {
 		mutex_unlock(&graph->lock);
 		return -ENOMEM;

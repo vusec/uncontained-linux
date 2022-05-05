@@ -18,6 +18,11 @@
 #include <asm/barrier.h>
 #include <asm/byteorder.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hinic_common.h"
 #include "hinic_hw_if.h"
 #include "hinic_hw_wqe.h"
@@ -223,6 +228,10 @@ static int alloc_sq_skb_arr(struct hinic_sq *sq)
 
 	skb_arr_size = wq->q_depth * sizeof(*sq->saved_skb);
 	sq->saved_skb = vzalloc(skb_arr_size);
+	{
+		typeof((*sq->saved_skb)) __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!sq->saved_skb)
 		return -ENOMEM;
 
@@ -251,6 +260,10 @@ static int alloc_rq_skb_arr(struct hinic_rq *rq)
 
 	skb_arr_size = wq->q_depth * sizeof(*rq->saved_skb);
 	rq->saved_skb = vzalloc(skb_arr_size);
+	{
+		typeof((*rq->saved_skb)) __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!rq->saved_skb)
 		return -ENOMEM;
 
@@ -323,11 +336,19 @@ static int alloc_rq_cqe(struct hinic_rq *rq)
 
 	cqe_size = wq->q_depth * sizeof(*rq->cqe);
 	rq->cqe = vzalloc(cqe_size);
+	{
+		typeof((*rq->cqe)) __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!rq->cqe)
 		return -ENOMEM;
 
 	cqe_dma_size = wq->q_depth * sizeof(*rq->cqe_dma);
 	rq->cqe_dma = vzalloc(cqe_dma_size);
+	{
+		typeof((*rq->cqe_dma)) __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!rq->cqe_dma)
 		goto err_cqe_dma_arr_alloc;
 

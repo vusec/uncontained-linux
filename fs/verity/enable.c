@@ -14,6 +14,11 @@
 #include <linux/sched/signal.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Read a file data page for Merkle tree construction.  Do aggressive readahead,
  * since we're sequentially reading the entire file.
@@ -208,6 +213,10 @@ static int enable_verity(struct file *filp,
 
 	/* Start initializing the fsverity_descriptor */
 	desc = kzalloc(desc_size, GFP_KERNEL);
+	{
+		typeof((*desc)) __uncontained_tmp83;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!desc)
 		return -ENOMEM;
 	desc->version = 1;

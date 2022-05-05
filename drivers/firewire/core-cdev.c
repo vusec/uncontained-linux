@@ -33,6 +33,11 @@
 #include <linux/wait.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 
 #include "core.h"
 
@@ -589,6 +594,10 @@ static int init_request(struct client *client,
 		return -EINVAL;
 
 	e = kmalloc(sizeof(*e) + request->length, GFP_KERNEL);
+	{
+		typeof((*e)) __uncontained_tmp13;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (e == NULL)
 		return -ENOMEM;
 
@@ -871,6 +880,10 @@ static int ioctl_add_descriptor(struct client *client, union ioctl_arg *arg)
 		return -EINVAL;
 
 	r = kmalloc(sizeof(*r) + a->length * 4, GFP_KERNEL);
+	{
+		typeof((*r)) __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (r == NULL)
 		return -ENOMEM;
 
@@ -916,6 +929,10 @@ static void iso_callback(struct fw_iso_context *context, u32 cycle,
 	struct iso_interrupt_event *e;
 
 	e = kmalloc(sizeof(*e) + header_length, GFP_ATOMIC);
+	{
+		typeof((*e)) __uncontained_tmp15;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (e == NULL)
 		return;
 
@@ -1532,6 +1549,10 @@ static int ioctl_send_phy_packet(struct client *client, union ioctl_arg *arg)
 		return -ENOSYS;
 
 	e = kzalloc(sizeof(*e) + 4, GFP_KERNEL);
+	{
+		typeof((*e)) __uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (e == NULL)
 		return -ENOMEM;
 
@@ -1583,6 +1604,10 @@ void fw_cdev_handle_phy_packet(struct fw_card *card, struct fw_packet *p)
 
 	list_for_each_entry(client, &card->phy_receiver_list, phy_receiver_link) {
 		e = kmalloc(sizeof(*e) + 8, GFP_ATOMIC);
+		{
+			typeof((*e)) __uncontained_tmp16;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+		}
 		if (e == NULL)
 			break;
 

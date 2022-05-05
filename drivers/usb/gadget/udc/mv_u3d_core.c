@@ -27,6 +27,16 @@
 #include <linux/platform_data/mv_usb.h>
 #include <linux/clk.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "mv_u3d.h"
 
 #define DRIVER_DESC		"Marvell PXA USB3.0 Device Controller driver"
@@ -1793,6 +1803,10 @@ static int mv_u3d_probe(struct platform_device *dev)
 	}
 
 	u3d = kzalloc(sizeof(*u3d), GFP_KERNEL);
+	{
+		typeof((*u3d)) __uncontained_tmp110;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (!u3d) {
 		retval = -ENOMEM;
 		goto err_alloc_private;
@@ -1891,6 +1905,14 @@ static int mv_u3d_probe(struct platform_device *dev)
 
 	size = u3d->max_eps * sizeof(struct mv_u3d_ep) * 2;
 	u3d->eps = kzalloc(size, GFP_KERNEL);
+	{
+		struct mv_u3d_ep_context __uncontained_tmp92;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp92;
+	}
+	{
+		struct mv_u3d_ep __uncontained_tmp93;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!u3d->eps) {
 		retval = -ENOMEM;
 		goto err_alloc_eps;
@@ -1898,6 +1920,10 @@ static int mv_u3d_probe(struct platform_device *dev)
 
 	/* initialize ep0 status request structure */
 	u3d->status_req = kzalloc(sizeof(struct mv_u3d_req) + 8, GFP_KERNEL);
+	{
+		struct mv_u3d_req __uncontained_tmp109;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp109;
+	}
 	if (!u3d->status_req) {
 		retval = -ENOMEM;
 		goto err_alloc_status_req;

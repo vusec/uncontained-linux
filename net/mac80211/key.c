@@ -19,6 +19,11 @@
 #include <net/mac80211.h>
 #include <crypto/algapi.h>
 #include <asm/unaligned.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ieee80211_i.h"
 #include "driver-ops.h"
 #include "debugfs_key.h"
@@ -543,6 +548,10 @@ ieee80211_key_alloc(u32 cipher, int idx, size_t key_len,
 		return ERR_PTR(-EINVAL);
 
 	key = kzalloc(sizeof(struct ieee80211_key) + key_len, GFP_KERNEL);
+	{
+		struct ieee80211_key __uncontained_tmp143;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp143;
+	}
 	if (!key)
 		return ERR_PTR(-ENOMEM);
 

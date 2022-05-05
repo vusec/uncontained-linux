@@ -49,6 +49,11 @@
 #include <asm/xen/hypervisor.h>
 #include <xen/xenbus.h>
 #include <xen/xen.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "xenbus.h"
 
 /*
@@ -279,6 +284,14 @@ int xenbus_dev_request_and_reply(struct xsd_sockmsg *msg, void *par)
 	struct kvec *vec;
 
 	req = kmalloc(sizeof(*req) + sizeof(*vec), GFP_KERNEL);
+	{
+		typeof((*req)) __uncontained_tmp141;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp141;
+	}
+	{
+		typeof((*vec)) __uncontained_tmp142;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp142;
+	}
 	if (!req)
 		return -ENOMEM;
 
@@ -405,6 +418,10 @@ static char **split(char *strings, unsigned int len, unsigned int *num)
 
 	/* Transfer to one big alloc for easy freeing. */
 	ret = kmalloc(*num * sizeof(char *) + len, GFP_NOIO | __GFP_HIGH);
+	{
+		char *__uncontained_tmp140;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!ret) {
 		kfree(strings);
 		return ERR_PTR(-ENOMEM);

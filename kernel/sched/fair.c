@@ -733,6 +733,11 @@ static u64 sched_vslice(struct cfs_rq *cfs_rq, struct sched_entity *se)
 }
 
 #include "pelt.h"
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #ifdef CONFIG_SMP
 
 static int select_idle_sibling(struct task_struct *p, int prev_cpu, int cpu);
@@ -2597,6 +2602,10 @@ void task_numa_fault(int last_cpupid, int mem_node, int pages, int flags)
 			   NR_NUMA_HINT_FAULT_BUCKETS * nr_node_ids;
 
 		p->numa_faults = kzalloc(size, GFP_KERNEL|__GFP_NOWARN);
+		{
+			typeof((*p->numa_faults)) __uncontained_tmp77;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp77;
+		}
 		if (!p->numa_faults)
 			return;
 

@@ -151,6 +151,16 @@
 #include <linux/prandom.h>
 #include <linux/once_lite.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "net-sysfs.h"
 
 
@@ -1237,6 +1247,10 @@ int dev_set_alias(struct net_device *dev, const char *alias, size_t len)
 
 	if (len) {
 		new_alias = kmalloc(sizeof(*new_alias) + len + 1, GFP_KERNEL);
+		{
+			typeof((*new_alias)) __uncontained_tmp159;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp159;
+		}
 		if (!new_alias)
 			return -ENOMEM;
 
@@ -9453,6 +9467,10 @@ static int netif_alloc_rx_queues(struct net_device *dev)
 	BUG_ON(count < 1);
 
 	rx = kvzalloc(sz, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
+	{
+		typeof((*rx)) __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!rx)
 		return -ENOMEM;
 
@@ -9520,6 +9538,10 @@ static int netif_alloc_netdev_queues(struct net_device *dev)
 		return -EINVAL;
 
 	tx = kvzalloc(sz, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
+	{
+		typeof((*tx)) __uncontained_tmp82;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!tx)
 		return -ENOMEM;
 

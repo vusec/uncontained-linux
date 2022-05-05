@@ -49,6 +49,11 @@
 
 #include <asm/irq_regs.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Exported functions/variables
  */
@@ -2075,6 +2080,10 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
 		ssize_t len = sizeof(user_kdgkb->kb_string);
 
 		kbs = kmalloc(len, GFP_KERNEL);
+		{
+			typeof((user_kdgkb->kb_string)) __uncontained_tmp73;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
+		}
 		if (!kbs)
 			return -ENOMEM;
 

@@ -14,6 +14,11 @@
 #include <linux/spinlock.h>
 #include <linux/timer.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "bcm_vk.h"
 #include "bcm_vk_msg.h"
 #include "bcm_vk_sg.h"
@@ -1104,6 +1109,10 @@ ssize_t bcm_vk_write(struct file *p_file,
 	/* allocate the work entry + buffer for size count and inband sgl */
 	entry = kzalloc(sizeof(*entry) + count + vk->ib_sgl_size,
 			GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!entry) {
 		rc = -ENOMEM;
 		goto write_err;

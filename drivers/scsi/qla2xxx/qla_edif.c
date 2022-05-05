@@ -11,6 +11,16 @@
 #include <linux/delay.h>
 #include <scsi/scsi_tcq.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct edif_sa_index_entry *qla_edif_sadb_find_sa_index_entry(uint16_t nport_handle,
 		struct list_head *sa_list);
 static uint16_t qla_edif_sadb_get_sa_index(fc_port_t *fcport,
@@ -149,6 +159,10 @@ static int qla_edif_list_add_sa_update_index(fc_port_t *fcport,
 	 * followed by a delete of the first sa_index
 	 */
 	entry = kzalloc((sizeof(struct edif_list_entry)), GFP_ATOMIC);
+	{
+		struct edif_list_entry __uncontained_tmp83;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!entry)
 		return -ENOMEM;
 
@@ -848,6 +862,14 @@ qla_edif_app_getfcinfo(scsi_qla_host_t *vha, struct bsg_job *bsg_job)
 
 	app_reply = kzalloc((sizeof(struct app_pinfo_reply) +
 	    sizeof(struct app_pinfo) * app_req.num_ports), GFP_KERNEL);
+	{
+		struct app_pinfo __uncontained_tmp84;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp84;
+	}
+	{
+		struct app_pinfo_reply __uncontained_tmp85;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp85;
+	}
 
 	if (!app_reply) {
 		SET_DID_STATUS(bsg_reply->result, DID_ERROR);
@@ -964,6 +986,14 @@ qla_edif_app_getstats(scsi_qla_host_t *vha, struct bsg_job *bsg_job)
 	    (sizeof(struct app_sinfo) * app_req.num_ports);
 
 	app_reply = kzalloc(size, GFP_KERNEL);
+	{
+		struct app_sinfo __uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
+	{
+		struct app_stats_reply __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!app_reply) {
 		SET_DID_STATUS(bsg_reply->result, DID_ERROR);
 		rval = -1;
@@ -3070,6 +3100,10 @@ static uint16_t qla_edif_sadb_get_sa_index(fc_port_t *fcport,
 
 		/* if there is no entry for this nport, add one */
 		entry = kzalloc((sizeof(struct edif_sa_index_entry)), GFP_ATOMIC);
+		{
+			struct edif_sa_index_entry __uncontained_tmp86;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
+		}
 		if (!entry)
 			return INVALID_EDIF_SA_INDEX;
 

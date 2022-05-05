@@ -20,6 +20,11 @@
 #include <linux/irqdomain.h>
 #include <linux/pm_runtime.h>
 #include <linux/bitfield.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "pci.h"
 
 #define CARDBUS_LATENCY_TIMER	176	/* secondary latency timer */
@@ -605,6 +610,10 @@ struct pci_host_bridge *pci_alloc_host_bridge(size_t priv)
 	struct pci_host_bridge *bridge;
 
 	bridge = kzalloc(sizeof(*bridge) + priv, GFP_KERNEL);
+	{
+		typeof((*bridge)) __uncontained_tmp90;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (!bridge)
 		return NULL;
 

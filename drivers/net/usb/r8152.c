@@ -28,6 +28,11 @@
 #include <crypto/hash.h>
 #include <linux/usb/r8152.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* Information for net-next */
 #define NETNEXT_VERSION		"12"
 
@@ -4491,6 +4496,10 @@ static long rtl8152_fw_verify_checksum(struct r8152 *tp,
 
 	len = sizeof(*sdesc) + crypto_shash_descsize(alg);
 	sdesc = kmalloc(len, GFP_KERNEL);
+	{
+		typeof((*sdesc)) __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!sdesc) {
 		rc = -ENOMEM;
 		goto free_shash;

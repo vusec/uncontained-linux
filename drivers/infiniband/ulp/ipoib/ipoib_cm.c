@@ -41,6 +41,11 @@
 #include <linux/sched/signal.h>
 #include <linux/sched/mm.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ipoib.h"
 
 int ipoib_max_conn_qp = 128;
@@ -357,6 +362,10 @@ static int ipoib_cm_nonsrq_init_rx(struct net_device *dev, struct ib_cm_id *cm_i
 
 	rx->rx_ring = vzalloc(array_size(ipoib_recvq_size,
 					 sizeof(*rx->rx_ring)));
+	{
+		typeof((*rx->rx_ring)) __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!rx->rx_ring)
 		return -ENOMEM;
 
@@ -1146,6 +1155,10 @@ static int ipoib_cm_tx_init(struct ipoib_cm_tx *p, u32 qpn,
 
 	noio_flag = memalloc_noio_save();
 	p->tx_ring = vzalloc(array_size(ipoib_sendq_size, sizeof(*p->tx_ring)));
+	{
+		typeof((*p->tx_ring)) __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!p->tx_ring) {
 		memalloc_noio_restore(noio_flag);
 		ret = -ENOMEM;
@@ -1571,6 +1584,10 @@ static void ipoib_cm_create_srq(struct net_device *dev, int max_sge)
 
 	priv->cm.srq_ring = vzalloc(array_size(ipoib_recvq_size,
 					       sizeof(*priv->cm.srq_ring)));
+	{
+		typeof((*priv->cm.srq_ring)) __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!priv->cm.srq_ring) {
 		ib_destroy_srq(priv->cm.srq);
 		priv->cm.srq = NULL;

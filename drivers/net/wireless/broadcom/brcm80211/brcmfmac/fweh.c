@@ -4,6 +4,11 @@
  */
 #include <linux/netdevice.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "brcmu_wifi.h"
 #include "brcmu_utils.h"
 
@@ -415,6 +420,10 @@ void brcmf_fweh_process_event(struct brcmf_pub *drvr,
 		return;
 
 	event = kzalloc(sizeof(*event) + datalen, gfp);
+	{
+		typeof((*event)) __uncontained_tmp59;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!event)
 		return;
 

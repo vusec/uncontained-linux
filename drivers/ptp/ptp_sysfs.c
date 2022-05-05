@@ -8,6 +8,11 @@
 #include <linux/capability.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ptp_private.h"
 
 static ssize_t clock_name_show(struct device *dev,
@@ -281,6 +286,10 @@ static ssize_t max_vclocks_store(struct device *dev,
 
 	size = sizeof(int) * max;
 	vclock_index = kzalloc(size, GFP_KERNEL);
+	{
+		int __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!vclock_index) {
 		err = -ENOMEM;
 		goto out;

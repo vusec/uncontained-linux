@@ -25,6 +25,11 @@
 #include "11n.h"
 #include "cfg80211.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* The maximum number of channels the firmware can scan per command */
 #define MWIFIEX_MAX_CHANNELS_PER_SPECIFIC_SCAN   14
 
@@ -2202,6 +2207,14 @@ int mwifiex_ret_802_11_scan(struct mwifiex_private *priv,
 			kzalloc(sizeof(struct cfg80211_wowlan_nd_match) +
 				sizeof(struct cfg80211_wowlan_nd_match *) *
 				scan_rsp->number_of_sets, GFP_ATOMIC);
+		{
+			struct cfg80211_wowlan_nd_match *__uncontained_tmp72;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp72;
+		}
+		{
+			struct cfg80211_wowlan_nd_match __uncontained_tmp73;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
+		}
 
 		if (adapter->nd_info)
 			adapter->nd_info->n_matches = scan_rsp->number_of_sets;
@@ -2229,6 +2242,14 @@ int mwifiex_ret_802_11_scan(struct mwifiex_private *priv,
 			adapter->nd_info->matches[idx] =
 				kzalloc(sizeof(*pmatch) + sizeof(u32),
 					GFP_ATOMIC);
+			{
+				typeof((*pmatch)) __uncontained_tmp75;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+			}
+			{
+				u32 __uncontained_tmp74;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+			}
 
 			pmatch = adapter->nd_info->matches[idx];
 

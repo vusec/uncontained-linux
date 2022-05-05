@@ -28,6 +28,11 @@
 #include <asm/timex.h>
 #include <asm/cpacf.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("IBM Corporation");
 MODULE_DESCRIPTION("s390 PRNG interface");
@@ -230,6 +235,10 @@ static int __init prng_tdes_instantiate(void)
 	/* memory allocation, prng_data struct init, mutex init */
 	datalen = sizeof(struct prng_data_s) + prng_chunk_size;
 	prng_data = kzalloc(datalen, GFP_KERNEL);
+	{
+		struct prng_data_s __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!prng_data) {
 		prng_errorflag = PRNG_INSTANTIATE_FAILED;
 		return -ENOMEM;
@@ -379,6 +388,10 @@ static int __init prng_sha512_instantiate(void)
 	if (fips_enabled)
 		datalen += prng_chunk_size;
 	prng_data = kzalloc(datalen, GFP_KERNEL);
+	{
+		struct prng_data_s __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!prng_data) {
 		prng_errorflag = PRNG_INSTANTIATE_FAILED;
 		return -ENOMEM;

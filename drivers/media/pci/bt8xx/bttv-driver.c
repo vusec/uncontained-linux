@@ -48,6 +48,11 @@
 
 #include <media/i2c/saa6588.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define BTTV_VERSION "0.9.19"
 
 unsigned int bttv_num;			/* number of Bt848s in use */
@@ -2137,6 +2142,10 @@ static int setup_window_lock(struct bttv_fh *fh, struct bttv *btv,
 	n = win->clipcount;
 	size = sizeof(*clips)*(n+4);
 	clips = kmalloc(size,GFP_KERNEL);
+	{
+		typeof((*clips)) __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (NULL == clips)
 		return -ENOMEM;
 	if (n > 0)

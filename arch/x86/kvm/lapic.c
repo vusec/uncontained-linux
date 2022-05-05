@@ -34,6 +34,11 @@
 #include <asm/delay.h>
 #include <linux/atomic.h>
 #include <linux/jump_label.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "kvm_cache_regs.h"
 #include "irq.h"
 #include "ioapic.h"
@@ -214,6 +219,14 @@ void kvm_recalculate_apic_map(struct kvm *kvm)
 	new = kvzalloc(sizeof(struct kvm_apic_map) +
 	                   sizeof(struct kvm_lapic *) * ((u64)max_id + 1),
 			   GFP_KERNEL_ACCOUNT);
+	{
+		struct kvm_lapic *__uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
+	{
+		struct kvm_apic_map __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 
 	if (!new)
 		goto out;

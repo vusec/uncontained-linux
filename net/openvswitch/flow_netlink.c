@@ -38,6 +38,11 @@
 #include <net/tun_proto.h>
 #include <net/erspan.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "flow_netlink.h"
 
 struct ovs_len_tbl {
@@ -2281,6 +2286,10 @@ static struct sw_flow_actions *nla_alloc_flow_actions(int size)
 	WARN_ON_ONCE(size > MAX_ACTIONS_BUFSIZE);
 
 	sfa = kmalloc(sizeof(*sfa) + size, GFP_KERNEL);
+	{
+		typeof((*sfa)) __uncontained_tmp159;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp159;
+	}
 	if (!sfa)
 		return ERR_PTR(-ENOMEM);
 

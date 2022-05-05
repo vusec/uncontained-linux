@@ -19,6 +19,11 @@
 #include <asm/head.h>
 #include <asm/timer.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct cpufreq_driver *cpufreq_us3_driver;
 
 struct us3_freq_percpu_info {
@@ -176,6 +181,10 @@ static int __init us3_freq_init(void)
 
 		us3_freq_table = kzalloc((NR_CPUS * sizeof(*us3_freq_table)),
 			GFP_KERNEL);
+		{
+			typeof((*us3_freq_table)) __uncontained_tmp21;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+		}
 		if (!us3_freq_table)
 			goto err_out;
 

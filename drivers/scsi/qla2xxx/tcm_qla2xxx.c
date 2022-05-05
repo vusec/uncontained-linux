@@ -29,6 +29,11 @@
 #include <target/target_core_base.h>
 #include <target/target_core_fabric.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "qla_def.h"
 #include "qla_target.h"
 #include "tcm_qla2xxx.h"
@@ -1562,6 +1567,10 @@ static int tcm_qla2xxx_init_lport(struct tcm_qla2xxx_lport *lport)
 	lport->lport_loopid_map =
 		vzalloc(array_size(65536,
 				   sizeof(struct tcm_qla2xxx_fc_loopid)));
+	{
+		struct tcm_qla2xxx_fc_loopid __uncontained_tmp107;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp107;
+	}
 	if (!lport->lport_loopid_map) {
 		pr_err("Unable to allocate lport->lport_loopid_map of %zu bytes\n",
 		    sizeof(struct tcm_qla2xxx_fc_loopid) * 65536);

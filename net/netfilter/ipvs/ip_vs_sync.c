@@ -58,6 +58,11 @@
 
 #include <net/ip_vs.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define IP_VS_SYNC_GROUP 0xe0000051    /* multicast addr - 224.0.0.81 */
 #define IP_VS_SYNC_PORT  8848          /* multicast port */
 
@@ -336,6 +341,10 @@ ip_vs_sync_buff_create(struct netns_ipvs *ipvs, unsigned int len)
 	len = max_t(unsigned int, len + sizeof(struct ip_vs_sync_mesg),
 		    ipvs->mcfg.sync_maxlen);
 	sb->mesg = kmalloc(len, GFP_ATOMIC);
+	{
+		struct ip_vs_sync_mesg __uncontained_tmp103;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!sb->mesg) {
 		kfree(sb);
 		return NULL;
@@ -424,6 +433,10 @@ ip_vs_sync_buff_create_v0(struct netns_ipvs *ipvs, unsigned int len)
 	len = max_t(unsigned int, len + sizeof(struct ip_vs_sync_mesg_v0),
 		    ipvs->mcfg.sync_maxlen);
 	sb->mesg = kmalloc(len, GFP_ATOMIC);
+	{
+		struct ip_vs_sync_mesg_v0 __uncontained_tmp104;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!sb->mesg) {
 		kfree(sb);
 		return NULL;

@@ -12,6 +12,16 @@
 #include <linux/vmalloc.h>
 #include <linux/highmem.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hfi.h"
 #include "common.h"
 #include "qp.h"
@@ -943,6 +953,14 @@ ssize_t sdma_set_cpu_to_sde_map(struct sdma_engine *sde, const char *buf,
 			}
 
 			rht_node->map[vl] = kzalloc(sz, GFP_KERNEL);
+			{
+				struct sdma_engine *__uncontained_tmp18;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+			}
+			{
+				struct sdma_rht_map_elem __uncontained_tmp20;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+			}
 			if (!rht_node->map[vl]) {
 				kfree(rht_node);
 				ret = -ENOMEM;
@@ -970,6 +988,14 @@ ssize_t sdma_set_cpu_to_sde_map(struct sdma_engine *sde, const char *buf,
 			/* Add new user mappings */
 			if (!rht_node->map[vl]) {
 				rht_node->map[vl] = kzalloc(sz, GFP_KERNEL);
+				{
+					struct sdma_engine *__uncontained_tmp19;
+					__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+				}
+				{
+					struct sdma_rht_map_elem __uncontained_tmp21;
+					__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+				}
 			}
 
 			if (!rht_node->map[vl]) {
@@ -1184,6 +1210,14 @@ int sdma_map_init(struct hfi1_devdata *dd, u8 port, u8 num_vls, u8 *vl_engines)
 			roundup_pow_of_two(num_vls) *
 			sizeof(struct sdma_map_elem *),
 		GFP_KERNEL);
+	{
+		struct sdma_map_elem *__uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
+	{
+		struct sdma_vl_map __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!newmap)
 		goto bail;
 	newmap->actual_vls = num_vls;
@@ -1204,6 +1238,14 @@ int sdma_map_init(struct hfi1_devdata *dd, u8 port, u8 num_vls, u8 *vl_engines)
 				sizeof(struct sdma_map_elem) +
 					sz * sizeof(struct sdma_engine *),
 				GFP_KERNEL);
+			{
+				struct sdma_engine *__uncontained_tmp48;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+			}
+			{
+				struct sdma_map_elem __uncontained_tmp49;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+			}
 			if (!newmap->map[i])
 				goto bail;
 			newmap->map[i]->mask = (1 << ilog2(sz)) - 1;
@@ -1435,6 +1477,10 @@ int sdma_init(struct hfi1_devdata *dd, u8 port)
 			kvzalloc_node(array_size(descq_cnt,
 						 sizeof(struct sdma_txreq *)),
 				      GFP_KERNEL, dd->node);
+		{
+			struct sdma_txreq *__uncontained_tmp45;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+		}
 		if (!sde->tx_ring)
 			goto bail;
 	}
@@ -1480,6 +1526,10 @@ int sdma_init(struct hfi1_devdata *dd, u8 port)
 		goto bail;
 
 	tmp_sdma_rht = kzalloc(sizeof(*tmp_sdma_rht), GFP_KERNEL);
+	{
+		typeof((*tmp_sdma_rht)) __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!tmp_sdma_rht) {
 		ret = -ENOMEM;
 		goto bail;
@@ -3025,6 +3075,10 @@ static int _extend_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
 			/* allocate coalesce buffer with space for padding */
 			tx->coalesce_buf = kmalloc(tx->tlen + sizeof(u32),
 						   GFP_ATOMIC);
+			{
+				u32 __uncontained_tmp44;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+			}
 			if (!tx->coalesce_buf)
 				goto enomem;
 			tx->coalesce_idx = 0;

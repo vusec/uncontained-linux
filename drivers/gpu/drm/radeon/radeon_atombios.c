@@ -29,6 +29,11 @@
 #include <drm/drm_device.h>
 #include <drm/radeon_drm.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "radeon.h"
 
 #include "atom.h"
@@ -904,6 +909,10 @@ bool radeon_get_atom_connector_info_from_supported_devices_table(struct
 	router.cd_valid = false;
 
 	bios_connectors = kzalloc(bc_size, GFP_KERNEL);
+	{
+		typeof((*bios_connectors)) __uncontained_tmp15;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!bios_connectors)
 		return false;
 

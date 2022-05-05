@@ -16,6 +16,11 @@
 #include <net/netlink.h>
 #include <net/genetlink.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "datapath.h"
 #include "meter.h"
 
@@ -72,6 +77,14 @@ static struct dp_meter_instance *dp_meter_instance_alloc(const u32 size)
 	ti = kvzalloc(sizeof(*ti) +
 		      sizeof(struct dp_meter *) * size,
 		      GFP_KERNEL);
+	{
+		typeof((*ti)) __uncontained_tmp167;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp167;
+	}
+	{
+		struct dp_meter *__uncontained_tmp166;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp166;
+	}
 	if (!ti)
 		return NULL;
 

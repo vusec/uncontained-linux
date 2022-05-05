@@ -18,6 +18,11 @@
 #include <linux/utsname.h>
 #include <linux/slab.h>
 #include <linux/version.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "cifsfs.h"
 #include "cifs_spnego.h"
 #include "smb2proto.h"
@@ -773,6 +778,10 @@ int build_ntlmssp_negotiate_blob(unsigned char **pbuffer,
 
 	len = size_of_ntlmssp_blob(ses, sizeof(NEGOTIATE_MESSAGE));
 	*pbuffer = kmalloc(len, GFP_KERNEL);
+	{
+		NEGOTIATE_MESSAGE __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!*pbuffer) {
 		rc = -ENOMEM;
 		cifs_dbg(VFS, "Error %d during NTLMSSP allocation\n", rc);
@@ -835,6 +844,10 @@ int build_ntlmssp_smb3_negotiate_blob(unsigned char **pbuffer,
 
 	len = size_of_ntlmssp_blob(ses, sizeof(struct negotiate_message));
 	*pbuffer = kmalloc(len, GFP_KERNEL);
+	{
+		struct negotiate_message __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!*pbuffer) {
 		rc = -ENOMEM;
 		cifs_dbg(VFS, "Error %d during NTLMSSP allocation\n", rc);
@@ -905,6 +918,10 @@ int build_ntlmssp_auth_blob(unsigned char **pbuffer,
 
 	len = size_of_ntlmssp_blob(ses, sizeof(AUTHENTICATE_MESSAGE));
 	*pbuffer = kmalloc(len, GFP_KERNEL);
+	{
+		AUTHENTICATE_MESSAGE __uncontained_tmp82;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!*pbuffer) {
 		rc = -ENOMEM;
 		cifs_dbg(VFS, "Error %d during NTLMSSP allocation\n", rc);

@@ -20,6 +20,11 @@
 
 #include "ena_netdev.h"
 #include <linux/bpf_trace.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ena_pci_id_tbl.h"
 
 MODULE_AUTHOR("Amazon.com, Inc. or its affiliates");
@@ -745,16 +750,36 @@ static int ena_setup_tx_resources(struct ena_adapter *adapter, int qid)
 	node = cpu_to_node(ena_irq->cpu);
 
 	tx_ring->tx_buffer_info = vzalloc_node(size, node);
+	{
+		struct ena_tx_buffer __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!tx_ring->tx_buffer_info) {
 		tx_ring->tx_buffer_info = vzalloc(size);
+		{
+			struct ena_tx_buffer __uncontained_tmp29;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+		}
 		if (!tx_ring->tx_buffer_info)
 			goto err_tx_buffer_info;
 	}
 
 	size = sizeof(u16) * tx_ring->ring_size;
 	tx_ring->free_ids = vzalloc_node(size, node);
+	{
+		u16 __uncontained_tmp38;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!tx_ring->free_ids) {
 		tx_ring->free_ids = vzalloc(size);
+		{
+			struct ena_tx_buffer __uncontained_tmp30;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+		}
+		{
+			u16 __uncontained_tmp32;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+		}
 		if (!tx_ring->free_ids)
 			goto err_tx_free_ids;
 	}
@@ -763,6 +788,14 @@ static int ena_setup_tx_resources(struct ena_adapter *adapter, int qid)
 	tx_ring->push_buf_intermediate_buf = vzalloc_node(size, node);
 	if (!tx_ring->push_buf_intermediate_buf) {
 		tx_ring->push_buf_intermediate_buf = vzalloc(size);
+		{
+			struct ena_tx_buffer __uncontained_tmp31;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+		}
+		{
+			u16 __uncontained_tmp33;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+		}
 		if (!tx_ring->push_buf_intermediate_buf)
 			goto err_push_buf_intermediate_buf;
 	}
@@ -882,16 +915,36 @@ static int ena_setup_rx_resources(struct ena_adapter *adapter,
 	node = cpu_to_node(ena_irq->cpu);
 
 	rx_ring->rx_buffer_info = vzalloc_node(size, node);
+	{
+		struct ena_rx_buffer __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!rx_ring->rx_buffer_info) {
 		rx_ring->rx_buffer_info = vzalloc(size);
+		{
+			struct ena_rx_buffer __uncontained_tmp34;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+		}
 		if (!rx_ring->rx_buffer_info)
 			return -ENOMEM;
 	}
 
 	size = sizeof(u16) * rx_ring->ring_size;
 	rx_ring->free_ids = vzalloc_node(size, node);
+	{
+		u16 __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!rx_ring->free_ids) {
 		rx_ring->free_ids = vzalloc(size);
+		{
+			struct ena_rx_buffer __uncontained_tmp35;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+		}
+		{
+			u16 __uncontained_tmp36;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+		}
 		if (!rx_ring->free_ids) {
 			vfree(rx_ring->rx_buffer_info);
 			rx_ring->rx_buffer_info = NULL;

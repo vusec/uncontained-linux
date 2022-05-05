@@ -9,6 +9,11 @@
 #include <linux/slab.h>
 #include <linux/fs.h>
 #include <linux/xattr.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "internal.h"
 
 /*
@@ -76,6 +81,10 @@ static bool afs_make_acl(struct afs_operation *op,
 	struct afs_acl *acl;
 
 	acl = kmalloc(sizeof(*acl) + size, GFP_KERNEL);
+	{
+		typeof((*acl)) __uncontained_tmp127;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp127;
+	}
 	if (!acl) {
 		afs_op_nomem(op);
 		return false;

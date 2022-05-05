@@ -4,6 +4,11 @@
 #include "rqt.h"
 #include <linux/mlx5/transobj.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 void mlx5e_rss_params_indir_init_uniform(struct mlx5e_rss_params_indir *indir,
 					 unsigned int num_channels)
 {
@@ -27,6 +32,10 @@ static int mlx5e_rqt_init(struct mlx5e_rqt *rqt, struct mlx5_core_dev *mdev,
 
 	inlen = MLX5_ST_SZ_BYTES(create_rqt_in) + sizeof(u32) * init_size;
 	in = kvzalloc(inlen, GFP_KERNEL);
+	{
+		u32 __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!in)
 		return -ENOMEM;
 
@@ -124,6 +133,10 @@ static int mlx5e_rqt_redirect(struct mlx5e_rqt *rqt, u32 *rqns, unsigned int siz
 
 	inlen = MLX5_ST_SZ_BYTES(modify_rqt_in) + sizeof(u32) * size;
 	in = kvzalloc(inlen, GFP_KERNEL);
+	{
+		u32 __uncontained_tmp27;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!in)
 		return -ENOMEM;
 

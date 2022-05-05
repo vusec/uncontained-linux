@@ -29,6 +29,11 @@
 #include <linux/syscalls.h>
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "amdgpu.h"
 #include "amdgpu_ras.h"
 #include "amdgpu_atomfirmware.h"
@@ -1828,6 +1833,10 @@ static int amdgpu_ras_badpages_read(struct amdgpu_device *adev,
 	}
 
 	*bps = kmalloc(sizeof(struct ras_badpage) * data->count, GFP_KERNEL);
+	{
+		struct ras_badpage __uncontained_tmp19;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!*bps) {
 		ret = -ENOMEM;
 		goto out;
@@ -2308,6 +2317,18 @@ int amdgpu_ras_init(struct amdgpu_device *adev)
 			sizeof(struct ras_manager) * AMDGPU_RAS_BLOCK_COUNT +
 			sizeof(struct ras_manager) * AMDGPU_RAS_MCA_BLOCK_COUNT,
 			GFP_KERNEL|__GFP_ZERO);
+	{
+		struct amdgpu_ras __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
+	{
+		struct ras_manager __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
+	{
+		struct ras_manager __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!con)
 		return -ENOMEM;
 

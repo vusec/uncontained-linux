@@ -31,6 +31,11 @@
 #include <linux/dmi.h>
 #include <linux/atomic.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "kfd_priv.h"
 #include "kfd_crat.h"
 #include "kfd_topology.h"
@@ -752,6 +757,14 @@ static int kfd_build_sysfs_node_entry(struct kfd_topology_device *dev,
 		perf->attr_group = kzalloc(sizeof(struct kfd_perf_attr)
 			* num_attrs + sizeof(struct attribute_group),
 			GFP_KERNEL);
+		{
+			struct attribute_group __uncontained_tmp28;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+		}
+		{
+			struct kfd_perf_attr __uncontained_tmp29;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+		}
 		if (!perf->attr_group)
 			return -ENOMEM;
 

@@ -42,6 +42,11 @@
 
 #include <rdma/uverbs_types.h>
 #include <rdma/uverbs_std_types.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "rdma_core.h"
 
 #include "uverbs.h"
@@ -2230,6 +2235,18 @@ ib_uverbs_unmarshall_recv(struct uverbs_req_iter *iter, u32 wr_count,
 		next = kmalloc(ALIGN(sizeof(*next), sizeof(struct ib_sge)) +
 				       user_wr->num_sge * sizeof(struct ib_sge),
 			       GFP_KERNEL);
+		{
+			typeof((*next)) __uncontained_tmp42;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+		}
+		{
+			struct ib_sge __uncontained_tmp40;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+		}
+		{
+			struct ib_sge __uncontained_tmp41;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+		}
 		if (!next) {
 			ret = -ENOMEM;
 			goto err;
@@ -3214,6 +3231,10 @@ static int ib_uverbs_ex_create_flow(struct uverbs_attr_bundle *attrs)
 	if (cmd.flow_attr.num_of_specs) {
 		kern_flow_attr = kmalloc(sizeof(*kern_flow_attr) + cmd.flow_attr.size,
 					 GFP_KERNEL);
+		{
+			typeof((*kern_flow_attr)) __uncontained_tmp43;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+		}
 		if (!kern_flow_attr)
 			return -ENOMEM;
 

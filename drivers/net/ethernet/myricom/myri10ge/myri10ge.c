@@ -71,6 +71,11 @@
 #include <asm/byteorder.h>
 #include <asm/processor.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "myri10ge_mcp.h"
 #include "myri10ge_mcp_gen_header.h"
 
@@ -1966,6 +1971,10 @@ static int myri10ge_allocate_rings(struct myri10ge_slice_state *ss)
 	bytes = 8 + (MYRI10GE_MAX_SEND_DESC_TSO + 4)
 	    * sizeof(*ss->tx.req_list);
 	ss->tx.req_bytes = kzalloc(bytes, GFP_KERNEL);
+	{
+		typeof((*ss->tx.req_list)) __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (ss->tx.req_bytes == NULL)
 		goto abort_with_nothing;
 
@@ -1976,11 +1985,19 @@ static int myri10ge_allocate_rings(struct myri10ge_slice_state *ss)
 
 	bytes = rx_ring_entries * sizeof(*ss->rx_small.shadow);
 	ss->rx_small.shadow = kzalloc(bytes, GFP_KERNEL);
+	{
+		typeof((*ss->rx_small.shadow)) __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (ss->rx_small.shadow == NULL)
 		goto abort_with_tx_req_bytes;
 
 	bytes = rx_ring_entries * sizeof(*ss->rx_big.shadow);
 	ss->rx_big.shadow = kzalloc(bytes, GFP_KERNEL);
+	{
+		typeof((*ss->rx_big.shadow)) __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (ss->rx_big.shadow == NULL)
 		goto abort_with_rx_small_shadow;
 
@@ -1988,16 +2005,28 @@ static int myri10ge_allocate_rings(struct myri10ge_slice_state *ss)
 
 	bytes = tx_ring_entries * sizeof(*ss->tx.info);
 	ss->tx.info = kzalloc(bytes, GFP_KERNEL);
+	{
+		typeof((*ss->tx.info)) __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (ss->tx.info == NULL)
 		goto abort_with_rx_big_shadow;
 
 	bytes = rx_ring_entries * sizeof(*ss->rx_small.info);
 	ss->rx_small.info = kzalloc(bytes, GFP_KERNEL);
+	{
+		typeof((*ss->rx_small.info)) __uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (ss->rx_small.info == NULL)
 		goto abort_with_tx_info;
 
 	bytes = rx_ring_entries * sizeof(*ss->rx_big.info);
 	ss->rx_big.info = kzalloc(bytes, GFP_KERNEL);
+	{
+		typeof((*ss->rx_big.info)) __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (ss->rx_big.info == NULL)
 		goto abort_with_rx_small_info;
 
@@ -3568,6 +3597,10 @@ static int myri10ge_alloc_slices(struct myri10ge_priv *mgp)
 
 	bytes = sizeof(*mgp->ss) * mgp->num_slices;
 	mgp->ss = kzalloc(bytes, GFP_KERNEL);
+	{
+		typeof((*mgp->ss)) __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (mgp->ss == NULL) {
 		return -ENOMEM;
 	}

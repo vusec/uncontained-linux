@@ -11,6 +11,11 @@
 #include <asm/msi_bitmap.h>
 #include <asm/setup.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 int msi_bitmap_alloc_hwirqs(struct msi_bitmap *bmp, int num)
 {
 	unsigned long flags;
@@ -120,8 +125,13 @@ int __ref msi_bitmap_alloc(struct msi_bitmap *bmp, unsigned int irq_count,
 	pr_debug("msi_bitmap: allocator bitmap size is 0x%x bytes\n", size);
 
 	bmp->bitmap_from_slab = slab_is_available();
-	if (bmp->bitmap_from_slab)
+	if (bmp->bitmap_from_slab) {
 		bmp->bitmap = kzalloc(size, GFP_KERNEL);
+		{
+			long __uncontained_tmp2;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+		}
+	}
 	else {
 		bmp->bitmap = memblock_alloc(size, SMP_CACHE_BYTES);
 		if (!bmp->bitmap)

@@ -47,6 +47,11 @@
 
 #include <uapi/linux/sched/types.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  * struct idle_inject_thread - task on/off switch structure
  * @tsk: task injecting the idle cycles
@@ -303,6 +308,10 @@ struct idle_inject_device *idle_inject_register(struct cpumask *cpumask)
 	int cpu, cpu_rb;
 
 	ii_dev = kzalloc(sizeof(*ii_dev) + cpumask_size(), GFP_KERNEL);
+	{
+		typeof((*ii_dev)) __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!ii_dev)
 		return NULL;
 

@@ -14,6 +14,11 @@
 
 #include <linux/device-mapper.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DM_MSG_PREFIX "dirty region log"
 
 static LIST_HEAD(_log_types);
@@ -426,6 +431,10 @@ static int create_log_context(struct dm_dirty_log *log, struct dm_target *ti,
 	 */
 	if (!dev) {
 		lc->clean_bits = vmalloc(bitset_size);
+		{
+			typeof((*lc->clean_bits)) __uncontained_tmp38;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+		}
 		if (!lc->clean_bits) {
 			DMWARN("couldn't allocate clean bitset");
 			kfree(lc);
@@ -482,6 +491,10 @@ static int create_log_context(struct dm_dirty_log *log, struct dm_target *ti,
 	memset(lc->clean_bits, -1, bitset_size);
 
 	lc->sync_bits = vmalloc(bitset_size);
+	{
+		typeof((*lc->clean_bits)) __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!lc->sync_bits) {
 		DMWARN("couldn't allocate sync bitset");
 		if (!dev)
@@ -496,6 +509,10 @@ static int create_log_context(struct dm_dirty_log *log, struct dm_target *ti,
 	lc->sync_count = (sync == NOSYNC) ? region_count : 0;
 
 	lc->recovering_bits = vzalloc(bitset_size);
+	{
+		typeof((*lc->clean_bits)) __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!lc->recovering_bits) {
 		DMWARN("couldn't allocate sync bitset");
 		vfree(lc->sync_bits);

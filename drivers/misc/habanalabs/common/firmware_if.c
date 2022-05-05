@@ -13,6 +13,11 @@
 #include <linux/slab.h>
 #include <linux/ctype.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define FW_FILE_MAX_SIZE		0x1400000 /* maximum size of 20MB */
 
 static char *extract_fw_ver_from_str(const char *fw_str)
@@ -338,6 +343,10 @@ int hl_fw_unmask_irq_arr(struct hl_device *hdev, const u32 *irq_arr,
 	}
 
 	pkt = kzalloc(total_pkt_size, GFP_KERNEL);
+	{
+		struct cpucp_unmask_irq_arr_packet __uncontained_tmp25;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!pkt)
 		return -ENOMEM;
 
@@ -726,6 +735,10 @@ static int hl_fw_send_msi_info_msg(struct hl_device *hdev)
 	}
 
 	pkt = kzalloc(total_pkt_size, GFP_KERNEL);
+	{
+		struct cpucp_array_data_packet __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!pkt)
 		return -ENOMEM;
 

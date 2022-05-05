@@ -286,6 +286,11 @@
 #include <scsi/scsi_common.h>
 #include <scsi/scsi_request.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* used to tell the module to turn on full debugging messages */
 static bool debug;
 /* default compatibility mode */
@@ -1866,6 +1871,10 @@ static int dvd_read_disckey(struct cdrom_device_info *cdi, dvd_struct *s,
 	size = sizeof(s->disckey.value) + 4;
 
 	buf = kmalloc(size, GFP_KERNEL);
+	{
+		typeof((s->disckey.value)) __uncontained_tmp12;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!buf)
 		return -ENOMEM;
 
@@ -1928,6 +1937,10 @@ static int dvd_read_manufact(struct cdrom_device_info *cdi, dvd_struct *s,
 	size = sizeof(s->manufact.value) + 4;
 
 	buf = kmalloc(size, GFP_KERNEL);
+	{
+		typeof((s->manufact.value)) __uncontained_tmp13;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!buf)
 		return -ENOMEM;
 

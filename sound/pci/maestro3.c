@@ -36,6 +36,11 @@
 #include <sound/initval.h>
 #include <asm/byteorder.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 MODULE_AUTHOR("Zach Brown <zab@zabbo.net>, Takashi Iwai <tiwai@suse.de>");
 MODULE_DESCRIPTION("ESS Maestro3 PCI");
 MODULE_LICENSE("GPL");
@@ -2599,6 +2604,10 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
 		vmalloc(array_size(sizeof(u16),
 				   REV_B_CODE_MEMORY_LENGTH +
 					REV_B_DATA_MEMORY_LENGTH));
+	{
+		u16 __uncontained_tmp182;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp182;
+	}
 	if (chip->suspend_mem == NULL)
 		dev_warn(card->dev, "can't allocate apm buffer\n");
 #endif

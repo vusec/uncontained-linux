@@ -53,6 +53,11 @@
 #include <linux/mempool.h>
 #include <linux/numa.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "dmaengine.h"
 
 static DEFINE_MUTEX(dma_list_mutex);
@@ -1468,6 +1473,14 @@ static int __init dmaengine_init_unmap_pool(void)
 
 		p->cache = kmem_cache_create(p->name, size, 0,
 					     SLAB_HWCACHE_ALIGN, NULL);
+		{
+			typeof((dma_addr_t)) __uncontained_tmp16;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+		}
+		{
+			struct dmaengine_unmap_data __uncontained_tmp15;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+		}
 		if (!p->cache)
 			break;
 		p->pool = mempool_create_slab_pool(1, p->cache);

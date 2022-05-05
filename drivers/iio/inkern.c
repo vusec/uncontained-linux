@@ -16,6 +16,11 @@
 #include <linux/iio/driver.h>
 #include <linux/iio/consumer.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct iio_map_internal {
 	struct iio_dev *indio_dev;
 	struct iio_map *map;
@@ -51,6 +56,10 @@ int iio_map_array_register(struct iio_dev *indio_dev, struct iio_map *maps)
 	mutex_lock(&iio_map_list_lock);
 	while (maps[i].consumer_dev_name != NULL) {
 		mapi = kzalloc(sizeof(*mapi), GFP_KERNEL);
+		{
+			typeof((*mapi)) __uncontained_tmp25;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+		}
 		if (mapi == NULL) {
 			ret = -ENOMEM;
 			goto error_ret;

@@ -6,6 +6,11 @@
 #include <linux/sched/mm.h>
 #include <linux/atomic.h>
 #include <linux/vmalloc.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ctree.h"
 #include "volumes.h"
 #include "zoned.h"
@@ -372,6 +377,10 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
 		return 0;
 
 	zone_info = kzalloc(sizeof(*zone_info), GFP_KERNEL);
+	{
+		typeof((*zone_info)) __uncontained_tmp138;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp138;
+	}
 	if (!zone_info)
 		return -ENOMEM;
 
@@ -453,6 +462,10 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache)
 	if (populate_cache && bdev_is_zoned(device->bdev)) {
 		zone_info->zone_cache = vzalloc(sizeof(struct blk_zone) *
 						zone_info->nr_zones);
+		{
+			struct blk_zone __uncontained_tmp137;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp137;
+		}
 		if (!zone_info->zone_cache) {
 			btrfs_err_in_rcu(device->fs_info,
 				"zoned: failed to allocate zone cache for %s",

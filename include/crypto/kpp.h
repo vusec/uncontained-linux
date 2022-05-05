@@ -10,6 +10,11 @@
 #define _CRYPTO_KPP_
 #include <linux/crypto.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  * struct kpp_request
  *
@@ -176,6 +181,10 @@ static inline struct kpp_request *kpp_request_alloc(struct crypto_kpp *tfm,
 	struct kpp_request *req;
 
 	req = kmalloc(sizeof(*req) + crypto_kpp_reqsize(tfm), gfp);
+	{
+		typeof((*req)) __uncontained_tmp129;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp129;
+	}
 	if (likely(req))
 		kpp_request_set_tfm(req, tfm);
 

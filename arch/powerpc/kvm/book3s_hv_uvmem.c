@@ -96,6 +96,11 @@
 #include <asm/kvm_ppc.h>
 #include <asm/kvm_book3s_uvmem.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct dev_pagemap kvmppc_uvmem_pgmap;
 static unsigned long *kvmppc_uvmem_bitmap;
 static DEFINE_SPINLOCK(kvmppc_uvmem_bitmap_lock);
@@ -252,6 +257,10 @@ int kvmppc_uvmem_slot_init(struct kvm *kvm, const struct kvm_memory_slot *slot)
 	if (!p)
 		return -ENOMEM;
 	p->pfns = vzalloc(array_size(slot->npages, sizeof(*p->pfns)));
+	{
+		typeof((*p->pfns)) __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!p->pfns) {
 		kfree(p);
 		return -ENOMEM;

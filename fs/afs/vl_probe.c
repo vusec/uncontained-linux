@@ -7,6 +7,11 @@
 
 #include <linux/sched.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "afs_fs.h"
 #include "internal.h"
 #include "protocol_yfs.h"
@@ -232,6 +237,10 @@ int afs_wait_for_vl_probes(struct afs_vlserver_list *vllist,
 		return 0;
 
 	waits = kmalloc(array_size(vllist->nr_servers, sizeof(*waits)), GFP_KERNEL);
+	{
+		typeof((*waits)) __uncontained_tmp97;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!waits)
 		return -ENOMEM;
 

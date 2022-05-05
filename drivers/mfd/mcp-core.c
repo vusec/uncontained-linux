@@ -16,6 +16,11 @@
 #include <linux/string.h>
 #include <linux/mfd/mcp.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 
 #define to_mcp(d)		container_of(d, struct mcp, attached_device)
 #define to_mcp_driver(d)	container_of(d, struct mcp_driver, drv)
@@ -172,6 +177,10 @@ struct mcp *mcp_host_alloc(struct device *parent, size_t size)
 	struct mcp *mcp;
 
 	mcp = kzalloc(sizeof(struct mcp) + size, GFP_KERNEL);
+	{
+		struct mcp __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (mcp) {
 		spin_lock_init(&mcp->lock);
 		device_initialize(&mcp->attached_device);

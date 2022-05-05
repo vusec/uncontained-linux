@@ -63,6 +63,11 @@
 
 #include <net/checksum.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "atl1.h"
 
 MODULE_AUTHOR("Xiong Huang <xiong.huang@atheros.com>, "
@@ -1028,6 +1033,10 @@ static s32 atl1_setup_ring_resources(struct atl1_adapter *adapter)
 
 	size = sizeof(struct atl1_buffer) * (tpd_ring->count + rfd_ring->count);
 	tpd_ring->buffer_info = kzalloc(size, GFP_KERNEL);
+	{
+		struct atl1_buffer __uncontained_tmp36;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (unlikely(!tpd_ring->buffer_info)) {
 		if (netif_msg_drv(adapter))
 			dev_err(&pdev->dev, "kzalloc failed , size = D%d\n",

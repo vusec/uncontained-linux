@@ -21,6 +21,11 @@
 #define UVERBS_MODULE_NAME mlx5_ib
 #include <rdma/uverbs_named_ioctl.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static void dispatch_event_fd(struct list_head *fd_list, const void *data);
 
 enum devx_obj_flags {
@@ -2417,6 +2422,14 @@ static int deliver_event(struct devx_event_subscription *event_sub,
 
 	event_data = kzalloc(sizeof(*event_data) + sizeof(struct mlx5_eqe),
 			     GFP_ATOMIC);
+	{
+		typeof((*event_data)) __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
+	{
+		struct mlx5_eqe __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!event_data) {
 		spin_lock_irqsave(&ev_file->lock, flags);
 		ev_file->is_overflow_err = 1;

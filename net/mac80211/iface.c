@@ -18,6 +18,11 @@
 #include <linux/kcov.h>
 #include <net/mac80211.h>
 #include <net/ieee80211_radiotap.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ieee80211_i.h"
 #include "sta_info.h"
 #include "debugfs_netdev.h"
@@ -1026,6 +1031,10 @@ int ieee80211_add_virtual_monitor(struct ieee80211_local *local)
 		return 0;
 
 	sdata = kzalloc(sizeof(*sdata) + local->hw.vif_data_size, GFP_KERNEL);
+	{
+		typeof((*sdata)) __uncontained_tmp154;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp154;
+	}
 	if (!sdata)
 		return -ENOMEM;
 
@@ -1989,6 +1998,10 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
 
 		sdata = kzalloc(sizeof(*sdata) + local->hw.vif_data_size,
 				GFP_KERNEL);
+		{
+			typeof((*sdata)) __uncontained_tmp155;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp155;
+		}
 		if (!sdata)
 			return -ENOMEM;
 		wdev = &sdata->wdev;

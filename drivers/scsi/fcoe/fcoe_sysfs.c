@@ -14,6 +14,11 @@
 #include <scsi/fcoe_sysfs.h>
 #include <scsi/libfcoe.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * OK to include local libfcoe.h for debug_logging, but cannot include
  * <scsi/libfcoe.h> otherwise non-netdev based fcoe solutions would have
@@ -799,6 +804,10 @@ struct fcoe_ctlr_device *fcoe_ctlr_device_add(struct device *parent,
 
 	ctlr = kzalloc(sizeof(struct fcoe_ctlr_device) + priv_size,
 		       GFP_KERNEL);
+	{
+		struct fcoe_ctlr_device __uncontained_tmp85;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!ctlr)
 		goto out;
 

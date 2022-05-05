@@ -17,6 +17,11 @@
 #include "g450_pll.h"
 #include "matroxfb_DAC1064.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static inline unsigned int g450_vco2f(unsigned char p, unsigned int fvco) {
 	return (p & 0x40) ? fvco : fvco >> ((p & 3) + 1);
 }
@@ -497,6 +502,10 @@ int matroxfb_g450_setclk(struct matrox_fb_info *minfo, unsigned int fout,
 	unsigned int* arr;
 	
 	arr = kmalloc(sizeof(*arr) * MNP_TABLE_SIZE * 2, GFP_KERNEL);
+	{
+		typeof((*arr)) __uncontained_tmp123;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (arr) {
 		int r;
 
