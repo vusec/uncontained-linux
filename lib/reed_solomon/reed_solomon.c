@@ -37,6 +37,16 @@
 #include <linux/slab.h>
 #include <linux/mutex.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 enum {
 	RS_DECODE_LAMBDA,
 	RS_DECODE_SYN,
@@ -235,6 +245,14 @@ static struct rs_control *init_rs_internal(int symsize, int gfpoly,
 	 */
 	bsize = sizeof(uint16_t) * RS_DECODE_NUM_BUFFERS * (nroots + 1);
 	rs = kzalloc(sizeof(*rs) + bsize, gfp);
+	{
+		uint16_t __uncontained_tmp89;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp89;
+	}
+	{
+		typeof((*rs)) __uncontained_tmp145;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp145;
+	}
 	if (!rs)
 		return NULL;
 

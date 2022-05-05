@@ -33,6 +33,11 @@
 #include <asm/iommu_table.h>
 #include <trace/events/intel_iommu.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "../irq_remapping.h"
 #include "perf.h"
 
@@ -419,6 +424,10 @@ static int dmar_parse_one_drhd(struct acpi_dmar_header *header, void *arg)
 		goto out;
 
 	dmaru = kzalloc(sizeof(*dmaru) + header->length, GFP_KERNEL);
+	{
+		typeof((*dmaru)) __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!dmaru)
 		return -ENOMEM;
 

@@ -22,6 +22,11 @@
 #include <linux/kallsyms.h>
 #include <linux/time.h>
 #include <linux/vmalloc.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "fnic_io.h"
 #include "fnic.h"
 
@@ -490,6 +495,10 @@ int fnic_trace_buf_init(void)
 	fnic_trace_entries.page_offset =
 		vmalloc(array_size(fnic_max_trace_entries,
 				   sizeof(unsigned long)));
+	{
+		unsigned long __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!fnic_trace_entries.page_offset) {
 		printk(KERN_ERR PFX "Failed to allocate memory for"
 				  " page_offset\n");
@@ -578,6 +587,10 @@ int fnic_fc_trace_init(void)
 	fc_trace_entries.page_offset =
 		vmalloc(array_size(fc_trace_max_entries,
 				   sizeof(unsigned long)));
+	{
+		unsigned long __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!fc_trace_entries.page_offset) {
 		pr_err("fnic:Failed to allocate memory for page_offset\n");
 		if (fnic_fc_ctlr_trace_buf_p) {

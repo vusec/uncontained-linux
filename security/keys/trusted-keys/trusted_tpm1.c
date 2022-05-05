@@ -22,6 +22,11 @@
 
 #include <keys/trusted_tpm.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static const char hmac_alg[] = "hmac(sha1)";
 static const char hash_alg[] = "sha1";
 static struct tpm_chip *chip;
@@ -42,6 +47,10 @@ static struct sdesc *init_sdesc(struct crypto_shash *alg)
 
 	size = sizeof(struct shash_desc) + crypto_shash_descsize(alg);
 	sdesc = kmalloc(size, GFP_KERNEL);
+	{
+		struct shash_desc __uncontained_tmp101;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!sdesc)
 		return ERR_PTR(-ENOMEM);
 	sdesc->shash.tfm = alg;

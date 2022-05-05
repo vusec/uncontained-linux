@@ -34,6 +34,11 @@
 #include <linux/hid.h>
 #include <linux/input.h>
 #include <linux/spinlock.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "hid-wiimote.h"
 
 /*
@@ -346,6 +351,10 @@ static int wiimod_led_probe(const struct wiimod_ops *ops,
 	int ret;
 
 	led = kzalloc(sizeof(struct led_classdev) + namesz, GFP_KERNEL);
+	{
+		struct led_classdev __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!led)
 		return -ENOMEM;
 

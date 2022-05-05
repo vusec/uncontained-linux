@@ -36,6 +36,11 @@
 #include <linux/poll.h>
 #include <linux/eventfd.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "u_fs.h"
 #include "u_f.h"
 #include "u_os_desc.h"
@@ -920,6 +925,10 @@ static ssize_t __ffs_epfile_read_data(struct ffs_epfile *epfile,
 
 	data_len -= ret;
 	buf = kmalloc(sizeof(*buf) + data_len, GFP_KERNEL);
+	{
+		typeof((*buf)) __uncontained_tmp99;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp99;
+	}
 	if (!buf)
 		return -ENOMEM;
 	buf->length = data_len;

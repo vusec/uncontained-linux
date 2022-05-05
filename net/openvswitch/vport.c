@@ -17,6 +17,11 @@
 #include <net/net_namespace.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "datapath.h"
 #include "vport.h"
 #include "vport-internal_dev.h"
@@ -346,6 +351,10 @@ int ovs_vport_set_upcall_portids(struct vport *vport, const struct nlattr *ids)
 
 	vport_portids = kmalloc(sizeof(*vport_portids) + nla_len(ids),
 				GFP_KERNEL);
+	{
+		typeof((*vport_portids)) __uncontained_tmp147;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp147;
+	}
 	if (!vport_portids)
 		return -ENOMEM;
 

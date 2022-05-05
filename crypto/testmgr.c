@@ -36,6 +36,11 @@
 #include <crypto/internal/cipher.h>
 #include <crypto/internal/simd.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "internal.h"
 
 MODULE_IMPORT_NS(CRYPTO_INTERNAL);
@@ -1682,6 +1687,10 @@ static int test_hash_vs_generic_impl(const char *generic_driver,
 
 	generic_desc = kzalloc(sizeof(*desc) +
 			       crypto_shash_descsize(generic_tfm), GFP_KERNEL);
+	{
+		typeof((*desc)) __uncontained_tmp8;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+	}
 	if (!generic_desc) {
 		err = -ENOMEM;
 		goto out;
@@ -1774,6 +1783,10 @@ static int alloc_shash(const char *driver, u32 type, u32 mask,
 	}
 
 	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(tfm), GFP_KERNEL);
+	{
+		typeof((*desc)) __uncontained_tmp7;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!desc) {
 		crypto_free_shash(tfm);
 		return -ENOMEM;
@@ -3939,6 +3952,10 @@ static int test_akcipher_one(struct crypto_akcipher *tfm,
 
 	key = kmalloc(vecs->key_len + sizeof(u32) * 2 + vecs->param_len,
 		      GFP_KERNEL);
+	{
+		u32 __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!key)
 		goto free_req;
 	memcpy(key, vecs->key, vecs->key_len);

@@ -35,6 +35,11 @@
 #include <linux/tcp.h>
 #include <linux/iopoll.h>
 #include <linux/pm_runtime.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "macb.h"
 
 /* This structure is only used for MACB on SiFive FU540 devices */
@@ -2328,6 +2333,10 @@ static int gem_alloc_rx_buffers(struct macb *bp)
 	for (q = 0, queue = bp->queues; q < bp->num_queues; ++q, ++queue) {
 		size = bp->rx_ring_size * sizeof(struct sk_buff *);
 		queue->rx_skbuff = kzalloc(size, GFP_KERNEL);
+		{
+			struct sk_buff *__uncontained_tmp47;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+		}
 		if (!queue->rx_skbuff)
 			return -ENOMEM;
 		else
@@ -2375,6 +2384,10 @@ static int macb_alloc_consistent(struct macb *bp)
 
 		size = bp->tx_ring_size * sizeof(struct macb_tx_skb);
 		queue->tx_skb = kmalloc(size, GFP_KERNEL);
+		{
+			struct macb_tx_skb __uncontained_tmp46;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+		}
 		if (!queue->tx_skb)
 			goto out_err;
 

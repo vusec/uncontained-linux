@@ -48,6 +48,11 @@
 #include <linux/pci.h>
 #include <linux/scatterlist.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "libcxgb_ppm.h"
 
 /* Direct Data Placement -
@@ -442,6 +447,18 @@ int cxgbi_ppm_init(void **ppm_pp, struct net_device *ndev,
 			ppod_bmap_size * sizeof(unsigned long);
 
 	ppm = vzalloc(alloc_sz);
+	{
+		unsigned long __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
+	{
+		struct cxgbi_ppm __uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
+	{
+		struct cxgbi_ppod_data __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!ppm)
 		goto release_ppm_pool;
 

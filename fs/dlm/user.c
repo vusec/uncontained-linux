@@ -16,6 +16,11 @@
 #include <linux/slab.h>
 #include <linux/sched/signal.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "dlm_internal.h"
 #include "lockspace.h"
 #include "lock.h"
@@ -541,6 +546,10 @@ static ssize_t device_write(struct file *file, const char __user *buf,
 		/* add 1 after namelen so that the name string is terminated */
 		kbuf = kzalloc(sizeof(struct dlm_write_request) + namelen + 1,
 			       GFP_NOFS);
+		{
+			struct dlm_write_request __uncontained_tmp136;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp136;
+		}
 		if (!kbuf) {
 			kfree(k32buf);
 			return -ENOMEM;

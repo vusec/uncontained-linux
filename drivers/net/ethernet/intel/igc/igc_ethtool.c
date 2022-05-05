@@ -6,6 +6,11 @@
 #include <linux/pm_runtime.h>
 #include <linux/mdio.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "igc.h"
 #include "igc_diag.h"
 
@@ -622,12 +627,22 @@ igc_ethtool_set_ringparam(struct net_device *netdev,
 		goto clear_reset;
 	}
 
-	if (adapter->num_tx_queues > adapter->num_rx_queues)
+	if (adapter->num_tx_queues > adapter->num_rx_queues) {
 		temp_ring = vmalloc(array_size(sizeof(struct igc_ring),
 					       adapter->num_tx_queues));
-	else
+		{
+			struct igc_ring __uncontained_tmp70;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+		}
+	}
+	else {
 		temp_ring = vmalloc(array_size(sizeof(struct igc_ring),
 					       adapter->num_rx_queues));
+		{
+			struct igc_ring __uncontained_tmp71;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp71;
+		}
+	}
 
 	if (!temp_ring) {
 		err = -ENOMEM;

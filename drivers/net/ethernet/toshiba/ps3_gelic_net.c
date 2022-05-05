@@ -34,6 +34,11 @@
 #include <asm/ps3.h>
 #include <asm/lv1call.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ps3_gelic_net.h"
 #include "ps3_gelic_wireless.h"
 
@@ -1531,6 +1536,14 @@ static struct gelic_card *gelic_alloc_card_net(struct net_device **netdev)
 		GELIC_ALIGN - 1;
 
 	p  = kzalloc(alloc_size, GFP_KERNEL);
+	{
+		struct gelic_card __uncontained_tmp69;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+	}
+	{
+		struct gelic_descr __uncontained_tmp70;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!p)
 		return NULL;
 	card = PTR_ALIGN(p, GELIC_ALIGN);

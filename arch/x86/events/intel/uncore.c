@@ -3,6 +3,11 @@
 
 #include <asm/cpu_device_id.h>
 #include <asm/intel-family.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "uncore.h"
 #include "uncore_discovery.h"
 
@@ -341,6 +346,14 @@ static struct intel_uncore_box *uncore_alloc_box(struct intel_uncore_type *type,
 	size = sizeof(*box) + numshared * sizeof(struct intel_uncore_extra_reg);
 
 	box = kzalloc_node(size, GFP_KERNEL, node);
+	{
+		typeof((*box)) __uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
+	{
+		struct intel_uncore_extra_reg __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!box)
 		return NULL;
 
@@ -979,6 +992,10 @@ static int __init uncore_type_init(struct intel_uncore_type *type, bool setid)
 		pmus[i].pmu_idx	= i;
 		pmus[i].type	= type;
 		pmus[i].boxes	= kzalloc(size, GFP_KERNEL);
+		{
+			struct intel_uncore_box *__uncontained_tmp2;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+		}
 		if (!pmus[i].boxes)
 			goto err;
 	}
@@ -1381,6 +1398,10 @@ static int __init uncore_pci_init(void)
 
 	size = uncore_max_dies() * sizeof(struct pci_extra_dev);
 	uncore_extra_pci_dev = kzalloc(size, GFP_KERNEL);
+	{
+		struct pci_extra_dev __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!uncore_extra_pci_dev) {
 		ret = -ENOMEM;
 		goto err;

@@ -25,6 +25,11 @@
 #include <linux/types.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DRV_NAME		"cros-ec-chardev"
 
 /* Arbitrary bounded size for the event queue */
@@ -61,6 +66,14 @@ static int ec_get_version(struct cros_ec_dev *ec, char *str, int maxlen)
 	int ret;
 
 	msg = kzalloc(sizeof(*msg) + sizeof(*resp), GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp96;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp96;
+	}
+	{
+		typeof((*resp)) __uncontained_tmp97;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!msg)
 		return -ENOMEM;
 
@@ -286,6 +299,10 @@ static long cros_ec_chardev_ioctl_xcmd(struct cros_ec_dev *ec, void __user *arg)
 
 	s_cmd = kmalloc(sizeof(*s_cmd) + max(u_cmd.outsize, u_cmd.insize),
 			GFP_KERNEL);
+	{
+		typeof((*s_cmd)) __uncontained_tmp95;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (!s_cmd)
 		return -ENOMEM;
 

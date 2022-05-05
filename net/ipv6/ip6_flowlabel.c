@@ -28,6 +28,16 @@
 
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define FL_MIN_LINGER	6	/* Minimal linger. It is set to 6sec specified
 				   in old IPv6 RFC. Well, it was reasonable value.
 				 */
@@ -395,6 +405,14 @@ fl_create(struct net *net, struct sock *sk, struct in6_flowlabel_req *freq,
 
 		err = -ENOMEM;
 		fl->opt = kmalloc(sizeof(*fl->opt) + olen, GFP_KERNEL);
+		{
+			typeof((*freq)) __uncontained_tmp100;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp100;
+		}
+		{
+			typeof((*fl->opt)) __uncontained_tmp168;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp168;
+		}
 		if (!fl->opt)
 			goto done;
 

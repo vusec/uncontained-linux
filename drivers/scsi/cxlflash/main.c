@@ -19,6 +19,11 @@
 #include <scsi/scsi_host.h>
 #include <uapi/scsi/cxlflash_ioctl.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "main.h"
 #include "sislite.h"
 #include "common.h"
@@ -469,6 +474,10 @@ static int send_tmf(struct cxlflash_cfg *cfg, struct scsi_device *sdev,
 	ulong to;
 
 	buf = kzalloc(sizeof(*cmd) + __alignof__(*cmd) - 1, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp87;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (unlikely(!buf)) {
 		dev_err(dev, "%s: no memory for command\n", __func__);
 		rc = -ENOMEM;
@@ -2293,6 +2302,10 @@ static int send_afu_cmd(struct afu *afu, struct sisl_ioarcb *rcb)
 	mutex_lock(&afu->sync_active);
 	atomic_inc(&afu->cmds_active);
 	buf = kmalloc(sizeof(*cmd) + __alignof__(*cmd) - 1, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp86;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (unlikely(!buf)) {
 		dev_err(dev, "%s: no memory for command\n", __func__);
 		rc = -ENOMEM;

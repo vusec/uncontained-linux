@@ -41,6 +41,11 @@
 #include <linux/io.h>
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* Assume max number of ACC stages */
 #define MAX_ACC_STAGES	20
 
@@ -3936,6 +3941,10 @@ int atomisp_css_create_acc_pipe(struct atomisp_sub_device *asd)
 	ia_css_pipe_config_defaults(pipe_config);
 	asd->acc.acc_stages = kzalloc(MAX_ACC_STAGES *
 				      sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp98;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp98;
+	}
 	if (!asd->acc.acc_stages)
 		return -ENOMEM;
 	pipe_config->acc_stages = asd->acc.acc_stages;

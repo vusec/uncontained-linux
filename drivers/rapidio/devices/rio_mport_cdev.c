@@ -39,6 +39,11 @@
 #include <linux/rio_drv.h>
 #include <linux/rio_mport_cdev.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "../rio.h"
 
 #define DRV_NAME	"rio_mport"
@@ -979,6 +984,10 @@ static int rio_mport_transfer_ioctl(struct file *filp, void __user *arg)
 
 	size = array_size(sizeof(*transfer), transaction.count);
 	transfer = vmalloc(size);
+	{
+		typeof((*transfer)) __uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!transfer)
 		return -ENOMEM;
 

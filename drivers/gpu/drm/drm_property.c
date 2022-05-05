@@ -29,6 +29,11 @@
 #include <drm/drm_framebuffer.h>
 #include <drm/drm_property.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "drm_crtc_internal.h"
 
 /**
@@ -562,6 +567,10 @@ drm_property_create_blob(struct drm_device *dev, size_t length,
 		return ERR_PTR(-EINVAL);
 
 	blob = kvzalloc(sizeof(struct drm_property_blob)+length, GFP_KERNEL);
+	{
+		struct drm_property_blob __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!blob)
 		return ERR_PTR(-ENOMEM);
 

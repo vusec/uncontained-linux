@@ -16,6 +16,11 @@
 #include "reiserfs.h"
 #include <linux/buffer_head.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 {
 	int err = 0;
@@ -122,6 +127,10 @@ int reiserfs_resize(struct super_block *s, unsigned long block_count_new)
 		bitmap =
 		    vzalloc(array_size(bmap_nr_new,
 				       sizeof(struct reiserfs_bitmap_info)));
+		{
+			struct reiserfs_bitmap_info __uncontained_tmp105;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp105;
+		}
 		if (!bitmap) {
 			/*
 			 * Journal bitmaps are still supersized, but the

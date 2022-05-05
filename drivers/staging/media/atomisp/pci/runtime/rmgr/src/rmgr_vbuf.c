@@ -21,6 +21,11 @@
 #include <platform_support.h> /* memset */
 #include <ia_css_debug.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * @brief VBUF resource handles
  */
@@ -141,6 +146,10 @@ int ia_css_rmgr_init_vbuf(struct ia_css_rmgr_vbuf_pool *pool)
 		    sizeof(void *) *
 		    pool->size;
 		pool->handles = kvmalloc(bytes_needed, GFP_KERNEL);
+		{
+			void *__uncontained_tmp43;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+		}
 		if (pool->handles)
 			memset(pool->handles, 0, bytes_needed);
 		else

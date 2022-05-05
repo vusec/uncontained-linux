@@ -10,6 +10,11 @@
 
 #include <linux/debugfs.h>
 #include <linux/sched/signal.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "sof-priv.h"
 #include "ops.h"
 
@@ -105,6 +110,10 @@ static int trace_filter_parse(struct snd_sof_dev *sdev, char *string,
 		entry = strchr(entry + 1, entry_delimiter[0]);
 	}
 	*out = kmalloc(capacity * sizeof(**out), GFP_KERNEL);
+	{
+		typeof((**out)) __uncontained_tmp139;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!*out)
 		return -ENOMEM;
 

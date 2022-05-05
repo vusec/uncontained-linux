@@ -39,6 +39,11 @@
 #include <crypto/internal/cipher.h>
 #include <crypto/internal/hash.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * User definable settings.
  */
@@ -629,6 +634,14 @@ static int vmac_create(struct crypto_template *tmpl, struct rtattr **tb)
 		return err;
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
+	{
+		typeof((*inst)) __uncontained_tmp16;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+	}
+	{
+		typeof((*spawn)) __uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!inst)
 		return -ENOMEM;
 	spawn = shash_instance_ctx(inst);

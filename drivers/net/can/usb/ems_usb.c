@@ -14,6 +14,11 @@
 #include <linux/can/dev.h>
 #include <linux/can/error.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 MODULE_AUTHOR("Sebastian Haas <haas@ems-wuensche.com>");
 MODULE_DESCRIPTION("CAN driver for EMS Dr. Thomas Wuensche CAN/USB interfaces");
 MODULE_LICENSE("GPL v2");
@@ -1012,6 +1017,10 @@ static int ems_usb_probe(struct usb_interface *intf,
 
 	dev->tx_msg_buffer = kzalloc(CPC_HEADER_SIZE +
 				     sizeof(struct ems_cpc_msg), GFP_KERNEL);
+	{
+		struct ems_cpc_msg __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!dev->tx_msg_buffer)
 		goto cleanup_intr_in_buffer;
 

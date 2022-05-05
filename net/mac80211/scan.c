@@ -21,6 +21,11 @@
 #include <linux/random.h>
 #include <net/mac80211.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ieee80211_i.h"
 #include "driver-ops.h"
 #include "mesh.h"
@@ -720,6 +725,14 @@ static int __ieee80211_start_scan(struct ieee80211_sub_if_data *sdata,
 				sizeof(*local->hw_scan_req) +
 				req->n_channels * sizeof(req->channels[0]) +
 				local->hw_scan_ies_bufsize, GFP_KERNEL);
+		{
+			typeof((*local->hw_scan_req)) __uncontained_tmp137;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp137;
+		}
+		{
+			typeof((req->channels[0])) __uncontained_tmp138;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp138;
+		}
 		if (!local->hw_scan_req)
 			return -ENOMEM;
 

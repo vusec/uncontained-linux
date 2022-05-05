@@ -22,6 +22,11 @@
 #include "11n.h"
 #include "wmm.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static char *reg_alpha2;
 module_param(reg_alpha2, charp, 0);
 
@@ -4320,6 +4325,10 @@ int mwifiex_init_channel_scan_gap(struct mwifiex_adapter *adapter)
 	adapter->num_in_chan_stats = 2 * (n_channels_bg + n_channels_a);
 	adapter->chan_stats = vmalloc(array_size(sizeof(*adapter->chan_stats),
 						 adapter->num_in_chan_stats));
+	{
+		typeof((*adapter->chan_stats)) __uncontained_tmp92;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp92;
+	}
 
 	if (!adapter->chan_stats)
 		return -ENOMEM;

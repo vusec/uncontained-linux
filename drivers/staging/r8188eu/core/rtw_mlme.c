@@ -16,6 +16,11 @@
 #include "../include/usb_osintf.h"
 #include "../include/rtl8188e_dm.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 extern unsigned char	MCS_rate_2R[16];
 extern unsigned char	MCS_rate_1R[16];
 
@@ -57,6 +62,10 @@ int _rtw_init_mlme_priv(struct adapter *padapter)
 	memset(&pmlmepriv->assoc_ssid, 0, sizeof(struct ndis_802_11_ssid));
 
 	pbuf = vzalloc(MAX_BSS_CNT * (sizeof(struct wlan_network)));
+	{
+		struct wlan_network __uncontained_tmp137;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp137;
+	}
 
 	if (!pbuf) {
 		res = _FAIL;

@@ -42,6 +42,11 @@
 #include <net/ip6_checksum.h>
 #include <scsi/iscsi_if.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define BCM_CNIC	1
 #include "cnic_if.h"
 #include "bnx2.h"
@@ -789,6 +794,14 @@ static int cnic_alloc_dma(struct cnic_dev *dev, struct cnic_dma *dma,
 
 	size = pages * (sizeof(void *) + sizeof(dma_addr_t));
 	dma->pg_arr = kzalloc(size, GFP_ATOMIC);
+	{
+		void *__uncontained_tmp27;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+	}
+	{
+		dma_addr_t __uncontained_tmp28;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (dma->pg_arr == NULL)
 		return -ENOMEM;
 
@@ -917,6 +930,10 @@ static int cnic_alloc_context(struct cnic_dev *dev)
 		arr_size = BNX2_MAX_CID / cp->cids_per_blk *
 			   sizeof(struct cnic_ctx);
 		cp->ctx_arr = kzalloc(arr_size, GFP_KERNEL);
+		{
+			struct cnic_ctx __uncontained_tmp29;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+		}
 		if (cp->ctx_arr == NULL)
 			return -ENOMEM;
 
@@ -5474,6 +5491,14 @@ static struct cnic_dev *cnic_alloc_dev(struct net_device *dev,
 	alloc_size = sizeof(struct cnic_dev) + sizeof(struct cnic_local);
 
 	cdev = kzalloc(alloc_size, GFP_KERNEL);
+	{
+		struct cnic_dev __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
+	{
+		struct cnic_local __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (cdev == NULL)
 		return NULL;
 

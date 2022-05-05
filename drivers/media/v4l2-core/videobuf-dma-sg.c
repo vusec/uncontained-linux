@@ -31,6 +31,11 @@
 
 #include <media/videobuf-dma-sg.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define MAGIC_DMABUF 0x19721112
 #define MAGIC_SG_MEM 0x17890714
 
@@ -67,6 +72,10 @@ static struct scatterlist *videobuf_vmalloc_to_sg(unsigned char *virt,
 	int i;
 
 	sglist = vzalloc(array_size(nr_pages, sizeof(*sglist)));
+	{
+		typeof((*sglist)) __uncontained_tmp52;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (NULL == sglist)
 		return NULL;
 	sg_init_table(sglist, nr_pages);
@@ -98,6 +107,10 @@ static struct scatterlist *videobuf_pages_to_sg(struct page **pages,
 	if (NULL == pages[0])
 		return NULL;
 	sglist = vmalloc(array_size(nr_pages, sizeof(*sglist)));
+	{
+		typeof((*sglist)) __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (NULL == sglist)
 		return NULL;
 	sg_init_table(sglist, nr_pages);
@@ -470,6 +483,10 @@ static struct videobuf_buffer *__videobuf_alloc_vb(size_t size)
 	struct videobuf_buffer *vb;
 
 	vb = kzalloc(size + sizeof(*mem), GFP_KERNEL);
+	{
+		typeof((*mem)) __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!vb)
 		return vb;
 

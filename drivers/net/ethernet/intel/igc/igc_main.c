@@ -16,6 +16,11 @@
 
 #include <net/ipv6.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "igc.h"
 #include "igc_hw.h"
 #include "igc_tsn.h"
@@ -324,6 +329,10 @@ int igc_setup_tx_resources(struct igc_ring *tx_ring)
 
 	size = sizeof(struct igc_tx_buffer) * tx_ring->count;
 	tx_ring->tx_buffer_info = vzalloc(size);
+	{
+		struct igc_tx_buffer __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!tx_ring->tx_buffer_info)
 		goto err;
 
@@ -515,6 +524,10 @@ int igc_setup_rx_resources(struct igc_ring *rx_ring)
 
 	size = sizeof(struct igc_rx_buffer) * rx_ring->count;
 	rx_ring->rx_buffer_info = vzalloc(size);
+	{
+		struct igc_rx_buffer __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!rx_ring->rx_buffer_info)
 		goto err;
 

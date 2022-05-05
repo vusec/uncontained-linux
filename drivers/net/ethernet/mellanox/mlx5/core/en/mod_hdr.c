@@ -2,6 +2,11 @@
 // Copyright (c) 2020 Mellanox Technologies
 
 #include <linux/jhash.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "mod_hdr.h"
 
 #define MLX5_MH_ACT_SZ MLX5_UN_SZ_BYTES(set_add_copy_action_in_auto)
@@ -100,6 +105,10 @@ mlx5e_mod_hdr_attach(struct mlx5_core_dev *mdev,
 	}
 
 	mh = kzalloc(sizeof(*mh) + actions_size, GFP_KERNEL);
+	{
+		typeof((*mh)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!mh) {
 		mutex_unlock(&tbl->lock);
 		return ERR_PTR(-ENOMEM);

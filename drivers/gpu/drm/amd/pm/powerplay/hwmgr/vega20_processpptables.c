@@ -24,6 +24,11 @@
 #include <linux/slab.h>
 #include <linux/fb.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "smu11_driver_if.h"
 #include "vega20_processpptables.h"
 #include "ppatomfwctrl.h"
@@ -695,6 +700,10 @@ static int copy_overdrive_feature_capabilities_array(
 
 	array_size = sizeof(uint8_t) * od_feature_count;
 	table = kzalloc(array_size, GFP_KERNEL);
+	{
+		uint8_t __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (NULL == table)
 		return -ENOMEM;
 

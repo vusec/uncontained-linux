@@ -15,6 +15,11 @@
 #include <linux/errno.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ext4_jbd2.h"
 
 struct ext4_rcu_ptr {
@@ -875,6 +880,10 @@ static int add_new_gdb(handle_t *handle, struct inode *inode,
 
 	n_group_desc = kvmalloc((gdb_num + 1) * sizeof(struct buffer_head *),
 				GFP_KERNEL);
+	{
+		struct buffer_head *__uncontained_tmp147;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp147;
+	}
 	if (!n_group_desc) {
 		err = -ENOMEM;
 		ext4_warning(sb, "not enough memory for %lu groups",
@@ -955,6 +964,10 @@ static int add_new_gdb_meta_bg(struct super_block *sb,
 		return PTR_ERR(gdb_bh);
 	n_group_desc = kvmalloc((gdb_num + 1) * sizeof(struct buffer_head *),
 				GFP_KERNEL);
+	{
+		struct buffer_head *__uncontained_tmp148;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (!n_group_desc) {
 		brelse(gdb_bh);
 		err = -ENOMEM;

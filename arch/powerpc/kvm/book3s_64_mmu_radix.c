@@ -23,6 +23,11 @@
 #include <asm/kvm_book3s_uvmem.h>
 #include <asm/plpar_wrappers.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Supported radix tree geometry.
  * Like p9, we support either 5 or 9 bits at the first (lowest) level,
@@ -1469,6 +1474,10 @@ int kvmppc_radix_init(void)
 	size = sizeof(void *) << RADIX_PMD_INDEX_SIZE;
 
 	kvm_pmd_cache = kmem_cache_create("kvm-pmd", size, size, 0, pmd_ctor);
+	{
+		void *__uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!kvm_pmd_cache) {
 		kmem_cache_destroy(kvm_pte_cache);
 		return -ENOMEM;

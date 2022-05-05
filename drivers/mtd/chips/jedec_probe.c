@@ -22,6 +22,11 @@
 #include <linux/mtd/cfi.h>
 #include <linux/mtd/gen_probe.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* AMD */
 #define AM29DL800BB	0x22CB
 #define AM29DL800BT	0x224A
@@ -1985,6 +1990,10 @@ static int cfi_jedec_setup(struct map_info *map, struct cfi_private *cfi, int in
 	num_erase_regions = jedec_table[index].nr_regions;
 
 	cfi->cfiq = kmalloc(sizeof(struct cfi_ident) + num_erase_regions * 4, GFP_KERNEL);
+	{
+		struct cfi_ident __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!cfi->cfiq) {
 		//xx printk(KERN_WARNING "%s: kmalloc failed for CFI ident structure\n", map->name);
 		return 0;

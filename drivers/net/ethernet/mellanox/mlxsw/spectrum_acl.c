@@ -12,6 +12,16 @@
 #include <net/net_namespace.h>
 #include <net/tc_act/tc_vlan.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "reg.h"
 #include "core.h"
 #include "resources.h"
@@ -169,6 +179,10 @@ mlxsw_sp_acl_ruleset_create(struct mlxsw_sp *mlxsw_sp,
 
 	alloc_size = sizeof(*ruleset) + ops->ruleset_priv_size;
 	ruleset = kzalloc(alloc_size, GFP_KERNEL);
+	{
+		typeof((*ruleset)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!ruleset)
 		return ERR_PTR(-ENOMEM);
 	ruleset->ref_count = 1;
@@ -727,6 +741,10 @@ mlxsw_sp_acl_rule_create(struct mlxsw_sp *mlxsw_sp,
 	mlxsw_sp_acl_ruleset_ref_inc(ruleset);
 	rule = kzalloc(sizeof(*rule) + ops->rule_priv_size,
 		       GFP_KERNEL);
+	{
+		typeof((*rule)) __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!rule) {
 		err = -ENOMEM;
 		goto err_alloc;
@@ -961,6 +979,10 @@ int mlxsw_sp_acl_init(struct mlxsw_sp *mlxsw_sp)
 
 	alloc_size = sizeof(*acl) + mlxsw_sp_acl_tcam_priv_size(mlxsw_sp);
 	acl = kzalloc(alloc_size, GFP_KERNEL);
+	{
+		typeof((*acl)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!acl)
 		return -ENOMEM;
 	mlxsw_sp->acl = acl;

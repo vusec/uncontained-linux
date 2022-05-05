@@ -18,6 +18,11 @@
 #include <linux/uuid.h>
 #include <linux/visorbus.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* These defines identify mouse and keyboard activity which is specified by the
  * firmware to the host using the cmsimpleinput protocol.  @ingroup coretypes
  */
@@ -407,6 +412,10 @@ static struct visorinput_devdata *devdata_create(struct visor_device *dev,
 		/* allocate room for devdata->keycode_table, filled in below */
 		extra_bytes = KEYCODE_TABLE_BYTES * 2;
 	devdata = kzalloc(sizeof(*devdata) + extra_bytes, GFP_KERNEL);
+	{
+		typeof((*devdata)) __uncontained_tmp102;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (!devdata)
 		return NULL;
 	mutex_init(&devdata->lock_visor_dev);

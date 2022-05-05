@@ -34,6 +34,11 @@
 #include <net/ipv6.h>
 #include <net/ndisc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define TBL_MIN_BUCKETS		1024
 #define MASK_ARRAY_SIZE_MIN	16
 #define REHASH_INTERVAL		(10 * 60 * HZ)
@@ -222,6 +227,18 @@ static struct mask_array *tbl_mask_array_alloc(int size)
 	new = kzalloc(sizeof(struct mask_array) +
 		      sizeof(struct sw_flow_mask *) * size +
 		      sizeof(u64) * size, GFP_KERNEL);
+	{
+		struct sw_flow_mask *__uncontained_tmp176;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp176;
+	}
+	{
+		struct mask_array __uncontained_tmp177;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp177;
+	}
+	{
+		u64 __uncontained_tmp178;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp178;
+	}
 	if (!new)
 		return NULL;
 
@@ -1199,6 +1216,22 @@ int ovs_flow_init(void)
 				       + (nr_cpu_ids
 					  * sizeof(struct sw_flow_stats *)),
 				       0, 0, NULL);
+	{
+		struct sw_flow_stats *__uncontained_tmp179;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp179;
+	}
+	{
+		struct sw_flow __uncontained_tmp180;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp180;
+	}
+	{
+		struct sw_flow_stats *__uncontained_tmp174;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp174;
+	}
+	{
+		struct sw_flow __uncontained_tmp175;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp175;
+	}
 	if (flow_cache == NULL)
 		return -ENOMEM;
 

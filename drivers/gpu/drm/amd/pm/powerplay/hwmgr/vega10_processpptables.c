@@ -25,6 +25,11 @@
 #include <linux/slab.h>
 #include <linux/fb.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "vega10_processpptables.h"
 #include "ppatomfwctrl.h"
 #include "atomfirmware.h"
@@ -431,6 +436,14 @@ static int get_tdp_table(
 	table_size = sizeof(uint32_t) + sizeof(struct phm_tdp_table);
 
 	tdp_table = kzalloc(table_size, GFP_KERNEL);
+	{
+		struct phm_tdp_table __uncontained_tmp11;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp11;
+	}
+	{
+		uint32_t __uncontained_tmp12;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+	}
 
 	if (!tdp_table)
 		return -ENOMEM;

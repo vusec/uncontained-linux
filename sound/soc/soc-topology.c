@@ -30,6 +30,11 @@
 #include <sound/soc-topology.h>
 #include <sound/tlv.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define SOC_TPLG_MAGIC_BIG_ENDIAN            0x436F5341 /* ASoC in reverse */
 
 /*
@@ -2422,6 +2427,10 @@ static int manifest_new_ver(struct soc_tplg *tplg,
 	src_v4 = (struct snd_soc_tplg_manifest_v4 *)src;
 	dest = kzalloc(sizeof(*dest) + le32_to_cpu(src_v4->priv.size),
 		       GFP_KERNEL);
+	{
+		typeof((*dest)) __uncontained_tmp141;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp141;
+	}
 	if (!dest)
 		return -ENOMEM;
 

@@ -30,6 +30,11 @@
 
 #include "qman_priv.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DQRR_MAXFILL	15
 #define EQCR_ITHRESH	4	/* if EQCR congests, interrupt threshold */
 #define IRQNAME		"QMan portal %d"
@@ -1108,6 +1113,10 @@ int qman_alloc_fq_table(u32 _num_fqids)
 
 	fq_table = vzalloc(array3_size(sizeof(struct qman_fq *),
 				       num_fqids, 2));
+	{
+		struct qman_fq *__uncontained_tmp128;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp128;
+	}
 	if (!fq_table)
 		return -ENOMEM;
 

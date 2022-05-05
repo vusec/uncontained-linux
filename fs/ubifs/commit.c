@@ -34,6 +34,11 @@
 #include <linux/freezer.h>
 #include <linux/kthread.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ubifs.h"
 
 /*
@@ -585,6 +590,10 @@ int dbg_check_old_index(struct ubifs_info *c, struct ubifs_zbranch *zroot)
 
 		/* Get the next index node */
 		i = kmalloc(sz, GFP_NOFS);
+		{
+			struct idx_node __uncontained_tmp90;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp90;
+		}
 		if (!i) {
 			err = -ENOMEM;
 			goto out_free;

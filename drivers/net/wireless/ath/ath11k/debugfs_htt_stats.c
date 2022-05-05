@@ -4,6 +4,11 @@
  */
 
 #include <linux/vmalloc.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "core.h"
 #include "dp_tx.h"
 #include "dp_rx.h"
@@ -4574,6 +4579,10 @@ static int ath11k_open_htt_stats(struct inode *inode, struct file *file)
 	}
 
 	stats_req = vzalloc(sizeof(*stats_req) + ATH11K_HTT_STATS_BUF_SIZE);
+	{
+		typeof((*stats_req)) __uncontained_tmp69;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!stats_req) {
 		ret = -ENOMEM;
 		goto err_unlock;

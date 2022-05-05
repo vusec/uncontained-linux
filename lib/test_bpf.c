@@ -18,6 +18,11 @@
 #include <linux/highmem.h>
 #include <linux/sched.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* General test specific settings */
 #define MAX_SUBTESTS	3
 #define MAX_TESTRUNS	1000
@@ -14752,6 +14757,14 @@ static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
 	/* Allocate the table of programs to be used for tall calls */
 	progs = kzalloc(sizeof(*progs) + (ntests + 1) * sizeof(progs->ptrs[0]),
 			GFP_KERNEL);
+	{
+		typeof((*progs)) __uncontained_tmp131;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp131;
+	}
+	{
+		typeof((progs->ptrs[0])) __uncontained_tmp132;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (!progs)
 		goto out_nomem;
 

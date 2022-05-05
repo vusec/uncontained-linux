@@ -15,6 +15,11 @@
 #include "config.h"
 #include "requestqueue.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct rq_entry {
 	struct list_head list;
 	uint32_t recover_seq;
@@ -35,6 +40,10 @@ void dlm_add_requestqueue(struct dlm_ls *ls, int nodeid, struct dlm_message *ms)
 	int length = ms->m_header.h_length - sizeof(struct dlm_message);
 
 	e = kmalloc(sizeof(struct rq_entry) + length, GFP_NOFS);
+	{
+		struct rq_entry __uncontained_tmp151;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp151;
+	}
 	if (!e) {
 		log_print("dlm_add_requestqueue: out of memory len %d", length);
 		return;

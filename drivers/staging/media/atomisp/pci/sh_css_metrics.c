@@ -21,6 +21,11 @@
 
 #include "sh_css_internal.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define MULTIPLE_PCS 0
 #define SUSPEND      0
 #define NOF_PCS      1
@@ -70,14 +75,26 @@ make_histogram(struct sh_css_pc_histogram *histogram, unsigned int length)
 		return;
 	histogram->run = kvmalloc(length * sizeof(*histogram->run),
 				  GFP_KERNEL);
+	{
+		typeof((*histogram->run)) __uncontained_tmp130;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp130;
+	}
 	if (!histogram->run)
 		return;
 	histogram->stall = kvmalloc(length * sizeof(*histogram->stall),
 				    GFP_KERNEL);
+	{
+		typeof((*histogram->stall)) __uncontained_tmp131;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp131;
+	}
 	if (!histogram->stall)
 		return;
 	histogram->msink = kvmalloc(length * sizeof(*histogram->msink),
 				    GFP_KERNEL);
+	{
+		typeof((*histogram->msink)) __uncontained_tmp132;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (!histogram->msink)
 		return;
 

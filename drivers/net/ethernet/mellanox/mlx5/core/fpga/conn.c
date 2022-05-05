@@ -35,6 +35,16 @@
 #include <linux/etherdevice.h>
 #include <linux/mlx5/vport.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "mlx5_core.h"
 #include "lib/mlx5.h"
 #include "fpga/conn.h"
@@ -206,6 +216,10 @@ static int mlx5_fpga_conn_post_recv_buf(struct mlx5_fpga_conn *conn)
 	int err;
 
 	buf = kzalloc(sizeof(*buf) + MLX5_FPGA_RECV_SIZE, 0);
+	{
+		typeof((*buf)) __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (!buf)
 		return -ENOMEM;
 
@@ -440,6 +454,10 @@ static int mlx5_fpga_conn_create_cq(struct mlx5_fpga_conn *conn, int cq_size)
 	inlen = MLX5_ST_SZ_BYTES(create_cq_in) +
 		sizeof(u64) * conn->cq.wq_ctrl.buf.npages;
 	in = kvzalloc(inlen, GFP_KERNEL);
+	{
+		typeof((u64)) __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!in) {
 		err = -ENOMEM;
 		goto err_cqwq;

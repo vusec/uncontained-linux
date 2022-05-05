@@ -6,6 +6,11 @@
 #include <linux/mm.h>
 #include <linux/rbtree.h>
 #include <trace/events/btrfs.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ctree.h"
 #include "disk-io.h"
 #include "backref.h"
@@ -2256,6 +2261,10 @@ struct btrfs_data_container *init_data_container(u32 total_bytes)
 
 	alloc_bytes = max_t(size_t, total_bytes, sizeof(*data));
 	data = kvmalloc(alloc_bytes, GFP_KERNEL);
+	{
+		typeof((*data)) __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!data)
 		return ERR_PTR(-ENOMEM);
 

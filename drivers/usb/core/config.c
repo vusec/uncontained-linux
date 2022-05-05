@@ -11,6 +11,11 @@
 #include <linux/slab.h>
 #include <linux/device.h>
 #include <asm/byteorder.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "usb.h"
 
 
@@ -569,6 +574,10 @@ static int usb_parse_interface(struct device *ddev, int cfgno,
 		/* Can't allocate 0 bytes */
 		len = sizeof(struct usb_host_endpoint) * num_ep;
 		alt->endpoint = kzalloc(len, GFP_KERNEL);
+		{
+			struct usb_host_endpoint __uncontained_tmp67;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+		}
 		if (!alt->endpoint)
 			return -ENOMEM;
 	}
@@ -880,11 +889,19 @@ int usb_get_configuration(struct usb_device *dev)
 
 	length = ncfg * sizeof(struct usb_host_config);
 	dev->config = kzalloc(length, GFP_KERNEL);
+	{
+		struct usb_host_config __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!dev->config)
 		return -ENOMEM;
 
 	length = ncfg * sizeof(char *);
 	dev->rawdescriptors = kzalloc(length, GFP_KERNEL);
+	{
+		char *__uncontained_tmp69;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!dev->rawdescriptors)
 		return -ENOMEM;
 
@@ -917,6 +934,14 @@ int usb_get_configuration(struct usb_device *dev)
 
 		/* Now that we know the length, get the whole thing */
 		bigbuffer = kmalloc(length, GFP_KERNEL);
+		{
+			struct usb_host_config __uncontained_tmp65;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+		}
+		{
+			char *__uncontained_tmp66;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+		}
 		if (!bigbuffer) {
 			result = -ENOMEM;
 			goto err;

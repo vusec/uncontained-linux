@@ -14,6 +14,11 @@
 #include <linux/slab.h>
 #include <linux/wait.h>
 #include <linux/module.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ecryptfs_kernel.h"
 
 static atomic_t ecryptfs_num_miscdev_opens;
@@ -150,6 +155,10 @@ int ecryptfs_send_miscdev(char *data, size_t data_size,
 	struct ecryptfs_message *msg;
 
 	msg = kmalloc((sizeof(*msg) + data_size), GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp111;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (!msg)
 		return -ENOMEM;
 

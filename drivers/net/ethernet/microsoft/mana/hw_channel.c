@@ -4,6 +4,11 @@
 #include "gdma.h"
 #include "hw_channel.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int mana_hwc_get_msg_index(struct hw_channel_context *hwc, u16 *msg_id)
 {
 	struct gdma_resource *r = &hwc->inflight_msg_res;
@@ -620,6 +625,10 @@ static int mana_hwc_establish_channel(struct gdma_context *gc, u16 *q_depth,
 		return -EPROTO;
 
 	gc->cq_table = vzalloc(gc->max_num_cqs * sizeof(struct gdma_queue *));
+	{
+		struct gdma_queue *__uncontained_tmp56;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!gc->cq_table)
 		return -ENOMEM;
 

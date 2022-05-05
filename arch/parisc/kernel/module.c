@@ -53,6 +53,11 @@
 #include <asm/unwind.h>
 #include <asm/sections.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define RELOC_REACHABLE(val, bits) \
 	(( ( !((val) & (1<<((bits)-1))) && ((val)>>(bits)) != 0 )  ||	\
 	     ( ((val) & (1<<((bits)-1))) && ((val)>>(bits)) != (((__typeof__(val))(~0))>>((bits)+2)))) ? \
@@ -305,6 +310,10 @@ int module_frob_arch_sections(CONST Elf_Ehdr *hdr,
 
 	len = hdr->e_shnum * sizeof(me->arch.section[0]);
 	me->arch.section = kzalloc(len, GFP_KERNEL);
+	{
+		typeof((me->arch.section[0])) __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!me->arch.section)
 		return -ENOMEM;
 

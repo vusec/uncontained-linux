@@ -9,6 +9,11 @@
 #include <net/bluetooth/hci_core.h>
 #include <crypto/hash.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hci_request.h"
 #include "a2mp.h"
 #include "amp.h"
@@ -148,6 +153,10 @@ static int hmac_sha256(u8 *key, u8 ksize, char *plaintext, u8 psize, u8 *output)
 
 	shash = kzalloc(sizeof(*shash) + crypto_shash_descsize(tfm),
 			GFP_KERNEL);
+	{
+		typeof((*shash)) __uncontained_tmp114;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!shash) {
 		ret = -ENOMEM;
 		goto failed;

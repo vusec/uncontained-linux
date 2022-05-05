@@ -22,6 +22,11 @@
 #include <asm/isc.h>
 #include <asm/cio.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "cio.h"
 #include "cio_debug.h"
 #include "ioasm.h"
@@ -167,12 +172,20 @@ struct airq_iv *airq_iv_create(unsigned long bits, unsigned long flags)
 	if (flags & AIRQ_IV_PTR) {
 		size = bits * sizeof(unsigned long);
 		iv->ptr = kzalloc(size, GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp83;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp83;
+		}
 		if (!iv->ptr)
 			goto out_free;
 	}
 	if (flags & AIRQ_IV_DATA) {
 		size = bits * sizeof(unsigned int);
 		iv->data = kzalloc(size, GFP_KERNEL);
+		{
+			unsigned int __uncontained_tmp84;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp84;
+		}
 		if (!iv->data)
 			goto out_free;
 	}

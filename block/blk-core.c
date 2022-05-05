@@ -45,6 +45,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/block.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "blk.h"
 #include "blk-mq-sched.h"
 #include "blk-pm.h"
@@ -1313,6 +1318,14 @@ int __init blk_dev_init(void)
 	blk_requestq_srcu_cachep = kmem_cache_create("request_queue_srcu",
 			sizeof(struct request_queue) +
 			sizeof(struct srcu_struct), 0, SLAB_PANIC, NULL);
+	{
+		struct request_queue __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
+	{
+		struct srcu_struct __uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 
 	blk_debugfs_root = debugfs_create_dir("block", NULL);
 

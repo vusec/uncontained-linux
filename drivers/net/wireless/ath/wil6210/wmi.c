@@ -8,6 +8,11 @@
 #include <linux/etherdevice.h>
 #include <linux/if_arp.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "wil6210.h"
 #include "txrx.h"
 #include "wmi.h"
@@ -3641,6 +3646,10 @@ int wmi_mgmt_tx(struct wil6210_vif *vif, const u8 *buf, size_t len)
 	}
 
 	cmd = kmalloc(total, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!cmd)
 		return -ENOMEM;
 
@@ -3693,6 +3702,10 @@ int wmi_mgmt_tx_ext(struct wil6210_vif *vif, const u8 *buf, size_t len,
 	}
 
 	cmd = kzalloc(total, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!cmd)
 		return -ENOMEM;
 

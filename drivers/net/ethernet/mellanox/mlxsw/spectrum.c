@@ -30,6 +30,11 @@
 #include <net/netevent.h>
 #include <net/addrconf.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "spectrum.h"
 #include "pci.h"
 #include "core.h"
@@ -1883,6 +1888,10 @@ static int mlxsw_sp_ports_create(struct mlxsw_sp *mlxsw_sp)
 
 	alloc_size = sizeof(struct mlxsw_sp_port *) * max_ports;
 	mlxsw_sp->ports = kzalloc(alloc_size, GFP_KERNEL);
+	{
+		struct mlxsw_sp_port *__uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (!mlxsw_sp->ports)
 		return -ENOMEM;
 

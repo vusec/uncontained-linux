@@ -51,6 +51,16 @@
 #include <linux/acpi.h>
 #include <asm/mshyperv.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Protocol versions. The low word is the minor version, the high word the
  * major version.
@@ -2868,6 +2878,14 @@ static int hv_pci_protocol_negotiation(struct hv_device *hdev,
 	 * support it.
 	 */
 	pkt = kzalloc(sizeof(*pkt) + sizeof(*version_req), GFP_KERNEL);
+	{
+		typeof((*pkt)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
+	{
+		typeof((*version_req)) __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!pkt)
 		return -ENOMEM;
 
@@ -3088,6 +3106,14 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
 	 * access.
 	 */
 	pkt = kzalloc(sizeof(*pkt) + sizeof(*d0_entry), GFP_KERNEL);
+	{
+		typeof((*d0_entry)) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
+	{
+		typeof((*pkt)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!pkt)
 		return -ENOMEM;
 
@@ -3185,6 +3211,18 @@ static int hv_send_resources_allocated(struct hv_device *hdev)
 			? sizeof(*res_assigned) : sizeof(*res_assigned2);
 
 	pkt = kmalloc(sizeof(*pkt) + size_res, GFP_KERNEL);
+	{
+		typeof((*res_assigned)) __uncontained_tmp53;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp53;
+	}
+	{
+		typeof((*res_assigned2)) __uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
+	{
+		typeof((*pkt)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!pkt)
 		return -ENOMEM;
 

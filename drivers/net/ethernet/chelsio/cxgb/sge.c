@@ -54,6 +54,11 @@
 #include <linux/slab.h>
 #include <linux/prefetch.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "cpl5_cmd.h"
 #include "sge.h"
 #include "regs.h"
@@ -573,6 +578,14 @@ static int alloc_rx_resources(struct sge *sge, struct sge_params *p)
 
 		size = sizeof(struct freelQ_ce) * q->size;
 		q->centries = kzalloc(size, GFP_KERNEL);
+		{
+			struct freelQ_e __uncontained_tmp25;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+		}
+		{
+			struct freelQ_ce __uncontained_tmp26;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+		}
 		if (!q->centries)
 			goto err_no_mem;
 	}
@@ -701,6 +714,14 @@ static int alloc_tx_resources(struct sge *sge, struct sge_params *p)
 
 		size = sizeof(struct cmdQ_ce) * q->size;
 		q->centries = kzalloc(size, GFP_KERNEL);
+		{
+			struct cmdQ_e __uncontained_tmp27;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+		}
+		{
+			struct cmdQ_ce __uncontained_tmp28;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+		}
 		if (!q->centries)
 			goto err_no_mem;
 	}

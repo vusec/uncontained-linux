@@ -18,6 +18,11 @@
 #include <net/pkt_sched.h>
 #include <net/pkt_cls.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * The ATM queuing discipline provides a framework for invoking classifiers
  * (aka "filters"), which in turn select classes of this queuing discipline.
@@ -279,6 +284,10 @@ static int atm_tc_change(struct Qdisc *sch, u32 classid, u32 parent,
 	}
 	pr_debug("atm_tc_change: new id %x\n", classid);
 	flow = kzalloc(sizeof(struct atm_flow_data) + hdr_len, GFP_KERNEL);
+	{
+		struct atm_flow_data __uncontained_tmp150;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp150;
+	}
 	pr_debug("atm_tc_change: flow %p\n", flow);
 	if (!flow) {
 		error = -ENOBUFS;

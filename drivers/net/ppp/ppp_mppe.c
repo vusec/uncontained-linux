@@ -58,6 +58,11 @@
 #include <linux/scatterlist.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ppp_mppe.h"
 
 MODULE_AUTHOR("Frank Cusack <fcusack@fcusack.com>");
@@ -191,6 +196,10 @@ static void *mppe_alloc(unsigned char *options, int optlen)
 	state->sha1 = kmalloc(sizeof(*state->sha1) +
 				     crypto_shash_descsize(shash),
 			      GFP_KERNEL);
+	{
+		typeof((*state->sha1)) __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!state->sha1) {
 		crypto_free_shash(shash);
 		goto out_free;

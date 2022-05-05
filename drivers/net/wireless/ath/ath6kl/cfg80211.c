@@ -22,6 +22,11 @@
 #include <linux/export.h>
 #include <linux/sched/signal.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "core.h"
 #include "cfg80211.h"
 #include "debug.h"
@@ -3124,6 +3129,10 @@ static bool ath6kl_mgmt_powersave_ap(struct ath6kl_vif *vif,
 			/* Queue the frames if the STA is sleeping */
 			mgmt_buf_size = len + sizeof(struct ath6kl_mgmt_buff);
 			mgmt_buf = kmalloc(mgmt_buf_size, GFP_KERNEL);
+			{
+				struct ath6kl_mgmt_buff __uncontained_tmp52;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+			}
 			if (!mgmt_buf)
 				return false;
 

@@ -8,6 +8,10 @@ static struct intel_ring *mock_ring(unsigned long sz)
 	struct intel_ring *ring;
 
 	ring = kzalloc(sizeof(*ring) + sz, GFP_KERNEL);
+	{
+		typeof((*ring)) __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!ring)
 		return NULL;
 

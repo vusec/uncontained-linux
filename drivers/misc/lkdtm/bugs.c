@@ -13,6 +13,11 @@
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #if IS_ENABLED(CONFIG_X86_32) && !IS_ENABLED(CONFIG_UML)
 #include <asm/desc.h>
 #endif
@@ -326,7 +331,15 @@ void lkdtm_ARRAY_BOUNDS(void)
 	volatile int i;
 
 	not_checked = kmalloc(sizeof(*not_checked) * 2, GFP_KERNEL);
+	{
+		typeof((*not_checked)) __uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
 	checked = kmalloc(sizeof(*checked) * 2, GFP_KERNEL);
+	{
+		typeof((*checked)) __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 
 	pr_info("Array access within bounds ...\n");
 	/* For both, touch all bytes in the actual member size. */

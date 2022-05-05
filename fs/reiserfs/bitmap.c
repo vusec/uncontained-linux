@@ -13,6 +13,11 @@
 #include <linux/quotaops.h>
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define PREALLOCATION_SIZE 9
 
 /* different reiserfs block allocator options */
@@ -1457,6 +1462,10 @@ int reiserfs_init_bitmap_cache(struct super_block *sb)
 	unsigned int bmap_nr = reiserfs_bmap_count(sb);
 
 	bitmap = vmalloc(array_size(bmap_nr, sizeof(*bitmap)));
+	{
+		typeof((*bitmap)) __uncontained_tmp159;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp159;
+	}
 	if (bitmap == NULL)
 		return -ENOMEM;
 

@@ -15,6 +15,11 @@
 #include <linux/uaccess.h>
 #include <linux/greybus.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct gb_raw {
 	struct gb_connection *connection;
 
@@ -71,6 +76,10 @@ static int receive_data(struct gb_raw *raw, u32 len, u8 *data)
 	}
 
 	raw_data = kmalloc(sizeof(*raw_data) + len, GFP_KERNEL);
+	{
+		typeof((*raw_data)) __uncontained_tmp85;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!raw_data) {
 		retval = -ENOMEM;
 		goto exit;
@@ -127,6 +136,10 @@ static int gb_raw_send(struct gb_raw *raw, u32 len, const char __user *data)
 	int retval;
 
 	request = kmalloc(len + sizeof(*request), GFP_KERNEL);
+	{
+		typeof((*request)) __uncontained_tmp86;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!request)
 		return -ENOMEM;
 

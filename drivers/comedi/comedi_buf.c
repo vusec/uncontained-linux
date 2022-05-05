@@ -10,6 +10,11 @@
 #include <linux/vmalloc.h>
 #include <linux/slab.h>
 #include <linux/comedi/comedidev.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "comedi_internal.h"
 
 #ifdef PAGE_KERNEL_NOCACHE
@@ -90,6 +95,10 @@ comedi_buf_map_alloc(struct comedi_device *dev, enum dma_data_direction dma_dir,
 	}
 
 	bm->page_list = vzalloc(sizeof(*buf) * n_pages);
+	{
+		typeof((*buf)) __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!bm->page_list)
 		goto err;
 
@@ -170,6 +179,10 @@ static void __comedi_buf_alloc(struct comedi_device *dev,
 		async->prealloc_buf = buf->virt_addr;
 	} else {
 		pages = vmalloc(sizeof(struct page *) * n_pages);
+		{
+			struct page *__uncontained_tmp22;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+		}
 		if (!pages)
 			return;
 

@@ -89,6 +89,11 @@
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_tcq.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "initio.h"
 
 #define SENSE_SIZE		14
@@ -2848,6 +2853,10 @@ static int initio_probe_one(struct pci_dev *pdev,
 	for (; num_scb >= MAX_TARGETS + 3; num_scb--) {
 		i = num_scb * sizeof(struct scsi_ctrl_blk);
 		scb = kzalloc(i, GFP_KERNEL);
+		{
+			struct scsi_ctrl_blk __uncontained_tmp25;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+		}
 		if (scb)
 			break;
 	}

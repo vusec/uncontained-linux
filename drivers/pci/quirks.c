@@ -29,7 +29,12 @@
 #include <linux/pm_runtime.h>
 #include <linux/suspend.h>
 #include <linux/switchtec.h>
-#include <asm/dma.h>	/* isa_dma_bridge_buggy */
+#include <asm/dma.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/	/* isa_dma_bridge_buggy */
 #include "pci.h"
 
 static ktime_t fixup_debug_start(struct pci_dev *dev,
@@ -5277,6 +5282,10 @@ static void quirk_intel_qat_vf_cap(struct pci_dev *pdev)
 
 		/* Save PCIe cap */
 		state = kzalloc(sizeof(*state) + size, GFP_KERNEL);
+		{
+			typeof((*state)) __uncontained_tmp76;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+		}
 		if (!state)
 			return;
 

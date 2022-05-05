@@ -76,6 +76,11 @@
 
 #include <asm/byteorder.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * PPP "BSD compress" compression
  *  The differences between this compression and the classic BSD LZW
@@ -407,6 +412,10 @@ static void *bsd_alloc (unsigned char *options, int opt_len, int decomp)
  * length.
  */
     db->dict = vmalloc(array_size(hsize, sizeof(struct bsd_dict)));
+    {
+	struct bsd_dict __uncontained_tmp81;
+	__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+    }
     if (!db->dict)
       {
 	bsd_free (db);
@@ -426,6 +435,10 @@ static void *bsd_alloc (unsigned char *options, int opt_len, int decomp)
     else
       {
         db->lens = vmalloc(array_size(sizeof(db->lens[0]), (maxmaxcode + 1)));
+	{
+	    typeof((db->lens[0])) __uncontained_tmp82;
+	    __uncontained_complex_alloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!db->lens)
 	  {
 	    bsd_free (db);

@@ -14,6 +14,11 @@
 #include <linux/cred.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "vmci_queue_pair.h"
 #include "vmci_datagram.h"
 #include "vmci_doorbell.h"
@@ -715,7 +720,11 @@ static int vmci_ctx_get_chkpt_notifiers(struct vmci_ctx *context,
 		return VMCI_ERROR_MORE_DATA;
 	}
 
-	notifiers = kmalloc(data_size, GFP_ATOMIC); /* FIXME: want GFP_KERNEL */
+	notifiers = kmalloc(data_size, GFP_ATOMIC);
+	{
+		typeof((*notifiers)) __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	} /* FIXME: want GFP_KERNEL */
 	if (!notifiers)
 		return VMCI_ERROR_NO_MEM;
 

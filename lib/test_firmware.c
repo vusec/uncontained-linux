@@ -26,6 +26,11 @@
 #include <linux/vmalloc.h>
 #include <linux/efi_embedded_fw.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 MODULE_IMPORT_NS(TEST_FIRMWARE);
 
 #define TEST_FIRMWARE_NAME	"test-firmware.bin"
@@ -832,6 +837,10 @@ static ssize_t trigger_batched_requests_store(struct device *dev,
 	test_fw_config->reqs =
 		vzalloc(array3_size(sizeof(struct test_batched_req),
 				    test_fw_config->num_requests, 2));
+	{
+		struct test_batched_req __uncontained_tmp112;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (!test_fw_config->reqs) {
 		rc = -ENOMEM;
 		goto out_unlock;
@@ -930,6 +939,10 @@ ssize_t trigger_batched_requests_async_store(struct device *dev,
 	test_fw_config->reqs =
 		vzalloc(array3_size(sizeof(struct test_batched_req),
 				    test_fw_config->num_requests, 2));
+	{
+		struct test_batched_req __uncontained_tmp113;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!test_fw_config->reqs) {
 		rc = -ENOMEM;
 		goto out;

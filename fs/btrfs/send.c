@@ -16,6 +16,16 @@
 #include <linux/compat.h>
 #include <linux/crc32c.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "send.h"
 #include "backref.h"
 #include "locking.h"
@@ -2230,6 +2240,10 @@ out_cache:
 	 * Store the result of the lookup in the name cache.
 	 */
 	nce = kmalloc(sizeof(*nce) + fs_path_len(dest) + 1, GFP_KERNEL);
+	{
+		typeof((*nce)) __uncontained_tmp109;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp109;
+	}
 	if (!nce) {
 		ret = -ENOMEM;
 		goto out;
@@ -7597,6 +7611,10 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
 
 	if (arg->clone_sources_count) {
 		clone_sources_tmp = kvmalloc(alloc_size, GFP_KERNEL);
+		{
+			typeof((*arg->clone_sources)) __uncontained_tmp50;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+		}
 		if (!clone_sources_tmp) {
 			ret = -ENOMEM;
 			goto out;

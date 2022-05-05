@@ -16,6 +16,11 @@
 #include <linux/vmalloc.h>
 #include <linux/math64.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DM_MSG_PREFIX "cache-policy-smq"
 
 /*----------------------------------------------------------------*/
@@ -70,6 +75,10 @@ static int space_init(struct entry_space *es, unsigned nr_entries)
 	}
 
 	es->begin = vzalloc(array_size(nr_entries, sizeof(struct entry)));
+	{
+		struct entry __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!es->begin)
 		return -ENOMEM;
 
@@ -589,6 +598,10 @@ static int h_init(struct smq_hash_table *ht, struct entry_space *es, unsigned nr
 	ht->hash_bits = __ffs(nr_buckets);
 
 	ht->buckets = vmalloc(array_size(nr_buckets, sizeof(*ht->buckets)));
+	{
+		typeof((*ht->buckets)) __uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!ht->buckets)
 		return -ENOMEM;
 

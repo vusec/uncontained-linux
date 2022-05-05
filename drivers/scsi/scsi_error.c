@@ -50,6 +50,11 @@
 
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * These should *probably* be handled by the host itself.
  * Since it is allowed to sleep, it probably should.
@@ -2393,6 +2398,14 @@ scsi_ioctl_reset(struct scsi_device *dev, int __user *arg)
 	error = -EIO;
 	rq = kzalloc(sizeof(struct request) + sizeof(struct scsi_cmnd) +
 			shost->hostt->cmd_size, GFP_KERNEL);
+	{
+		struct request __uncontained_tmp92;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp92;
+	}
+	{
+		struct scsi_cmnd __uncontained_tmp93;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!rq)
 		goto out_put_autopm_host;
 	blk_rq_init(NULL, rq);

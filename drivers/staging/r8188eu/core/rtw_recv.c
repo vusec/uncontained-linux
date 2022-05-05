@@ -11,6 +11,11 @@
 #include "../include/wifi.h"
 #include "../include/rtl8188e_recv.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static u8 SNAP_ETH_TYPE_IPX[2] = {0x81, 0x37};
 static u8 SNAP_ETH_TYPE_APPLETALK_AARP[2] = {0x80, 0xf3};
 
@@ -57,6 +62,10 @@ int _rtw_init_recv_priv(struct recv_priv *precvpriv, struct adapter *padapter)
 	rtw_os_recv_resource_init(precvpriv, padapter);
 
 	precvpriv->pallocated_frame_buf = vzalloc(NR_RECVFRAME * sizeof(struct recv_frame) + RXFRAME_ALIGN_SZ);
+	{
+		struct recv_frame __uncontained_tmp113;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp113;
+	}
 
 	if (!precvpriv->pallocated_frame_buf) {
 		res = _FAIL;

@@ -16,6 +16,11 @@
 #include <linux/statfs.h>
 #include <linux/stringhash.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "fanotify.h"
 
 static bool fanotify_path_equal(struct path *p1, struct path *p2)
@@ -628,6 +633,10 @@ static struct fanotify_event *fanotify_alloc_name_event(struct inode *dir,
 	if (child_fh_len)
 		size += FANOTIFY_FH_HDR_LEN + child_fh_len;
 	fne = kmalloc(size, gfp);
+	{
+		typeof((*fne)) __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!fne)
 		return NULL;
 

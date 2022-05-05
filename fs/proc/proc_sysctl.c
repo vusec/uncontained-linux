@@ -17,6 +17,11 @@
 #include <linux/bpf-cgroup.h>
 #include <linux/mount.h>
 #include <linux/kmemleak.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "internal.h"
 
 static const struct dentry_operations proc_sys_dentry_operations;
@@ -971,6 +976,18 @@ static struct ctl_dir *new_dir(struct ctl_table_set *set,
 	new = kzalloc(sizeof(*new) + sizeof(struct ctl_node) +
 		      sizeof(struct ctl_table)*2 +  namelen + 1,
 		      GFP_KERNEL);
+	{
+		typeof((*new)) __uncontained_tmp102;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp102;
+	}
+	{
+		struct ctl_node __uncontained_tmp95;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp95;
+	}
+	{
+		struct ctl_table __uncontained_tmp96;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!new)
 		return NULL;
 
@@ -1184,6 +1201,18 @@ static struct ctl_table_header *new_links(struct ctl_dir *dir, struct ctl_table 
 			sizeof(struct ctl_table)*(nr_entries + 1) +
 			name_bytes,
 			GFP_KERNEL);
+	{
+		struct ctl_node __uncontained_tmp97;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp97;
+	}
+	{
+		struct ctl_table __uncontained_tmp98;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp98;
+	}
+	{
+		struct ctl_table_header __uncontained_tmp99;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp99;
+	}
 
 	if (!links)
 		return NULL;
@@ -1334,6 +1363,14 @@ struct ctl_table_header *__register_sysctl_table(
 
 	header = kzalloc(sizeof(struct ctl_table_header) +
 			 sizeof(struct ctl_node)*nr_entries, GFP_KERNEL);
+	{
+		struct ctl_node __uncontained_tmp100;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp100;
+	}
+	{
+		struct ctl_table_header __uncontained_tmp101;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!header)
 		return NULL;
 
@@ -1583,6 +1620,14 @@ struct ctl_table_header *__register_sysctl_paths(
 	} else {
 		header = kzalloc(sizeof(*header) +
 				 sizeof(*subheaders)*nr_subheaders, GFP_KERNEL);
+		{
+			typeof((*header)) __uncontained_tmp103;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp103;
+		}
+		{
+			typeof((*subheaders)) __uncontained_tmp104;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp104;
+		}
 		if (!header)
 			goto out;
 

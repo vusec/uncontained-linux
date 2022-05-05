@@ -6,6 +6,11 @@
 #include <linux/moduleparam.h>
 #include <linux/virtio_config.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "virtio_card.h"
 
 /**
@@ -91,6 +96,10 @@ struct virtio_snd_msg *virtsnd_ctl_msg_alloc(size_t request_size,
 		return NULL;
 
 	msg = kzalloc(sizeof(*msg) + request_size + response_size, gfp);
+	{
+		typeof((*msg)) __uncontained_tmp156;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp156;
+	}
 	if (!msg)
 		return NULL;
 

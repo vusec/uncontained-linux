@@ -17,6 +17,11 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "vxge-traffic.h"
 #include "vxge-config.h"
 #include "vxge-main.h"
@@ -2646,6 +2651,10 @@ __vxge_hw_mempool_create(struct __vxge_hw_device *devh,
 	/* allocate array of memblocks */
 	mempool->memblocks_arr =
 		vzalloc(array_size(sizeof(void *), mempool->memblocks_max));
+	{
+		void *__uncontained_tmp73;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
+	}
 	if (mempool->memblocks_arr == NULL) {
 		__vxge_hw_mempool_destroy(mempool);
 		status = VXGE_HW_ERR_OUT_OF_MEMORY;
@@ -2656,6 +2665,10 @@ __vxge_hw_mempool_create(struct __vxge_hw_device *devh,
 	/* allocate array of private parts of items per memblocks */
 	mempool->memblocks_priv_arr =
 		vzalloc(array_size(sizeof(void *), mempool->memblocks_max));
+	{
+		void *__uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (mempool->memblocks_priv_arr == NULL) {
 		__vxge_hw_mempool_destroy(mempool);
 		status = VXGE_HW_ERR_OUT_OF_MEMORY;
@@ -2667,6 +2680,10 @@ __vxge_hw_mempool_create(struct __vxge_hw_device *devh,
 	mempool->memblocks_dma_arr =
 		vzalloc(array_size(sizeof(struct vxge_hw_mempool_dma),
 				   mempool->memblocks_max));
+	{
+		struct vxge_hw_mempool_dma __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (mempool->memblocks_dma_arr == NULL) {
 		__vxge_hw_mempool_destroy(mempool);
 		status = VXGE_HW_ERR_OUT_OF_MEMORY;
@@ -2677,6 +2694,10 @@ __vxge_hw_mempool_create(struct __vxge_hw_device *devh,
 	/* allocate hash array of items */
 	mempool->items_arr = vzalloc(array_size(sizeof(void *),
 						mempool->items_max));
+	{
+		void *__uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (mempool->items_arr == NULL) {
 		__vxge_hw_mempool_destroy(mempool);
 		status = VXGE_HW_ERR_OUT_OF_MEMORY;

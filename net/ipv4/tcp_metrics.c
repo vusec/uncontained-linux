@@ -21,6 +21,11 @@
 #include <net/tcp.h>
 #include <net/genetlink.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct tcp_metrics_block *__tcp_get_metrics(const struct inetpeer_addr *saddr,
 						   const struct inetpeer_addr *daddr,
 						   struct net *net, unsigned int hash);
@@ -1006,6 +1011,10 @@ static int __net_init tcp_net_metrics_init(struct net *net)
 	size = sizeof(struct tcpm_hash_bucket) << tcp_metrics_hash_log;
 
 	tcp_metrics_hash = kvzalloc(size, GFP_KERNEL);
+	{
+		struct tcpm_hash_bucket __uncontained_tmp99;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp99;
+	}
 	if (!tcp_metrics_hash)
 		return -ENOMEM;
 

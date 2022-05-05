@@ -16,6 +16,16 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/mm.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "q6asm.h"
 #include "q6core.h"
 #include "q6dsp-errno.h"
@@ -341,6 +351,10 @@ static int __q6asm_memory_unmap(struct audio_client *ac,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*mem_unmap);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*mem_unmap)) __uncontained_tmp56;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -448,6 +462,14 @@ static int __q6asm_memory_map_regions(struct audio_client *ac, int dir,
 		   (sizeof(*mregions) * num_regions);
 
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
+	{
+		typeof((*mregions)) __uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -514,6 +536,10 @@ int q6asm_map_memory_regions(unsigned int dir, struct audio_client *ac,
 	}
 
 	buf = kzalloc(((sizeof(struct audio_buffer)) * periods), GFP_ATOMIC);
+	{
+		struct audio_buffer __uncontained_tmp192;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp192;
+	}
 	if (!buf) {
 		spin_unlock_irqrestore(&ac->lock, flags);
 		return -ENOMEM;
@@ -935,6 +961,10 @@ int q6asm_open_write(struct audio_client *ac, uint32_t stream_id,
 	pkt_size = APR_HDR_SIZE + sizeof(*open);
 
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*open)) __uncontained_tmp59;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1016,6 +1046,10 @@ static int __q6asm_run(struct audio_client *ac, uint32_t stream_id,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*run);
 	p = kzalloc(pkt_size, GFP_ATOMIC);
+	{
+		typeof((*run)) __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1102,6 +1136,10 @@ int q6asm_media_format_block_multi_ch_pcm(struct audio_client *ac,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*fmt);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*fmt)) __uncontained_tmp61;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1148,6 +1186,10 @@ int q6asm_stream_media_format_block_flac(struct audio_client *ac,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*fmt);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*fmt)) __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1185,6 +1227,10 @@ int q6asm_stream_media_format_block_wma_v9(struct audio_client *ac,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*fmt);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*fmt)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1223,6 +1269,10 @@ int q6asm_stream_media_format_block_wma_v10(struct audio_client *ac,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*fmt);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*fmt)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1262,6 +1312,10 @@ int q6asm_stream_media_format_block_alac(struct audio_client *ac,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*fmt);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*fmt)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1304,6 +1358,10 @@ int q6asm_stream_media_format_block_ape(struct audio_client *ac,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*fmt);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*fmt)) __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1344,6 +1402,10 @@ static int q6asm_stream_remove_silence(struct audio_client *ac, uint32_t stream_
 
 	pkt_size = APR_HDR_SIZE + sizeof(uint32_t);
 	p = kzalloc(pkt_size, GFP_ATOMIC);
+	{
+		uint32_t __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1407,6 +1469,10 @@ int q6asm_enc_cfg_blk_pcm_format_support(struct audio_client *ac,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*enc_cfg);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*enc_cfg)) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1461,6 +1527,10 @@ int q6asm_read(struct audio_client *ac, uint32_t stream_id)
 
 	pkt_size = APR_HDR_SIZE + sizeof(*read);
 	p = kzalloc(pkt_size, GFP_ATOMIC);
+	{
+		typeof((*read)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1507,6 +1577,10 @@ static int __q6asm_open_read(struct audio_client *ac, uint32_t stream_id,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*open);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*open)) __uncontained_tmp69;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -1583,6 +1657,10 @@ int q6asm_write_async(struct audio_client *ac, uint32_t stream_id, uint32_t len,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*write);
 	p = kzalloc(pkt_size, GFP_ATOMIC);
+	{
+		typeof((*write)) __uncontained_tmp70;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!p)
 		return -ENOMEM;
 

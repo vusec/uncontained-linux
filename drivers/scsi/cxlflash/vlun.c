@@ -18,6 +18,11 @@
 #include <scsi/scsi_host.h>
 #include <uapi/scsi/cxlflash_ioctl.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "sislite.h"
 #include "common.h"
 #include "vlun.h"
@@ -91,6 +96,10 @@ static int ba_init(struct ba_lun *ba_lun)
 	/* Allocate bitmap space */
 	bali->lun_alloc_map = kzalloc((bali->lun_bmap_size * sizeof(u64)),
 				      GFP_KERNEL);
+	{
+		u64 __uncontained_tmp109;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp109;
+	}
 	if (unlikely(!bali->lun_alloc_map)) {
 		pr_err("%s: Failed to allocate lun allocation map: "
 		       "lun_id=%016llx\n", __func__, ba_lun->lun_id);
@@ -121,6 +130,10 @@ static int ba_init(struct ba_lun *ba_lun)
 	/* Allocate clone map */
 	bali->aun_clone_map = kzalloc((bali->total_aus * sizeof(u8)),
 				      GFP_KERNEL);
+	{
+		u8 __uncontained_tmp110;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (unlikely(!bali->aun_clone_map)) {
 		pr_err("%s: Failed to allocate clone map: lun_id=%016llx\n",
 		       __func__, ba_lun->lun_id);
@@ -543,6 +556,10 @@ static int grow_lxt(struct afu *afu,
 		/* reallocate to fit new size */
 		lxt = kzalloc((sizeof(*lxt) * LXT_GROUP_SIZE * ngrps),
 			      GFP_KERNEL);
+		{
+			typeof((*lxt)) __uncontained_tmp111;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp111;
+		}
 		if (unlikely(!lxt)) {
 			mutex_unlock(&blka->mutex);
 			rc = -ENOMEM;
@@ -646,6 +663,10 @@ static int shrink_lxt(struct afu *afu,
 		if (ngrps) {
 			lxt = kzalloc((sizeof(*lxt) * LXT_GROUP_SIZE * ngrps),
 				      GFP_KERNEL);
+			{
+				typeof((*lxt)) __uncontained_tmp112;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp112;
+			}
 			if (unlikely(!lxt)) {
 				rc = -ENOMEM;
 				goto out;
@@ -1111,6 +1132,10 @@ static int clone_lxt(struct afu *afu,
 		/* allocate new LXTs for clone */
 		lxt = kzalloc((sizeof(*lxt) * LXT_GROUP_SIZE * ngrps),
 				GFP_KERNEL);
+		{
+			typeof((*lxt)) __uncontained_tmp113;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp113;
+		}
 		if (unlikely(!lxt)) {
 			rc = -ENOMEM;
 			goto out;

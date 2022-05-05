@@ -11,6 +11,11 @@
 #define FSCACHE_DEBUG_LEVEL COOKIE
 #include <linux/module.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "internal.h"
 
 struct kmem_cache *fscache_cookie_jar;
@@ -282,6 +287,10 @@ static int fscache_set_key(struct fscache_cookie *cookie,
 
 	if (index_key_len > sizeof(cookie->inline_key)) {
 		buf = kzalloc(buf_size, GFP_KERNEL);
+		{
+			typeof((__le32)) __uncontained_tmp86;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
+		}
 		if (!buf)
 			return -ENOMEM;
 		cookie->key = buf;

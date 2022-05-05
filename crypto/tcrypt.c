@@ -33,6 +33,11 @@
 #include <linux/jiffies.h>
 #include <linux/timex.h>
 #include <linux/interrupt.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "tcrypt.h"
 
 /*
@@ -567,6 +572,10 @@ static void test_aead_speed(const char *algo, int enc, unsigned int secs,
 		goto out_nooutbuf;
 
 	sg = kmalloc(sizeof(*sg) * 9 * 2, GFP_KERNEL);
+	{
+		typeof((*sg)) __uncontained_tmp12;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!sg)
 		goto out_nosg;
 	sgout = &sg[9];

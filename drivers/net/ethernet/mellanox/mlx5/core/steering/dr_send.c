@@ -2,6 +2,11 @@
 /* Copyright (c) 2019 Mellanox Technologies. */
 
 #include <linux/smp.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "dr_types.h"
 
 #define QUEUE_SIZE 128
@@ -790,6 +795,10 @@ static struct mlx5dr_cq *dr_create_cq(struct mlx5_core_dev *mdev,
 	inlen = MLX5_ST_SZ_BYTES(create_cq_in) +
 		sizeof(u64) * cq->wq_ctrl.buf.npages;
 	in = kvzalloc(inlen, GFP_KERNEL);
+	{
+		u64 __uncontained_tmp28;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (!in)
 		goto err_cqwq;
 

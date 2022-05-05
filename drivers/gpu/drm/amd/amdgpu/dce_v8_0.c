@@ -24,6 +24,11 @@
 #include <drm/drm_fourcc.h>
 #include <drm/drm_vblank.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "amdgpu.h"
 #include "amdgpu_pm.h"
 #include "amdgpu_i2c.h"
@@ -2602,6 +2607,14 @@ static int dce_v8_0_crtc_init(struct amdgpu_device *adev, int index)
 
 	amdgpu_crtc = kzalloc(sizeof(struct amdgpu_crtc) +
 			      (AMDGPUFB_CONN_LIMIT * sizeof(struct drm_connector *)), GFP_KERNEL);
+	{
+		struct drm_connector *__uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
+	{
+		struct amdgpu_crtc __uncontained_tmp25;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (amdgpu_crtc == NULL)
 		return -ENOMEM;
 

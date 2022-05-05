@@ -22,6 +22,11 @@
 #include "xfs_trace.h"
 #include "xfs_log.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 
 struct kmem_cache	*xfs_buf_item_cache;
 
@@ -764,6 +769,10 @@ xfs_buf_item_get_format(
 
 	bip->bli_formats = kmem_zalloc(count * sizeof(struct xfs_buf_log_format),
 				0);
+	{
+		struct xfs_buf_log_format __uncontained_tmp106;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp106;
+	}
 }
 
 STATIC void

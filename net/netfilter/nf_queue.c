@@ -19,6 +19,11 @@
 #include <net/netfilter/nf_queue.h>
 #include <net/dst.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "nf_internals.h"
 
 static const struct nf_queue_handler __rcu *nf_queue_handler;
@@ -193,6 +198,10 @@ static int __nf_queue(struct sk_buff *skb, const struct nf_hook_state *state,
 	}
 
 	entry = kmalloc(sizeof(*entry) + route_key_size, GFP_ATOMIC);
+	{
+		typeof((*entry)) __uncontained_tmp146;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp146;
+	}
 	if (!entry)
 		return -ENOMEM;
 

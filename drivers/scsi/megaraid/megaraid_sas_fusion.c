@@ -44,6 +44,11 @@
 #include <scsi/scsi_dbg.h>
 #include <linux/dmi.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "megaraid_sas_fusion.h"
 #include "megaraid_sas.h"
 
@@ -5309,6 +5314,10 @@ megasas_alloc_fusion_context(struct megasas_instance *instance)
 		fusion->log_to_span =
 			vzalloc(array_size(MAX_LOGICAL_DRIVES_EXT,
 					   sizeof(LD_SPAN_INFO)));
+		{
+			typeof((LD_SPAN_INFO)) __uncontained_tmp92;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp92;
+		}
 		if (!fusion->log_to_span) {
 			dev_err(&instance->pdev->dev, "Failed from %s %d\n",
 				__func__, __LINE__);
@@ -5326,6 +5335,10 @@ megasas_alloc_fusion_context(struct megasas_instance *instance)
 		fusion->load_balance_info =
 			vzalloc(array_size(MAX_LOGICAL_DRIVES_EXT,
 					   sizeof(struct LD_LOAD_BALANCE_INFO)));
+		{
+			struct LD_LOAD_BALANCE_INFO __uncontained_tmp91;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp91;
+		}
 		if (!fusion->load_balance_info)
 			dev_err(&instance->pdev->dev, "Failed to allocate load_balance_info, "
 				"continuing without Load Balance support\n");

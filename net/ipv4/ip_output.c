@@ -83,6 +83,11 @@
 #include <linux/netlink.h>
 #include <linux/tcp.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int
 ip_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
 	    unsigned int mtu,
@@ -1258,6 +1263,10 @@ static int ip_setup_cork(struct sock *sk, struct inet_cork *cork,
 		if (!cork->opt) {
 			cork->opt = kmalloc(sizeof(struct ip_options) + 40,
 					    sk->sk_allocation);
+			{
+				struct ip_options __uncontained_tmp131;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp131;
+			}
 			if (unlikely(!cork->opt))
 				return -ENOBUFS;
 		}

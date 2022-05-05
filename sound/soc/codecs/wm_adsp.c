@@ -29,6 +29,11 @@
 #include <sound/initval.h>
 #include <sound/tlv.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "wm_adsp.h"
 
 #define adsp_crit(_dsp, fmt, ...) \
@@ -1266,6 +1271,10 @@ int wm_adsp_compr_set_params(struct snd_soc_component *component,
 
 	size = wm_adsp_compr_frag_words(compr) * sizeof(*compr->raw_buf);
 	compr->raw_buf = kmalloc(size, GFP_DMA | GFP_KERNEL);
+	{
+		typeof((*compr->raw_buf)) __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!compr->raw_buf)
 		return -ENOMEM;
 

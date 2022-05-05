@@ -19,6 +19,11 @@
 #include <linux/of_address.h>
 #include <linux/clk/ti.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* FAPLL Control Register PLL_CTRL */
 #define FAPLL_MAIN_MULT_N_SHIFT	16
 #define FAPLL_MAIN_DIV_P_SHIFT	8
@@ -545,16 +550,28 @@ static void __init ti_fapll_setup(struct device_node *node)
 	int i;
 
 	fd = kzalloc(sizeof(*fd), GFP_KERNEL);
+	{
+		typeof((*fd)) __uncontained_tmp19;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!fd)
 		return;
 
 	fd->outputs.clks = kzalloc(sizeof(struct clk *) *
 				   MAX_FAPLL_OUTPUTS + 1,
 				   GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp18;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!fd->outputs.clks)
 		goto free;
 
 	init = kzalloc(sizeof(*init), GFP_KERNEL);
+	{
+		typeof((*init)) __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!init)
 		goto free;
 

@@ -5,6 +5,11 @@
  * Copyright 2021 NXP
  */
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ptp_private.h"
 
 #define PTP_VCLOCK_CC_SHIFT		31
@@ -173,6 +178,10 @@ int ptp_get_vclocks_index(int pclock_index, int **vclock_index)
 	}
 
 	*vclock_index = kzalloc(sizeof(int) * ptp->n_vclocks, GFP_KERNEL);
+	{
+		int __uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!(*vclock_index))
 		goto out;
 

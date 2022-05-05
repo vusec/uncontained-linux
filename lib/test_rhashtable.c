@@ -23,6 +23,11 @@
 #include <linux/vmalloc.h>
 #include <linux/wait.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define MAX_ENTRIES	1000000
 #define TEST_INSERT_FAIL INT_MAX
 
@@ -278,12 +283,20 @@ static int __init test_rhltable(unsigned int entries)
 
 	rhl_test_objects = vzalloc(array_size(entries,
 					      sizeof(*rhl_test_objects)));
+	{
+		typeof((*rhl_test_objects)) __uncontained_tmp166;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp166;
+	}
 	if (!rhl_test_objects)
 		return -ENOMEM;
 
 	ret = -ENOMEM;
 	obj_in_table = vzalloc(array_size(sizeof(unsigned long),
 					  BITS_TO_LONGS(entries)));
+	{
+		unsigned long __uncontained_tmp162;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp162;
+	}
 	if (!obj_in_table)
 		goto out_free;
 
@@ -713,6 +726,10 @@ static int __init test_rht_init(void)
 
 	objs = vzalloc(array_size(sizeof(struct test_obj),
 				  test_rht_params.max_size + 1));
+	{
+		struct test_obj __uncontained_tmp163;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp163;
+	}
 	if (!objs)
 		return -ENOMEM;
 
@@ -760,9 +777,17 @@ static int __init test_rht_init(void)
 	        tcount);
 	atomic_set(&startup_count, tcount);
 	tdata = vzalloc(array_size(tcount, sizeof(struct thread_data)));
+	{
+		struct thread_data __uncontained_tmp164;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp164;
+	}
 	if (!tdata)
 		return -ENOMEM;
 	objs  = vzalloc(array3_size(sizeof(struct test_obj), tcount, entries));
+	{
+		struct test_obj __uncontained_tmp165;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp165;
+	}
 	if (!objs) {
 		vfree(tdata);
 		return -ENOMEM;

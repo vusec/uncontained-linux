@@ -21,6 +21,11 @@
 #include <linux/ceph/osd_client.h>
 #include <linux/ceph/striper.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Ceph address space ops.
  *
@@ -1948,6 +1953,10 @@ static int __ceph_pool_perm_get(struct ceph_inode_info *ci,
 
 	pool_ns_len = pool_ns ? pool_ns->len : 0;
 	perm = kmalloc(sizeof(*perm) + pool_ns_len + 1, GFP_NOFS);
+	{
+		typeof((*perm)) __uncontained_tmp132;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (!perm) {
 		err = -ENOMEM;
 		goto out_unlock;

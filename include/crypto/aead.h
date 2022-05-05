@@ -13,6 +13,11 @@
 #include <linux/slab.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  * DOC: Authenticated Encryption With Associated Data (AEAD) Cipher API
  *
@@ -421,6 +426,10 @@ static inline struct aead_request *aead_request_alloc(struct crypto_aead *tfm,
 	struct aead_request *req;
 
 	req = kmalloc(sizeof(*req) + crypto_aead_reqsize(tfm), gfp);
+	{
+		typeof((*req)) __uncontained_tmp117;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp117;
+	}
 
 	if (likely(req))
 		aead_request_set_tfm(req, tfm);

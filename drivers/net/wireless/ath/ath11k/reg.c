@@ -4,6 +4,16 @@
  */
 #include <linux/rtnetlink.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "core.h"
 #include "debug.h"
 
@@ -244,6 +254,14 @@ int ath11k_regd_update(struct ath11k *ar)
 		sizeof(struct ieee80211_reg_rule));
 
 	regd_copy = kzalloc(regd_len, GFP_ATOMIC);
+	{
+		typeof((*regd)) __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
+	{
+		struct ieee80211_reg_rule __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (regd_copy)
 		ath11k_copy_regd(regd, regd_copy);
 
@@ -427,6 +445,14 @@ ath11k_regd_intersect(struct ieee80211_regdomain *default_regd,
 	new_regd = kzalloc(sizeof(*new_regd) + (num_new_regd_rules *
 			sizeof(struct ieee80211_reg_rule)),
 			GFP_ATOMIC);
+	{
+		typeof((*new_regd)) __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
+	{
+		struct ieee80211_reg_rule __uncontained_tmp73;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
+	}
 
 	if (!new_regd)
 		return NULL;
@@ -609,6 +635,14 @@ ath11k_reg_build_regd(struct ath11k_base *ab,
 	tmp_regd =  kzalloc(sizeof(*tmp_regd) +
 			(num_rules * sizeof(struct ieee80211_reg_rule)),
 			GFP_ATOMIC);
+	{
+		typeof((*tmp_regd)) __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
+	{
+		struct ieee80211_reg_rule __uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!tmp_regd)
 		goto ret;
 

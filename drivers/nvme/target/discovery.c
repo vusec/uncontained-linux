@@ -6,6 +6,11 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 #include <linux/slab.h>
 #include <generated/utsrelease.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "nvmet.h"
 
 struct nvmet_subsys *nvmet_disc_subsys;
@@ -199,6 +204,10 @@ static void nvmet_execute_disc_get_log_page(struct nvmet_req *req)
 	down_read(&nvmet_config_sem);
 	alloc_len = sizeof(*hdr) + entry_size * discovery_log_entries(req);
 	buffer = kzalloc(alloc_len, GFP_KERNEL);
+	{
+		typeof((*hdr)) __uncontained_tmp52;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!buffer) {
 		up_read(&nvmet_config_sem);
 		status = NVME_SC_INTERNAL;

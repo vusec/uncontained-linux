@@ -33,6 +33,11 @@
 #include <platform/lcd.h>
 #include <platform/hardware.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 void platform_halt(void)
 {
 	lcd_disp_at_pos(" HALT ", 0);
@@ -111,6 +116,10 @@ static void __init update_local_mac(struct device_node *node)
 		return;
 
 	newmac = kzalloc(sizeof(*newmac) + MAC_LEN, GFP_KERNEL);
+	{
+		typeof((*newmac)) __uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (newmac == NULL)
 		return;
 

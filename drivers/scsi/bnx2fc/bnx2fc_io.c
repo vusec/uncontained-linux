@@ -14,6 +14,11 @@
 
 #include "bnx2fc.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define RESERVE_FREE_LIST_INDEX num_possible_cpus()
 
 static int bnx2fc_split_bd(struct bnx2fc_cmd *io_req, u64 addr, int sg_len,
@@ -235,6 +240,10 @@ struct bnx2fc_cmd_mgr *bnx2fc_cmd_mgr_alloc(struct bnx2fc_hba *hba)
 	len += sizeof(struct bnx2fc_cmd_mgr);
 
 	cmgr = kzalloc(len, GFP_KERNEL);
+	{
+		struct bnx2fc_cmd *__uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!cmgr) {
 		printk(KERN_ERR PFX "failed to alloc cmgr\n");
 		return NULL;

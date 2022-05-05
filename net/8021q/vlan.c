@@ -33,6 +33,11 @@
 #include <linux/uaccess.h>
 
 #include <linux/if_vlan.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "vlan.h"
 #include "vlanproc.h"
 
@@ -68,6 +73,10 @@ static int vlan_group_prealloc_vid(struct vlan_group *vg,
 
 	size = sizeof(struct net_device *) * VLAN_GROUP_ARRAY_PART_LEN;
 	array = kzalloc(size, GFP_KERNEL_ACCOUNT);
+	{
+		struct net_device *__uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (array == NULL)
 		return -ENOBUFS;
 

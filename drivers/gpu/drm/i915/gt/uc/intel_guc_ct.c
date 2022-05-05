@@ -8,6 +8,11 @@
 #include <linux/time64.h>
 #include <linux/timekeeping.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "i915_drv.h"
 #include "intel_guc_ct.h"
 #include "gt/intel_gt.h"
@@ -790,6 +795,14 @@ static struct ct_incoming_msg *ct_alloc_msg(u32 num_dwords)
 	struct ct_incoming_msg *msg;
 
 	msg = kmalloc(sizeof(*msg) + sizeof(u32) * num_dwords, GFP_ATOMIC);
+	{
+		typeof((*msg)) __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
+	{
+		u32 __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (msg)
 		msg->size = num_dwords;
 	return msg;

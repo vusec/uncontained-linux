@@ -22,6 +22,11 @@
 #include <linux/seq_file.h>
 #include <net/netlink.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "internal.h"
 
 enum {
@@ -940,6 +945,14 @@ struct skcipher_instance *skcipher_alloc_instance_simple(
 		return ERR_PTR(err);
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
+	{
+		typeof((*inst)) __uncontained_tmp18;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+	}
+	{
+		typeof((*spawn)) __uncontained_tmp19;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!inst)
 		return ERR_PTR(-ENOMEM);
 	spawn = skcipher_instance_ctx(inst);

@@ -17,6 +17,16 @@
 #include "sg_sw_sec4.h"
 #include "caampkc.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DESC_RSA_PUB_LEN	(2 * CAAM_CMD_SZ + SIZEOF_RSA_PUB_PDB)
 #define DESC_RSA_PRIV_F1_LEN	(2 * CAAM_CMD_SZ + \
 				 SIZEOF_RSA_PRIV_F1_PDB)
@@ -312,6 +322,14 @@ static struct rsa_edesc *rsa_edesc_alloc(struct akcipher_request *req,
 	/* allocate space for base edesc, hw desc commands and link tables */
 	edesc = kzalloc(sizeof(*edesc) + desclen + sec4_sg_bytes,
 			GFP_DMA | flags);
+	{
+		struct sec4_sg_entry __uncontained_tmp8;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+	}
+	{
+		typeof((*edesc)) __uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!edesc)
 		goto dst_fail;
 

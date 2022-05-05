@@ -21,6 +21,11 @@
 #include <asm/irq_remapping.h>
 #include <asm/pci-direct.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "../irq_remapping.h"
 #include "cap_audit.h"
 
@@ -1373,6 +1378,10 @@ static int intel_irq_remapping_alloc(struct irq_domain *domain,
 
 		if (i > 0) {
 			ird = kzalloc(sizeof(*ird), GFP_KERNEL);
+			{
+				typeof((*ird)) __uncontained_tmp19;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+			}
 			if (!ird)
 				goto out_free_data;
 			/* Initialize the common data */

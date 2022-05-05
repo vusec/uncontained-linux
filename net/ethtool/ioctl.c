@@ -31,6 +31,11 @@
 #include <net/flow_offload.h>
 #include <linux/ethtool_netlink.h>
 #include <generated/utsrelease.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "common.h"
 
 /* State held across locks and calls for commands which have devlink fallback */
@@ -2064,6 +2069,10 @@ static int ethtool_get_stats(struct net_device *dev, void __user *useraddr)
 
 	if (n_stats) {
 		data = vzalloc(array_size(n_stats, sizeof(u64)));
+		{
+			u64 __uncontained_tmp192;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp192;
+		}
 		if (!data)
 			return -ENOMEM;
 		ops->get_ethtool_stats(dev, &stats, data);
@@ -2114,6 +2123,10 @@ static int ethtool_get_phy_stats(struct net_device *dev, void __user *useraddr)
 
 	if (n_stats) {
 		data = vzalloc(array_size(n_stats, sizeof(u64)));
+		{
+			u64 __uncontained_tmp193;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp193;
+		}
 		if (!data)
 			return -ENOMEM;
 
@@ -3107,6 +3120,14 @@ ethtool_rx_flow_rule_create(const struct ethtool_rx_flow_spec_input *input)
 
 	flow = kzalloc(sizeof(struct ethtool_rx_flow_rule) +
 		       sizeof(struct ethtool_rx_flow_match), GFP_KERNEL);
+	{
+		struct ethtool_rx_flow_match __uncontained_tmp190;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp190;
+	}
+	{
+		struct ethtool_rx_flow_rule __uncontained_tmp191;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp191;
+	}
 	if (!flow)
 		return ERR_PTR(-ENOMEM);
 

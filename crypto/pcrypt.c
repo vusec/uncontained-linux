@@ -17,6 +17,11 @@
 #include <linux/cpu.h>
 #include <crypto/pcrypt.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct padata_instance *pencrypt;
 static struct padata_instance *pdecrypt;
 static struct kset           *pcrypt_kset;
@@ -239,6 +244,14 @@ static int pcrypt_create_aead(struct crypto_template *tmpl, struct rtattr **tb,
 	int err;
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*ctx), GFP_KERNEL);
+	{
+		typeof((*ctx)) __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
+	{
+		typeof((*inst)) __uncontained_tmp15;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!inst)
 		return -ENOMEM;
 

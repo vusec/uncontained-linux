@@ -27,6 +27,11 @@
 #include <asm/ftrace.lds.h>
 #include <asm/set_memory.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #if 0
 #define DEBUGP printk
 #else
@@ -144,6 +149,10 @@ int module_frob_arch_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
 	me->arch.nsyms = symtab->sh_size / sizeof(Elf_Sym);
 	me->arch.syminfo = vmalloc(array_size(sizeof(struct mod_arch_syminfo),
 					      me->arch.nsyms));
+	{
+		struct mod_arch_syminfo __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!me->arch.syminfo)
 		return -ENOMEM;
 	symbols = (void *) hdr + symtab->sh_offset;

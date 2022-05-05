@@ -27,6 +27,11 @@
 
 #include <uapi/linux/usb/raw_gadget.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define	DRIVER_DESC "USB Raw Gadget"
 #define DRIVER_NAME "raw-gadget"
 
@@ -65,6 +70,10 @@ static int raw_event_queue_add(struct raw_event_queue *queue,
 		return -ENOMEM;
 	}
 	event = kmalloc(sizeof(*event) + length, GFP_ATOMIC);
+	{
+		typeof((*event)) __uncontained_tmp127;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp127;
+	}
 	if (!event) {
 		spin_unlock_irqrestore(&queue->lock, flags);
 		return -ENOMEM;

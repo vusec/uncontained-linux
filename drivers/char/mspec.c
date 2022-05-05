@@ -43,6 +43,11 @@
 #include <asm/tlbflush.h>
 #include <asm/uncached.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 
 #define CACHED_ID	"Cached,"
 #define UNCACHED_ID	"Uncached"
@@ -196,6 +201,14 @@ mspec_mmap(struct file *file, struct vm_area_struct *vma,
 	pages = vma_pages(vma);
 	vdata_size = sizeof(struct vma_data) + pages * sizeof(long);
 	vdata = kvzalloc(vdata_size, GFP_KERNEL);
+	{
+		long __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
+	{
+		struct vma_data __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!vdata)
 		return -ENOMEM;
 

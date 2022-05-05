@@ -15,6 +15,11 @@
 #include <linux/if_vlan.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ixgbevf.h"
 
 #define IXGBE_ALL_RAR_ENTRIES 16
@@ -283,6 +288,10 @@ static int ixgbevf_set_ringparam(struct net_device *netdev,
 		tx_ring = vmalloc(array_size(sizeof(*tx_ring),
 					     adapter->num_tx_queues +
 						adapter->num_xdp_queues));
+		{
+			typeof((*tx_ring)) __uncontained_tmp35;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+		}
 		if (!tx_ring) {
 			err = -ENOMEM;
 			goto clear_reset;
@@ -328,6 +337,10 @@ static int ixgbevf_set_ringparam(struct net_device *netdev,
 	if (new_rx_count != adapter->rx_ring_count) {
 		rx_ring = vmalloc(array_size(sizeof(*rx_ring),
 					     adapter->num_rx_queues));
+		{
+			typeof((*rx_ring)) __uncontained_tmp36;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+		}
 		if (!rx_ring) {
 			err = -ENOMEM;
 			goto clear_reset;

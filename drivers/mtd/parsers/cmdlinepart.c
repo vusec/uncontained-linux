@@ -44,6 +44,11 @@
 #include <linux/module.h>
 #include <linux/err.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* debug macro */
 #if 0
 #define dbg(x) do { printk("DEBUG-CMDLINE-PART: "); printk x; } while(0)
@@ -179,6 +184,10 @@ static struct mtd_partition * newpart(char *s,
 			     extra_mem_size;
 
 		parts = kzalloc(alloc_size, GFP_KERNEL);
+		{
+			struct mtd_partition __uncontained_tmp38;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+		}
 		if (!parts)
 			return ERR_PTR(-ENOMEM);
 		extra_mem = (unsigned char *)(parts + *num_parts);

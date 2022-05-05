@@ -37,6 +37,11 @@
 #include <linux/debugfs.h>
 #include <linux/ctype.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ap_bus.h"
 #include "ap_debug.h"
 
@@ -1080,6 +1085,10 @@ int ap_parse_mask_str(const char *str,
 
 	size = BITS_TO_LONGS(bits)*sizeof(unsigned long);
 	newmap = kmalloc(size, GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp85;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!newmap)
 		return -ENOMEM;
 	if (mutex_lock_interruptible(lock)) {

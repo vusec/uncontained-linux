@@ -53,6 +53,16 @@
 #include <linux/usb/hcd.h>
 #include <linux/usb/ch11.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "core.h"
 #include "hcd.h"
 
@@ -2514,6 +2524,10 @@ static int dwc2_alloc_dma_aligned_buffer(struct urb *urb, gfp_t mem_flags)
 		sizeof(urb->transfer_buffer);
 
 	kmalloc_ptr = kmalloc(kmalloc_size, mem_flags);
+	{
+		typeof((urb->transfer_buffer)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!kmalloc_ptr)
 		return -ENOMEM;
 
@@ -4061,6 +4075,14 @@ struct dwc2_tt *dwc2_host_get_tt_info(struct dwc2_hsotg *hsotg, void *context,
 
 			dwc_tt = kzalloc(sizeof(*dwc_tt) + bitmap_size,
 					 mem_flags);
+			{
+				typeof((dwc_tt->periodic_bitmaps[0])) __uncontained_tmp69;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+			}
+			{
+				typeof((*dwc_tt)) __uncontained_tmp78;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+			}
 			if (!dwc_tt)
 				return NULL;
 
@@ -5243,6 +5265,10 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
 
 	for (i = 0; i < num_channels; i++) {
 		channel = kzalloc(sizeof(*channel), GFP_KERNEL);
+		{
+			typeof((*channel)) __uncontained_tmp79;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+		}
 		if (!channel)
 			goto error3;
 		channel->hc_num = i;
@@ -5283,6 +5309,14 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
 				sizeof(struct dwc2_dma_desc) *
 				MAX_DMA_DESC_NUM_GENERIC, 512, SLAB_CACHE_DMA,
 				NULL);
+		{
+			struct dwc2_dma_desc __uncontained_tmp76;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+		}
+		{
+			struct dwc2_dma_desc __uncontained_tmp74;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+		}
 		if (!hsotg->desc_gen_cache) {
 			dev_err(hsotg->dev,
 				"unable to create dwc2 generic desc cache\n");
@@ -5298,6 +5332,14 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
 		hsotg->desc_hsisoc_cache = kmem_cache_create("dwc2-hsisoc-desc",
 				sizeof(struct dwc2_dma_desc) *
 				MAX_DMA_DESC_NUM_HS_ISOC, 512, 0, NULL);
+		{
+			struct dwc2_dma_desc __uncontained_tmp77;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp77;
+		}
+		{
+			struct dwc2_dma_desc __uncontained_tmp75;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+		}
 		if (!hsotg->desc_hsisoc_cache) {
 			dev_err(hsotg->dev,
 				"unable to create dwc2 hs isoc desc cache\n");

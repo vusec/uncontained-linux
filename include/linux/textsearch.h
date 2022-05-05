@@ -8,6 +8,11 @@
 #include <linux/err.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct module;
 
 struct ts_config;
@@ -165,6 +170,10 @@ static inline struct ts_config *alloc_ts_config(size_t payload,
 	struct ts_config *conf;
 
 	conf = kzalloc(TS_PRIV_ALIGN(sizeof(*conf)) + payload, gfp_mask);
+	{
+		typeof((*conf)) __uncontained_tmp108;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp108;
+	}
 	if (conf == NULL)
 		return ERR_PTR(-ENOMEM);
 

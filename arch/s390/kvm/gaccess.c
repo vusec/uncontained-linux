@@ -16,6 +16,11 @@
 #include "gaccess.h"
 #include <asm/switch_to.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 union asce {
 	unsigned long val;
 	struct {
@@ -900,8 +905,13 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
 		return rc;
 	nr_pages = (((ga & ~PAGE_MASK) + len - 1) >> PAGE_SHIFT) + 1;
 	gpas = gpa_array;
-	if (nr_pages > ARRAY_SIZE(gpa_array))
+	if (nr_pages > ARRAY_SIZE(gpa_array)) {
 		gpas = vmalloc(array_size(nr_pages, sizeof(unsigned long)));
+		{
+			unsigned long __uncontained_tmp2;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+		}
+	}
 	if (!gpas)
 		return -ENOMEM;
 	need_ipte_lock = psw_bits(*psw).dat && !asce.r;

@@ -6,6 +6,11 @@
 
 #include "mock_dmabuf.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct sg_table *mock_map_dma_buf(struct dma_buf_attachment *attachment,
 					 enum dma_data_direction dir)
 {
@@ -104,6 +109,14 @@ static struct dma_buf *mock_dmabuf(int npages)
 
 	mock = kmalloc(sizeof(*mock) + npages * sizeof(struct page *),
 		       GFP_KERNEL);
+	{
+		typeof((*mock)) __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
+	{
+		struct page *__uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!mock)
 		return ERR_PTR(-ENOMEM);
 

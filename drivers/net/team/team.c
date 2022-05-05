@@ -28,6 +28,11 @@
 #include <generated/utsrelease.h>
 #include <linux/if_team.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DRV_NAME "team"
 
 
@@ -1184,6 +1189,10 @@ static int team_port_add(struct team *team, struct net_device *port_dev,
 
 	port = kzalloc(sizeof(struct team_port) + team->mode->port_priv_size,
 		       GFP_KERNEL);
+	{
+		struct team_port __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!port)
 		return -ENOMEM;
 

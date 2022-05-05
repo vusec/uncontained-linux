@@ -13,6 +13,16 @@
 #include <linux/platform_device.h>
 #include <linux/spi/spi.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define SPI_ENGINE_VERSION_MAJOR(x)	((x >> 16) & 0xff)
 #define SPI_ENGINE_VERSION_MINOR(x)	((x >> 8) & 0xff)
 #define SPI_ENGINE_VERSION_PATCH(x)	(x & 0xff)
@@ -426,6 +436,14 @@ static int spi_engine_transfer_one_message(struct spi_master *master,
 
 	size = sizeof(*p->instructions) * (p_dry.length + 1);
 	p = kzalloc(sizeof(*p) + size, GFP_KERNEL);
+	{
+		typeof((*p->instructions)) __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
+	{
+		typeof((*p)) __uncontained_tmp95;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (!p)
 		return -ENOMEM;
 	spi_engine_compile_message(spi_engine, msg, false, p);

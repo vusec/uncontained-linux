@@ -23,6 +23,11 @@
 #include <net/net_namespace.h>
 #include <net/sock.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define NFT_MODULE_AUTOLOAD_LIMIT (MODULE_NAME_LEN - sizeof("nft-expr-255-"))
 
 unsigned int nf_tables_net_id __read_mostly;
@@ -150,6 +155,10 @@ static struct nft_trans *nft_trans_alloc_gfp(const struct nft_ctx *ctx,
 	struct nft_trans *trans;
 
 	trans = kzalloc(sizeof(struct nft_trans) + size, gfp);
+	{
+		struct nft_trans __uncontained_tmp124;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (trans == NULL)
 		return NULL;
 
@@ -3406,6 +3415,10 @@ static int nf_tables_newrule(struct sk_buff *skb, const struct nfnl_info *info,
 
 	err = -ENOMEM;
 	rule = kzalloc(sizeof(*rule) + size + usize, GFP_KERNEL);
+	{
+		typeof((*rule)) __uncontained_tmp125;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (rule == NULL)
 		goto err_release_expr;
 
@@ -6478,6 +6491,10 @@ static struct nft_object *nft_obj_init(const struct nft_ctx *ctx,
 
 	err = -ENOMEM;
 	obj = kzalloc(sizeof(*obj) + ops->size, GFP_KERNEL);
+	{
+		typeof((*obj)) __uncontained_tmp126;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp126;
+	}
 	if (!obj)
 		goto err2;
 

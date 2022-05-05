@@ -15,6 +15,11 @@
 #include <linux/rpmsg.h>
 #include <linux/of.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 enum {
 	PR_TYPE_APR = 0,
 	PR_TYPE_GPR,
@@ -172,6 +177,10 @@ static int apr_callback(struct rpmsg_device *rpdev, void *buf,
 	}
 
 	abuf = kzalloc(sizeof(*abuf) + len, GFP_ATOMIC);
+	{
+		typeof((*abuf)) __uncontained_tmp110;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (!abuf)
 		return -ENOMEM;
 

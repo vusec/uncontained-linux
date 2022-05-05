@@ -23,6 +23,11 @@
 #include <linux/uuid.h>
 #include <linux/pagemap.h>
 #include <linux/xattr.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "cifsglob.h"
 #include "cifsacl.h"
 #include "cifsproto.h"
@@ -2405,6 +2410,14 @@ create_sd_buf(umode_t mode, bool set_owner, unsigned int *len)
 	}
 
 	buf = kzalloc(*len, GFP_KERNEL);
+	{
+		struct cifs_ace __uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
+	{
+		struct crt_sd_ctxt __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (buf == NULL)
 		return buf;
 

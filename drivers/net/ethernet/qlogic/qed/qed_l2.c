@@ -27,6 +27,11 @@
 #include "qed_dcbx.h"
 #include "qed_dev_api.h"
 #include <linux/qed/qed_eth_if.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "qed_hsi.h"
 #include "qed_iro_hsi.h"
 #include "qed_hw.h"
@@ -2435,6 +2440,10 @@ static int qed_update_vport(struct qed_dev *cdev,
 		return -ENODEV;
 
 	rss = vzalloc(array_size(sizeof(*rss), cdev->num_hwfns));
+	{
+		typeof((*rss)) __uncontained_tmp59;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!rss)
 		return -ENOMEM;
 

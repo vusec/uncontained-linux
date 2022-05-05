@@ -48,6 +48,11 @@
 #include <rdma/ib_verbs.h>
 #include <rdma/ib_umem.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "roce_hsi.h"
 #include "qplib_res.h"
 #include "qplib_sp.h"
@@ -119,10 +124,18 @@ static int __alloc_pbl(struct bnxt_qplib_res *res,
 		pages = sginfo->npages;
 	/* page ptr arrays */
 	pbl->pg_arr = vmalloc(pages * sizeof(void *));
+	{
+		void *__uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!pbl->pg_arr)
 		return -ENOMEM;
 
 	pbl->pg_map_arr = vmalloc(pages * sizeof(dma_addr_t));
+	{
+		dma_addr_t __uncontained_tmp18;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!pbl->pg_map_arr) {
 		vfree(pbl->pg_arr);
 		pbl->pg_arr = NULL;

@@ -18,6 +18,11 @@
 #include <linux/ptp_pch.h>
 #include <linux/gpio.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define PCH_GBE_MAR_ENTRIES		16
 #define PCH_GBE_SHORT_PKT		64
 #define DSC_INIT16			0xC000
@@ -1708,6 +1713,10 @@ int pch_gbe_setup_tx_resources(struct pch_gbe_adapter *adapter,
 
 	size = (int)sizeof(struct pch_gbe_buffer) * tx_ring->count;
 	tx_ring->buffer_info = vzalloc(size);
+	{
+		struct pch_gbe_buffer __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!tx_ring->buffer_info)
 		return -ENOMEM;
 
@@ -1752,6 +1761,10 @@ int pch_gbe_setup_rx_resources(struct pch_gbe_adapter *adapter,
 
 	size = (int)sizeof(struct pch_gbe_buffer) * rx_ring->count;
 	rx_ring->buffer_info = vzalloc(size);
+	{
+		struct pch_gbe_buffer __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!rx_ring->buffer_info)
 		return -ENOMEM;
 

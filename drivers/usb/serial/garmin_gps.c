@@ -24,6 +24,11 @@
 #include <linux/usb.h>
 #include <linux/usb/serial.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* the mode to be set when the port ist opened */
 static int initial_mode = 1;
 
@@ -269,6 +274,10 @@ static int pkt_add(struct garmin_data *garmin_data_p,
 	if (data_length) {
 		pkt = kmalloc(sizeof(struct garmin_packet)+data_length,
 								GFP_ATOMIC);
+		{
+			struct garmin_packet __uncontained_tmp128;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp128;
+		}
 		if (!pkt)
 			return 0;
 

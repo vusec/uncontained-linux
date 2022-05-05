@@ -22,6 +22,11 @@
 #include <linux/netfilter/nfnetlink.h>
 #include <linux/netfilter/ipset/ip_set.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static LIST_HEAD(ip_set_type_list);		/* all registered set types */
 static DEFINE_MUTEX(ip_set_type_mutex);		/* protects ip_set_type_list */
 static DEFINE_RWLOCK(ip_set_ref_lock);		/* protects the set refs */
@@ -351,6 +356,10 @@ ip_set_init_comment(struct ip_set *set, struct ip_set_comment *comment,
 	if (unlikely(len > IPSET_MAX_COMMENT_SIZE))
 		len = IPSET_MAX_COMMENT_SIZE;
 	c = kmalloc(sizeof(*c) + len + 1, GFP_ATOMIC);
+	{
+		typeof((*c)) __uncontained_tmp123;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (unlikely(!c))
 		return;
 	strlcpy(c->str, ext->comment, len + 1);

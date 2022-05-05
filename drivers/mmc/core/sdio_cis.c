@@ -17,6 +17,11 @@
 #include <linux/mmc/sdio.h>
 #include <linux/mmc/sdio_func.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "sdio_cis.h"
 #include "sdio_ops.h"
 
@@ -53,6 +58,10 @@ static int cistpl_vers_1(struct mmc_card *card, struct sdio_func *func,
 	size = i;
 
 	buffer = kzalloc(sizeof(char*) * nr_strings + size, GFP_KERNEL);
+	{
+		char *__uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!buffer)
 		return -ENOMEM;
 
@@ -300,6 +309,10 @@ static int sdio_read_cis(struct mmc_card *card, struct sdio_func *func)
 			break;
 
 		this = kmalloc(sizeof(*this) + tpl_link, GFP_KERNEL);
+		{
+			typeof((*this)) __uncontained_tmp55;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+		}
 		if (!this)
 			return -ENOMEM;
 

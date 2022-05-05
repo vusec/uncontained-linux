@@ -14,6 +14,11 @@
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "dm.h"
 
 #define	DM_MSG_PREFIX	"region hash"
@@ -204,6 +209,10 @@ struct dm_region_hash *dm_region_hash_create(
 	rh->prime = RH_HASH_MULT;
 
 	rh->buckets = vmalloc(array_size(nr_buckets, sizeof(*rh->buckets)));
+	{
+		typeof((*rh->buckets)) __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!rh->buckets) {
 		DMERR("unable to allocate region hash bucket memory");
 		kfree(rh);

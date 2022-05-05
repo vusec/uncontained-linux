@@ -25,6 +25,11 @@
 #include <target/target_core_fabric.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "sbp_target.h"
 
 /* FireWire address region for management and command block address handlers */
@@ -1147,6 +1152,10 @@ static int sbp_fetch_page_table(struct sbp_target_request *req)
 		sizeof(struct sbp_page_table_entry);
 
 	pg_tbl = kmalloc(pg_tbl_sz, GFP_KERNEL);
+	{
+		struct sbp_page_table_entry __uncontained_tmp90;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (!pg_tbl)
 		return -ENOMEM;
 

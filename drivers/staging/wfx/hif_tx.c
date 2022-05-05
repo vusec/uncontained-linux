@@ -8,6 +8,11 @@
  */
 #include <linux/etherdevice.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hif_tx.h"
 #include "wfx.h"
 #include "bh.h"
@@ -40,6 +45,10 @@ static void wfx_fill_header(struct hif_msg *hif, int if_id,
 static void *wfx_alloc_hif(size_t body_len, struct hif_msg **hif)
 {
 	*hif = kzalloc(sizeof(struct hif_msg) + body_len, GFP_KERNEL);
+	{
+		struct hif_msg __uncontained_tmp103;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (*hif)
 		return (*hif)->body;
 	else

@@ -39,6 +39,11 @@
 
 #include <drm/drm_print.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "vmwgfx_hashtab.h"
 
 int vmwgfx_ht_create(struct vmwgfx_open_hash *ht, unsigned int order)
@@ -49,8 +54,13 @@ int vmwgfx_ht_create(struct vmwgfx_open_hash *ht, unsigned int order)
 	ht->table = NULL;
 	if (size <= PAGE_SIZE / sizeof(*ht->table))
 		ht->table = kcalloc(size, sizeof(*ht->table), GFP_KERNEL);
-	else
+	else {
 		ht->table = vzalloc(array_size(size, sizeof(*ht->table)));
+		{
+			typeof((*ht->table)) __uncontained_tmp41;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+		}
+	}
 	if (!ht->table) {
 		DRM_ERROR("Out of memory for hash table\n");
 		return -ENOMEM;

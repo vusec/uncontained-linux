@@ -9,6 +9,11 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/fs.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ext2.h"
 #include "xattr.h"
 #include "acl.h"
@@ -98,6 +103,14 @@ ext2_acl_to_disk(const struct posix_acl *acl, size_t *size)
 	*size = ext2_acl_size(acl->a_count);
 	ext_acl = kmalloc(sizeof(ext2_acl_header) + acl->a_count *
 			sizeof(ext2_acl_entry), GFP_KERNEL);
+	{
+		ext2_acl_entry __uncontained_tmp112;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp112;
+	}
+	{
+		ext2_acl_header __uncontained_tmp113;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!ext_acl)
 		return ERR_PTR(-ENOMEM);
 	ext_acl->a_version = cpu_to_le32(EXT2_ACL_VERSION);

@@ -4,6 +4,16 @@
 #include <linux/kernel.h>
 #include <linux/bitops.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "spectrum.h"
 
 #define MLXSW_SP1_KVDL_SINGLE_BASE 0
@@ -227,6 +237,14 @@ mlxsw_sp1_kvdl_part_init(struct mlxsw_sp *mlxsw_sp,
 	nr_entries = div_u64(resource_size, info->alloc_size);
 	usage_size = BITS_TO_LONGS(nr_entries) * sizeof(unsigned long);
 	part = kzalloc(sizeof(*part) + usage_size, GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
+	{
+		typeof((*part)) __uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!part)
 		return ERR_PTR(-ENOMEM);
 

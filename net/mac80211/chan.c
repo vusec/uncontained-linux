@@ -8,6 +8,11 @@
 #include <linux/export.h>
 #include <linux/rtnetlink.h>
 #include <net/cfg80211.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ieee80211_i.h"
 #include "driver-ops.h"
 #include "rate.h"
@@ -553,6 +558,10 @@ ieee80211_alloc_chanctx(struct ieee80211_local *local,
 	lockdep_assert_held(&local->chanctx_mtx);
 
 	ctx = kzalloc(sizeof(*ctx) + local->hw.chanctx_data_size, GFP_KERNEL);
+	{
+		typeof((*ctx)) __uncontained_tmp169;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp169;
+	}
 	if (!ctx)
 		return NULL;
 

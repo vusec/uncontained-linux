@@ -34,6 +34,11 @@
 #include <linux/string.h>
 #include <linux/errno.h>
 #include <linux/audit.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "security.h"
 
 #include "policydb.h"
@@ -1208,6 +1213,10 @@ static int read_cons_helper(struct policydb *p,
 	lc = NULL;
 	for (i = 0; i < ncons; i++) {
 		c = kzalloc(sizeof(*c), GFP_KERNEL);
+		{
+			typeof((*c)) __uncontained_tmp105;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp105;
+		}
 		if (!c)
 			return -ENOMEM;
 
@@ -1225,6 +1234,10 @@ static int read_cons_helper(struct policydb *p,
 		depth = -1;
 		for (j = 0; j < nexpr; j++) {
 			e = kzalloc(sizeof(*e), GFP_KERNEL);
+			{
+				typeof((*e)) __uncontained_tmp106;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp106;
+			}
 			if (!e)
 				return -ENOMEM;
 
@@ -1269,6 +1282,10 @@ static int read_cons_helper(struct policydb *p,
 				    POLICYDB_VERSION_CONSTRAINT_NAMES) {
 					e->type_names = kzalloc(sizeof
 						(*e->type_names), GFP_KERNEL);
+					{
+						typeof((*e)) __uncontained_tmp107;
+						__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp107;
+					}
 					if (!e->type_names)
 						return -ENOMEM;
 					type_set_init(e->type_names);

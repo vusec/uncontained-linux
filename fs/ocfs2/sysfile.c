@@ -13,6 +13,11 @@
 
 #include <cluster/masklog.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ocfs2.h"
 
 #include "alloc.h"
@@ -58,6 +63,10 @@ static struct inode **get_local_system_inode(struct ocfs2_super *osb,
 					    NUM_LOCAL_SYSTEM_INODES,
 					    osb->max_slots),
 				GFP_NOFS);
+		{
+			struct inode *__uncontained_tmp121;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp121;
+		}
 		if (!local_system_inodes) {
 			mlog_errno(-ENOMEM);
 			/*

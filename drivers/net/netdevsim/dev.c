@@ -33,6 +33,11 @@
 #include <uapi/linux/ip.h>
 #include <uapi/linux/udp.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "netdevsim.h"
 
 static unsigned int
@@ -194,6 +199,10 @@ static ssize_t nsim_dev_trap_fa_cookie_write(struct file *file,
 
 	fa_cookie = kmalloc(sizeof(*fa_cookie) + cookie_len,
 			    GFP_KERNEL | __GFP_NOWARN);
+	{
+		typeof((*fa_cookie)) __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!fa_cookie) {
 		ret = -ENOMEM;
 		goto free_buf;

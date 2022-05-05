@@ -11,6 +11,11 @@
 #include <linux/vmalloc.h>
 #include <linux/blktrace_api.h>
 #include <linux/raid/detect.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "check.h"
 
 static int (*check_part[])(struct parsed_partitions *) = {
@@ -104,6 +109,10 @@ static struct parsed_partitions *allocate_partitions(struct gendisk *hd)
 		return NULL;
 
 	state->parts = vzalloc(array_size(nr, sizeof(state->parts[0])));
+	{
+		typeof((state->parts[0])) __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!state->parts) {
 		kfree(state);
 		return NULL;

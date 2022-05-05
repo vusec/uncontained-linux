@@ -21,6 +21,11 @@
 #include <asm/page.h>
 #include <asm/mshyperv.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hyperv_vmbus.h"
 
 /*
@@ -236,6 +241,14 @@ static int send_modifychannel_with_ack(struct vmbus_channel *channel, u32 target
 	info = kzalloc(sizeof(struct vmbus_channel_msginfo) +
 				sizeof(struct vmbus_channel_modifychannel),
 		       GFP_KERNEL);
+	{
+		struct vmbus_channel_modifychannel __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
+	{
+		struct vmbus_channel_msginfo __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!info)
 		return -ENOMEM;
 
@@ -708,6 +721,14 @@ static int __vmbus_open(struct vmbus_channel *newchannel,
 	open_info = kzalloc(sizeof(*open_info) +
 			   sizeof(struct vmbus_channel_open_channel),
 			   GFP_KERNEL);
+	{
+		typeof((*open_info)) __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
+	{
+		struct vmbus_channel_open_channel __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!open_info) {
 		err = -ENOMEM;
 		goto error_free_gpadl;
@@ -834,6 +855,14 @@ int vmbus_teardown_gpadl(struct vmbus_channel *channel, struct vmbus_gpadl *gpad
 
 	info = kzalloc(sizeof(*info) +
 		       sizeof(struct vmbus_channel_gpadl_teardown), GFP_KERNEL);
+	{
+		typeof((*info)) __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
+	{
+		struct vmbus_channel_gpadl_teardown __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!info)
 		return -ENOMEM;
 

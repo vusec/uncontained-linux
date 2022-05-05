@@ -5,6 +5,11 @@
 #include <linux/rhashtable.h>
 #include <net/ipv6.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "spectrum_mr.h"
 #include "spectrum_router.h"
 
@@ -913,6 +918,10 @@ struct mlxsw_sp_mr_table *mlxsw_sp_mr_table_create(struct mlxsw_sp *mlxsw_sp,
 
 	mr_table = kzalloc(sizeof(*mr_table) + mr->mr_ops->route_priv_size,
 			   GFP_KERNEL);
+	{
+		typeof((*mr_table)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!mr_table)
 		return ERR_PTR(-ENOMEM);
 
@@ -1042,6 +1051,10 @@ int mlxsw_sp_mr_init(struct mlxsw_sp *mlxsw_sp,
 	int err;
 
 	mr = kzalloc(sizeof(*mr) + mr_ops->priv_size, GFP_KERNEL);
+	{
+		typeof((*mr)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!mr)
 		return -ENOMEM;
 	mr->mr_ops = mr_ops;

@@ -27,6 +27,11 @@
 #include <linux/pm_runtime.h>
 #include <linux/atomic.h>
 #include <linux/of_device.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "lis3lv02d.h"
 
 #define DRIVER_NAME     "lis3lv02d"
@@ -1177,6 +1182,14 @@ int lis3lv02d_init_device(struct lis3lv02d *lis3)
 
 	lis3->reg_cache = kzalloc(max(sizeof(lis3_wai8_regs),
 				     sizeof(lis3_wai12_regs)), GFP_KERNEL);
+	{
+		typeof((lis3_wai12_regs)) __uncontained_tmp59;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+	}
+	{
+		typeof((lis3_wai8_regs)) __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 
 	if (lis3->reg_cache == NULL)
 		return -ENOMEM;

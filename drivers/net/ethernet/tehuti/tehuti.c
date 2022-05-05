@@ -62,6 +62,11 @@
 
 #include "tehuti.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static const struct pci_device_id bdx_pci_tbl[] = {
 	{ PCI_VDEVICE(TEHUTI, 0x3009), },
 	{ PCI_VDEVICE(TEHUTI, 0x3010), },
@@ -927,6 +932,18 @@ static struct rxdb *bdx_rxdb_create(int nelem)
 	db = vmalloc(sizeof(struct rxdb)
 		     + (nelem * sizeof(int))
 		     + (nelem * sizeof(struct rx_map)));
+	{
+		int __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
+	{
+		struct rx_map __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
+	{
+		struct rxdb __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (likely(db != NULL)) {
 		db->stack = (int *)(db + 1);
 		db->elems = (void *)(db->stack + nelem);

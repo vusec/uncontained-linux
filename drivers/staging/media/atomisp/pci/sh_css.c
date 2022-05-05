@@ -18,6 +18,11 @@
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hmm.h"
 
 #include "atomisp_internal.h"
@@ -6278,6 +6283,10 @@ static int ia_css_pipe_create_cas_scaler_desc_single_output(
 	descr->in_info = kmalloc(descr->num_stage *
 				 sizeof(struct ia_css_frame_info),
 				 GFP_KERNEL);
+	{
+		struct ia_css_frame_info __uncontained_tmp90;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (!descr->in_info) {
 		err = -ENOMEM;
 		goto ERR;
@@ -6285,6 +6294,10 @@ static int ia_css_pipe_create_cas_scaler_desc_single_output(
 	descr->internal_out_info = kmalloc(descr->num_stage *
 					   sizeof(struct ia_css_frame_info),
 					   GFP_KERNEL);
+	{
+		struct ia_css_frame_info __uncontained_tmp91;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (!descr->internal_out_info) {
 		err = -ENOMEM;
 		goto ERR;
@@ -6292,6 +6305,10 @@ static int ia_css_pipe_create_cas_scaler_desc_single_output(
 	descr->out_info = kmalloc(descr->num_stage *
 				  sizeof(struct ia_css_frame_info),
 				  GFP_KERNEL);
+	{
+		struct ia_css_frame_info __uncontained_tmp92;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!descr->out_info) {
 		err = -ENOMEM;
 		goto ERR;
@@ -6299,12 +6316,20 @@ static int ia_css_pipe_create_cas_scaler_desc_single_output(
 	descr->vf_info = kmalloc(descr->num_stage *
 				 sizeof(struct ia_css_frame_info),
 				 GFP_KERNEL);
+	{
+		struct ia_css_frame_info __uncontained_tmp93;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!descr->vf_info) {
 		err = -ENOMEM;
 		goto ERR;
 	}
 	descr->is_output_stage = kmalloc(descr->num_stage * sizeof(bool),
 					 GFP_KERNEL);
+	{
+		bool __uncontained_tmp94;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!descr->is_output_stage) {
 		err = -ENOMEM;
 		goto ERR;
@@ -6435,6 +6460,10 @@ ia_css_pipe_create_cas_scaler_desc(struct ia_css_pipe *pipe,
 	descr->internal_out_info = kmalloc(descr->num_stage *
 					   sizeof(struct ia_css_frame_info),
 					   GFP_KERNEL);
+	{
+		struct ia_css_frame_info __uncontained_tmp95;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (!descr->internal_out_info) {
 		err = -ENOMEM;
 		goto ERR;
@@ -6442,6 +6471,10 @@ ia_css_pipe_create_cas_scaler_desc(struct ia_css_pipe *pipe,
 	descr->out_info = kmalloc(descr->num_stage *
 				  sizeof(struct ia_css_frame_info),
 				  GFP_KERNEL);
+	{
+		struct ia_css_frame_info __uncontained_tmp96;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!descr->out_info) {
 		err = -ENOMEM;
 		goto ERR;
@@ -6449,12 +6482,20 @@ ia_css_pipe_create_cas_scaler_desc(struct ia_css_pipe *pipe,
 	descr->vf_info = kmalloc(descr->num_stage *
 				 sizeof(struct ia_css_frame_info),
 				 GFP_KERNEL);
+	{
+		struct ia_css_frame_info __uncontained_tmp97;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!descr->vf_info) {
 		err = -ENOMEM;
 		goto ERR;
 	}
 	descr->is_output_stage = kmalloc(descr->num_stage * sizeof(bool),
 					 GFP_KERNEL);
+	{
+		bool __uncontained_tmp98;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp98;
+	}
 	if (!descr->is_output_stage) {
 		err = -ENOMEM;
 		goto ERR;

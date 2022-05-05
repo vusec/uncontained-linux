@@ -30,6 +30,11 @@
 #include <linux/vmalloc.h>
 
 #include <drm/radeon_drm.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #ifdef CONFIG_X86
 #include <asm/set_memory.h>
 #endif
@@ -351,12 +356,20 @@ int radeon_gart_init(struct radeon_device *rdev)
 	/* Allocate pages table */
 	rdev->gart.pages = vzalloc(array_size(sizeof(void *),
 				   rdev->gart.num_cpu_pages));
+	{
+		void *__uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (rdev->gart.pages == NULL) {
 		radeon_gart_fini(rdev);
 		return -ENOMEM;
 	}
 	rdev->gart.pages_entry = vmalloc(array_size(sizeof(uint64_t),
 						    rdev->gart.num_gpu_pages));
+	{
+		uint64_t __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (rdev->gart.pages_entry == NULL) {
 		radeon_gart_fini(rdev);
 		return -ENOMEM;

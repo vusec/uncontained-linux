@@ -14,6 +14,11 @@
 #include <asm/mmu_64.h>
 #include <asm/pgtable_64.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* Each page of storage for ADI tags can accommodate tags for 128
  * pages. When ADI enabled pages are being swapped out, it would be
  * prudent to allocate at least enough tag storage space to accommodate
@@ -203,6 +208,10 @@ tag_storage_desc_t *alloc_tag_store(struct mm_struct *mm,
 	} else {
 		size = sizeof(tag_storage_desc_t)*max_desc;
 		mm->context.tag_store = kzalloc(size, GFP_NOWAIT|__GFP_NOWARN);
+		{
+			tag_storage_desc_t __uncontained_tmp5;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+		}
 		if (mm->context.tag_store == NULL) {
 			tag_desc = NULL;
 			goto out;

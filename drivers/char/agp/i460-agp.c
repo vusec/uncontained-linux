@@ -15,6 +15,11 @@
 #include <linux/agp_backend.h>
 #include <linux/log2.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "agp.h"
 
 #define INTEL_I460_BAPBASE		0x98
@@ -233,6 +238,10 @@ static int i460_configure (void)
 	if (I460_IO_PAGE_SHIFT > PAGE_SHIFT) {
 		size = current_size->num_entries * sizeof(i460.lp_desc[0]);
 		i460.lp_desc = kzalloc(size, GFP_KERNEL);
+		{
+			typeof((i460.lp_desc[0])) __uncontained_tmp5;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+		}
 		if (!i460.lp_desc)
 			return -ENOMEM;
 	}

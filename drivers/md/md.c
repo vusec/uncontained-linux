@@ -66,6 +66,11 @@
 #include <linux/part_stat.h>
 
 #include <trace/events/block.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "md.h"
 #include "md-bitmap.h"
 #include "md-cluster.h"
@@ -156,6 +161,10 @@ static int rdev_init_serial(struct md_rdev *rdev)
 
 	serial = kvmalloc(sizeof(struct serial_in_rdev) * serial_nums,
 			  GFP_KERNEL);
+	{
+		struct serial_in_rdev __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!serial)
 		return -ENOMEM;
 

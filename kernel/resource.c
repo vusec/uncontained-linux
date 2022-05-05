@@ -29,6 +29,11 @@
 #include <uapi/linux/magic.h>
 #include <asm/io.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 
 struct resource ioport_resource = {
 	.name	= "PCI IO",
@@ -1780,6 +1785,10 @@ struct resource_entry *resource_list_create_entry(struct resource *res,
 	struct resource_entry *entry;
 
 	entry = kzalloc(sizeof(*entry) + extra_size, GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp125;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (entry) {
 		INIT_LIST_HEAD(&entry->node);
 		entry->res = res ? res : &entry->__res;

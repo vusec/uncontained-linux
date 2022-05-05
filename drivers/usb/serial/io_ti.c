@@ -32,6 +32,11 @@
 #include <linux/usb.h>
 #include <linux/usb/serial.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "io_16654.h"
 #include "io_usbvend.h"
 #include "io_ti.h"
@@ -820,6 +825,10 @@ static int build_i2c_fw_hdr(u8 *header, const struct firmware *fw)
 			sizeof(struct ti_i2c_firmware_rec));
 
 	buffer = kmalloc(buffer_size, GFP_KERNEL);
+	{
+		struct ti_i2c_firmware_rec __uncontained_tmp70;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!buffer)
 		return -ENOMEM;
 
@@ -1454,6 +1463,10 @@ static int do_boot_mode(struct edgeport_serial *serial,
 		buffer_size = (((1024 * 16) - 512) +
 					sizeof(struct ti_i2c_image_header));
 		buffer = kmalloc(buffer_size, GFP_KERNEL);
+		{
+			struct ti_i2c_image_header __uncontained_tmp71;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp71;
+		}
 		if (!buffer)
 			return -ENOMEM;
 

@@ -12,6 +12,11 @@
 #include <linux/hid.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hid-ids.h"
 
 #if IS_BUILTIN(CONFIG_LEDS_CLASS) || \
@@ -267,6 +272,10 @@ static int steelseries_srws1_probe(struct hid_device *hdev,
 
 	/* 'ALL', for setting all LEDs simultaneously */
 	led = kzalloc(sizeof(struct led_classdev)+name_sz, GFP_KERNEL);
+	{
+		struct led_classdev __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!led) {
 		hid_err(hdev, "can't allocate memory for LED ALL\n");
 		goto err_led;
@@ -288,6 +297,10 @@ static int steelseries_srws1_probe(struct hid_device *hdev,
 	/* Each individual LED */
 	for (i = 0; i < SRWS1_NUMBER_LEDS; i++) {
 		led = kzalloc(sizeof(struct led_classdev)+name_sz, GFP_KERNEL);
+		{
+			struct led_classdev __uncontained_tmp41;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+		}
 		if (!led) {
 			hid_err(hdev, "can't allocate memory for LED %d\n", i);
 			goto err_led;

@@ -72,6 +72,16 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/netlink.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "af_netlink.h"
 
 struct listeners {
@@ -1192,6 +1202,10 @@ static struct sk_buff *netlink_alloc_large_skb(unsigned int size,
 	       SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
 
 	data = vmalloc(size);
+	{
+		struct skb_shared_info __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (data == NULL)
 		return NULL;
 
@@ -2053,6 +2067,10 @@ __netlink_kernel_create(struct net *net, int unit, struct module *module,
 		groups = cfg->groups;
 
 	listeners = kzalloc(sizeof(*listeners) + NLGRPSZ(groups), GFP_KERNEL);
+	{
+		typeof((*listeners)) __uncontained_tmp137;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp137;
+	}
 	if (!listeners)
 		goto out_sock_release;
 
@@ -2118,6 +2136,10 @@ int __netlink_change_ngroups(struct sock *sk, unsigned int groups)
 
 	if (NLGRPSZ(tbl->groups) < NLGRPSZ(groups)) {
 		new = kzalloc(sizeof(*new) + NLGRPSZ(groups), GFP_ATOMIC);
+		{
+			typeof((*new)) __uncontained_tmp138;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp138;
+		}
 		if (!new)
 			return -ENOMEM;
 		old = nl_deref_protected(tbl->listeners);
@@ -2793,6 +2815,10 @@ static void __init netlink_add_usersock_entry(void)
 	int groups = 32;
 
 	listeners = kzalloc(sizeof(*listeners) + NLGRPSZ(groups), GFP_KERNEL);
+	{
+		typeof((*listeners)) __uncontained_tmp139;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!listeners)
 		panic("netlink_add_usersock_entry: Cannot allocate listeners\n");
 

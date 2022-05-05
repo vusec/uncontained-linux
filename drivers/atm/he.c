@@ -85,6 +85,11 @@
 #include "suni.h"
 #include <linux/atm_he.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define hprintk(fmt,args...)	printk(KERN_ERR DEV_LABEL "%d: " fmt, he_dev->number , ##args)
 
 #ifdef HE_DEBUG
@@ -658,6 +663,10 @@ static int he_init_cs_block_rcm(struct he_dev *he_dev)
 	int mult, buf, buf_limit = 4;
 
 	rategrid = kmalloc( sizeof(unsigned) * 16 * 16, GFP_KERNEL);
+	{
+		unsigned __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!rategrid)
 		return -ENOMEM;
 

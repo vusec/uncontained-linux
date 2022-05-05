@@ -29,6 +29,11 @@
 #include <pcmcia/cisreg.h>
 #include <pcmcia/cistpl.h>
 #include <pcmcia/ds.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "cs_internal.h"
 
 static const u_char mantissa[] = {
@@ -318,6 +323,10 @@ static int read_cis_cache(struct pcmcia_socket *s, int attr, u_int addr,
 	if (ret == 0) {
 		/* Copy data into the cache */
 		cis = kmalloc(sizeof(struct cis_cache_entry) + len, GFP_KERNEL);
+		{
+			struct cis_cache_entry __uncontained_tmp99;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp99;
+		}
 		if (cis) {
 			cis->addr = addr;
 			cis->len = len;

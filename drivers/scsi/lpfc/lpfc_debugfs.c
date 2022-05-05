@@ -39,6 +39,11 @@
 #include <scsi/scsi_transport_fc.h>
 #include <scsi/fc/fc_fs.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "lpfc_hw4.h"
 #include "lpfc_hw.h"
 #include "lpfc_sli.h"
@@ -3006,6 +3011,10 @@ lpfc_debugfs_nvmeio_trc_write(struct file *file, const char __user *buf,
 	/* Allocate new trace buffer and initialize */
 	phba->nvmeio_trc = kzalloc((sizeof(struct lpfc_debugfs_nvmeio_trc) *
 				    sz), GFP_KERNEL);
+	{
+		struct lpfc_debugfs_nvmeio_trc __uncontained_tmp105;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!phba->nvmeio_trc) {
 		lpfc_printf_log(phba, KERN_ERR, LOG_INIT,
 				"0573 Cannot create debugfs "
@@ -6276,6 +6285,10 @@ lpfc_debugfs_initialize(struct lpfc_vport *vport)
 				(sizeof(struct lpfc_debugfs_trc) *
 				lpfc_debugfs_max_slow_ring_trc),
 				GFP_KERNEL);
+			{
+				struct lpfc_debugfs_trc __uncontained_tmp104;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp104;
+			}
 			if (!phba->slow_ring_trc) {
 				lpfc_printf_vlog(vport, KERN_ERR, LOG_INIT,
 						 "0416 Cannot create debugfs "
@@ -6317,6 +6330,10 @@ lpfc_debugfs_initialize(struct lpfc_vport *vport)
 			phba->nvmeio_trc = kzalloc(
 				(sizeof(struct lpfc_debugfs_nvmeio_trc) *
 				phba->nvmeio_trc_size), GFP_KERNEL);
+			{
+				struct lpfc_debugfs_nvmeio_trc __uncontained_tmp106;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp106;
+			}
 
 			if (!phba->nvmeio_trc) {
 				lpfc_printf_log(phba, KERN_ERR, LOG_INIT,
@@ -6362,6 +6379,10 @@ nvmeio_off:
 	vport->disc_trc = kzalloc(
 		(sizeof(struct lpfc_debugfs_trc) * lpfc_debugfs_max_disc_trc),
 		GFP_KERNEL);
+	{
+		struct lpfc_debugfs_trc __uncontained_tmp107;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp107;
+	}
 
 	if (!vport->disc_trc) {
 		lpfc_printf_vlog(vport, KERN_ERR, LOG_INIT,

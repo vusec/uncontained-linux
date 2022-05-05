@@ -14,7 +14,12 @@
  */
 
 #include <math_support.h>
-#include <gdc_device.h>	/* HR_GDC_N */
+#include <gdc_device.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/	/* HR_GDC_N */
 
 #include "hmm.h"
 
@@ -498,6 +503,10 @@ ia_css_binary_init_infos(void) {
 
 	all_binaries = kvmalloc(num_of_isp_binaries * sizeof(*all_binaries),
 				GFP_KERNEL);
+	{
+		typeof((*all_binaries)) __uncontained_tmp118;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp118;
+	}
 	if (!all_binaries)
 		return -ENOMEM;
 

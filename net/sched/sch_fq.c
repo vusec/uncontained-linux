@@ -50,6 +50,11 @@
 #include <net/tcp_states.h>
 #include <net/tcp.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct fq_skb_cb {
 	u64	        time_to_send;
 };
@@ -757,6 +762,10 @@ static int fq_resize(struct Qdisc *sch, u32 log)
 	/* If XPS was setup, we can allocate memory on right NUMA node */
 	array = kvmalloc_node(sizeof(struct rb_root) << log, GFP_KERNEL | __GFP_RETRY_MAYFAIL,
 			      netdev_queue_numa_node_read(sch->dev_queue));
+	{
+		struct rb_root __uncontained_tmp180;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp180;
+	}
 	if (!array)
 		return -ENOMEM;
 

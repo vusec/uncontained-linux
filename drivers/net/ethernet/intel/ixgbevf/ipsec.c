@@ -5,6 +5,11 @@
 #include <net/xfrm.h>
 #include <crypto/aead.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define IXGBE_IPSEC_KEY_BITS  160
 static const char aes_gcm_name[] = "rfc4106(gcm(aes))";
 
@@ -636,11 +641,19 @@ void ixgbevf_init_ipsec_offload(struct ixgbevf_adapter *adapter)
 
 	size = sizeof(struct rx_sa) * IXGBE_IPSEC_MAX_SA_COUNT;
 	ipsec->rx_tbl = kzalloc(size, GFP_KERNEL);
+	{
+		struct rx_sa __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!ipsec->rx_tbl)
 		goto err2;
 
 	size = sizeof(struct tx_sa) * IXGBE_IPSEC_MAX_SA_COUNT;
 	ipsec->tx_tbl = kzalloc(size, GFP_KERNEL);
+	{
+		struct tx_sa __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!ipsec->tx_tbl)
 		goto err2;
 

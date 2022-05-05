@@ -50,6 +50,11 @@
 #include <trace/events/block.h>
 #include <linux/list_sort.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "md.h"
 #include "raid5.h"
 #include "raid0.h"
@@ -2364,6 +2369,14 @@ static int grow_stripes(struct r5conf *conf, int num)
 	sc = kmem_cache_create(conf->cache_name[conf->active_name],
 			       sizeof(struct stripe_head)+(devs-1)*sizeof(struct r5dev),
 			       0, 0, NULL);
+	{
+		struct r5dev __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
+	{
+		struct stripe_head __uncontained_tmp56;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!sc)
 		return 1;
 	conf->slab_cache = sc;
@@ -2490,6 +2503,14 @@ static int resize_stripes(struct r5conf *conf, int newsize)
 	sc = kmem_cache_create(conf->cache_name[1-conf->active_name],
 			       sizeof(struct stripe_head)+(newsize-1)*sizeof(struct r5dev),
 			       0, 0, NULL);
+	{
+		struct r5dev __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
+	{
+		struct stripe_head __uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!sc)
 		return -ENOMEM;
 

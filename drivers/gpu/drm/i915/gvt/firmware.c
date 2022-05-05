@@ -31,6 +31,11 @@
 #include <linux/firmware.h>
 #include <linux/crc32.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "i915_drv.h"
 #include "gvt.h"
 #include "i915_pvinfo.h"
@@ -85,6 +90,10 @@ static int expose_firmware_sysfs(struct intel_gvt *gvt)
 
 	size = sizeof(*h) + info->mmio_size + info->cfg_space_size;
 	firmware = vzalloc(size);
+	{
+		typeof((*h)) __uncontained_tmp13;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!firmware)
 		return -ENOMEM;
 

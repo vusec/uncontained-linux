@@ -47,6 +47,11 @@
 #include <linux/string.h>
 #include <linux/export.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "csio_init.h"
 #include "csio_defs.h"
 
@@ -700,6 +705,10 @@ csio_lnodes_block_request(struct csio_hw *hw)
 
 	lnode_list = kzalloc((sizeof(struct csio_lnode *) * hw->num_lns),
 			GFP_KERNEL);
+	{
+		struct csio_lnode *__uncontained_tmp102;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (!lnode_list) {
 		csio_err(hw, "Failed to allocate lnodes_list");
 		return;
@@ -739,6 +748,10 @@ csio_lnodes_unblock_request(struct csio_hw *hw)
 
 	lnode_list = kzalloc((sizeof(struct csio_lnode *) * hw->num_lns),
 			GFP_KERNEL);
+	{
+		struct csio_lnode *__uncontained_tmp103;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!lnode_list) {
 		csio_err(hw, "Failed to allocate lnodes_list");
 		return;
@@ -777,6 +790,10 @@ csio_lnodes_block_by_port(struct csio_hw *hw, uint8_t portid)
 
 	lnode_list = kzalloc((sizeof(struct csio_lnode *) * hw->num_lns),
 			GFP_KERNEL);
+	{
+		struct csio_lnode *__uncontained_tmp104;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!lnode_list) {
 		csio_err(hw, "Failed to allocate lnodes_list");
 		return;
@@ -818,6 +835,10 @@ csio_lnodes_unblock_by_port(struct csio_hw *hw, uint8_t portid)
 
 	lnode_list = kzalloc((sizeof(struct csio_lnode *) * hw->num_lns),
 			GFP_KERNEL);
+	{
+		struct csio_lnode *__uncontained_tmp105;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!lnode_list) {
 		csio_err(hw, "Failed to allocate lnodes_list");
 		return;
@@ -857,6 +878,10 @@ csio_lnodes_exit(struct csio_hw *hw, bool npiv)
 
 	lnode_list = kzalloc((sizeof(struct csio_lnode *) * hw->num_lns),
 			GFP_KERNEL);
+	{
+		struct csio_lnode *__uncontained_tmp106;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!lnode_list) {
 		csio_err(hw, "lnodes_exit: Failed to allocate lnodes_list.\n");
 		return;

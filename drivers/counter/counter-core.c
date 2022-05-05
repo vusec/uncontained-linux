@@ -19,6 +19,11 @@
 #include <linux/types.h>
 #include <linux/wait.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "counter-chrdev.h"
 #include "counter-sysfs.h"
 
@@ -90,6 +95,10 @@ struct counter_device *counter_alloc(size_t sizeof_priv)
 	int err;
 
 	ch = kzalloc(sizeof(*ch) + sizeof_priv, GFP_KERNEL);
+	{
+		typeof((*ch)) __uncontained_tmp10;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!ch)
 		return NULL;
 

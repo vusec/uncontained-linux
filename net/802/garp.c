@@ -18,6 +18,11 @@
 #include <net/garp.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static unsigned int garp_join_time __read_mostly = 200;
 module_param(garp_join_time, uint, 0644);
 MODULE_PARM_DESC(garp_join_time, "Join time in ms (default 200ms)");
@@ -185,6 +190,10 @@ static struct garp_attr *garp_attr_create(struct garp_applicant *app,
 		}
 	}
 	attr = kmalloc(sizeof(*attr) + len, GFP_ATOMIC);
+	{
+		typeof((*attr)) __uncontained_tmp184;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp184;
+	}
 	if (!attr)
 		return attr;
 	attr->state = GARP_APPLICANT_VO;

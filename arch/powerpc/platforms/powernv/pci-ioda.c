@@ -40,6 +40,11 @@
 
 #include <misc/cxl-base.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "powernv.h"
 #include "pci.h"
 #include "../../../../drivers/pci/pci.h"
@@ -388,6 +393,10 @@ static struct pnv_ioda_pe *pnv_ioda_pick_m64_pe(struct pci_bus *bus, bool all)
 	/* Allocate bitmap */
 	size = ALIGN(phb->ioda.total_pe_num / 8, sizeof(unsigned long));
 	pe_alloc = kzalloc(size, GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!pe_alloc) {
 		pr_warn("%s: Out of memory !\n",
 			__func__);
@@ -3079,6 +3088,10 @@ static void __init pnv_pci_init_ioda_phb(struct device_node *np,
 	pemap_off = size;
 	size += phb->ioda.total_pe_num * sizeof(struct pnv_ioda_pe);
 	aux = kzalloc(size, GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!aux)
 		panic("%s: Failed to allocate %lu bytes\n", __func__, size);
 

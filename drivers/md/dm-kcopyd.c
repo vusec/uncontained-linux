@@ -26,6 +26,11 @@
 #include <linux/device-mapper.h>
 #include <linux/dm-kcopyd.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "dm-core.h"
 
 #define SPLIT_COUNT	8
@@ -389,6 +394,14 @@ int __init dm_kcopyd_init(void)
 	_job_cache = kmem_cache_create("kcopyd_job",
 				sizeof(struct kcopyd_job) * (SPLIT_COUNT + 1),
 				__alignof__(struct kcopyd_job), 0, NULL);
+	{
+		struct kcopyd_job __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
+	{
+		struct kcopyd_job __uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!_job_cache)
 		return -ENOMEM;
 

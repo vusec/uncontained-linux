@@ -27,6 +27,11 @@
 #include <linux/prefetch.h>
 #include <linux/suspend.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "e1000.h"
 
 char e1000e_driver_name[] = "e1000e";
@@ -2340,6 +2345,10 @@ int e1000e_setup_tx_resources(struct e1000_ring *tx_ring)
 
 	size = sizeof(struct e1000_buffer) * tx_ring->count;
 	tx_ring->buffer_info = vzalloc(size);
+	{
+		struct e1000_buffer __uncontained_tmp36;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!tx_ring->buffer_info)
 		goto err;
 
@@ -2375,6 +2384,10 @@ int e1000e_setup_rx_resources(struct e1000_ring *rx_ring)
 
 	size = sizeof(struct e1000_buffer) * rx_ring->count;
 	rx_ring->buffer_info = vzalloc(size);
+	{
+		struct e1000_buffer __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!rx_ring->buffer_info)
 		goto err;
 

@@ -17,6 +17,11 @@
 #include <linux/sort.h>
 #include <linux/kmemleak.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "tracing_map.h"
 #include "trace.h"
 
@@ -1076,6 +1081,10 @@ int tracing_map_sort_entries(struct tracing_map *map,
 	int i, n_entries, ret;
 
 	entries = vmalloc(array_size(sizeof(sort_entry), map->max_elts));
+	{
+		typeof((sort_entry)) __uncontained_tmp126;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp126;
+	}
 	if (!entries)
 		return -ENOMEM;
 

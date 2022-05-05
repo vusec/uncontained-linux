@@ -11,6 +11,11 @@
 #include <linux/string.h>
 #include <linux/soc/qcom/qmi.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define QMI_ENCDEC_ENCODE_TLV(type, length, p_dst) do { \
 	*p_dst++ = type; \
 	*p_dst++ = ((u8)((length) & 0xFF)); \
@@ -732,6 +737,10 @@ void *qmi_encode_message(int type, unsigned int msg_id, size_t *len,
 	}
 
 	msg = kzalloc(sizeof(*hdr) + *len, GFP_KERNEL);
+	{
+		typeof((*hdr)) __uncontained_tmp114;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!msg)
 		return ERR_PTR(-ENOMEM);
 

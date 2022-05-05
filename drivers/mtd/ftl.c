@@ -74,6 +74,11 @@
 
 #include <linux/mtd/ftl.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*====================================================================*/
 
 /* Parameters that can be set with 'insmod' */
@@ -264,6 +269,10 @@ static int build_maps(partition_t *part)
     /* Set up virtual page map */
     blocks = le32_to_cpu(header.FormattedSize) >> header.BlockSize;
     part->VirtualBlockMap = vmalloc(array_size(blocks, sizeof(uint32_t)));
+    {
+	    uint32_t __uncontained_tmp56;
+	    __uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+    }
     if (!part->VirtualBlockMap)
 	    goto out_XferInfo;
 

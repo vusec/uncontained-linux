@@ -19,6 +19,11 @@
 #include <linux/spinlock.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "rcar-gen4-sysc.h"
 
 /* SYSC Common */
@@ -339,6 +344,10 @@ static int __init rcar_gen4_sysc_pd_init(void)
 
 		n = strlen(area->name) + 1;
 		pd = kzalloc(sizeof(*pd) + n, GFP_KERNEL);
+		{
+			typeof((*pd)) __uncontained_tmp97;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp97;
+		}
 		if (!pd) {
 			error = -ENOMEM;
 			goto out_put;

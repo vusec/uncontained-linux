@@ -18,6 +18,11 @@
 #include <linux/netfilter_ipv6/ip6_tables.h>
 #include <net/pkt_cls.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct em_ipt_match {
 	const struct xt_match *match;
 	u32 hook;
@@ -158,6 +163,10 @@ static int em_ipt_change(struct net *net, void *data, int data_len,
 
 	mdata_len = XT_ALIGN(nla_len(tb[TCA_EM_IPT_MATCH_DATA]));
 	im = kzalloc(sizeof(*im) + mdata_len, GFP_KERNEL);
+	{
+		typeof((*im)) __uncontained_tmp182;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp182;
+	}
 	if (!im) {
 		ret = -ENOMEM;
 		goto err;

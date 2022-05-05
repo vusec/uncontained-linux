@@ -8,6 +8,16 @@
 
 #include <linux/slab.h>
 #include <asm/unaligned.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ieee80211_i.h"
 #include "mesh.h"
 #include "driver-ops.h"
@@ -851,6 +861,62 @@ ieee80211_mesh_build_beacon(struct ieee80211_if_mesh *ifmsh)
 		   ifmsh->ie_len;
 
 	bcn = kzalloc(sizeof(*bcn) + head_len + tail_len, GFP_KERNEL);
+	{
+		struct ieee80211_channel_sw_ie __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
+	{
+		struct ieee80211_mesh_chansw_params_ie __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
+	{
+		struct ieee80211_sec_chan_offs_ie __uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
+	{
+		struct ieee80211_wide_bw_chansw_ie __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
+	{
+		struct ieee80211_he_6ghz_capa __uncontained_tmp43;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+	}
+	{
+		struct ieee80211_he_6ghz_oper __uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
+	{
+		struct ieee80211_he_operation __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
+	{
+		struct ieee80211_ht_cap __uncontained_tmp46;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp46;
+	}
+	{
+		struct ieee80211_ht_operation __uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
+	{
+		struct ieee80211_meshconf_ie __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
+	{
+		struct ieee80211_vht_cap __uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
+	{
+		struct ieee80211_vht_operation __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
+	{
+		__le16 __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
+	{
+		typeof((*bcn)) __uncontained_tmp122;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp122;
+	}
 	/* need an skb for IE builders to operate on */
 	skb = dev_alloc_skb(max(head_len, tail_len));
 

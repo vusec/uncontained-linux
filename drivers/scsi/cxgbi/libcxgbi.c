@@ -32,6 +32,11 @@
 #include <linux/module.h>
 #include <net/tcp.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static unsigned int dbg_level;
 
 #include "libcxgbi.h"
@@ -80,6 +85,10 @@ int cxgbi_device_portmap_create(struct cxgbi_device *cdev, unsigned int base,
 	pmap->port_csk = kvzalloc(array_size(max_conn,
 					     sizeof(struct cxgbi_sock *)),
 				  GFP_KERNEL | __GFP_NOWARN);
+	{
+		struct cxgbi_sock *__uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (!pmap->port_csk) {
 		pr_warn("cdev 0x%p, portmap OOM %u.\n", cdev, max_conn);
 		return -ENOMEM;
@@ -137,6 +146,18 @@ struct cxgbi_device *cxgbi_device_register(unsigned int extra,
 			(sizeof(struct cxgbi_hba *) +
 			 sizeof(struct net_device *)),
 			GFP_KERNEL);
+	{
+		typeof((*cdev)) __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
+	{
+		struct cxgbi_hba *__uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
+	{
+		struct net_device *__uncontained_tmp77;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp77;
+	}
 	if (!cdev) {
 		pr_warn("nport %d, OOM.\n", nports);
 		return NULL;

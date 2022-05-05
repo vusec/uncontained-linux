@@ -15,6 +15,11 @@
 #include <linux/soc/qcom/apr.h>
 #include <linux/wait.h>
 #include <sound/asound.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "q6adm.h"
 #include "q6afe.h"
 #include "q6core.h"
@@ -330,6 +335,10 @@ static int q6adm_device_open(struct q6adm *adm, struct q6copp *copp,
 
 	pkt_size = APR_HDR_SIZE + sizeof(*open);
 	p = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*open)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!p)
 		return -ENOMEM;
 
@@ -473,6 +482,18 @@ int q6adm_matrix_map(struct device *dev, int path,
 		    (sizeof(uint32_t) * payload_map.num_copps));
 
 	matrix_map = kzalloc(pkt_size, GFP_KERNEL);
+	{
+		typeof((*node)) __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
+	{
+		typeof((*route)) __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
+	{
+		uint32_t __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!matrix_map)
 		return -ENOMEM;
 

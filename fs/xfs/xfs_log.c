@@ -21,6 +21,11 @@
 #include "xfs_sb.h"
 #include "xfs_health.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct kmem_cache	*xfs_log_ticket_cache;
 
 /* Local miscellaneous function prototypes */
@@ -1587,6 +1592,10 @@ xlog_alloc_log(
 				sizeof(struct bio_vec);
 
 		iclog = kmem_zalloc(sizeof(*iclog) + bvec_size, KM_MAYFAIL);
+		{
+			typeof((*iclog)) __uncontained_tmp121;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp121;
+		}
 		if (!iclog)
 			goto out_free_iclog;
 

@@ -24,6 +24,11 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "process_pptables_v1_0.h"
 #include "ppatomctrl.h"
 #include "atombios.h"
@@ -575,6 +580,14 @@ static int get_cac_tdp_table(
 
 	table_size = sizeof(uint32_t) + sizeof(struct phm_cac_tdp_table);
 	tdp_table = kzalloc(table_size, GFP_KERNEL);
+	{
+		struct phm_cac_tdp_table __uncontained_tmp8;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+	}
+	{
+		uint32_t __uncontained_tmp9;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp9;
+	}
 
 	if (NULL == tdp_table)
 		return -ENOMEM;

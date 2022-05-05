@@ -33,6 +33,11 @@
 #include <net/fib_notifier.h>
 #include <net/switchdev.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "spectrum.h"
 #include "core.h"
 #include "reg.h"
@@ -392,6 +397,10 @@ mlxsw_sp_fib_entry_priv_create(const struct mlxsw_sp_router_ll_ops *ll_ops)
 		return NULL;
 
 	priv = kzalloc(sizeof(*priv) + ll_ops->fib_entry_priv_size, GFP_KERNEL);
+	{
+		typeof((*priv)) __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!priv)
 		return ERR_PTR(-ENOMEM);
 	refcount_set(&priv->refcnt, 1);
@@ -10215,6 +10224,10 @@ static int mlxsw_sp_router_ll_op_ctx_init(struct mlxsw_sp_router *router)
 	}
 	router->ll_op_ctx = kzalloc(sizeof(*router->ll_op_ctx) + max_size,
 				    GFP_KERNEL);
+	{
+		typeof((*router->ll_op_ctx)) __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!router->ll_op_ctx)
 		return -ENOMEM;
 	INIT_LIST_HEAD(&router->ll_op_ctx->fib_entry_priv_list);

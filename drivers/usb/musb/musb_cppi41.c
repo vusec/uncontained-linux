@@ -6,6 +6,11 @@
 #include <linux/platform_device.h>
 #include <linux/of.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "cppi_dma.h"
 #include "musb_core.h"
 #include "musb_trace.h"
@@ -788,6 +793,10 @@ cppi41_dma_controller_create(struct musb *musb, void __iomem *base)
 	channel_size = controller->num_channels *
 			sizeof(struct cppi41_dma_channel);
 	controller->rx_channel = kzalloc(channel_size, GFP_KERNEL);
+	{
+		struct cppi41_dma_channel __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!controller->rx_channel)
 		goto rx_channel_alloc_fail;
 	controller->tx_channel = kzalloc(channel_size, GFP_KERNEL);

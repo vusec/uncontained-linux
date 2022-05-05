@@ -44,6 +44,11 @@
 #include <asm/irq.h>
 #include <asm/smp.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * FLAGS:
  * All flags are defined in the field IPFLAGS1 of each function
@@ -546,6 +551,10 @@ static int iucv_enable(void)
 	rc = -ENOMEM;
 	alloc_size = iucv_max_pathid * sizeof(struct iucv_path);
 	iucv_path_table = kzalloc(alloc_size, GFP_KERNEL);
+	{
+		struct iucv_path __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!iucv_path_table)
 		goto out;
 	/* Declare per cpu buffers. */

@@ -2,6 +2,11 @@
 /* Copyright(c) 2014 - 2020 Intel Corporation */
 #include <linux/delay.h>
 #include <linux/nospec.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "adf_accel_devices.h"
 #include "adf_transport_internal.h"
 #include "adf_transport_access_macros.h"
@@ -394,6 +399,10 @@ static int adf_init_bank(struct adf_accel_dev *accel_dev,
 	size = num_rings_per_bank * sizeof(struct adf_etr_ring_data);
 	bank->rings = kzalloc_node(size, GFP_KERNEL,
 				   dev_to_node(&GET_DEV(accel_dev)));
+	{
+		struct adf_etr_ring_data __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!bank->rings)
 		return -ENOMEM;
 

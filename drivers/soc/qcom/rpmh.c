@@ -20,6 +20,11 @@
 
 #include <soc/qcom/rpmh.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "rpmh-internal.h"
 
 #define RPMH_TIMEOUT_MS			msecs_to_jiffies(10000)
@@ -349,6 +354,18 @@ int rpmh_write_batch(const struct device *dev, enum rpmh_state state,
 	ptr = kzalloc(sizeof(*req) +
 		      count * (sizeof(req->rpm_msgs[0]) + sizeof(*compls)),
 		      GFP_ATOMIC);
+	{
+		typeof((*compls)) __uncontained_tmp94;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp94;
+	}
+	{
+		typeof((*req)) __uncontained_tmp95;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp95;
+	}
+	{
+		typeof((req->rpm_msgs[0])) __uncontained_tmp96;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!ptr)
 		return -ENOMEM;
 

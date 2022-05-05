@@ -18,6 +18,11 @@
 #include <linux/types.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DRV_NAME "cros-ec-sysfs"
 
 /* Accessor functions */
@@ -60,6 +65,14 @@ static ssize_t reboot_store(struct device *dev,
 	struct cros_ec_dev *ec = to_cros_ec_dev(dev);
 
 	msg = kmalloc(sizeof(*msg) + sizeof(*param), GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp77;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp77;
+	}
+	{
+		typeof((*param)) __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!msg)
 		return -ENOMEM;
 
@@ -121,6 +134,10 @@ static ssize_t version_show(struct device *dev,
 	struct cros_ec_dev *ec = to_cros_ec_dev(dev);
 
 	msg = kmalloc(sizeof(*msg) + EC_HOST_PARAM_SIZE, GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!msg)
 		return -ENOMEM;
 
@@ -213,6 +230,14 @@ static ssize_t flashinfo_show(struct device *dev,
 	struct cros_ec_dev *ec = to_cros_ec_dev(dev);
 
 	msg = kmalloc(sizeof(*msg) + sizeof(*resp), GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
+	{
+		typeof((*resp)) __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!msg)
 		return -ENOMEM;
 
@@ -248,6 +273,10 @@ static ssize_t kb_wake_angle_show(struct device *dev,
 	int ret;
 
 	msg = kmalloc(sizeof(*msg) + EC_HOST_PARAM_SIZE, GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp82;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!msg)
 		return -ENOMEM;
 
@@ -285,6 +314,10 @@ static ssize_t kb_wake_angle_store(struct device *dev,
 		return ret;
 
 	msg = kmalloc(sizeof(*msg) + EC_HOST_PARAM_SIZE, GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp83;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!msg)
 		return -ENOMEM;
 

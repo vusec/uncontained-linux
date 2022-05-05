@@ -2,6 +2,11 @@
 /* Copyright (c) 2015 - 2021 Intel Corporation */
 #include "main.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  * irdma_arp_table -manage arp table
  * @rf: RDMA PCI function
@@ -1328,6 +1333,10 @@ enum irdma_status_code irdma_init_hash_desc(struct shash_desc **desc)
 
 	tdesc = kzalloc(sizeof(*tdesc) + crypto_shash_descsize(tfm),
 			GFP_KERNEL);
+	{
+		typeof((*tdesc)) __uncontained_tmp36;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!tdesc) {
 		crypto_free_shash(tfm);
 		return IRDMA_ERR_MPA_CRC;

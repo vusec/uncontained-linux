@@ -20,6 +20,11 @@
 #include <asm/asi.h>
 #include <asm/timer.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct cpufreq_driver *cpufreq_us2e_driver;
 
 struct us2e_freq_percpu_info {
@@ -328,6 +333,10 @@ static int __init us2e_freq_init(void)
 
 		us2e_freq_table = kzalloc((NR_CPUS * sizeof(*us2e_freq_table)),
 			GFP_KERNEL);
+		{
+			typeof((*us2e_freq_table)) __uncontained_tmp15;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+		}
 		if (!us2e_freq_table)
 			goto err_out;
 

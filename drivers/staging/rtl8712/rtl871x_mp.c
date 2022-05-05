@@ -18,6 +18,11 @@
 #include "rtl871x_mp_phy_regdef.h"
 #include "rtl8712_cmd.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static void _init_mp_priv_(struct mp_priv *pmp_priv)
 {
 	pmp_priv->mode = _LOOPBOOK_MODE_;
@@ -44,6 +49,10 @@ static int init_mp_priv(struct mp_priv *pmp_priv)
 	pmp_priv->pallocated_mp_xmitframe_buf = kmalloc(NR_MP_XMITFRAME *
 				sizeof(struct mp_xmit_frame) + 4,
 				GFP_ATOMIC);
+	{
+		struct mp_xmit_frame __uncontained_tmp138;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp138;
+	}
 	if (!pmp_priv->pallocated_mp_xmitframe_buf)
 		return -ENOMEM;
 

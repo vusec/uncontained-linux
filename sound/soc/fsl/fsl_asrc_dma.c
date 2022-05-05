@@ -12,6 +12,11 @@
 #include <sound/dmaengine_pcm.h>
 #include <sound/pcm_params.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "fsl_asrc_common.h"
 
 #define FSL_ASRC_DMABUF_SIZE	(256 * 1024)
@@ -331,6 +336,10 @@ static int fsl_asrc_dma_startup(struct snd_soc_component *component,
 	}
 
 	pair = kzalloc(sizeof(*pair) + asrc->pair_priv_size, GFP_KERNEL);
+	{
+		typeof((*pair)) __uncontained_tmp190;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp190;
+	}
 	if (!pair)
 		return -ENOMEM;
 

@@ -19,6 +19,11 @@
 #include <net/sctp/sctp.h>
 #include <net/sctp/auth.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static struct sctp_hmac sctp_hmac_list[SCTP_AUTH_NUM_HMACS] = {
 	{
 		/* id 0 is reserved.  as all 0 */
@@ -65,6 +70,10 @@ static struct sctp_auth_bytes *sctp_auth_create_key(__u32 key_len, gfp_t gfp)
 
 	/* Allocate the shared key */
 	key = kmalloc(sizeof(struct sctp_auth_bytes) + key_len, gfp);
+	{
+		struct sctp_auth_bytes __uncontained_tmp148;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (!key)
 		return NULL;
 
@@ -1041,6 +1050,10 @@ int sctp_auth_init(struct sctp_endpoint *ep, gfp_t gfp)
 
 		auth_chunks = kzalloc(sizeof(*auth_chunks) +
 				      SCTP_NUM_CHUNK_TYPES, gfp);
+		{
+			typeof((*auth_chunks)) __uncontained_tmp149;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp149;
+		}
 		if (!auth_chunks)
 			goto nomem;
 		/* Initialize the CHUNKS parameter */

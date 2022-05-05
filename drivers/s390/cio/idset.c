@@ -7,6 +7,11 @@
 #include <linux/vmalloc.h>
 #include <linux/bitmap.h>
 #include <linux/bitops.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "idset.h"
 #include "css.h"
 
@@ -26,6 +31,10 @@ static struct idset *idset_new(int num_ssid, int num_id)
 	struct idset *set;
 
 	set = vmalloc(sizeof(struct idset) + bitmap_size(num_ssid, num_id));
+	{
+		struct idset __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (set) {
 		set->num_ssid = num_ssid;
 		set->num_id = num_id;

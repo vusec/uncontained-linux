@@ -15,6 +15,11 @@
 #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/jffs2.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "nodelist.h"
 
 /* These are initialised to NULL in the kernel startup code.
@@ -60,6 +65,10 @@ int __init jffs2_create_slab_caches(void)
 	raw_node_ref_slab = kmem_cache_create("jffs2_refblock",
 					      sizeof(struct jffs2_raw_node_ref) * (REFS_PER_BLOCK + 1),
 					      0, 0, NULL);
+	{
+		struct jffs2_raw_node_ref __uncontained_tmp149;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp149;
+	}
 	if (!raw_node_ref_slab)
 		goto err;
 
@@ -114,6 +123,10 @@ struct jffs2_full_dirent *jffs2_alloc_full_dirent(int namesize)
 {
 	struct jffs2_full_dirent *ret;
 	ret = kmalloc(sizeof(struct jffs2_full_dirent) + namesize, GFP_KERNEL);
+	{
+		struct jffs2_full_dirent __uncontained_tmp150;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp150;
+	}
 	dbg_memalloc("%p\n", ret);
 	return ret;
 }

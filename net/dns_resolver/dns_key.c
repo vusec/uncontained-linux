@@ -32,6 +32,11 @@
 #include <linux/dns_resolver.h>
 #include <keys/dns_resolver-type.h>
 #include <keys/user-type.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "internal.h"
 
 MODULE_DESCRIPTION("DNS Resolver");
@@ -209,6 +214,10 @@ store_result:
 	prep->quotalen = result_len;
 
 	upayload = kmalloc(sizeof(*upayload) + result_len + 1, GFP_KERNEL);
+	{
+		typeof((*upayload)) __uncontained_tmp167;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp167;
+	}
 	if (!upayload) {
 		kleave(" = -ENOMEM");
 		return -ENOMEM;

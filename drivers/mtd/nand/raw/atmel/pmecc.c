@@ -50,6 +50,16 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "pmecc.h"
 
 /* Galois field dimension */
@@ -236,6 +246,14 @@ atmel_pmecc_create_gf_tables(const struct atmel_pmecc_user_req *req)
 	gf_tables = kzalloc(sizeof(*gf_tables) +
 			    (2 * table_size * sizeof(u16)),
 			    GFP_KERNEL);
+	{
+		typeof((*gf_tables)) __uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
+	{
+		u16 __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!gf_tables)
 		return ERR_PTR(-ENOMEM);
 
@@ -363,6 +381,18 @@ atmel_pmecc_create_user(struct atmel_pmecc *pmecc,
 	size += (req->ecc.strength + 1) * sizeof(s32) * 3;
 
 	user = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*user)) __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
+	{
+		u16 __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
+	{
+		s32 __uncontained_tmp36;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!user)
 		return ERR_PTR(-ENOMEM);
 

@@ -19,6 +19,11 @@
 #include <linux/mtd/mtd.h>
 #include <linux/kmsg_dump.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* Maximum MTD partition size */
 #define MTDOOPS_MAX_MTD_SIZE (8 * 1024 * 1024)
 
@@ -333,6 +338,10 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
 		vmalloc(array_size(sizeof(unsigned long),
 				   DIV_ROUND_UP(mtdoops_pages,
 						BITS_PER_LONG)));
+	{
+		unsigned long __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!cxt->oops_page_used) {
 		printk(KERN_ERR "mtdoops: could not allocate page array\n");
 		return;

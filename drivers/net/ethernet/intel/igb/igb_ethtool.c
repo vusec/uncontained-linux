@@ -16,6 +16,11 @@
 #include <linux/highmem.h>
 #include <linux/mdio.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "igb.h"
 
 struct igb_stats {
@@ -916,12 +921,22 @@ static int igb_set_ringparam(struct net_device *netdev,
 		goto clear_reset;
 	}
 
-	if (adapter->num_tx_queues > adapter->num_rx_queues)
+	if (adapter->num_tx_queues > adapter->num_rx_queues) {
 		temp_ring = vmalloc(array_size(sizeof(struct igb_ring),
 					       adapter->num_tx_queues));
-	else
+		{
+			struct igb_ring __uncontained_tmp61;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+		}
+	}
+	else {
 		temp_ring = vmalloc(array_size(sizeof(struct igb_ring),
 					       adapter->num_rx_queues));
+		{
+			struct igb_ring __uncontained_tmp62;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+		}
+	}
 
 	if (!temp_ring) {
 		err = -ENOMEM;

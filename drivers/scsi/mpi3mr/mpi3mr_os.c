@@ -9,6 +9,11 @@
 
 #include "mpi3mr.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* global driver scop variables */
 LIST_HEAD(mrioc_list);
 DEFINE_SPINLOCK(mrioc_list_lock);
@@ -193,6 +198,10 @@ static struct mpi3mr_fwevt *mpi3mr_alloc_fwevt(int len)
 	struct mpi3mr_fwevt *fwevt;
 
 	fwevt = kzalloc(sizeof(*fwevt) + len, GFP_ATOMIC);
+	{
+		typeof((*fwevt)) __uncontained_tmp108;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp108;
+	}
 	if (!fwevt)
 		return NULL;
 

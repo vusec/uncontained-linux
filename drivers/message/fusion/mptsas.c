@@ -60,6 +60,11 @@
 #include <scsi/scsi_transport.h>
 #include <scsi/scsi_dbg.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "mptbase.h"
 #include "mptscsih.h"
 #include "mptsas.h"
@@ -1021,6 +1026,14 @@ mptsas_queue_device_delete(MPT_ADAPTER *ioc,
 	fw_event = kzalloc(sizeof(*fw_event) +
 			   sizeof(MpiEventDataSasDeviceStatusChange_t),
 			   GFP_ATOMIC);
+	{
+		typeof((*fw_event)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
+	{
+		MpiEventDataSasDeviceStatusChange_t __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!fw_event) {
 		printk(MYIOC_s_WARN_FMT "%s: failed at (line=%d)\n",
 		    ioc->name, __func__, __LINE__);
@@ -4185,6 +4198,10 @@ mptsas_find_phyinfo_by_phys_disk_num(MPT_ADAPTER *ioc, u8 phys_disk_num,
 		goto out;
 	phys_disk = kzalloc(offsetof(RaidPhysDiskPage1_t, Path) +
 	   (num_paths * sizeof(RAID_PHYS_DISK1_PATH)), GFP_KERNEL);
+	{
+		typeof((RAID_PHYS_DISK1_PATH)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!phys_disk)
 		goto out;
 	mpt_raid_phys_disk_pg1(ioc, phys_disk_num, phys_disk);
@@ -5114,6 +5131,10 @@ mptsas_event_process(MPT_ADAPTER *ioc, EventNotificationReply_t *reply)
 	event_data_sz = ((reply->MsgLength * 4) -
 	    offsetof(EventNotificationReply_t, Data));
 	fw_event = kzalloc(sizeof(*fw_event) + event_data_sz, GFP_ATOMIC);
+	{
+		typeof((*fw_event)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!fw_event) {
 		printk(MYIOC_s_WARN_FMT "%s: failed at (line=%d)\n", ioc->name,
 		 __func__, __LINE__);

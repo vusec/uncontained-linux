@@ -36,6 +36,11 @@
 #include <linux/math64.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  * do_calc_lpt_geom - calculate sizes for the LPT area.
  * @c: the UBIFS file-system description object
@@ -630,6 +635,10 @@ int ubifs_create_dflt_lpt(struct ubifs_info *c, int *main_lebs, int lpt_first,
 	buf = vmalloc(c->leb_size);
 	ltab = vmalloc(array_size(sizeof(struct ubifs_lpt_lprops),
 				  c->lpt_lebs));
+	{
+		struct ubifs_lpt_lprops __uncontained_tmp150;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp150;
+	}
 	if (!pnode || !nnode || !buf || !ltab || !lsave) {
 		err = -ENOMEM;
 		goto out;
@@ -1779,6 +1788,10 @@ static int lpt_init_rd(struct ubifs_info *c)
 
 	c->ltab = vmalloc(array_size(sizeof(struct ubifs_lpt_lprops),
 				     c->lpt_lebs));
+	{
+		struct ubifs_lpt_lprops __uncontained_tmp151;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp151;
+	}
 	if (!c->ltab)
 		return -ENOMEM;
 
@@ -1848,6 +1861,10 @@ static int lpt_init_wr(struct ubifs_info *c)
 
 	c->ltab_cmt = vmalloc(array_size(sizeof(struct ubifs_lpt_lprops),
 					 c->lpt_lebs));
+	{
+		struct ubifs_lpt_lprops __uncontained_tmp152;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp152;
+	}
 	if (!c->ltab_cmt)
 		return -ENOMEM;
 

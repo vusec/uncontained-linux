@@ -3,6 +3,11 @@
 #include <linux/workqueue.h>
 #include <crypto/internal/skcipher.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "nitrox_common.h"
 #include "nitrox_dev.h"
 #include "nitrox_req.h"
@@ -119,6 +124,10 @@ static int create_sg_component(struct nitrox_softreq *sr,
 	/* each component holds 4 dma pointers */
 	sz_comp = nr_sgcomp * sizeof(*sgcomp);
 	sgcomp = kzalloc(sz_comp, sr->gfp);
+	{
+		typeof((*sgcomp)) __uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!sgcomp)
 		return -ENOMEM;
 

@@ -6,6 +6,11 @@
 #include "selftests/igt_spinner.h"
 #include "selftests/intel_scheduler_helpers.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int request_add_spin(struct i915_request *rq, struct igt_spinner *spin)
 {
 	int err = 0;
@@ -149,6 +154,10 @@ static int intel_guc_steal_guc_ids(void *arg)
 	int number_guc_id_stolen = guc->number_guc_id_stolen;
 
 	ce = kzalloc(sizeof(*ce) * GUC_MAX_LRC_DESCRIPTORS, GFP_KERNEL);
+	{
+		typeof((*ce)) __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!ce) {
 		pr_err("Context array allocation failed\n");
 		return -ENOMEM;

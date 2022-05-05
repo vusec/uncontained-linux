@@ -15,6 +15,11 @@
 #include <linux/vfio.h>
 #include <asm/idals.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "vfio_ccw_cp.h"
 
 struct pfn_array {
@@ -322,6 +327,18 @@ static struct ccwchain *ccwchain_alloc(struct channel_program *cp, int len)
 		sizeof(*chain->ch_ccw) * len +
 		sizeof(*chain->ch_pa) * len;
 	chain = kzalloc(size, GFP_DMA | GFP_KERNEL);
+	{
+		typeof((*chain)) __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
+	{
+		typeof((*chain->ch_ccw)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
+	{
+		typeof((*chain->ch_pa)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!chain)
 		return NULL;
 

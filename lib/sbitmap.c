@@ -9,6 +9,11 @@
 #include <linux/sbitmap.h>
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int init_alloc_hint(struct sbitmap *sb, gfp_t flags)
 {
 	unsigned depth = sb->depth;
@@ -436,6 +441,10 @@ int sbitmap_queue_init_node(struct sbitmap_queue *sbq, unsigned int depth,
 	atomic_set(&sbq->ws_active, 0);
 
 	sbq->ws = kzalloc_node(SBQ_WAIT_QUEUES * sizeof(*sbq->ws), flags, node);
+	{
+		typeof((*sbq->ws)) __uncontained_tmp161;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp161;
+	}
 	if (!sbq->ws) {
 		sbitmap_free(&sbq->sb);
 		return -ENOMEM;

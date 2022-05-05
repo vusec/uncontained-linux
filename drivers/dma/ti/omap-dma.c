@@ -19,6 +19,11 @@
 #include <linux/of_dma.h>
 #include <linux/of_device.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "../virt-dma.h"
 
 #define OMAP_SDMA_REQUESTS	127
@@ -1175,6 +1180,14 @@ static struct dma_async_tx_descriptor *omap_dma_prep_dma_cyclic(
 
 	/* Now allocate and setup the descriptor. */
 	d = kzalloc(sizeof(*d) + sizeof(d->sg[0]), GFP_ATOMIC);
+	{
+		typeof((*d)) __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
+	{
+		typeof((d->sg[0])) __uncontained_tmp25;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!d)
 		return NULL;
 
@@ -1243,6 +1256,14 @@ static struct dma_async_tx_descriptor *omap_dma_prep_dma_memcpy(
 	uint8_t data_type;
 
 	d = kzalloc(sizeof(*d) + sizeof(d->sg[0]), GFP_ATOMIC);
+	{
+		typeof((*d)) __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
+	{
+		typeof((d->sg[0])) __uncontained_tmp27;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!d)
 		return NULL;
 
@@ -1298,6 +1319,14 @@ static struct dma_async_tx_descriptor *omap_dma_prep_dma_interleaved(
 		return NULL;
 
 	d = kzalloc(sizeof(*d) + sizeof(d->sg[0]), GFP_ATOMIC);
+	{
+		typeof((*d)) __uncontained_tmp28;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+	}
+	{
+		typeof((d->sg[0])) __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!d)
 		return NULL;
 

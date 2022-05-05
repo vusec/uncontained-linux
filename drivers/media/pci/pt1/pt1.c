@@ -29,6 +29,11 @@
 #include <media/dvb_net.h>
 #include <media/dvb_frontend.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "tc90522.h"
 #include "qm1d1b0004.h"
 #include "dvb-pll.h"
@@ -640,6 +645,10 @@ static int pt1_init_tables(struct pt1 *pt1)
 		return 0;
 
 	tables = vmalloc(array_size(pt1_nr_tables, sizeof(struct pt1_table)));
+	{
+		struct pt1_table __uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (tables == NULL)
 		return -ENOMEM;
 

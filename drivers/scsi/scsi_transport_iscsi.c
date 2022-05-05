@@ -29,6 +29,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/iscsi.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Export tracepoint symbols to be used by other modules.
  */
@@ -227,6 +232,10 @@ iscsi_create_endpoint(int dd_size)
 	}
 
 	ep = kzalloc(sizeof(*ep) + dd_size, GFP_KERNEL);
+	{
+		typeof((*ep)) __uncontained_tmp121;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp121;
+	}
 	if (!ep)
 		return NULL;
 
@@ -744,6 +753,10 @@ iscsi_create_iface(struct Scsi_Host *shost, struct iscsi_transport *transport,
 	int err;
 
 	iface = kzalloc(sizeof(*iface) + dd_size, GFP_KERNEL);
+	{
+		typeof((*iface)) __uncontained_tmp122;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp122;
+	}
 	if (!iface)
 		return NULL;
 
@@ -1235,6 +1248,10 @@ iscsi_create_flashnode_sess(struct Scsi_Host *shost, int index,
 	int err;
 
 	fnode_sess = kzalloc(sizeof(*fnode_sess) + dd_size, GFP_KERNEL);
+	{
+		typeof((*fnode_sess)) __uncontained_tmp123;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (!fnode_sess)
 		return NULL;
 
@@ -1284,6 +1301,10 @@ iscsi_create_flashnode_conn(struct Scsi_Host *shost,
 	int err;
 
 	fnode_conn = kzalloc(sizeof(*fnode_conn) + dd_size, GFP_KERNEL);
+	{
+		typeof((*fnode_conn)) __uncontained_tmp124;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (!fnode_conn)
 		return NULL;
 
@@ -2036,6 +2057,10 @@ iscsi_alloc_session(struct Scsi_Host *shost, struct iscsi_transport *transport,
 
 	session = kzalloc(sizeof(*session) + dd_size,
 			  GFP_KERNEL);
+	{
+		typeof((*session)) __uncontained_tmp125;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (!session)
 		return NULL;
 
@@ -2364,6 +2389,10 @@ iscsi_create_conn(struct iscsi_cls_session *session, int dd_size, uint32_t cid)
 	int err;
 
 	conn = kzalloc(sizeof(*conn) + dd_size, GFP_KERNEL);
+	{
+		typeof((*conn)) __uncontained_tmp126;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp126;
+	}
 	if (!conn)
 		return NULL;
 	if (dd_size)

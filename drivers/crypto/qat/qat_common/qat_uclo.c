@@ -5,6 +5,11 @@
 #include <linux/kernel.h>
 #include <linux/delay.h>
 #include <linux/pci_ids.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "adf_accel_devices.h"
 #include "adf_common_drv.h"
 #include "icp_qat_uclo.h"
@@ -1698,6 +1703,10 @@ static int qat_uclo_map_objs_from_mof(struct icp_qat_mof_handle *mobj_handle)
 
 	mobj_hdr = kzalloc((uobj_chunk_num + sobj_chunk_num) *
 			   sizeof(*mobj_hdr), GFP_KERNEL);
+	{
+		typeof((*mobj_hdr)) __uncontained_tmp12;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!mobj_hdr)
 		return -ENOMEM;
 

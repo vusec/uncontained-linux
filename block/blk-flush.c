@@ -71,6 +71,11 @@
 #include <linux/blk-mq.h>
 #include <linux/part_stat.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "blk.h"
 #include "blk-mq.h"
 #include "blk-mq-tag.h"
@@ -481,6 +486,10 @@ struct blk_flush_queue *blk_alloc_flush_queue(int node, int cmd_size,
 	// rq_sz = round_up(rq_sz + cmd_size, cache_line_size());
 	rq_sz = sizeof(struct request) + cmd_size;
 	fq->flush_rq = kzalloc_node(rq_sz, flags, node);
+	{
+		struct request __uncontained_tmp10;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!fq->flush_rq)
 		goto fail_rq;
 

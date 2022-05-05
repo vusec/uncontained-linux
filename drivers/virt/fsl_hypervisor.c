@@ -45,6 +45,11 @@
 
 #include <linux/fsl_hypervisor.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static BLOCKING_NOTIFIER_HEAD(failover_subscribers);
 
 /*
@@ -238,6 +243,14 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
 	 */
 	sg_list_unaligned = kmalloc(num_pages * sizeof(struct fh_sg_list) +
 		sizeof(struct fh_sg_list) - 1, GFP_KERNEL);
+	{
+		struct fh_sg_list __uncontained_tmp120;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp120;
+	}
+	{
+		struct fh_sg_list __uncontained_tmp121;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp121;
+	}
 	if (!sg_list_unaligned) {
 		pr_debug("fsl-hv: could not allocate S/G list\n");
 		ret = -ENOMEM;

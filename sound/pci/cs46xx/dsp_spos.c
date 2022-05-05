@@ -19,6 +19,11 @@
 #include <sound/control.h>
 #include <sound/info.h>
 #include <sound/asoundef.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "cs46xx.h"
 
 #include "cs46xx_lib.h"
@@ -230,6 +235,10 @@ struct dsp_spos_instance *cs46xx_dsp_spos_create (struct snd_cs46xx * chip)
 	ins->symbol_table.symbols =
 		vmalloc(array_size(DSP_MAX_SYMBOLS,
 				   sizeof(struct dsp_symbol_entry)));
+	{
+		struct dsp_symbol_entry __uncontained_tmp185;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp185;
+	}
 	ins->code.data = kmalloc(DSP_CODE_BYTE_SIZE, GFP_KERNEL);
 	ins->modules = kmalloc_array(DSP_MAX_MODULES,
 				     sizeof(struct dsp_module_desc),

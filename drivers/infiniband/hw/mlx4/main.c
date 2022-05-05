@@ -60,6 +60,11 @@
 #include "mlx4_ib.h"
 #include <rdma/mlx4-abi.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DRV_NAME	MLX4_IB_DRV_NAME
 #define DRV_VERSION	"4.0-0"
 
@@ -2934,6 +2939,14 @@ int mlx4_ib_steer_qp_reg(struct mlx4_ib_dev *mdev, struct mlx4_ib_qp *mqp,
 		flow_size = sizeof(struct ib_flow_attr) +
 			    sizeof(struct ib_flow_spec_ib);
 		flow = kzalloc(flow_size, GFP_KERNEL);
+		{
+			struct ib_flow_attr __uncontained_tmp17;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+		}
+		{
+			struct ib_flow_spec_ib __uncontained_tmp18;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+		}
 		if (!flow)
 			return -ENOMEM;
 		flow->port = mqp->port;

@@ -35,6 +35,11 @@
 #endif
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int verify_one_alg(struct nlattr **attrs, enum xfrm_attr_type_t type)
 {
 	struct nlattr *rt = attrs[type];
@@ -360,6 +365,10 @@ static int attach_auth(struct xfrm_algo_auth **algpp, u8 *props,
 	*props = algo->desc.sadb_alg_id;
 
 	p = kmalloc(sizeof(*p) + (ualg->alg_key_len + 7) / 8, GFP_KERNEL);
+	{
+		typeof((*p)) __uncontained_tmp210;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp210;
+	}
 	if (!p)
 		return -ENOMEM;
 

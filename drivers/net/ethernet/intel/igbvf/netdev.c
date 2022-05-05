@@ -22,6 +22,11 @@
 #include <linux/prefetch.h>
 #include <linux/sctp.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "igbvf.h"
 
 char igbvf_driver_name[] = "igbvf";
@@ -422,6 +427,10 @@ int igbvf_setup_tx_resources(struct igbvf_adapter *adapter,
 
 	size = sizeof(struct igbvf_buffer) * tx_ring->count;
 	tx_ring->buffer_info = vzalloc(size);
+	{
+		struct igbvf_buffer __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!tx_ring->buffer_info)
 		goto err;
 
@@ -461,6 +470,10 @@ int igbvf_setup_rx_resources(struct igbvf_adapter *adapter,
 
 	size = sizeof(struct igbvf_buffer) * rx_ring->count;
 	rx_ring->buffer_info = vzalloc(size);
+	{
+		struct igbvf_buffer __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!rx_ring->buffer_info)
 		goto err;
 

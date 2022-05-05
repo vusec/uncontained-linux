@@ -18,6 +18,11 @@
 #include <linux/pm_runtime.h>
 #include <linux/dma-mapping.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "intel_th.h"
 #include "debug.h"
 
@@ -381,6 +386,10 @@ intel_th_device_alloc(struct intel_th *th, unsigned int type, const char *name,
 		parent = th->dev;
 
 	thdev = kzalloc(sizeof(*thdev) + strlen(name) + 1, GFP_KERNEL);
+	{
+		typeof((*thdev)) __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!thdev)
 		return NULL;
 

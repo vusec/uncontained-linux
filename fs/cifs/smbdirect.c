@@ -6,6 +6,11 @@
  */
 #include <linux/module.h>
 #include <linux/highmem.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "smbdirect.h"
 #include "cifs_debug.h"
 #include "cifsproto.h"
@@ -1463,6 +1468,14 @@ static int allocate_caches_and_workqueue(struct smbd_connection *info)
 			sizeof(struct smbd_request) +
 				sizeof(struct smbd_data_transfer),
 			0, SLAB_HWCACHE_ALIGN, NULL);
+	{
+		struct smbd_data_transfer __uncontained_tmp133;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp133;
+	}
+	{
+		struct smbd_request __uncontained_tmp134;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp134;
+	}
 	if (!info->request_cache)
 		return -ENOMEM;
 
@@ -1479,6 +1492,10 @@ static int allocate_caches_and_workqueue(struct smbd_connection *info)
 			sizeof(struct smbd_response) +
 				info->max_receive_size,
 			0, SLAB_HWCACHE_ALIGN, NULL);
+	{
+		struct smbd_response __uncontained_tmp135;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp135;
+	}
 	if (!info->response_cache)
 		goto out2;
 

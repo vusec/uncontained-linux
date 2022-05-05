@@ -12,6 +12,11 @@
 #include <drm/drm_file.h>
 #include <drm/drm_syncobj.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "msm_drv.h"
 #include "msm_gpu.h"
 #include "msm_gem.h"
@@ -43,6 +48,10 @@ static struct msm_gem_submit *submit_create(struct drm_device *dev,
 		return ERR_PTR(-ENOMEM);
 
 	submit = kzalloc(sz, GFP_KERNEL | __GFP_NOWARN | __GFP_NORETRY);
+	{
+		typeof((submit->cmd[0])) __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!submit)
 		return ERR_PTR(-ENOMEM);
 
@@ -210,6 +219,10 @@ static int submit_lookup_cmds(struct msm_gem_submit *submit,
 			goto out;
 		}
 		submit->cmd[i].relocs = kmalloc(sz, GFP_KERNEL);
+		{
+			struct drm_msm_gem_submit_reloc __uncontained_tmp20;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+		}
 		ret = copy_from_user(submit->cmd[i].relocs, userptr, sz);
 		if (ret) {
 			ret = -EFAULT;

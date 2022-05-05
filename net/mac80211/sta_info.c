@@ -20,6 +20,11 @@
 
 #include <net/codel.h>
 #include <net/mac80211.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ieee80211_i.h"
 #include "driver-ops.h"
 #include "rate.h"
@@ -342,6 +347,10 @@ struct sta_info *sta_info_alloc(struct ieee80211_sub_if_data *sdata,
 	int i;
 
 	sta = kzalloc(sizeof(*sta) + hw->sta_data_size, gfp);
+	{
+		typeof((*sta)) __uncontained_tmp199;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp199;
+	}
 	if (!sta)
 		return NULL;
 

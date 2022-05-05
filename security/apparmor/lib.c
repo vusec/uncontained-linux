@@ -14,6 +14,11 @@
 #include <linux/string.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "include/audit.h"
 #include "include/apparmor.h"
 #include "include/lib.h"
@@ -137,6 +142,10 @@ __counted char *aa_str_alloc(int size, gfp_t gfp)
 	struct counted_str *str;
 
 	str = kmalloc(sizeof(struct counted_str) + size, gfp);
+	{
+		struct counted_str __uncontained_tmp182;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp182;
+	}
 	if (!str)
 		return NULL;
 

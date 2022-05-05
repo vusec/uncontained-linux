@@ -17,6 +17,11 @@
 #include <linux/slab.h>
 #include <linux/wait.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DRV_NAME "cros-ec-debugfs"
 
 #define LOG_SHIFT		14
@@ -322,6 +327,18 @@ static int ec_read_version_supported(struct cros_ec_dev *ec)
 
 	msg = kzalloc(sizeof(*msg) + max(sizeof(*params), sizeof(*response)),
 		GFP_KERNEL);
+	{
+		typeof((*msg)) __uncontained_tmp69;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+	}
+	{
+		typeof((*params)) __uncontained_tmp70;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+	}
+	{
+		typeof((*response)) __uncontained_tmp71;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (!msg)
 		return 0;
 

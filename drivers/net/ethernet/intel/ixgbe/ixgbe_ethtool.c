@@ -14,6 +14,11 @@
 #include <linux/highmem.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ixgbe.h"
 #include "ixgbe_phy.h"
 
@@ -1179,6 +1184,10 @@ static int ixgbe_set_ringparam(struct net_device *netdev,
 	i = max_t(int, adapter->num_tx_queues + adapter->num_xdp_queues,
 		  adapter->num_rx_queues);
 	temp_ring = vmalloc(array_size(i, sizeof(struct ixgbe_ring)));
+	{
+		struct ixgbe_ring __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 
 	if (!temp_ring) {
 		err = -ENOMEM;

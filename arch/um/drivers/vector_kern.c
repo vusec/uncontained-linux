@@ -28,6 +28,11 @@
 #include <irq_user.h>
 #include <net_kern.h>
 #include <os.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "mconsole_kern.h"
 #include "vector_user.h"
 #include "vector_kern.h"
@@ -538,10 +543,18 @@ static struct vector_queue *create_queue(
 	result->dev = vp->dev;
 	result->mmsg_vector = kmalloc(
 		(sizeof(struct mmsghdr) * max_size), GFP_KERNEL);
+	{
+		struct mmsghdr __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (result->mmsg_vector == NULL)
 		goto out_mmsg_fail;
 	result->skbuff_vector = kmalloc(
 		(sizeof(void *) * max_size), GFP_KERNEL);
+	{
+		void *__uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (result->skbuff_vector == NULL)
 		goto out_skb_fail;
 

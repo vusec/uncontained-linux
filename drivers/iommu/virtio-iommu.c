@@ -25,6 +25,16 @@
 
 #include <uapi/linux/virtio_iommu.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define MSI_IOVA_BASE			0x8000000
 #define MSI_IOVA_LENGTH			0x100000
 
@@ -232,6 +242,10 @@ static int __viommu_add_req(struct viommu_dev *viommu, void *buf, size_t len,
 		return -EINVAL;
 
 	req = kzalloc(sizeof(*req) + len, GFP_ATOMIC);
+	{
+		typeof((*req)) __uncontained_tmp45;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!req)
 		return -ENOMEM;
 
@@ -527,6 +541,14 @@ static int viommu_probe_endpoint(struct viommu_dev *viommu, struct device *dev)
 	probe_len = sizeof(*probe) + viommu->probe_size +
 		    sizeof(struct virtio_iommu_req_tail);
 	probe = kzalloc(probe_len, GFP_KERNEL);
+	{
+		typeof((*probe)) __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
+	{
+		struct virtio_iommu_req_tail __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!probe)
 		return -ENOMEM;
 

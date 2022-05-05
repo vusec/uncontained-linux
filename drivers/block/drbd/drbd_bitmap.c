@@ -19,6 +19,11 @@
 #include <linux/slab.h>
 #include <linux/highmem.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "drbd_int.h"
 
 
@@ -395,6 +400,10 @@ static struct page **bm_realloc_pages(struct drbd_bitmap *b, unsigned long want)
 	 * Context is receiver thread or dmsetup. */
 	bytes = sizeof(struct page *)*want;
 	new_pages = kzalloc(bytes, GFP_NOIO | __GFP_NOWARN);
+	{
+		struct page *__uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!new_pages) {
 		new_pages = __vmalloc(bytes, GFP_NOIO | __GFP_ZERO);
 		if (!new_pages)

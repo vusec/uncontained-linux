@@ -17,6 +17,11 @@
 #include <linux/list.h>
 #include <linux/dma-mapping.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "musb_core.h"
 #include "musb_host.h"
 #include "musb_trace.h"
@@ -2593,6 +2598,10 @@ static int musb_alloc_temp_buffer(struct urb *urb, gfp_t mem_flags)
 		sizeof(struct musb_temp_buffer) + MUSB_USB_DMA_ALIGN - 1;
 
 	kmalloc_ptr = kmalloc(kmalloc_size, mem_flags);
+	{
+		struct musb_temp_buffer __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!kmalloc_ptr)
 		return -ENOMEM;
 

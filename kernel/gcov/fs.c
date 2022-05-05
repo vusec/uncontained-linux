@@ -27,6 +27,11 @@
 #include <linux/mutex.h>
 #include <linux/seq_file.h>
 #include <linux/mm.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "gcov.h"
 
 /**
@@ -542,6 +547,10 @@ static struct gcov_node *new_node(struct gcov_node *parent,
 	struct gcov_node *node;
 
 	node = kzalloc(sizeof(struct gcov_node) + strlen(name) + 1, GFP_KERNEL);
+	{
+		struct gcov_node __uncontained_tmp124;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (!node)
 		goto err_nomem;
 	if (info) {

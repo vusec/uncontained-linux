@@ -18,6 +18,11 @@
 #include <linux/iopoll.h>
 #include <linux/soc/renesas/rcar-sysc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "rcar-sysc.h"
 
 /* SYSC Common */
@@ -405,6 +410,10 @@ static int __init rcar_sysc_pd_init(void)
 
 		n = strlen(area->name) + 1;
 		pd = kzalloc(sizeof(*pd) + n, GFP_KERNEL);
+		{
+			typeof((*pd)) __uncontained_tmp94;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp94;
+		}
 		if (!pd) {
 			error = -ENOMEM;
 			goto out_put;

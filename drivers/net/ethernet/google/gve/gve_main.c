@@ -13,6 +13,11 @@
 #include <linux/timer.h>
 #include <linux/workqueue.h>
 #include <net/sch_generic.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "gve.h"
 #include "gve_dqo.h"
 #include "gve_adminq.h"
@@ -346,6 +351,10 @@ static int gve_alloc_notify_blocks(struct gve_priv *priv)
 
 	priv->ntfy_blocks = kvzalloc(priv->num_ntfy_blks *
 				     sizeof(*priv->ntfy_blocks), GFP_KERNEL);
+	{
+		typeof((*priv->ntfy_blocks)) __uncontained_tmp72;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp72;
+	}
 	if (!priv->ntfy_blocks) {
 		err = -ENOMEM;
 		goto abort_with_irq_db_indices;

@@ -16,6 +16,11 @@
 #include <linux/rtnetlink.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int aead_geniv_setkey(struct crypto_aead *tfm,
 			     const u8 *key, unsigned int keylen)
 {
@@ -54,6 +59,14 @@ struct aead_instance *aead_geniv_alloc(struct crypto_template *tmpl,
 		return ERR_PTR(err);
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
+	{
+		typeof((*inst)) __uncontained_tmp8;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+	}
+	{
+		typeof((*spawn)) __uncontained_tmp9;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!inst)
 		return ERR_PTR(-ENOMEM);
 

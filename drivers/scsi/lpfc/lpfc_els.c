@@ -34,6 +34,11 @@
 #include <uapi/scsi/fc/fc_fs.h>
 #include <uapi/scsi/fc/fc_els.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "lpfc_hw4.h"
 #include "lpfc_hw.h"
 #include "lpfc_sli.h"
@@ -7515,6 +7520,10 @@ lpfc_send_rscn_event(struct lpfc_vport *vport,
 
 	rscn_event_data = kmalloc(sizeof(struct lpfc_rscn_event_header) +
 		payload_len, GFP_KERNEL);
+	{
+		struct lpfc_rscn_event_header __uncontained_tmp114;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!rscn_event_data) {
 		lpfc_printf_vlog(vport, KERN_ERR, LOG_TRACE_EVENT,
 			"0147 Failed to allocate memory for RSCN event\n");

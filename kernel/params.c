@@ -14,6 +14,11 @@
 #include <linux/ctype.h>
 #include <linux/security.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifdef CONFIG_SYSFS
 /* Protects all built-in parameters, modules use their own param_lock */
 static DEFINE_MUTEX(param_lock);
@@ -48,6 +53,10 @@ static void *kmalloc_parameter(unsigned int size)
 	struct kmalloced_param *p;
 
 	p = kmalloc(sizeof(*p) + size, GFP_KERNEL);
+	{
+		typeof((*p)) __uncontained_tmp160;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp160;
+	}
 	if (!p)
 		return NULL;
 

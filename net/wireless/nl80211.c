@@ -26,6 +26,11 @@
 #include <net/cfg80211.h>
 #include <net/sock.h>
 #include <net/inet_connection_sock.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "core.h"
 #include "nl80211.h"
 #include "reg.h"
@@ -8520,6 +8525,18 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
 			+ sizeof(*request->ssids) * n_ssids
 			+ sizeof(*request->channels) * n_channels
 			+ ie_len, GFP_KERNEL);
+	{
+		typeof((*request)) __uncontained_tmp184;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp184;
+	}
+	{
+		typeof((*request->channels)) __uncontained_tmp185;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp185;
+	}
+	{
+		typeof((*request->ssids)) __uncontained_tmp186;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp186;
+	}
 	if (!request)
 		return -ENOMEM;
 
@@ -8970,6 +8987,26 @@ nl80211_parse_sched_scan(struct wiphy *wiphy, struct wireless_dev *wdev,
 			+ sizeof(*request->scan_plans) * n_plans
 			+ sizeof(*request->channels) * n_channels
 			+ ie_len, GFP_KERNEL);
+	{
+		typeof((*request)) __uncontained_tmp187;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp187;
+	}
+	{
+		typeof((*request->channels)) __uncontained_tmp188;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp188;
+	}
+	{
+		typeof((*request->match_sets)) __uncontained_tmp189;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp189;
+	}
+	{
+		typeof((*request->scan_plans)) __uncontained_tmp190;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp190;
+	}
+	{
+		typeof((*request->ssids)) __uncontained_tmp191;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp191;
+	}
 	if (!request)
 		return ERR_PTR(-ENOMEM);
 

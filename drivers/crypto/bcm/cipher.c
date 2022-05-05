@@ -34,6 +34,11 @@
 #include <crypto/sha2.h>
 #include <crypto/sha3.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "util.h"
 #include "cipher.h"
 #include "spu.h"
@@ -2040,6 +2045,10 @@ static int ahash_init(struct ahash_request *req)
 		       CRYPTO_TFM_REQ_MAY_SLEEP)) ? GFP_KERNEL : GFP_ATOMIC;
 		ctx->shash = kmalloc(sizeof(*ctx->shash) +
 				     crypto_shash_descsize(hash), gfp);
+		{
+			typeof((*ctx->shash)) __uncontained_tmp8;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+		}
 		if (!ctx->shash) {
 			ret = -ENOMEM;
 			goto err_hash;

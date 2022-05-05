@@ -8,6 +8,11 @@
 
 #include "./fireworks.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static inline const char*
 get_phys_name(struct snd_efw_phys_grp *grp, bool input)
 {
@@ -137,6 +142,14 @@ proc_read_phys_meters(struct snd_info_entry *entry,
 	size = sizeof(struct snd_efw_phys_meters) +
 	       (efw->phys_in + efw->phys_out) * sizeof(u32);
 	meters = kzalloc(size, GFP_KERNEL);
+	{
+		struct snd_efw_phys_meters __uncontained_tmp109;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp109;
+	}
+	{
+		u32 __uncontained_tmp110;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (meters == NULL)
 		return;
 

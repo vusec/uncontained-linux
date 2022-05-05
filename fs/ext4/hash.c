@@ -9,6 +9,11 @@
 #include <linux/unicode.h>
 #include <linux/compiler.h>
 #include <linux/bitops.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ext4.h"
 
 #define DELTA 0x9E3779B9
@@ -299,6 +304,10 @@ int ext4fs_dirhash(const struct inode *dir, const char *name, int len,
 	if (len && IS_CASEFOLDED(dir) && um &&
 	   (!IS_ENCRYPTED(dir) || fscrypt_has_encryption_key(dir))) {
 		buff = kzalloc(sizeof(char) * PATH_MAX, GFP_KERNEL);
+		{
+			char __uncontained_tmp137;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp137;
+		}
 		if (!buff)
 			return -ENOMEM;
 

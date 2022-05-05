@@ -19,6 +19,11 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct authenc_instance_ctx {
 	struct crypto_ahash_spawn auth;
 	struct crypto_skcipher_spawn enc;
@@ -385,6 +390,14 @@ static int crypto_authenc_create(struct crypto_template *tmpl,
 		return err;
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*ctx), GFP_KERNEL);
+	{
+		typeof((*ctx)) __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
+	{
+		typeof((*inst)) __uncontained_tmp7;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!inst)
 		return -ENOMEM;
 	ctx = aead_instance_ctx(inst);

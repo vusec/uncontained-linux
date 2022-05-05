@@ -45,6 +45,11 @@
 #include <linux/crc32.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define OFFSET(REG_ADDR)    ((REG_ADDR) << 2)
 
 #define IPG 12
@@ -589,6 +594,14 @@ static struct cmac *pm3393_mac_create(adapter_t *adapter, int index)
 	struct cmac *cmac;
 
 	cmac = kzalloc(sizeof(*cmac) + sizeof(cmac_instance), GFP_KERNEL);
+	{
+		typeof((*cmac)) __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
+	{
+		cmac_instance __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!cmac)
 		return NULL;
 

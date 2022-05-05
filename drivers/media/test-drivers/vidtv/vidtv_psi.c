@@ -22,6 +22,11 @@
 #include <linux/time.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "vidtv_common.h"
 #include "vidtv_psi.h"
 #include "vidtv_ts.h"
@@ -322,6 +327,14 @@ struct vidtv_psi_desc_registration
 	struct vidtv_psi_desc_registration *desc;
 
 	desc = kzalloc(sizeof(*desc) + sizeof(format_id) + additional_info_len, GFP_KERNEL);
+	{
+		typeof((format_id)) __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
+	{
+		typeof((*desc)) __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!desc)
 		return NULL;
 

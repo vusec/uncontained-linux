@@ -23,6 +23,11 @@
 #include <sound/control.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "pcxhr.h"
 #include "pcxhr_mixer.h"
 #include "pcxhr_hwdep.h"
@@ -1575,6 +1580,14 @@ static int pcxhr_probe(struct pci_dev *pci,
 			    sizeof(u32) * (PCXHR_SIZE_MAX_LONG_STATUS -
 					   PCXHR_SIZE_MAX_STATUS),
 			    GFP_KERNEL);
+	{
+		typeof((u32)) __uncontained_tmp188;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp188;
+	}
+	{
+		typeof((*mgr->prmh)) __uncontained_tmp189;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp189;
+	}
 	if (! mgr->prmh) {
 		pcxhr_free(mgr);
 		return -ENOMEM;

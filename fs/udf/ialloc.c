@@ -23,6 +23,11 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "udf_i.h"
 #include "udf_sb.h"
 
@@ -70,11 +75,19 @@ struct inode *udf_new_inode(struct inode *dir, umode_t mode)
 		iinfo->i_data = kzalloc(inode->i_sb->s_blocksize -
 					sizeof(struct extendedFileEntry),
 					GFP_KERNEL);
+		{
+			struct extendedFileEntry __uncontained_tmp165;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp165;
+		}
 	} else {
 		iinfo->i_efe = 0;
 		iinfo->i_data = kzalloc(inode->i_sb->s_blocksize -
 					sizeof(struct fileEntry),
 					GFP_KERNEL);
+		{
+			struct fileEntry __uncontained_tmp166;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp166;
+		}
 	}
 	if (!iinfo->i_data) {
 		make_bad_inode(inode);

@@ -16,6 +16,11 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 #include <linux/mm.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "gcov.h"
 
 #if (__GNUC__ >= 10)
@@ -310,6 +315,10 @@ struct gcov_info *gcov_info_dup(struct gcov_info *info)
 			cv_size = sizeof(gcov_type) * sci_ptr->num;
 
 			dci_ptr->values = kvmalloc(cv_size, GFP_KERNEL);
+			{
+				gcov_type __uncontained_tmp51;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+			}
 
 			if (!dci_ptr->values)
 				goto err_free;

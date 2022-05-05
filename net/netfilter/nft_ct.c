@@ -23,6 +23,11 @@
 #include <net/netfilter/nf_conntrack_l4proto.h>
 #include <net/netfilter/nf_conntrack_expect.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct nft_ct {
 	enum nft_ct_keys	key:8;
 	enum ip_conntrack_dir	dir:8;
@@ -892,6 +897,10 @@ static int nft_ct_timeout_obj_init(const struct nft_ctx *ctx,
 
 	timeout = kzalloc(sizeof(struct nf_ct_timeout) +
 			  l4proto->ctnl_timeout.obj_size, GFP_KERNEL);
+	{
+		struct nf_ct_timeout __uncontained_tmp178;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp178;
+	}
 	if (timeout == NULL) {
 		ret = -ENOMEM;
 		goto err_proto_put;

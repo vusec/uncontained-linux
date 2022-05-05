@@ -20,6 +20,11 @@
 
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "netns.h"
 
 #define NLMDBG_FACILITY		NLMDBG_MONITOR
@@ -277,6 +282,10 @@ static struct nsm_handle *nsm_create_handle(const struct sockaddr *sap,
 	struct nsm_handle *new;
 
 	new = kzalloc(sizeof(*new) + hostname_len + 1, GFP_KERNEL);
+	{
+		typeof((*new)) __uncontained_tmp111;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (unlikely(new == NULL))
 		return NULL;
 

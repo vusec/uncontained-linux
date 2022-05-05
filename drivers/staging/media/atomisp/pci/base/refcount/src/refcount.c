@@ -24,6 +24,11 @@
 
 #include "ia_css_debug.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* TODO: enable for other memory aswell
 	 now only for ia_css_ptr */
 struct ia_css_refcount_entry {
@@ -83,6 +88,10 @@ int ia_css_refcount_init(uint32_t size)
 	}
 	myrefcount.items =
 	    kvmalloc(sizeof(struct ia_css_refcount_entry) * size, GFP_KERNEL);
+	{
+		struct ia_css_refcount_entry __uncontained_tmp117;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!myrefcount.items)
 		err = -ENOMEM;
 	if (!err) {

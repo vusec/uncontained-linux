@@ -12,6 +12,11 @@
 #include <linux/sched/clock.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct cpufreq_stats {
 	unsigned int total_trans;
 	unsigned long long last_time;
@@ -234,6 +239,14 @@ void cpufreq_stats_create_table(struct cpufreq_policy *policy)
 
 	/* Allocate memory for time_in_state/freq_table/trans_table in one go */
 	stats->time_in_state = kzalloc(alloc_size, GFP_KERNEL);
+	{
+		int __uncontained_tmp16;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+	}
+	{
+		u64 __uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!stats->time_in_state)
 		goto free_stat;
 

@@ -6,6 +6,11 @@
 
 #include <linux/slab.h>
 #include <linux/iversion.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "misc.h"
 #include "delayed-inode.h"
 #include "disk-io.h"
@@ -318,6 +323,10 @@ static struct btrfs_delayed_item *btrfs_alloc_delayed_item(u32 data_len)
 {
 	struct btrfs_delayed_item *item;
 	item = kmalloc(sizeof(*item) + data_len, GFP_NOFS);
+	{
+		typeof((*item)) __uncontained_tmp124;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (item) {
 		item->data_len = data_len;
 		item->ins_or_del = 0;
@@ -723,6 +732,14 @@ static int btrfs_insert_delayed_item(struct btrfs_trans_handle *trans,
 
 		ins_data = kmalloc(batch.nr * sizeof(u32) +
 				   batch.nr * sizeof(struct btrfs_key), GFP_NOFS);
+		{
+			struct btrfs_key __uncontained_tmp122;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp122;
+		}
+		{
+			u32 __uncontained_tmp123;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp123;
+		}
 		if (!ins_data) {
 			ret = -ENOMEM;
 			goto out;

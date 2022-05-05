@@ -4,6 +4,11 @@
  */
 
 #include <crypto/hash.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "core.h"
 #include "dp_tx.h"
 #include "hal_tx.h"
@@ -1085,6 +1090,10 @@ int ath11k_dp_alloc(struct ath11k_base *ab)
 		dp->tx_ring[i].tx_status_head = 0;
 		dp->tx_ring[i].tx_status_tail = DP_TX_COMP_RING_SIZE - 1;
 		dp->tx_ring[i].tx_status = kmalloc(size, GFP_KERNEL);
+		{
+			struct hal_wbm_release_ring __uncontained_tmp65;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+		}
 		if (!dp->tx_ring[i].tx_status) {
 			ret = -ENOMEM;
 			goto fail_cmn_srng_cleanup;

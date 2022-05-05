@@ -26,6 +26,11 @@
 #include <linux/spi/libertas_spi.h>
 #include <linux/spi/spi.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "host.h"
 #include "decl.h"
 #include "defs.h"
@@ -949,6 +954,10 @@ static int if_spi_host_to_card(struct lbs_private *priv,
 	}
 	blen = ALIGN(nb, 4);
 	packet = kzalloc(sizeof(struct if_spi_packet) + blen, GFP_ATOMIC);
+	{
+		struct if_spi_packet __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!packet) {
 		err = -ENOMEM;
 		goto out;

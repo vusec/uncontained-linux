@@ -27,6 +27,11 @@
 #include <net/sock.h>
 #include <net/af_vsock.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "vmci_transport_notify.h"
 
 static int vmci_transport_recv_dgram_cb(void *data, struct vmci_datagram *dg);
@@ -1708,6 +1713,10 @@ static int vmci_transport_dgram_enqueue(
 
 	/* Allocate a buffer for the user's message and our packet header. */
 	dg = kmalloc(len + sizeof(*dg), GFP_KERNEL);
+	{
+		typeof((*dg)) __uncontained_tmp151;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp151;
+	}
 	if (!dg)
 		return -ENOMEM;
 

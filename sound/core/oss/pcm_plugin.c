@@ -30,6 +30,11 @@
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "pcm_plugin.h"
 
 #define snd_pcm_plug_first(plug) ((plug)->runtime->oss.plugin_first)
@@ -159,6 +164,10 @@ int snd_pcm_plugin_build(struct snd_pcm_substream *plug,
 	if (snd_BUG_ON(!src_format || !dst_format))
 		return -ENXIO;
 	plugin = kzalloc(sizeof(*plugin) + extra, GFP_KERNEL);
+	{
+		typeof((*plugin)) __uncontained_tmp213;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp213;
+	}
 	if (plugin == NULL)
 		return -ENOMEM;
 	plugin->name = name;

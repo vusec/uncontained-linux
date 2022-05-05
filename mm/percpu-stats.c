@@ -14,6 +14,11 @@
 #include <linux/sort.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "percpu-internal.h"
 
 #define P(X, Y) \
@@ -145,6 +150,10 @@ alloc_buffer:
 
 	/* there can be at most this many free and allocated fragments */
 	buffer = vmalloc(array_size(sizeof(int), (2 * max_nr_alloc + 1)));
+	{
+		int __uncontained_tmp130;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp130;
+	}
 	if (!buffer)
 		return -ENOMEM;
 

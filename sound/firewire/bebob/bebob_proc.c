@@ -7,6 +7,11 @@
 
 #include "./bebob.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* contents of information register */
 struct hw_info {
 	u64 manufacturer;
@@ -82,6 +87,10 @@ proc_read_meters(struct snd_info_entry *entry,
 	channels = spec->num * 2;
 	size = channels * sizeof(u32);
 	buf = kmalloc(size, GFP_KERNEL);
+	{
+		u32 __uncontained_tmp108;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp108;
+	}
 	if (buf == NULL)
 		return;
 

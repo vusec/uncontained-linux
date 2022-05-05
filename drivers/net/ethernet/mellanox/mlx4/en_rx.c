@@ -44,6 +44,11 @@
 #include <linux/irq.h>
 
 #include <net/ip.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #if IS_ENABLED(CONFIG_IPV6)
 #include <net/ip6_checksum.h>
 #endif
@@ -289,6 +294,10 @@ int mlx4_en_create_rx_ring(struct mlx4_en_priv *priv,
 	tmp = size * roundup_pow_of_two(MLX4_EN_MAX_RX_FRAGS *
 					sizeof(struct mlx4_en_rx_alloc));
 	ring->rx_info = kvzalloc_node(tmp, GFP_KERNEL, node);
+	{
+		struct mlx4_en_rx_alloc __uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!ring->rx_info) {
 		err = -ENOMEM;
 		goto err_xdp_info;

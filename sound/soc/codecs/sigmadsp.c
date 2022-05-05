@@ -16,6 +16,16 @@
 #include <sound/control.h>
 #include <sound/soc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "sigmadsp.h"
 
 #define SIGMA_MAGIC "ADISIGM"
@@ -224,10 +234,18 @@ static int sigma_fw_load_control(struct sigmadsp *sigmadsp,
 
 	num_bytes = le16_to_cpu(ctrl_chunk->num_bytes);
 	ctrl = kzalloc(sizeof(*ctrl) + num_bytes, GFP_KERNEL);
+	{
+		typeof((*ctrl)) __uncontained_tmp158;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp158;
+	}
 	if (!ctrl)
 		return -ENOMEM;
 
 	name = kzalloc(name_len + 1, GFP_KERNEL);
+	{
+		typeof((*ctrl_chunk)) __uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!name) {
 		ret = -ENOMEM;
 		goto err_free_ctrl;
@@ -273,6 +291,10 @@ static int sigma_fw_load_data(struct sigmadsp *sigmadsp,
 	length -= sizeof(*data_chunk);
 
 	data = kzalloc(sizeof(*data) + length, GFP_KERNEL);
+	{
+		typeof((*data)) __uncontained_tmp159;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp159;
+	}
 	if (!data)
 		return -ENOMEM;
 
@@ -416,6 +438,10 @@ static int process_sigma_action(struct sigmadsp *sigmadsp,
 			return -EINVAL;
 
 		data = kzalloc(sizeof(*data) + len - 2, GFP_KERNEL);
+		{
+			typeof((*data)) __uncontained_tmp160;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp160;
+		}
 		if (!data)
 			return -ENOMEM;
 

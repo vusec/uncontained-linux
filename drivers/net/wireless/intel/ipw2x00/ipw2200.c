@@ -19,6 +19,11 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <net/cfg80211-wext.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ipw2200.h"
 #include "ipw.h"
 
@@ -1237,6 +1242,18 @@ static struct ipw_fw_error *ipw_alloc_error_log(struct ipw_priv *priv)
 	error = kmalloc(sizeof(*error) +
 			sizeof(*error->elem) * elem_len +
 			sizeof(*error->log) * log_len, GFP_ATOMIC);
+	{
+		typeof((*error)) __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
+	{
+		typeof((*error->elem)) __uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
+	{
+		typeof((*error->log)) __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!error) {
 		IPW_ERROR("Memory allocation for firmware error log "
 			  "failed.\n");

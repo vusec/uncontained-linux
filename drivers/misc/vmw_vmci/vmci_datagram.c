@@ -12,6 +12,11 @@
 #include <linux/slab.h>
 #include <linux/bug.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "vmci_datagram.h"
 #include "vmci_resource.h"
 #include "vmci_context.h"
@@ -226,6 +231,10 @@ static int dg_dispatch_as_host(u32 context_id, struct vmci_datagram *dg)
 
 			dg_info = kmalloc(sizeof(*dg_info) +
 				    (size_t) dg->payload_size, GFP_ATOMIC);
+			{
+				typeof((*dg_info)) __uncontained_tmp61;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+			}
 			if (!dg_info) {
 				atomic_dec(&delayed_dg_host_queue_size);
 				vmci_resource_put(resource);
@@ -370,6 +379,10 @@ int vmci_datagram_invoke_guest_handler(struct vmci_datagram *dg)
 
 		dg_info = kmalloc(sizeof(*dg_info) + (size_t)dg->payload_size,
 				  GFP_ATOMIC);
+		{
+			typeof((*dg_info)) __uncontained_tmp62;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+		}
 		if (!dg_info) {
 			vmci_resource_put(resource);
 			return VMCI_ERROR_NO_MEM;

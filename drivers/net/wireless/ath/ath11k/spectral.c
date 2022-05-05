@@ -4,6 +4,11 @@
  */
 
 #include <linux/relay.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "core.h"
 #include "debug.h"
 
@@ -699,6 +704,10 @@ static int ath11k_spectral_process_data(struct ath11k *ar,
 
 	sample_sz = sizeof(*fft_sample) + ATH11K_SPECTRAL_MAX_IB_BINS(ab);
 	fft_sample = kmalloc(sample_sz, GFP_ATOMIC);
+	{
+		typeof((*fft_sample)) __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (!fft_sample) {
 		ret = -ENOBUFS;
 		goto unlock;

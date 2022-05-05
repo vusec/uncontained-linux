@@ -18,6 +18,11 @@
 #include "scrub/scrub.h"
 #include "scrub/common.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* Superblock */
 
 /* Cross-reference with the other btrees. */
@@ -728,6 +733,10 @@ xchk_agfl(
 	sai.sz_entries = agflcount;
 	sai.entries = kmem_zalloc(sizeof(xfs_agblock_t) * agflcount,
 			KM_MAYFAIL);
+	{
+		xfs_agblock_t __uncontained_tmp153;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp153;
+	}
 	if (!sai.entries) {
 		error = -ENOMEM;
 		goto out;
