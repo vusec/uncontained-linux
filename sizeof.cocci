@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/// If list_for_each_entry, etc complete a traversal of the list, the iterator
+/// variable ends up pointing to an address at an offset from the list head,
+/// and not a meaningful structure.  Thus this value should not be used after
+/// the end of the iterator.
+//#False positives arise when there is a goto in the iterator and the
+//#reported reference is at the label of this goto.  Some flag tests
+//#may also cause a report to be a false positive.
+///
+// Confidence: Moderate
+// Copyright: (C) 2012 Julia Lawall, INRIA/LIP6.
+// Copyright: (C) 2012 Gilles Muller, INRIA/LIP6.
+// URL: http://coccinelle.lip6.fr/
+// Comments:
+// Options: --no-includes --include-headers
+
+virtual context
+virtual org
+virtual report
+
+@simple_sizeof@
+type t;
+expression E, c;
+position p;
+@@
+(
+c = kzalloc(sizeof(t), ...)@p;
+|
+c = kzalloc(sizeof E, ...)@p;
+)
+
+@complex_sizeof_type@
+type t;
+expression c;
+fresh identifier i = "__uncontained_tmp";
+position p1 != simple_sizeof.p;
+@@
+c = kzalloc(<+... sizeof(t) ...+>, ...)@p1;
+++ t i;
+++ __uncontained_complex_alloc = (unsigned long)&i;
+
+@complex_sizeof_var@
+expression E, c;
+fresh identifier i = "__uncontained_tmp";
+position p1 != simple_sizeof.p;
+@@
+c = kzalloc(<+... sizeof E ...+>, ...)@p1;
+++ typeof (E) i;
+++ __uncontained_complex_alloc = (unsigned long)&i;
+
+@script:python depends on report@
+p1 << complex_sizeof_type.p1;
+@@
+
+msg = "Detected custom type allocation"
+coccilib.report.print_report(p1[0], msg)
+
+@script:python depends on report@
+p1 << complex_sizeof_var.p1;
+@@
+
+msg = "Detected custom type allocation"
+coccilib.report.print_report(p1[0], msg)
