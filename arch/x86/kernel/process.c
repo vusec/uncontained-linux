@@ -130,6 +130,9 @@ static int set_new_tls(struct task_struct *p, unsigned long tls)
 		return do_set_thread_area_64(p, ARCH_SET_FS, tls);
 }
 
+// avoid sanitizing pt_regs since it is generated in entry_SYSCALL_64
+static struct pt_regs* __uncontained_nosanitize_src_pt_regs __attribute__((used));
+
 int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
 		struct task_struct *p, unsigned long tls)
 {
