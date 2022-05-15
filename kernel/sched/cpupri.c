@@ -24,6 +24,11 @@
  */
 #include "sched.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * p->rt_priority   p->prio   newpri   cpupri
  *

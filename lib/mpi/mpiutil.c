@@ -20,6 +20,11 @@
 
 #include "mpi-internal.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Constants allocated right away at startup.  */
 static MPI constants[MPI_NUMBER_OF_CONSTANTS];
 
@@ -149,10 +154,6 @@ int mpi_resize(MPI a, unsigned nlimbs)
 
 	if (a->d) {
 		p = kcalloc(nlimbs, sizeof(mpi_limb_t), GFP_KERNEL);
-		{
-			typeof((mpi_limb_t)) __uncontained_tmp99;
-			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
-		}
 		if (!p)
 			return -ENOMEM;
 		memcpy(p, a->d, a->alloced * sizeof(mpi_limb_t));
@@ -160,10 +161,6 @@ int mpi_resize(MPI a, unsigned nlimbs)
 		a->d = p;
 	} else {
 		a->d = kcalloc(nlimbs, sizeof(mpi_limb_t), GFP_KERNEL);
-		{
-			typeof((mpi_limb_t)) __uncontained_tmp100;
-			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
-		}
 		if (!a->d)
 			return -ENOMEM;
 	}

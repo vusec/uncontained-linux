@@ -3,6 +3,11 @@
 #include "uncore.h"
 #include "uncore_discovery.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* SNB-EP pci bus to socket mapping */
 #define SNBEP_CPUNODEID			0x40
 #define SNBEP_GIDNIDMAP			0x54

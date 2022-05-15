@@ -8,6 +8,11 @@
  */
 #include "sched.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static inline int parent(int i)
 {
 	return (i - 1) >> 1;

@@ -8,6 +8,11 @@
 #include "i915_pvinfo.h"
 #include "i915_vgpu.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * DOC: fence register handling
  *

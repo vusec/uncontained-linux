@@ -22,6 +22,11 @@
  */
 #include "sched.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * Targeted preemption latency for CPU-bound tasks:
  *
