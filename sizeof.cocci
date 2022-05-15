@@ -61,13 +61,21 @@ c = func(<+... sizeof E ...+>, ...)@p1;
 
 @add_glob_declaration depends on complex_sizeof_type || complex_sizeof_var@
 @@
-
+(
 #include <...>
 + 
 + #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 + #define _UNCONTAINED_COMPLEX_ALLOC_H
 + static volatile unsigned long __uncontained_complex_alloc;
 + #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+|
+#include "..."
++ 
++ #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
++ #define _UNCONTAINED_COMPLEX_ALLOC_H
++ static volatile unsigned long __uncontained_complex_alloc;
++ #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+)
 
 @script:python depends on report@
 p1 << complex_sizeof_type.p1;

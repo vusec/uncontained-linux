@@ -57,13 +57,21 @@ c = func(nr, <+... sizeof E ...+>, ...)@p1;
 
 @add_glob_declaration depends on complex_nr_type || complex_nr_var@
 @@
-
+(
 #include <...>
 + 
 + #ifndef _UNCONTAINED_KCALLOC_H
 + #define _UNCONTAINED_KCALLOC_H
 + static volatile unsigned long __uncontained_kcalloc;
 + #endif /*_UNCONTAINED_KCALLOC_H*/
+|
+#include "..."
++ 
++ #ifndef _UNCONTAINED_KCALLOC_H
++ #define _UNCONTAINED_KCALLOC_H
++ static volatile unsigned long __uncontained_kcalloc;
++ #endif /*_UNCONTAINED_KCALLOC_H*/
+)
 
 @script:python depends on report@
 p1 << complex_nr_type.p1;
