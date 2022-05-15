@@ -17,7 +17,7 @@ virtual patch
 
 @alloc_function@
 expression c;
-identifier func =~ "^(kmalloc|kzalloc|kcalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc|kvmalloc_node|kvzalloc_node|kmem_alloc|kmem_zalloc|vmalloc_node|vzalloc_node)$";
+identifier func =~ "^(kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc|kvmalloc_node|kvzalloc_node|kmem_alloc|kmem_zalloc|vmalloc_node|vzalloc_node)$";
 @@
 
 c = func(...);
