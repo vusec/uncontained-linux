@@ -67,6 +67,11 @@
 
 #include <linux/slab.h>
 #include <linux/module.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "megaraid_mbox.h"
 
 static int megaraid_init(void);
@@ -1016,6 +1021,10 @@ megaraid_alloc_cmd_packets(adapter_t *adapter)
 	 * commands.
 	 */
 	adapter->kscb_list = kcalloc(MBOX_MAX_SCSI_CMDS, sizeof(scb_t), GFP_KERNEL);
+	{
+		scb_t __uncontained_tmp100;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+	}
 
 	if (adapter->kscb_list == NULL) {
 		con_log(CL_ANN, (KERN_WARNING
@@ -3401,6 +3410,10 @@ megaraid_cmm_register(adapter_t *adapter)
 
 	// Allocate memory for the base list of scb for management module.
 	adapter->uscb_list = kcalloc(MBOX_MAX_USER_CMDS, sizeof(scb_t), GFP_KERNEL);
+	{
+		scb_t __uncontained_tmp101;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+	}
 
 	if (adapter->uscb_list == NULL) {
 		con_log(CL_ANN, (KERN_WARNING

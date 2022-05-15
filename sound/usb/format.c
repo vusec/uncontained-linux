@@ -12,6 +12,11 @@
 #include <sound/core.h>
 #include <sound/pcm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "usbaudio.h"
 #include "card.h"
 #include "quirks.h"
@@ -477,6 +482,10 @@ static int validate_sample_rate_table_v2v3(struct snd_usb_audio *chip,
 		return 0; /* don't perform the validation as default */
 
 	table = kcalloc(fp->nr_rates, sizeof(*table), GFP_KERNEL);
+	{
+		typeof((*table)) __uncontained_tmp140;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!table)
 		return -ENOMEM;
 

@@ -12,6 +12,11 @@
 
 #include <linux/sort.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "u_uvc.h"
 #include "uvc_configfs.h"
 
@@ -2183,6 +2188,10 @@ static int uvcg_streaming_class_allow_link(struct config_item *src,
 
 	count += 2; /* color_matching, NULL */
 	*class_array = kcalloc(count, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp129;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp129;
+	}
 	if (!*class_array) {
 		ret = -ENOMEM;
 		goto unlock;

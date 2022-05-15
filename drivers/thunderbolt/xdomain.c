@@ -17,6 +17,11 @@
 #include <linux/uuid.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "tb.h"
 
 #define XDOMAIN_DEFAULT_TIMEOUT			1000 /* ms */
@@ -360,6 +365,10 @@ static int tb_xdp_properties_request(struct tb_ctl *ctl, u64 route,
 			}
 
 			data = kcalloc(data_len, sizeof(u32), GFP_KERNEL);
+			{
+				u32 __uncontained_tmp112;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+			}
 			if (!data) {
 				ret = -ENOMEM;
 				goto err;
@@ -544,6 +553,10 @@ static void update_property_block(struct tb_xdomain *xd)
 
 		block_len = ret;
 		block = kcalloc(block_len, sizeof(*block), GFP_KERNEL);
+		{
+			typeof((*block)) __uncontained_tmp113;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+		}
 		if (!block) {
 			tb_property_free_dir(dir);
 			goto out_unlock;

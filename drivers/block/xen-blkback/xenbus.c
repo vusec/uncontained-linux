@@ -12,6 +12,11 @@
 #include <linux/kthread.h>
 #include <xen/events.h>
 #include <xen/grant_table.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "common.h"
 
 /* On the XenBus the max length of 'ring-ref%u'. */
@@ -132,6 +137,10 @@ static int xen_blkif_alloc_rings(struct xen_blkif *blkif)
 
 	blkif->rings = kcalloc(blkif->nr_rings, sizeof(struct xen_blkif_ring),
 			       GFP_KERNEL);
+	{
+		struct xen_blkif_ring __uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!blkif->rings)
 		return -ENOMEM;
 

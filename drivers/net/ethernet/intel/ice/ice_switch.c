@@ -1246,6 +1246,10 @@ ice_get_recp_frm_fw(struct ice_hw *hw, struct ice_sw_recipe *recps, u8 rid,
 
 	/* we need a buffer big enough to accommodate all the recipes */
 	tmp = kcalloc(ICE_MAX_NUM_RECIPES, sizeof(*tmp), GFP_KERNEL);
+	{
+		typeof((*tmp)) __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!tmp)
 		return -ENOMEM;
 
@@ -4145,6 +4149,10 @@ ice_add_sw_recipe(struct ice_hw *hw, struct ice_sw_recipe *rm,
 		return -ENOSPC;
 
 	tmp = kcalloc(ICE_MAX_NUM_RECIPES, sizeof(*tmp), GFP_KERNEL);
+	{
+		typeof((*tmp)) __uncontained_tmp34;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!tmp)
 		return -ENOMEM;
 
@@ -4444,6 +4452,10 @@ ice_get_fv(struct ice_hw *hw, struct ice_adv_lkup_elem *lkups, u16 lkups_cnt,
 	u16 i;
 
 	prot_ids = kcalloc(lkups_cnt, sizeof(*prot_ids), GFP_KERNEL);
+	{
+		typeof((*prot_ids)) __uncontained_tmp35;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!prot_ids)
 		return -ENOMEM;
 

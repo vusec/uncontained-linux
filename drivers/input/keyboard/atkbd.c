@@ -26,6 +26,11 @@
 #include <linux/dmi.h>
 #include <linux/property.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRIVER_DESC	"AT and PS/2 keyboard driver"
 
 MODULE_AUTHOR("Vojtech Pavlik <vojtech@suse.cz>");
@@ -1048,6 +1053,10 @@ static int atkbd_get_keymap_from_fwnode(struct atkbd *atkbd)
 		return -ENXIO;
 
 	ptr = kcalloc(n, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp46;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!ptr)
 		return -ENOMEM;
 

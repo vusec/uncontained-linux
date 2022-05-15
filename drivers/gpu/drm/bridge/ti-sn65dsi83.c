@@ -42,6 +42,11 @@
 #include <drm/drm_print.h>
 #include <drm/drm_probe_helper.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* ID registers */
 #define REG_ID(n)				(0x00 + (n))
 /* Reset and clock registers */
@@ -524,6 +529,10 @@ sn65dsi83_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
 
 	input_fmts = kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts),
 			     GFP_KERNEL);
+	{
+		typeof((*input_fmts)) __uncontained_tmp35;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!input_fmts)
 		return NULL;
 

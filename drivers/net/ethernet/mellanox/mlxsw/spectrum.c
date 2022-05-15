@@ -30,6 +30,11 @@
 #include <net/netevent.h>
 #include <net/addrconf.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "spectrum.h"
 #include "pci.h"
 #include "core.h"
@@ -1921,6 +1926,10 @@ static int mlxsw_sp_port_module_info_init(struct mlxsw_sp *mlxsw_sp)
 	mlxsw_sp->port_mapping = kcalloc(max_ports,
 					 sizeof(struct mlxsw_sp_port_mapping *),
 					 GFP_KERNEL);
+	{
+		struct mlxsw_sp_port_mapping *__uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!mlxsw_sp->port_mapping)
 		return -ENOMEM;
 
@@ -2517,6 +2526,10 @@ static int mlxsw_sp_lag_init(struct mlxsw_sp *mlxsw_sp)
 	mlxsw_sp->lags = kcalloc(MLXSW_CORE_RES_GET(mlxsw_sp->core, MAX_LAG),
 				 sizeof(struct mlxsw_sp_upper),
 				 GFP_KERNEL);
+	{
+		struct mlxsw_sp_upper __uncontained_tmp106;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!mlxsw_sp->lags)
 		return -ENOMEM;
 

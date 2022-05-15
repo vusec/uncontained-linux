@@ -25,6 +25,11 @@
 #include <linux/kobject.h>
 #include <linux/sysfs.h>
 #include <net/sock.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "../tools/lib/bpf/relo_core.h"
 
 /* BTF (BPF Type Format) is the meta data format which describes
@@ -6796,6 +6801,10 @@ int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
 	 * into arrays of btf_ids of struct fields and array indices.
 	 */
 	specs = kcalloc(3, sizeof(*specs), GFP_KERNEL);
+	{
+		typeof((*specs)) __uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!specs)
 		return -ENOMEM;
 
@@ -6813,6 +6822,10 @@ int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
 		}
 		if (cc->cnt) {
 			cands.cands = kcalloc(cc->cnt, sizeof(*cands.cands), GFP_KERNEL);
+			{
+				typeof((*cands.cands)) __uncontained_tmp140;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+			}
 			if (!cands.cands) {
 				err = -ENOMEM;
 				goto out;

@@ -70,6 +70,11 @@
 
 #include <drm/intel_lpe_audio.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "i915_drv.h"
 #include "intel_de.h"
 #include "intel_lpe_audio.h"
@@ -91,6 +96,10 @@ lpe_audio_platdev_create(struct drm_i915_private *dev_priv)
 		return ERR_PTR(-ENOMEM);
 
 	rsc = kcalloc(2, sizeof(*rsc), GFP_KERNEL);
+	{
+		typeof((*rsc)) __uncontained_tmp32;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!rsc) {
 		kfree(pdata);
 		return ERR_PTR(-ENOMEM);

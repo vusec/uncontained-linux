@@ -860,6 +860,10 @@ void intel_ggtt_init_fences(struct i915_ggtt *ggtt)
 	ggtt->fence_regs = kcalloc(num_fences,
 				   sizeof(*ggtt->fence_regs),
 				   GFP_KERNEL);
+	{
+		typeof((*ggtt->fence_regs)) __uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!ggtt->fence_regs)
 		num_fences = 0;
 

@@ -16,6 +16,11 @@
 #include <linux/iio/driver.h>
 #include <linux/iio/consumer.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct iio_map_internal {
 	struct iio_dev *indio_dev;
 	struct iio_map *map;
@@ -270,6 +275,10 @@ static struct iio_channel *of_iio_channel_get_all(struct device *dev)
 
 	/* NULL terminated array to save passing size */
 	chans = kcalloc(nummaps + 1, sizeof(*chans), GFP_KERNEL);
+	{
+		typeof((*chans)) __uncontained_tmp32;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (chans == NULL)
 		return ERR_PTR(-ENOMEM);
 
@@ -452,6 +461,10 @@ struct iio_channel *iio_channel_get_all(struct device *dev)
 
 	/* NULL terminated array to save passing size */
 	chans = kcalloc(nummaps + 1, sizeof(*chans), GFP_KERNEL);
+	{
+		typeof((*chans)) __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (chans == NULL) {
 		ret = -ENOMEM;
 		goto error_ret;

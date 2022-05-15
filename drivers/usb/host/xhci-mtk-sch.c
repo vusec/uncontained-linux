@@ -10,6 +10,11 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "xhci.h"
 #include "xhci-mtk.h"
 
@@ -178,6 +183,10 @@ static struct mu3h_sch_tt *find_tt(struct usb_device *udev)
 		if (!tt_index) {	/* Create the index array */
 			tt_index = kcalloc(utt->hub->maxchild,
 					sizeof(*tt_index), GFP_KERNEL);
+			{
+				typeof((*tt_index)) __uncontained_tmp105;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+			}
 			if (!tt_index)
 				return ERR_PTR(-ENOMEM);
 			utt->hcpriv = tt_index;
@@ -667,6 +676,10 @@ int xhci_mtk_sch_init(struct xhci_hcd_mtk *mtk)
 	num_usb_bus = xhci->usb3_rhub.num_ports * 2 + xhci->usb2_rhub.num_ports;
 
 	sch_array = kcalloc(num_usb_bus, sizeof(*sch_array), GFP_KERNEL);
+	{
+		typeof((*sch_array)) __uncontained_tmp106;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (sch_array == NULL)
 		return -ENOMEM;
 

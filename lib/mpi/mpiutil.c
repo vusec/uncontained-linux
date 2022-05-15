@@ -149,6 +149,10 @@ int mpi_resize(MPI a, unsigned nlimbs)
 
 	if (a->d) {
 		p = kcalloc(nlimbs, sizeof(mpi_limb_t), GFP_KERNEL);
+		{
+			typeof((mpi_limb_t)) __uncontained_tmp99;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
+		}
 		if (!p)
 			return -ENOMEM;
 		memcpy(p, a->d, a->alloced * sizeof(mpi_limb_t));
@@ -156,6 +160,10 @@ int mpi_resize(MPI a, unsigned nlimbs)
 		a->d = p;
 	} else {
 		a->d = kcalloc(nlimbs, sizeof(mpi_limb_t), GFP_KERNEL);
+		{
+			typeof((mpi_limb_t)) __uncontained_tmp100;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+		}
 		if (!a->d)
 			return -ENOMEM;
 	}

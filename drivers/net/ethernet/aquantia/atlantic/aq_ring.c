@@ -16,6 +16,11 @@
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static inline void aq_free_rxpage(struct aq_rxpage *rxpage, struct device *dev)
 {
 	unsigned int len = PAGE_SIZE << rxpage->order;
@@ -112,6 +117,10 @@ static struct aq_ring_s *aq_ring_alloc(struct aq_ring_s *self,
 
 	self->buff_ring =
 		kcalloc(self->size, sizeof(struct aq_ring_buff_s), GFP_KERNEL);
+	{
+		struct aq_ring_buff_s __uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 
 	if (!self->buff_ring) {
 		err = -ENOMEM;

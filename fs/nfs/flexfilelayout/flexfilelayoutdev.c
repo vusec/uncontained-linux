@@ -12,6 +12,11 @@
 #include <linux/module.h>
 #include <linux/sunrpc/addr.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../internal.h"
 #include "../nfs4session.h"
 #include "flexfilelayout.h"
@@ -102,6 +107,10 @@ nfs4_ff_alloc_deviceid_node(struct nfs_server *server, struct pnfs_device *pdev,
 	ds_versions = kcalloc(version_count,
 			      sizeof(struct nfs4_ff_ds_version),
 			      gfp_flags);
+	{
+		struct nfs4_ff_ds_version __uncontained_tmp142;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+	}
 	if (!ds_versions)
 		goto out_scratch;
 

@@ -10,6 +10,11 @@
 #include <linux/module.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "iwl-drv.h"
 #include "iwl-csr.h"
 #include "iwl-debug.h"
@@ -1299,6 +1304,10 @@ static int iwl_alloc_ucode(struct iwl_drv *drv,
 	struct fw_desc *sec;
 
 	sec = kcalloc(pieces->img[type].sec_counter, sizeof(*sec), GFP_KERNEL);
+	{
+		typeof((*sec)) __uncontained_tmp88;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (!sec)
 		return -ENOMEM;
 	drv->fw.img[type].sec = sec;

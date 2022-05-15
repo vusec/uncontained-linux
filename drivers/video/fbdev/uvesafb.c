@@ -26,6 +26,11 @@
 #include <video/edid.h>
 #include <video/uvesafb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -499,6 +504,10 @@ static int uvesafb_vbe_getmodes(struct uvesafb_ktask *task,
 	par->vbe_modes = kcalloc(par->vbe_modes_cnt,
 				 sizeof(struct vbe_mode_ib),
 				 GFP_KERNEL);
+	{
+		struct vbe_mode_ib __uncontained_tmp134;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp134;
+	}
 	if (!par->vbe_modes)
 		return -ENOMEM;
 
@@ -872,6 +881,10 @@ static int uvesafb_vbe_init_mode(struct fb_info *info)
 	 * fb_find_mode().
 	 */
 	mode = kcalloc(i, sizeof(*mode), GFP_KERNEL);
+	{
+		typeof((*mode)) __uncontained_tmp135;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp135;
+	}
 	if (mode) {
 		i = 0;
 		list_for_each(pos, &info->modelist) {

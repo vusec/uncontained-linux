@@ -43,6 +43,11 @@
 #include <linux/serial_core.h>
 #include <linux/sunserialcore.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "sunsab.h"
 
 struct uart_sunsab_port {
@@ -1125,6 +1130,10 @@ static int __init sunsab_init(void)
 		sunsab_ports = kcalloc(num_channels,
 				       sizeof(struct uart_sunsab_port),
 				       GFP_KERNEL);
+		{
+			struct uart_sunsab_port __uncontained_tmp171;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp171;
+		}
 		if (!sunsab_ports)
 			return -ENOMEM;
 

@@ -39,6 +39,11 @@
 #include <net/xdp_sock_drv.h>
 #include <net/xfrm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ixgbe.h"
 #include "ixgbe_common.h"
 #include "ixgbe_dcb_82599.h"
@@ -6323,6 +6328,10 @@ static int ixgbe_sw_init(struct ixgbe_adapter *adapter,
 	adapter->mac_table = kcalloc(hw->mac.num_rar_entries,
 				     sizeof(struct ixgbe_mac_addr),
 				     GFP_KERNEL);
+	{
+		struct ixgbe_mac_addr __uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!adapter->mac_table)
 		return -ENOMEM;
 

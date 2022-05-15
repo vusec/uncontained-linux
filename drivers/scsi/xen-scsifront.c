@@ -58,6 +58,11 @@
 
 #include <asm/xen/hypervisor.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 #define GRANT_INVALID_REF	0
 
@@ -423,6 +428,10 @@ static int map_data_for_request(struct vscsifrnt_info *info,
 		seg_grants = vscsiif_grants_sg(data_grants);
 		shadow->sg = kcalloc(data_grants,
 			sizeof(struct scsiif_request_segment), GFP_ATOMIC);
+		{
+			struct scsiif_request_segment __uncontained_tmp108;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp108;
+		}
 		if (!shadow->sg)
 			return -ENOMEM;
 	}

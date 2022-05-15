@@ -6,6 +6,11 @@
 
 #include <net/mac80211.h>
 #include <linux/etherdevice.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "mac.h"
 #include "core.h"
 #include "debug.h"
@@ -3636,6 +3641,10 @@ static int ath11k_mac_op_hw_scan(struct ieee80211_hw *hw,
 		arg.num_chan = req->n_channels;
 		arg.chan_list = kcalloc(arg.num_chan, sizeof(*arg.chan_list),
 					GFP_KERNEL);
+		{
+			typeof((*arg.chan_list)) __uncontained_tmp85;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+		}
 
 		if (!arg.chan_list) {
 			ret = -ENOMEM;
@@ -6895,6 +6904,10 @@ ath11k_mac_update_active_vif_chan(struct ath11k *ar,
 		return;
 
 	arg.vifs = kcalloc(arg.n_vifs, sizeof(arg.vifs[0]), GFP_KERNEL);
+	{
+		typeof((arg.vifs[0])) __uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!arg.vifs)
 		return;
 
@@ -8201,6 +8214,10 @@ static int ath11k_mac_setup_iface_combinations(struct ath11k *ar)
 	n_limits = 2;
 
 	limits = kcalloc(n_limits, sizeof(*limits), GFP_KERNEL);
+	{
+		typeof((*limits)) __uncontained_tmp87;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (!limits) {
 		kfree(combinations);
 		return -ENOMEM;

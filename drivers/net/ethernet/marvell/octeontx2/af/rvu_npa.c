@@ -8,6 +8,11 @@
 #include <linux/module.h>
 #include <linux/pci.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rvu_struct.h"
 #include "rvu_reg.h"
 #include "rvu.h"
@@ -362,6 +367,10 @@ int rvu_mbox_handler_npa_lf_alloc(struct rvu *rvu,
 
 	pfvf->aura_bmap = kcalloc(NPA_AURA_COUNT(req->aura_sz), sizeof(long),
 				  GFP_KERNEL);
+	{
+		long __uncontained_tmp37;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!pfvf->aura_bmap)
 		goto free_mem;
 
@@ -373,6 +382,10 @@ int rvu_mbox_handler_npa_lf_alloc(struct rvu *rvu,
 
 	pfvf->pool_bmap = kcalloc(NPA_AURA_COUNT(req->aura_sz), sizeof(long),
 				  GFP_KERNEL);
+	{
+		long __uncontained_tmp38;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!pfvf->pool_bmap)
 		goto free_mem;
 

@@ -40,6 +40,11 @@
 #include <net/dn_neigh.h>
 #include <net/dn_dev.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -169,6 +174,10 @@ static void dn_rehash_zone(struct dn_zone *dz)
 	}
 
 	ht = kcalloc(new_divisor, sizeof(struct dn_fib_node*), GFP_KERNEL);
+	{
+		struct dn_fib_node *__uncontained_tmp145;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp145;
+	}
 	if (ht == NULL)
 		return;
 
@@ -205,6 +214,10 @@ static struct dn_zone *dn_new_zone(struct dn_hash *table, int z)
 	}
 
 	dz->dz_hash = kcalloc(dz->dz_divisor, sizeof(struct dn_fib_node *), GFP_KERNEL);
+	{
+		struct dn_fib_node *__uncontained_tmp146;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp146;
+	}
 	if (!dz->dz_hash) {
 		kfree(dz);
 		return NULL;

@@ -32,6 +32,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/gpio.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Implementation infrastructure for GPIO interfaces.
  *
  * The GPIO programming interface allows for inlining speed-critical
@@ -397,6 +402,10 @@ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
 	}
 
 	names = kcalloc(count, sizeof(*names), GFP_KERNEL);
+	{
+		typeof((*names)) __uncontained_tmp23;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!names)
 		return -ENOMEM;
 
@@ -655,6 +664,10 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
 		gdev->owner = THIS_MODULE;
 
 	gdev->descs = kcalloc(gc->ngpio, sizeof(gdev->descs[0]), GFP_KERNEL);
+	{
+		typeof((gdev->descs[0])) __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!gdev->descs) {
 		ret = -ENOMEM;
 		goto err_free_dev_name;

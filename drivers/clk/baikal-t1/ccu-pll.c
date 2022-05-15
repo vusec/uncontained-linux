@@ -26,6 +26,11 @@
 #include <linux/rational.h>
 #include <linux/debugfs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ccu-pll.h"
 
 #define CCU_PLL_CTL			0x000
@@ -444,6 +449,10 @@ static void ccu_pll_debug_init(struct clk_hw *hw, struct dentry *dentry)
 	int idx;
 
 	bits = kcalloc(CCU_PLL_DBGFS_BIT_NUM, sizeof(*bits), GFP_KERNEL);
+	{
+		typeof((*bits)) __uncontained_tmp22;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!bits)
 		return;
 
@@ -457,6 +466,10 @@ static void ccu_pll_debug_init(struct clk_hw *hw, struct dentry *dentry)
 	}
 
 	flds = kcalloc(CCU_PLL_DBGFS_FLD_NUM, sizeof(*flds), GFP_KERNEL);
+	{
+		typeof((*flds)) __uncontained_tmp23;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!flds)
 		return;
 

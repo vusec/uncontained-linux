@@ -15,6 +15,11 @@
 #include <linux/if_ether.h>
 #include <linux/highmem.h>
 #include <linux/cache.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "net_driver.h"
 #include "efx.h"
 #include "io.h"
@@ -553,11 +558,19 @@ int ef4_probe_tx_queue(struct ef4_tx_queue *tx_queue)
 	/* Allocate software ring */
 	tx_queue->buffer = kcalloc(entries, sizeof(*tx_queue->buffer),
 				   GFP_KERNEL);
+	{
+		typeof((*tx_queue->buffer)) __uncontained_tmp113;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!tx_queue->buffer)
 		return -ENOMEM;
 
 	tx_queue->cb_page = kcalloc(ef4_tx_cb_page_count(tx_queue),
 				    sizeof(tx_queue->cb_page[0]), GFP_KERNEL);
+	{
+		typeof((tx_queue->cb_page[0])) __uncontained_tmp114;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!tx_queue->cb_page) {
 		rc = -ENOMEM;
 		goto fail1;

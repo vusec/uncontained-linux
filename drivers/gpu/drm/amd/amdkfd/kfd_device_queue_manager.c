@@ -28,6 +28,11 @@
 #include <linux/types.h>
 #include <linux/bitops.h>
 #include <linux/sched.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "kfd_priv.h"
 #include "kfd_device_queue_manager.h"
 #include "kfd_mqd_manager.h"
@@ -964,6 +969,10 @@ static int initialize_nocpsch(struct device_queue_manager *dqm)
 
 	dqm->allocated_queues = kcalloc(get_pipes_per_mec(dqm),
 					sizeof(unsigned int), GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp41;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!dqm->allocated_queues)
 		return -ENOMEM;
 

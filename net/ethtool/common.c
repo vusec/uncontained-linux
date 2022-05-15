@@ -6,6 +6,11 @@
 #include <linux/rtnetlink.h>
 #include <linux/ptp_clock_kernel.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "common.h"
 
 const char netdev_features_strings[NETDEV_FEATURE_COUNT][ETH_GSTRING_LEN] = {
@@ -509,6 +514,10 @@ int ethtool_get_max_rxfh_channel(struct net_device *dev, u32 *max)
 		return -EOPNOTSUPP;
 
 	indir = kcalloc(dev_size, sizeof(indir[0]), GFP_USER);
+	{
+		typeof((indir[0])) __uncontained_tmp134;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp134;
+	}
 	if (!indir)
 		return -ENOMEM;
 

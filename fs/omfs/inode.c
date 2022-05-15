@@ -15,6 +15,11 @@
 #include <linux/writeback.h>
 #include <linux/seq_file.h>
 #include <linux/crc-itu-t.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "omfs.h"
 
 MODULE_AUTHOR("Bob Copeland <me@bobcopeland.com>");
@@ -350,6 +355,10 @@ static int omfs_get_imap(struct super_block *sb)
 
 	sbi->s_imap_size = array_size;
 	sbi->s_imap = kcalloc(array_size, sizeof(unsigned long *), GFP_KERNEL);
+	{
+		unsigned long *__uncontained_tmp142;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+	}
 	if (!sbi->s_imap)
 		goto nomem;
 

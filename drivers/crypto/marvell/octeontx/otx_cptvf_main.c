@@ -10,6 +10,11 @@
 
 #include <linux/interrupt.h>
 #include <linux/module.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "otx_cptvf.h"
 #include "otx_cptvf_algs.h"
 #include "otx_cptvf_reqmgr.h"
@@ -101,6 +106,10 @@ static int alloc_pending_queues(struct otx_cpt_pending_qinfo *pqinfo, u32 qlen,
 
 	for_each_pending_queue(pqinfo, queue, i) {
 		queue->head = kcalloc(qlen, sizeof(*queue->head), GFP_KERNEL);
+		{
+			typeof((*queue->head)) __uncontained_tmp33;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+		}
 		if (!queue->head) {
 			ret = -ENOMEM;
 			goto pending_qfail;

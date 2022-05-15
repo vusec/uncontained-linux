@@ -6,6 +6,11 @@
 
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "qlcnic_sriov.h"
 #include "qlcnic.h"
 #include "qlcnic_83xx_hw.h"
@@ -158,6 +163,10 @@ int qlcnic_sriov_init(struct qlcnic_adapter *adapter, int num_vfs)
 	bc = &sriov->bc;
 	sriov->vf_info = kcalloc(num_vfs, sizeof(struct qlcnic_vf_info),
 				 GFP_KERNEL);
+	{
+		struct qlcnic_vf_info __uncontained_tmp91;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (!sriov->vf_info) {
 		err = -ENOMEM;
 		goto qlcnic_free_sriov;
@@ -452,6 +461,10 @@ static int qlcnic_sriov_set_guest_vlan_mode(struct qlcnic_adapter *adapter,
 
 	num_vlans = sriov->num_allowed_vlans;
 	sriov->allowed_vlans = kcalloc(num_vlans, sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp92;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!sriov->allowed_vlans)
 		return -ENOMEM;
 
@@ -707,6 +720,10 @@ static inline int qlcnic_sriov_alloc_bc_msg(struct qlcnic_bc_hdr **hdr,
 					    u32 size)
 {
 	*hdr = kcalloc(size, sizeof(struct qlcnic_bc_hdr), GFP_ATOMIC);
+	{
+		struct qlcnic_bc_hdr __uncontained_tmp93;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!*hdr)
 		return -ENOMEM;
 
@@ -728,10 +745,18 @@ static int qlcnic_sriov_alloc_bc_mbx_args(struct qlcnic_cmd_args *mbx, u32 type)
 			mbx->rsp.num = mbx_tbl[i].out_args;
 			mbx->req.arg = kcalloc(mbx->req.num, sizeof(u32),
 					       GFP_ATOMIC);
+			{
+				u32 __uncontained_tmp94;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+			}
 			if (!mbx->req.arg)
 				return -ENOMEM;
 			mbx->rsp.arg = kcalloc(mbx->rsp.num, sizeof(u32),
 					       GFP_ATOMIC);
+			{
+				u32 __uncontained_tmp95;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+			}
 			if (!mbx->rsp.arg) {
 				kfree(mbx->req.arg);
 				mbx->req.arg = NULL;
@@ -2165,6 +2190,10 @@ int qlcnic_sriov_alloc_vlans(struct qlcnic_adapter *adapter)
 		vf = &sriov->vf_info[i];
 		vf->sriov_vlans = kcalloc(sriov->num_allowed_vlans,
 					  sizeof(*vf->sriov_vlans), GFP_KERNEL);
+		{
+			typeof((*vf->sriov_vlans)) __uncontained_tmp96;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+		}
 		if (!vf->sriov_vlans)
 			return -ENOMEM;
 	}

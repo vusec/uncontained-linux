@@ -31,6 +31,11 @@
 
 #include <trace/events/sunrpc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "fail.h"
 
 #define RPCDBG_FACILITY	RPCDBG_SVCDSP
@@ -164,9 +169,17 @@ static int
 svc_pool_map_alloc_arrays(struct svc_pool_map *m, unsigned int maxpools)
 {
 	m->to_pool = kcalloc(maxpools, sizeof(unsigned int), GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp124;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (!m->to_pool)
 		goto fail;
 	m->pool_to = kcalloc(maxpools, sizeof(unsigned int), GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp125;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (!m->pool_to)
 		goto fail_free;
 
@@ -491,6 +504,10 @@ __svc_create(struct svc_program *prog, unsigned int bufsize, int npools,
 	serv->sv_pools =
 		kcalloc(serv->sv_nrpools, sizeof(struct svc_pool),
 			GFP_KERNEL);
+	{
+		struct svc_pool __uncontained_tmp126;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp126;
+	}
 	if (!serv->sv_pools) {
 		kfree(serv);
 		return NULL;

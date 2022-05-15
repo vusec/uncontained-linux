@@ -14,6 +14,11 @@
 #include <linux/slab.h>
 #include <linux/types.h>
 #include <linux/vmalloc.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "coresight-catu.h"
 #include "coresight-etm-perf.h"
 #include "coresight-priv.h"
@@ -197,10 +202,18 @@ static int tmc_pages_alloc(struct tmc_pages *tmc_pages,
 	nr_pages = tmc_pages->nr_pages;
 	tmc_pages->daddrs = kcalloc(nr_pages, sizeof(*tmc_pages->daddrs),
 					 GFP_KERNEL);
+	{
+		typeof((*tmc_pages->daddrs)) __uncontained_tmp35;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!tmc_pages->daddrs)
 		return -ENOMEM;
 	tmc_pages->pages = kcalloc(nr_pages, sizeof(*tmc_pages->pages),
 					 GFP_KERNEL);
+	{
+		typeof((*tmc_pages->pages)) __uncontained_tmp36;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!tmc_pages->pages) {
 		kfree(tmc_pages->daddrs);
 		tmc_pages->daddrs = NULL;

@@ -15,6 +15,11 @@
 #include <crypto/hash.h>
 #include <net/busy_poll.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "nvme.h"
 #include "fabrics.h"
 
@@ -2645,6 +2650,10 @@ static struct nvme_ctrl *nvme_tcp_create_ctrl(struct device *dev,
 
 	ctrl->queues = kcalloc(ctrl->ctrl.queue_count, sizeof(*ctrl->queues),
 				GFP_KERNEL);
+	{
+		typeof((*ctrl->queues)) __uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!ctrl->queues) {
 		ret = -ENOMEM;
 		goto out_free_ctrl;

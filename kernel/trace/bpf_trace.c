@@ -25,6 +25,11 @@
 
 #include <asm/tlb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "trace_probe.h"
 #include "trace.h"
 
@@ -1933,6 +1938,10 @@ int perf_event_query_prog_array(struct perf_event *event, void __user *info)
 	if (ids_len > BPF_TRACE_MAX_PROGS)
 		return -E2BIG;
 	ids = kcalloc(ids_len, sizeof(u32), GFP_USER | __GFP_NOWARN);
+	{
+		u32 __uncontained_tmp158;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp158;
+	}
 	if (!ids)
 		return -ENOMEM;
 	/*

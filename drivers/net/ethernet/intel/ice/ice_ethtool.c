@@ -10,6 +10,11 @@
 #include "ice_dcb_lib.h"
 #include <net/dcbnl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct ice_stats {
 	char stat_string[ETH_GSTRING_LEN];
 	int sizeof_stat;
@@ -2766,6 +2771,10 @@ ice_set_ringparam(struct net_device *netdev, struct ethtool_ringparam *ring,
 		    vsi->tx_rings[0]->count, new_tx_cnt);
 
 	tx_rings = kcalloc(vsi->num_txq, sizeof(*tx_rings), GFP_KERNEL);
+	{
+		typeof((*tx_rings)) __uncontained_tmp100;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (!tx_rings) {
 		err = -ENOMEM;
 		goto done;
@@ -2794,6 +2803,10 @@ ice_set_ringparam(struct net_device *netdev, struct ethtool_ringparam *ring,
 		    vsi->xdp_rings[0]->count, new_tx_cnt);
 
 	xdp_rings = kcalloc(vsi->num_xdp_txq, sizeof(*xdp_rings), GFP_KERNEL);
+	{
+		typeof((*xdp_rings)) __uncontained_tmp101;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!xdp_rings) {
 		err = -ENOMEM;
 		goto free_tx;
@@ -2824,6 +2837,10 @@ process_rx:
 		    vsi->rx_rings[0]->count, new_rx_cnt);
 
 	rx_rings = kcalloc(vsi->num_rxq, sizeof(*rx_rings), GFP_KERNEL);
+	{
+		typeof((*rx_rings)) __uncontained_tmp102;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (!rx_rings) {
 		err = -ENOMEM;
 		goto done;

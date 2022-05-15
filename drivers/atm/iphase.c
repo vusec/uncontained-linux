@@ -65,6 +65,11 @@
 #include <linux/vmalloc.h>
 #include <linux/jiffies.h>
 #include <linux/nospec.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "iphase.h"		  
 #include "suni.h"		  
 #define swap_byte_order(x) (((x & 0xff) << 8) | ((x & 0xff00) >> 8))
@@ -1621,6 +1626,10 @@ static int rx_init(struct atm_dev *dev)
 	iadev->rx_free_desc_qhead = NULL;   
 
 	iadev->rx_open = kcalloc(iadev->num_vc, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp7;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!iadev->rx_open) {
 		printk(KERN_ERR DEV_LABEL "itf %d couldn't get free page\n",
 		dev->number);  

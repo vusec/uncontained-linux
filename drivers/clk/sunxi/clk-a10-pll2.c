@@ -15,6 +15,11 @@
 
 #include <dt-bindings/clock/sun4i-a10-pll2.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SUN4I_PLL2_ENABLE		31
 
 #define SUN4I_PLL2_PRE_DIV_SHIFT	0
@@ -55,6 +60,10 @@ static void __init sun4i_pll2_setup(struct device_node *node,
 		goto err_unmap;
 
 	clks = kcalloc(SUN4I_PLL2_OUTPUTS, sizeof(struct clk *), GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp20;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!clks)
 		goto err_free_data;
 

@@ -16,6 +16,11 @@
 #include <asm/apic.h>
 #include <asm/cpu.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define RTC_NAME		"sgi_rtc"
 
 static u64 uv_read_rtc(struct clocksource *cs);
@@ -137,6 +142,10 @@ static __init int uv_rtc_allocate_timers(void)
 	int cpu;
 
 	blade_info = kcalloc(uv_possible_blades, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp6;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!blade_info)
 		return -ENOMEM;
 

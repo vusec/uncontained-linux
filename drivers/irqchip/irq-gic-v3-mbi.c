@@ -18,6 +18,11 @@
 
 #include <linux/irqchip/arm-gic-v3.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct mbi_range {
 	u32			spi_start;
 	u32			nr_spis;
@@ -276,6 +281,10 @@ int __init mbi_init(struct fwnode_handle *fwnode, struct irq_domain *parent)
 
 	mbi_range_nr = n / 2;
 	mbi_ranges = kcalloc(mbi_range_nr, sizeof(*mbi_ranges), GFP_KERNEL);
+	{
+		typeof((*mbi_ranges)) __uncontained_tmp44;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!mbi_ranges)
 		return -ENOMEM;
 

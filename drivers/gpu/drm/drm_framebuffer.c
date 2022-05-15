@@ -35,6 +35,11 @@
 #include <drm/drm_print.h>
 #include <drm/drm_util.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "drm_crtc_internal.h"
 #include "drm_internal.h"
 
@@ -732,6 +737,10 @@ int drm_mode_dirtyfb_ioctl(struct drm_device *dev,
 			goto out_err1;
 		}
 		clips = kcalloc(num_clips, sizeof(*clips), GFP_KERNEL);
+		{
+			typeof((*clips)) __uncontained_tmp22;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+		}
 		if (!clips) {
 			ret = -ENOMEM;
 			goto out_err1;

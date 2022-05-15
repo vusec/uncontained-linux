@@ -14,6 +14,11 @@
 #include <linux/slab.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "amdtp-stream.h"
 
 #define TICKS_PER_CYCLE		3072
@@ -1619,6 +1624,10 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
 			s->ctx_data.tx.cache.tail = 0;
 			s->ctx_data.tx.cache.descs = kcalloc(s->ctx_data.tx.cache.size,
 						sizeof(*s->ctx_data.tx.cache.descs), GFP_KERNEL);
+			{
+				typeof((*s->ctx_data.tx.cache.descs)) __uncontained_tmp141;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp141;
+			}
 			if (!s->ctx_data.tx.cache.descs) {
 				err = -ENOMEM;
 				goto err_context;
@@ -1639,6 +1648,10 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
 		};
 
 		s->ctx_data.rx.seq.descs = kcalloc(queue_size, sizeof(*s->ctx_data.rx.seq.descs), GFP_KERNEL);
+		{
+			typeof((*s->ctx_data.rx.seq.descs)) __uncontained_tmp142;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+		}
 		if (!s->ctx_data.rx.seq.descs) {
 			err = -ENOMEM;
 			goto err_context;
@@ -1662,6 +1675,10 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
 
 	s->pkt_descs = kcalloc(s->queue_size, sizeof(*s->pkt_descs),
 			       GFP_KERNEL);
+	{
+		typeof((*s->pkt_descs)) __uncontained_tmp143;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp143;
+	}
 	if (!s->pkt_descs) {
 		err = -ENOMEM;
 		goto err_context;

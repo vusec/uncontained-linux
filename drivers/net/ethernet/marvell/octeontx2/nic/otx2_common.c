@@ -9,6 +9,11 @@
 #include <linux/pci.h>
 #include <net/tso.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "otx2_reg.h"
 #include "otx2_common.h"
 #include "otx2_struct.h"
@@ -842,6 +847,10 @@ static int otx2_sq_init(struct otx2_nic *pfvf, u16 qidx, u16 sqb_aura)
 
 	sq->sqe_base = sq->sqe->base;
 	sq->sg = kcalloc(qset->sqe_cnt, sizeof(struct sg_list), GFP_KERNEL);
+	{
+		struct sg_list __uncontained_tmp81;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!sq->sg)
 		return -ENOMEM;
 
@@ -1322,6 +1331,10 @@ int otx2_sq_aura_pool_init(struct otx2_nic *pfvf)
 		sq = &qset->sq[qidx];
 		sq->sqb_count = 0;
 		sq->sqb_ptrs = kcalloc(num_sqbs, sizeof(*sq->sqb_ptrs), GFP_KERNEL);
+		{
+			typeof((*sq->sqb_ptrs)) __uncontained_tmp82;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+		}
 		if (!sq->sqb_ptrs)
 			return -ENOMEM;
 

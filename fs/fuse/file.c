@@ -19,6 +19,11 @@
 #include <linux/uio.h>
 #include <linux/fs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int fuse_send_open(struct fuse_mount *fm, u64 nodeid,
 			  unsigned int open_flags, int opcode,
 			  struct fuse_open_out *outargp)
@@ -2235,6 +2240,10 @@ static int fuse_writepages(struct address_space *mapping,
 	data.orig_pages = kcalloc(fc->max_pages,
 				  sizeof(struct page *),
 				  GFP_NOFS);
+	{
+		struct page *__uncontained_tmp154;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp154;
+	}
 	if (!data.orig_pages)
 		goto out;
 

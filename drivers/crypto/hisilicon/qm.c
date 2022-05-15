@@ -15,6 +15,11 @@
 #include <linux/uacce.h>
 #include <linux/uaccess.h>
 #include <uapi/misc/uacce/hisi_qm.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qm.h"
 
 /* eq/aeq irq enable */
@@ -5847,6 +5852,10 @@ static int hisi_qp_alloc_memory(struct hisi_qm *qm)
 	int i, ret;
 
 	qm->qp_array = kcalloc(qm->qp_num, sizeof(struct hisi_qp), GFP_KERNEL);
+	{
+		struct hisi_qp __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!qm->qp_array)
 		return -ENOMEM;
 
@@ -5877,6 +5886,10 @@ static int hisi_qm_memory_init(struct hisi_qm *qm)
 
 	total_func = pci_sriov_get_totalvfs(qm->pdev) + 1;
 	qm->factor = kcalloc(total_func, sizeof(struct qm_shaper_factor), GFP_KERNEL);
+	{
+		struct qm_shaper_factor __uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!qm->factor)
 		return -ENOMEM;
 	for (i = 0; i < total_func; i++)

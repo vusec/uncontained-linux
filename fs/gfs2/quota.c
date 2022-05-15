@@ -57,6 +57,11 @@
 #include <linux/jhash.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gfs2.h"
 #include "incore.h"
 #include "bmap.h"
@@ -1288,6 +1293,10 @@ int gfs2_quota_sync(struct super_block *sb, int type)
 	int error = 0;
 
 	qda = kcalloc(max_qd, sizeof(struct gfs2_quota_data *), GFP_KERNEL);
+	{
+		struct gfs2_quota_data *__uncontained_tmp118;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+	}
 	if (!qda)
 		return -ENOMEM;
 

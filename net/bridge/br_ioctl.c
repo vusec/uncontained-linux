@@ -16,6 +16,11 @@
 #include <linux/times.h>
 #include <net/net_namespace.h>
 #include <linux/uaccess.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "br_private.h"
 
 static int get_bridge_ifindices(struct net *net, int *indices, int num)
@@ -205,6 +210,10 @@ int br_dev_siocdevprivate(struct net_device *dev, struct ifreq *rq,
 			num = BR_MAX_PORTS;
 
 		indices = kcalloc(num, sizeof(int), GFP_KERNEL);
+		{
+			int __uncontained_tmp122;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp122;
+		}
 		if (indices == NULL)
 			return -ENOMEM;
 
@@ -358,6 +367,10 @@ static int old_deviceless(struct net *net, void __user *data)
 		if (args[2] >= 2048)
 			return -ENOMEM;
 		indices = kcalloc(args[2], sizeof(int), GFP_KERNEL);
+		{
+			int __uncontained_tmp123;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp123;
+		}
 		if (indices == NULL)
 			return -ENOMEM;
 

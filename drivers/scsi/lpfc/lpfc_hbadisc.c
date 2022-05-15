@@ -36,6 +36,11 @@
 #include <scsi/scsi_transport_fc.h>
 #include <scsi/fc/fc_fs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "lpfc_hw4.h"
 #include "lpfc_hw.h"
 #include "lpfc_nl.h"
@@ -4826,6 +4831,10 @@ lpfc_nlp_state_cleanup(struct lpfc_vport *vport, struct lpfc_nodelist *ndlp,
 		ndlp->lat_data = kcalloc(LPFC_MAX_BUCKET_COUNT,
 					 sizeof(struct lpfc_scsicmd_bkt),
 					 GFP_KERNEL);
+		{
+			struct lpfc_scsicmd_bkt __uncontained_tmp118;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+		}
 
 		if (!ndlp->lat_data)
 			lpfc_printf_vlog(vport, KERN_ERR, LOG_TRACE_EVENT,

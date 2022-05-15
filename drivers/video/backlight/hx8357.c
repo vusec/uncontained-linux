@@ -13,6 +13,11 @@
 #include <linux/of_gpio.h>
 #include <linux/spi/spi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define HX8357_NUM_IM_PINS	3
 
 #define HX8357_SWRESET			0x01
@@ -227,6 +232,10 @@ static int hx8357_spi_write_then_read(struct lcd_device *lcdev,
 		int i;
 
 		local_txbuf = kcalloc(txlen, sizeof(*local_txbuf), GFP_KERNEL);
+		{
+			typeof((*local_txbuf)) __uncontained_tmp177;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp177;
+		}
 
 		if (!local_txbuf)
 			return -ENOMEM;

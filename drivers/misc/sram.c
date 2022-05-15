@@ -18,6 +18,11 @@
 #include <linux/mfd/syscon.h>
 #include <soc/at91/atmel-secumod.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "sram.h"
 
 #define SRAM_GRANULARITY	32
@@ -190,6 +195,10 @@ static int sram_reserve_regions(struct sram_dev *sram, struct resource *res)
 	 */
 	nblocks = (np) ? of_get_available_child_count(np) + 1 : 1;
 	rblocks = kcalloc(nblocks, sizeof(*rblocks), GFP_KERNEL);
+	{
+		typeof((*rblocks)) __uncontained_tmp61;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!rblocks)
 		return -ENOMEM;
 

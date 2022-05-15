@@ -26,6 +26,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/hwmon.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define HWMON_ID_PREFIX "hwmon"
 #define HWMON_ID_FORMAT HWMON_ID_PREFIX "%d"
 
@@ -732,6 +737,10 @@ __hwmon_create_attrs(const void *drvdata, const struct hwmon_chip_info *chip)
 		return ERR_PTR(-EINVAL);
 
 	attrs = kcalloc(nattrs + 1, sizeof(*attrs), GFP_KERNEL);
+	{
+		typeof((*attrs)) __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!attrs)
 		return ERR_PTR(-ENOMEM);
 
@@ -785,6 +794,10 @@ __hwmon_device_register(struct device *dev, const char *name, void *drvdata,
 				ngroups++;
 
 		hwdev->groups = kcalloc(ngroups, sizeof(*groups), GFP_KERNEL);
+		{
+			typeof((*groups)) __uncontained_tmp34;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp34;
+		}
 		if (!hwdev->groups) {
 			err = -ENOMEM;
 			goto free_hwmon;

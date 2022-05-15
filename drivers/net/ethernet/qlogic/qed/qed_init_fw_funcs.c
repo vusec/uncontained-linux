@@ -10,6 +10,11 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/string.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qed_hsi.h"
 #include "qed_hw.h"
 #include "qed_init_ops.h"
@@ -1832,6 +1837,10 @@ struct phys_mem_desc *qed_fw_overlay_mem_alloc(struct qed_hwfn *p_hwfn,
 
 	allocated_mem = kcalloc(NUM_STORMS, sizeof(struct phys_mem_desc),
 				GFP_KERNEL);
+	{
+		struct phys_mem_desc __uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!allocated_mem)
 		return NULL;
 

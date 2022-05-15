@@ -70,6 +70,10 @@ static int ipc_protocol_msg_prepipe_open(struct iosm_protocol *ipc_protocol,
 	 * re-calculate the start and end addresses.
 	 */
 	skbr = kcalloc(pipe->nr_of_entries, sizeof(*skbr), GFP_ATOMIC);
+	{
+		typeof((*skbr)) __uncontained_tmp55;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!skbr)
 		return -ENOMEM;
 

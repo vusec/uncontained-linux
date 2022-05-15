@@ -9,6 +9,11 @@
 
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define	DM_MSG_PREFIX		"zoned"
 
 #define DMZ_MIN_BIOS		8192
@@ -847,12 +852,20 @@ static int dmz_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 		return -ENOMEM;
 	}
 	dmz->dev = kcalloc(argc, sizeof(struct dmz_dev), GFP_KERNEL);
+	{
+		struct dmz_dev __uncontained_tmp64;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!dmz->dev) {
 		ti->error = "Unable to allocate the zoned device descriptors";
 		kfree(dmz);
 		return -ENOMEM;
 	}
 	dmz->ddev = kcalloc(argc, sizeof(struct dm_dev *), GFP_KERNEL);
+	{
+		struct dm_dev *__uncontained_tmp65;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!dmz->ddev) {
 		ti->error = "Unable to allocate the dm device descriptors";
 		ret = -ENOMEM;

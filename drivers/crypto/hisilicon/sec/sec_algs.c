@@ -14,6 +14,11 @@
 #include <crypto/xts.h>
 #include <crypto/internal/skcipher.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "sec_drv.h"
 
 #define SEC_MAX_CIPHER_KEY		64
@@ -554,6 +559,10 @@ static int sec_alg_alloc_and_calc_split_sizes(int length, size_t **split_sizes,
 	/* Split into suitable sized blocks */
 	*steps = roundup(length, SEC_REQ_LIMIT) / SEC_REQ_LIMIT;
 	sizes = kcalloc(*steps, sizeof(*sizes), gfp);
+	{
+		typeof((*sizes)) __uncontained_tmp21;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!sizes)
 		return -ENOMEM;
 
@@ -578,11 +587,19 @@ static int sec_map_and_split_sg(struct scatterlist *sgl, size_t *split_sizes,
 		return -EINVAL;
 
 	*splits = kcalloc(steps, sizeof(struct scatterlist *), gfp);
+	{
+		struct scatterlist *__uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!*splits) {
 		ret = -ENOMEM;
 		goto err_unmap_sg;
 	}
 	*splits_nents = kcalloc(steps, sizeof(int), gfp);
+	{
+		int __uncontained_tmp20;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!*splits_nents) {
 		ret = -ENOMEM;
 		goto err_free_splits;

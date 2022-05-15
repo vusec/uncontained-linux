@@ -39,6 +39,11 @@
 #include <linux/io.h>
 #include <net/selftests.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* For our NAPI weight bigger does *NOT* mean better - it means more
  * D-cache misses and lots more wasted cycles than we'll ever
  * possibly gain from saving instructions.
@@ -1322,6 +1327,10 @@ static int ag71xx_rings_init(struct ag71xx *ag)
 	tx_size = BIT(tx->order);
 
 	tx->buf = kcalloc(ring_size, sizeof(*tx->buf), GFP_KERNEL);
+	{
+		typeof((*tx->buf)) __uncontained_tmp60;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!tx->buf)
 		return -ENOMEM;
 

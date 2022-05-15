@@ -23,6 +23,11 @@
 #include <net/xdp.h>
 #include <net/net_failover.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2888,6 +2893,10 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
 
 	/* Allocate space for find_vqs parameters */
 	vqs = kcalloc(total_vqs, sizeof(*vqs), GFP_KERNEL);
+	{
+		typeof((*vqs)) __uncontained_tmp101;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!vqs)
 		goto err_vq;
 	callbacks = kmalloc_array(total_vqs, sizeof(*callbacks), GFP_KERNEL);
@@ -2898,6 +2907,10 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
 		goto err_names;
 	if (!vi->big_packets || vi->mergeable_rx_bufs) {
 		ctx = kcalloc(total_vqs, sizeof(*ctx), GFP_KERNEL);
+		{
+			typeof((*ctx)) __uncontained_tmp102;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp102;
+		}
 		if (!ctx)
 			goto err_ctx;
 	} else {
@@ -2966,9 +2979,17 @@ static int virtnet_alloc_queues(struct virtnet_info *vi)
 		vi->ctrl = NULL;
 	}
 	vi->sq = kcalloc(vi->max_queue_pairs, sizeof(*vi->sq), GFP_KERNEL);
+	{
+		typeof((*vi->sq)) __uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!vi->sq)
 		goto err_sq;
 	vi->rq = kcalloc(vi->max_queue_pairs, sizeof(*vi->rq), GFP_KERNEL);
+	{
+		typeof((*vi->rq)) __uncontained_tmp104;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!vi->rq)
 		goto err_rq;
 

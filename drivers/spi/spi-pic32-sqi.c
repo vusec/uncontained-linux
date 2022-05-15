@@ -17,6 +17,11 @@
 #include <linux/slab.h>
 #include <linux/spi/spi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* SQI registers */
 #define PESQI_XIP_CONF1_REG	0x00
 #define PESQI_XIP_CONF2_REG	0x04
@@ -468,6 +473,10 @@ static int ring_desc_ring_alloc(struct pic32_sqi *sqi)
 
 	/* allocate software ring descriptors */
 	sqi->ring = kcalloc(PESQI_BD_COUNT, sizeof(*rdesc), GFP_KERNEL);
+	{
+		typeof((*rdesc)) __uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!sqi->ring) {
 		dma_free_coherent(&sqi->master->dev,
 				  sizeof(*bd) * PESQI_BD_COUNT,

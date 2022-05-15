@@ -15,6 +15,11 @@
 #include <linux/parser.h>
 #include <linux/cgroup_rdma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define RDMACG_MAX_STR "max"
 
 /*
@@ -442,6 +447,10 @@ static ssize_t rdmacg_resource_set_max(struct kernfs_open_file *of,
 	}
 
 	new_limits = kcalloc(RDMACG_RESOURCE_MAX, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!new_limits) {
 		ret = -ENOMEM;
 		goto err;

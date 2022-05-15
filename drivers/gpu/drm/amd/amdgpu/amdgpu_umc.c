@@ -45,6 +45,10 @@ static int amdgpu_umc_do_page_retirement(struct amdgpu_device *adev,
 			err_data->err_addr =
 				kcalloc(adev->umc.max_ras_err_cnt_per_query,
 					sizeof(struct eeprom_table_record), GFP_KERNEL);
+			{
+				struct eeprom_table_record __uncontained_tmp16;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+			}
 
 			/* still call query_ras_error_address to clear error status
 			 * even NOMEM error is encountered
@@ -69,6 +73,10 @@ static int amdgpu_umc_do_page_retirement(struct amdgpu_device *adev,
 			err_data->err_addr =
 				kcalloc(adev->umc.max_ras_err_cnt_per_query,
 					sizeof(struct eeprom_table_record), GFP_KERNEL);
+			{
+				struct eeprom_table_record __uncontained_tmp17;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+			}
 
 			/* still call query_ras_error_address to clear error status
 			 * even NOMEM error is encountered

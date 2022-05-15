@@ -20,6 +20,11 @@
 #include <linux/kfifo.h>
 #include <linux/sched.h>
 #include <linux/delay.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "../../dma/dmaengine.h"
 
 #include "tsi721.h"
@@ -739,6 +744,10 @@ static int tsi721_alloc_chan_resources(struct dma_chan *dchan)
 	/* Allocate queue of transaction descriptors */
 	desc = kcalloc(dma_txqueue_sz, sizeof(struct tsi721_tx_desc),
 			GFP_ATOMIC);
+	{
+		struct tsi721_tx_desc __uncontained_tmp96;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!desc) {
 		tsi721_bdma_ch_free(bdma_chan);
 		return -ENOMEM;

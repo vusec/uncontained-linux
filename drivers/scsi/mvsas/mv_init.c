@@ -422,7 +422,15 @@ static int mvs_prep_sas_ha_init(struct Scsi_Host *shost,
 
 	memset(sha, 0x00, sizeof(struct sas_ha_struct));
 	arr_phy  = kcalloc(phy_nr, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	arr_port = kcalloc(port_nr, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp87;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (!arr_phy || !arr_port)
 		goto exit_free;
 

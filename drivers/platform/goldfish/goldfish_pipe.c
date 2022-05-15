@@ -63,6 +63,11 @@
 #include <linux/mm.h>
 #include <linux/acpi.h>
 #include <linux/bug.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "goldfish_pipe_qemu.h"
 
 /*
@@ -829,6 +834,10 @@ static int goldfish_pipe_device_init(struct platform_device *pdev,
 	dev->pipes_capacity = INITIAL_PIPES_CAPACITY;
 	dev->pipes = kcalloc(dev->pipes_capacity, sizeof(*dev->pipes),
 			     GFP_KERNEL);
+	{
+		typeof((*dev->pipes)) __uncontained_tmp113;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!dev->pipes) {
 		misc_deregister(&dev->miscdev);
 		return -ENOMEM;

@@ -39,6 +39,11 @@
 #include <linux/mtd/cfi.h>
 #include <linux/mtd/xip.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define AMD_BOOTLOC_BUG
 #define FORCE_WORD_WRITE 0
 
@@ -2828,6 +2833,10 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
 		max_sectors += regions[i].numblocks;
 
 	sect = kcalloc(max_sectors, sizeof(struct ppb_lock), GFP_KERNEL);
+	{
+		struct ppb_lock __uncontained_tmp11;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp11;
+	}
 	if (!sect)
 		return -ENOMEM;
 

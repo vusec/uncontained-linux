@@ -33,6 +33,11 @@
 #include <linux/iio/buffer.h>
 #include <linux/iio/buffer_impl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* IDA to assign each registered device a unique id */
 static DEFINE_IDA(iio_ida);
 
@@ -1558,6 +1563,10 @@ static int iio_device_register_sysfs(struct iio_dev *indio_dev)
 		kcalloc(attrcount + 1,
 			sizeof(iio_dev_opaque->chan_attr_group.attrs[0]),
 			GFP_KERNEL);
+	{
+		typeof((iio_dev_opaque->chan_attr_group.attrs[0])) __uncontained_tmp43;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp43;
+	}
 	if (iio_dev_opaque->chan_attr_group.attrs == NULL) {
 		ret = -ENOMEM;
 		goto error_clear_attrs;

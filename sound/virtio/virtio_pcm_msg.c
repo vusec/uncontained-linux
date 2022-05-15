@@ -5,6 +5,11 @@
  */
 #include <sound/pcm_params.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "virtio_card.h"
 
 /**
@@ -136,6 +141,10 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
 	unsigned int i;
 
 	vss->msgs = kcalloc(periods, sizeof(*vss->msgs), GFP_KERNEL);
+	{
+		typeof((*vss->msgs)) __uncontained_tmp141;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp141;
+	}
 	if (!vss->msgs)
 		return -ENOMEM;
 

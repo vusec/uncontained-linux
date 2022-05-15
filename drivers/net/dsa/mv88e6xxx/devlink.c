@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include <net/dsa.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "chip.h"
 #include "devlink.h"
 #include "global1.h"
@@ -455,6 +460,10 @@ static int mv88e6xxx_region_vtu_snapshot(struct devlink *dl,
 	table = kcalloc(mv88e6xxx_max_vid(chip) + 1,
 			sizeof(struct mv88e6xxx_devlink_vtu_entry),
 			GFP_KERNEL);
+	{
+		struct mv88e6xxx_devlink_vtu_entry __uncontained_tmp50;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!table)
 		return -ENOMEM;
 
@@ -514,6 +523,10 @@ static int mv88e6xxx_region_pvt_snapshot(struct devlink *dl,
 	u16 *pvt, *cur;
 
 	pvt = kcalloc(MV88E6XXX_MAX_PVT_ENTRIES, sizeof(*pvt), GFP_KERNEL);
+	{
+		typeof((*pvt)) __uncontained_tmp51;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (!pvt)
 		return -ENOMEM;
 

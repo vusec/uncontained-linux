@@ -41,6 +41,11 @@
 #include <linux/prefetch.h>
 #include <net/ip6_checksum.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "qlge.h"
 #include "qlge_devlink.h"
 
@@ -3133,6 +3138,10 @@ static void qlge_enable_msix(struct qlge_adapter *qdev)
 		qdev->msi_x_entry = kcalloc(qdev->intr_count,
 					    sizeof(struct msix_entry),
 					    GFP_KERNEL);
+		{
+			struct msix_entry __uncontained_tmp93;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+		}
 		if (!qdev->msi_x_entry) {
 			qlge_irq_type = MSI_IRQ;
 			goto msi;

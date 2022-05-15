@@ -16,6 +16,11 @@
 
 #include <linux/of.h>
 #include <net/cfg80211.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "core.h"
 
 static bool wiphy_freq_limits_valid_chan(struct wiphy *wiphy,
@@ -99,6 +104,10 @@ void wiphy_read_of_freq_limits(struct wiphy *wiphy)
 	n_freq_limits = len / sizeof(u32) / 2;
 
 	freq_limits = kcalloc(n_freq_limits, sizeof(*freq_limits), GFP_KERNEL);
+	{
+		typeof((*freq_limits)) __uncontained_tmp143;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp143;
+	}
 	if (!freq_limits) {
 		err = -ENOMEM;
 		goto out_kfree;

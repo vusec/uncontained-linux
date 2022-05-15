@@ -5,6 +5,11 @@
 #include <linux/of.h>
 #include <linux/of_address.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk.h"
 
 void mmp_clk_init(struct device_node *np, struct mmp_clk_unit *unit,
@@ -13,6 +18,10 @@ void mmp_clk_init(struct device_node *np, struct mmp_clk_unit *unit,
 	struct clk **clk_table;
 
 	clk_table = kcalloc(nr_clks, sizeof(struct clk *), GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp14;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!clk_table)
 		return;
 

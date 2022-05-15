@@ -32,6 +32,11 @@
 #include <linux/reset.h>
 #include <linux/math64.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ravb.h"
 
 #define RAVB_DEF_MSG_ENABLE \
@@ -469,8 +474,16 @@ static int ravb_ring_init(struct net_device *ndev, int q)
 	/* Allocate RX and TX skb rings */
 	priv->rx_skb[q] = kcalloc(priv->num_rx_ring[q],
 				  sizeof(*priv->rx_skb[q]), GFP_KERNEL);
+	{
+		typeof((*priv->rx_skb[q])) __uncontained_tmp95;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+	}
 	priv->tx_skb[q] = kcalloc(priv->num_tx_ring[q],
 				  sizeof(*priv->tx_skb[q]), GFP_KERNEL);
+	{
+		typeof((*priv->tx_skb[q])) __uncontained_tmp96;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!priv->rx_skb[q] || !priv->tx_skb[q])
 		goto error;
 

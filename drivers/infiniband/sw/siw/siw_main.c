@@ -22,6 +22,11 @@
 #include <rdma/rdma_netlink.h>
 #include <linux/kthread.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "siw.h"
 #include "siw_verbs.h"
 
@@ -142,6 +147,10 @@ static int siw_init_cpulist(void)
 
 	siw_cpu_info.tx_valid_cpus =
 		kcalloc(num_nodes, sizeof(struct cpumask *), GFP_KERNEL);
+	{
+		struct cpumask *__uncontained_tmp66;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!siw_cpu_info.tx_valid_cpus) {
 		siw_cpu_info.num_nodes = 0;
 		return -ENOMEM;

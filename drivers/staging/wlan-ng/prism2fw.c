@@ -51,6 +51,11 @@
 #include <linux/ihex.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*================================================================*/
 /* Local Constants */
 
@@ -254,6 +259,10 @@ static int prism2_fwapply(const struct ihex_binrec *rfptr,
 	/* Initialize the data structures */
 	ns3data = 0;
 	s3data = kcalloc(S3DATA_MAX, sizeof(*s3data), GFP_KERNEL);
+	{
+		typeof((*s3data)) __uncontained_tmp99;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
+	}
 	if (!s3data) {
 		result = -ENOMEM;
 		goto out;

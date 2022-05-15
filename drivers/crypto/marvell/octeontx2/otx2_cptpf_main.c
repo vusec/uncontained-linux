@@ -2,6 +2,11 @@
 /* Copyright (C) 2020 Marvell. */
 
 #include <linux/firmware.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "otx2_cpt_hw_types.h"
 #include "otx2_cpt_common.h"
 #include "otx2_cpt_devlink.h"
@@ -337,6 +342,10 @@ static int cptpf_flr_wq_init(struct otx2_cptpf_dev *cptpf, int num_vfs)
 
 	cptpf->flr_work = kcalloc(num_vfs, sizeof(struct cptpf_flr_work),
 				  GFP_KERNEL);
+	{
+		struct cptpf_flr_work __uncontained_tmp20;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!cptpf->flr_work)
 		goto destroy_wq;
 

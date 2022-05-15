@@ -22,6 +22,11 @@
 #include <target/iscsi/iscsi_transport.h>
 #include <linux/semaphore.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ib_isert.h"
 
 static int isert_debug_level;
@@ -157,6 +162,10 @@ isert_alloc_rx_descriptors(struct isert_conn *isert_conn)
 	isert_conn->rx_descs = kcalloc(ISERT_QP_MAX_RECV_DTOS,
 				       sizeof(struct iser_rx_desc),
 				       GFP_KERNEL);
+	{
+		struct iser_rx_desc __uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!isert_conn->rx_descs)
 		return -ENOMEM;
 

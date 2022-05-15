@@ -6,6 +6,11 @@
 #include <linux/slab.h>
 #include <linux/export.h>
 #include <linux/etherdevice.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hostap_wlan.h"
 #include "hostap.h"
 #include "hostap_ap.h"
@@ -337,6 +342,10 @@ static void prism2_info_hostscanresults(local_info_t *local,
 	new_count = left / result_size;
 	results = kcalloc(new_count, sizeof(struct hfa384x_hostscan_result),
 			  GFP_ATOMIC);
+	{
+		struct hfa384x_hostscan_result __uncontained_tmp122;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp122;
+	}
 	if (results == NULL)
 		return;
 

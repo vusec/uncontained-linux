@@ -10,6 +10,11 @@
 #include <linux/slab.h>
 #include <linux/list.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "tunnel.h"
 #include "tb.h"
 
@@ -126,6 +131,10 @@ static struct tb_tunnel *tb_tunnel_alloc(struct tb *tb, size_t npaths,
 		return NULL;
 
 	tunnel->paths = kcalloc(npaths, sizeof(tunnel->paths[0]), GFP_KERNEL);
+	{
+		typeof((tunnel->paths[0])) __uncontained_tmp128;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp128;
+	}
 	if (!tunnel->paths) {
 		tb_tunnel_free(tunnel);
 		return NULL;

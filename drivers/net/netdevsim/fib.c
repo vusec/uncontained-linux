@@ -29,6 +29,11 @@
 #include <net/nexthop.h>
 #include <linux/debugfs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "netdevsim.h"
 
 struct nsim_fib_entry {
@@ -805,6 +810,10 @@ static int nsim_fib6_event_init(struct nsim_fib6_event *fib6_event,
 	nrt6 = fen6_info->nsiblings + 1;
 
 	rt_arr = kcalloc(nrt6, sizeof(struct fib6_info *), GFP_ATOMIC);
+	{
+		struct fib6_info *__uncontained_tmp112;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (!rt_arr)
 		return -ENOMEM;
 

@@ -79,6 +79,11 @@
 #include <linux/random.h>
 #include <linux/phy.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "et131x.h"
 
 MODULE_AUTHOR("Victor Soriano <vjsoriano@agere.com>");
@@ -2359,6 +2364,10 @@ static int et131x_tx_dma_memory_alloc(struct et131x_adapter *adapter)
 	/* Allocate memory for the TCB's (Transmit Control Block) */
 	tx_ring->tcb_ring = kcalloc(NUM_TCB, sizeof(struct tcb),
 				    GFP_KERNEL | GFP_DMA);
+	{
+		struct tcb __uncontained_tmp61;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!tx_ring->tcb_ring)
 		return -ENOMEM;
 

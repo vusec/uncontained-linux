@@ -29,6 +29,11 @@
 #include <sound/initval.h>
 #include <sound/tlv.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "wm_adsp.h"
 
 #define adsp_crit(_dsp, fmt, ...) \
@@ -1324,6 +1329,10 @@ static int wm_adsp_buffer_populate(struct wm_adsp_compr_buf *buf)
 
 	buf->regions = kcalloc(caps->num_regions, sizeof(*buf->regions),
 			       GFP_KERNEL);
+	{
+		typeof((*buf->regions)) __uncontained_tmp171;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp171;
+	}
 	if (!buf->regions)
 		return -ENOMEM;
 

@@ -16,6 +16,11 @@
 #include <linux/types.h>
 #include <linux/bitfield.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "virt-dma.h"
 
 #define MLB_HDMAC_DMACR		0x0	/* global */
@@ -270,6 +275,10 @@ milbeaut_hdmac_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
 		return NULL;
 
 	md->sgl = kcalloc(sg_len, sizeof(*sgl), GFP_NOWAIT);
+	{
+		typeof((*sgl)) __uncontained_tmp29;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!md->sgl) {
 		kfree(md);
 		return NULL;

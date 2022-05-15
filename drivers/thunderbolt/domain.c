@@ -16,6 +16,11 @@
 #include <linux/random.h>
 #include <crypto/hash.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -133,6 +138,10 @@ static ssize_t boot_acl_show(struct device *dev, struct device_attribute *attr,
 	int i;
 
 	uuids = kcalloc(tb->nboot_acl, sizeof(uuid_t), GFP_KERNEL);
+	{
+		uuid_t __uncontained_tmp126;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp126;
+	}
 	if (!uuids)
 		return -ENOMEM;
 
@@ -190,6 +199,10 @@ static ssize_t boot_acl_store(struct device *dev, struct device_attribute *attr,
 		return -ENOMEM;
 
 	acl = kcalloc(tb->nboot_acl, sizeof(uuid_t), GFP_KERNEL);
+	{
+		uuid_t __uncontained_tmp127;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp127;
+	}
 	if (!acl) {
 		ret = -ENOMEM;
 		goto err_free_str;

@@ -6,6 +6,11 @@
 #include <linux/mm.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ipu3-css.h"
 #include "ipu3-css-fw.h"
 #include "ipu3-dmamap.h"
@@ -233,6 +238,10 @@ int imgu_css_fw_init(struct imgu_css *css)
 	/* Allocate and map fw binaries into IMGU */
 
 	css->binary = kcalloc(binary_nr, sizeof(*css->binary), GFP_KERNEL);
+	{
+		typeof((*css->binary)) __uncontained_tmp163;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp163;
+	}
 	if (!css->binary) {
 		r = -ENOMEM;
 		goto error_out;

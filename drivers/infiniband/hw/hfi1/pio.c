@@ -5,6 +5,11 @@
 
 #include <linux/delay.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -415,6 +420,10 @@ int init_send_contexts(struct hfi1_devdata *dd)
 	dd->send_contexts = kcalloc(dd->num_send_contexts,
 				    sizeof(struct send_context_info),
 				    GFP_KERNEL);
+	{
+		struct send_context_info __uncontained_tmp28;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (!dd->send_contexts || !dd->hw_to_sw) {
 		kfree(dd->hw_to_sw);
 		kfree(dd->send_contexts);
@@ -2093,6 +2102,10 @@ int init_credit_return(struct hfi1_devdata *dd)
 		node_affinity.num_possible_nodes,
 		sizeof(struct credit_return_base),
 		GFP_KERNEL);
+	{
+		struct credit_return_base __uncontained_tmp29;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!dd->cr_base) {
 		ret = -ENOMEM;
 		goto done;

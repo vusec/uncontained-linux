@@ -16,6 +16,11 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 #include <linux/mm.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "gcov.h"
 
 #if (__GNUC__ >= 10)
@@ -288,6 +293,10 @@ struct gcov_info *gcov_info_dup(struct gcov_info *info)
 
 	dup->functions = kcalloc(info->n_functions,
 				 sizeof(struct gcov_fn_info *), GFP_KERNEL);
+	{
+		struct gcov_fn_info *__uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!dup->functions)
 		goto err_free;
 

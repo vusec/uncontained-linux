@@ -17,6 +17,11 @@
 #include <linux/sort.h>
 #include <linux/kmemleak.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -342,6 +347,10 @@ static struct tracing_map_array *tracing_map_array_alloc(unsigned int n_elts,
 	a->entry_mask = (1 << a->entry_shift) - 1;
 
 	a->pages = kcalloc(a->n_pages, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp185;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp185;
+	}
 	if (!a->pages)
 		goto free;
 
@@ -423,18 +432,30 @@ static struct tracing_map_elt *tracing_map_elt_alloc(struct tracing_map *map)
 	}
 
 	elt->fields = kcalloc(map->n_fields, sizeof(*elt->fields), GFP_KERNEL);
+	{
+		typeof((*elt->fields)) __uncontained_tmp186;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp186;
+	}
 	if (!elt->fields) {
 		err = -ENOMEM;
 		goto free;
 	}
 
 	elt->vars = kcalloc(map->n_vars, sizeof(*elt->vars), GFP_KERNEL);
+	{
+		typeof((*elt->vars)) __uncontained_tmp187;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp187;
+	}
 	if (!elt->vars) {
 		err = -ENOMEM;
 		goto free;
 	}
 
 	elt->var_set = kcalloc(map->n_vars, sizeof(*elt->var_set), GFP_KERNEL);
+	{
+		typeof((*elt->var_set)) __uncontained_tmp188;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp188;
+	}
 	if (!elt->var_set) {
 		err = -ENOMEM;
 		goto free;

@@ -37,6 +37,11 @@
 #include <linux/skbuff.h>
 #include <asm/cacheflush.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "altera_utils.h"
 #include "altera_tse.h"
 #include "altera_sgdma.h"
@@ -276,12 +281,20 @@ static int alloc_init_skbufs(struct altera_tse_private *priv)
 	/* Create Rx ring buffer */
 	priv->rx_ring = kcalloc(rx_descs, sizeof(struct tse_buffer),
 				GFP_KERNEL);
+	{
+		struct tse_buffer __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!priv->rx_ring)
 		goto err_rx_ring;
 
 	/* Create Tx ring buffer */
 	priv->tx_ring = kcalloc(tx_descs, sizeof(struct tse_buffer),
 				GFP_KERNEL);
+	{
+		struct tse_buffer __uncontained_tmp85;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!priv->tx_ring)
 		goto err_tx_ring;
 

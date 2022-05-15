@@ -11,6 +11,11 @@
 #include <linux/ceph/messenger.h>
 #include <linux/ceph/decode.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "super.h"
 
 #define CEPH_MDS_IS_READY(i, ignore_laggy) \
@@ -167,6 +172,10 @@ struct ceph_mdsmap *ceph_mdsmap_decode(void **p, void *end, bool msgr2)
 	m->possible_max_rank = max(m->m_num_active_mds, m->m_max_mds);
 
 	m->m_info = kcalloc(m->possible_max_rank, sizeof(*m->m_info), GFP_NOFS);
+	{
+		typeof((*m->m_info)) __uncontained_tmp116;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (!m->m_info)
 		goto nomem;
 
@@ -259,6 +268,10 @@ struct ceph_mdsmap *ceph_mdsmap_decode(void **p, void *end, bool msgr2)
 		if (num_export_targets) {
 			info->export_targets = kcalloc(num_export_targets,
 						       sizeof(u32), GFP_NOFS);
+			{
+				u32 __uncontained_tmp114;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+			}
 			if (!info->export_targets)
 				goto nomem;
 			for (j = 0; j < num_export_targets; j++) {
@@ -274,6 +287,10 @@ struct ceph_mdsmap *ceph_mdsmap_decode(void **p, void *end, bool msgr2)
 	ceph_decode_32_safe(p, end, n, bad);
 	m->m_num_data_pg_pools = n;
 	m->m_data_pg_pools = kcalloc(n, sizeof(u64), GFP_NOFS);
+	{
+		u64 __uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!m->m_data_pg_pools)
 		goto nomem;
 	ceph_decode_need(p, end, sizeof(u64)*(n+1), bad);

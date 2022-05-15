@@ -35,6 +35,11 @@
 #include <drm/drm_probe_helper.h>
 #include <drm/drm_simple_kms_helper.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "qxl_drv.h"
 #include "qxl_object.h"
 
@@ -1207,6 +1212,10 @@ int qxl_create_monitors_object(struct qxl_device *qdev)
 	memset(qdev->monitors_config, 0, monitors_config_size);
 	qdev->dumb_heads = kcalloc(qxl_num_crtc, sizeof(qdev->dumb_heads[0]),
 				   GFP_KERNEL);
+	{
+		typeof((qdev->dumb_heads[0])) __uncontained_tmp42;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!qdev->dumb_heads) {
 		qxl_destroy_monitors_object(qdev);
 		return -ENOMEM;

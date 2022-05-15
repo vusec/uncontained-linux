@@ -30,6 +30,11 @@
 
 #include <linux/export.h>
 #include <linux/nfs_fs.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "nfs4session.h"
 #include "internal.h"
 #include "pnfs.h"
@@ -122,6 +127,10 @@ nfs4_get_device_info(struct nfs_server *server,
 		return NULL;
 
 	pages = kcalloc(max_pages, sizeof(struct page *), gfp_flags);
+	{
+		struct page *__uncontained_tmp143;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp143;
+	}
 	if (!pages)
 		goto out_free_pdev;
 

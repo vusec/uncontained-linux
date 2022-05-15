@@ -11,6 +11,11 @@
 #include <soc/tegra/bpmp.h>
 #include <soc/tegra/bpmp-abi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define TEGRA_BPMP_DUMP_CLOCK_INFO	0
 
 #define TEGRA_BPMP_CLK_HAS_MUX		BIT(0)
@@ -412,6 +417,10 @@ static int tegra_bpmp_probe_clocks(struct tegra_bpmp *bpmp,
 	dev_dbg(bpmp->dev, "maximum clock ID: %u\n", max_id);
 
 	clocks = kcalloc(max_id + 1, sizeof(*clocks), GFP_KERNEL);
+	{
+		typeof((*clocks)) __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!clocks)
 		return -ENOMEM;
 
@@ -507,6 +516,10 @@ tegra_bpmp_clk_register(struct tegra_bpmp *bpmp,
 	init.num_parents = info->num_parents;
 
 	parents = kcalloc(info->num_parents, sizeof(*parents), GFP_KERNEL);
+	{
+		typeof((*parents)) __uncontained_tmp20;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!parents)
 		return ERR_PTR(-ENOMEM);
 

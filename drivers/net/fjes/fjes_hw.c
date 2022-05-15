@@ -214,6 +214,10 @@ static int fjes_hw_setup(struct fjes_hw *hw)
 
 	buf = kcalloc(hw->max_epid, sizeof(struct ep_share_mem_info),
 		      GFP_KERNEL);
+	{
+		struct ep_share_mem_info __uncontained_tmp89;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp89;
+	}
 	if (!buf)
 		return -ENOMEM;
 

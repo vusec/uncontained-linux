@@ -12,6 +12,11 @@
 #include <linux/perf_event.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "trace.h"
 #include "trace_output.h"
 
@@ -430,6 +435,10 @@ predicate_parse(const char *str, int nr_parens, int nr_preds,
 	if (!op_stack)
 		return ERR_PTR(-ENOMEM);
 	prog_stack = kcalloc(nr_preds, sizeof(*prog_stack), GFP_KERNEL);
+	{
+		typeof((*prog_stack)) __uncontained_tmp120;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (!prog_stack) {
 		parse_error(pe, -ENOMEM, 0);
 		goto out_free;

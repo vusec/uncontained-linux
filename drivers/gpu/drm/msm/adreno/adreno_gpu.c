@@ -15,6 +15,11 @@
 #include <linux/slab.h>
 #include <linux/soc/qcom/mdt_loader.h>
 #include <soc/qcom/ocmem.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "adreno_gpu.h"
 #include "a6xx_gpu.h"
 #include "msm_gem.h"
@@ -546,6 +551,10 @@ int adreno_gpu_state_get(struct msm_gpu *gpu, struct msm_gpu_state *state)
 			adreno_gpu->registers[i] + 1;
 
 	state->registers = kcalloc(count * 2, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp28;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (state->registers) {
 		int pos = 0;
 

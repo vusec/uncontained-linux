@@ -31,6 +31,11 @@
 #include <asm/ps3.h>
 #include <asm/lv1call.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ps3_gelic_net.h"
 #include "ps3_gelic_wireless.h"
 
@@ -2308,6 +2313,10 @@ static struct net_device *gelic_wl_alloc(struct gelic_card *card)
 	wl->networks = kcalloc(GELIC_WL_BSS_MAX_ENT,
 			       sizeof(struct gelic_wl_scan_info),
 			       GFP_KERNEL);
+	{
+		struct gelic_wl_scan_info __uncontained_tmp78;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+	}
 
 	if (!wl->networks)
 		goto fail_bss;

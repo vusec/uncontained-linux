@@ -56,6 +56,11 @@
 #include <dt-bindings/gpio/tegra194-gpio.h>
 #include <dt-bindings/soc/tegra-pmc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define PMC_CNTRL			0x0
 #define  PMC_CNTRL_INTR_POLARITY	BIT(17) /* inverts INTR polarity */
 #define  PMC_CNTRL_CPU_PWRREQ_OE	BIT(16) /* CPU pwr req enable */
@@ -1160,10 +1165,18 @@ static int tegra_powergate_of_get_clks(struct tegra_powergate *pg,
 		return -ENODEV;
 
 	pg->clks = kcalloc(count, sizeof(clk), GFP_KERNEL);
+	{
+		typeof((clk)) __uncontained_tmp133;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+	}
 	if (!pg->clks)
 		return -ENOMEM;
 
 	pg->clk_rates = kcalloc(count, sizeof(*pg->clk_rates), GFP_KERNEL);
+	{
+		typeof((*pg->clk_rates)) __uncontained_tmp134;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp134;
+	}
 	if (!pg->clk_rates) {
 		kfree(pg->clks);
 		return -ENOMEM;

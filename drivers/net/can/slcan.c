@@ -57,6 +57,11 @@
 #include <linux/can/skb.h>
 #include <linux/can/can-ml.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_ALIAS_LDISC(N_SLCAN);
 MODULE_DESCRIPTION("serial line CAN interface");
 MODULE_LICENSE("GPL");
@@ -721,6 +726,10 @@ static int __init slcan_init(void)
 	pr_info("slcan: %d dynamic interface channels.\n", maxdev);
 
 	slcan_devs = kcalloc(maxdev, sizeof(struct net_device *), GFP_KERNEL);
+	{
+		struct net_device *__uncontained_tmp43;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp43;
+	}
 	if (!slcan_devs)
 		return -ENOMEM;
 

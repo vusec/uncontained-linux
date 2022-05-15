@@ -15,6 +15,11 @@
 #include <linux/evm.h>
 #include <linux/iversion.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ima.h"
 
 /*
@@ -54,6 +59,10 @@ int ima_alloc_init_template(struct ima_event_data *event_data,
 
 	digests = kcalloc(NR_BANKS(ima_tpm_chip) + ima_extra_slots,
 			  sizeof(*digests), GFP_NOFS);
+	{
+		typeof((*digests)) __uncontained_tmp151;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp151;
+	}
 	if (!digests) {
 		kfree(*entry);
 		*entry = NULL;

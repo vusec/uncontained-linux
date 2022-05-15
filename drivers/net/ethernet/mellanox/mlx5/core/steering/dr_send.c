@@ -2,6 +2,11 @@
 /* Copyright (c) 2019 Mellanox Technologies. */
 
 #include <linux/smp.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "dr_types.h"
 
 #define QUEUE_SIZE 128
@@ -141,6 +146,10 @@ static struct mlx5dr_qp *dr_create_rc_qp(struct mlx5_core_dev *mdev,
 	dr_qp->sq.wqe_head = kcalloc(dr_qp->sq.wqe_cnt,
 				     sizeof(dr_qp->sq.wqe_head[0]),
 				     GFP_KERNEL);
+	{
+		typeof((dr_qp->sq.wqe_head[0])) __uncontained_tmp106;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp106;
+	}
 
 	if (!dr_qp->sq.wqe_head) {
 		mlx5_core_warn(mdev, "Can't allocate wqe head\n");

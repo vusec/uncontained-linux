@@ -18,6 +18,11 @@
 
 #include <linux/fsl/mc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dpaa2-switch.h"
 
 /* Minimal supported DPSW version */
@@ -3339,6 +3344,10 @@ static int dpaa2_switch_probe(struct fsl_mc_device *sw_dev)
 
 	ethsw->ports = kcalloc(ethsw->sw_attr.num_ifs, sizeof(*ethsw->ports),
 			       GFP_KERNEL);
+	{
+		typeof((*ethsw->ports)) __uncontained_tmp62;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!(ethsw->ports)) {
 		err = -ENOMEM;
 		goto err_teardown;
@@ -3346,6 +3355,10 @@ static int dpaa2_switch_probe(struct fsl_mc_device *sw_dev)
 
 	ethsw->fdbs = kcalloc(ethsw->sw_attr.num_ifs, sizeof(*ethsw->fdbs),
 			      GFP_KERNEL);
+	{
+		typeof((*ethsw->fdbs)) __uncontained_tmp63;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!ethsw->fdbs) {
 		err = -ENOMEM;
 		goto err_free_ports;
@@ -3354,6 +3367,10 @@ static int dpaa2_switch_probe(struct fsl_mc_device *sw_dev)
 	ethsw->filter_blocks = kcalloc(ethsw->sw_attr.num_ifs,
 				       sizeof(*ethsw->filter_blocks),
 				       GFP_KERNEL);
+	{
+		typeof((*ethsw->filter_blocks)) __uncontained_tmp64;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!ethsw->filter_blocks) {
 		err = -ENOMEM;
 		goto err_free_fdbs;

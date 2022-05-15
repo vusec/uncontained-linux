@@ -15,6 +15,11 @@
 #include <linux/if_vlan.h>
 #include <linux/interrupt.h>
 #include <linux/etherdevice.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "bnxt_hsi.h"
 #include "bnxt.h"
 #include "bnxt_hwrm.h"
@@ -425,6 +430,10 @@ static int bnxt_alloc_vf_resources(struct bnxt *bp, int num_vfs)
 	u32 nr_pages, size, i, j, k = 0;
 
 	bp->pf.vf = kcalloc(num_vfs, sizeof(struct bnxt_vf_info), GFP_KERNEL);
+	{
+		struct bnxt_vf_info __uncontained_tmp64;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!bp->pf.vf)
 		return -ENOMEM;
 

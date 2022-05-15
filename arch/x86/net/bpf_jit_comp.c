@@ -16,6 +16,11 @@
 #include <asm/nospec-branch.h>
 #include <asm/text-patching.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
 {
 	if (len == 1)
@@ -2074,6 +2079,10 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
 	if (fmod_ret->nr_progs) {
 		branches = kcalloc(fmod_ret->nr_progs, sizeof(u8 *),
 				   GFP_KERNEL);
+		{
+			u8 *__uncontained_tmp3;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+		}
 		if (!branches)
 			return -ENOMEM;
 

@@ -50,6 +50,11 @@
 #include <sound/info.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "cs46xx.h"
 
 #include "cs46xx_lib.h"
@@ -415,6 +420,10 @@ static int load_firmware(struct snd_cs46xx *chip,
 		goto error_inval;
 	module->symbol_table.symbols =
 		kcalloc(nums, sizeof(struct dsp_symbol_entry), GFP_KERNEL);
+	{
+		struct dsp_symbol_entry __uncontained_tmp169;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp169;
+	}
 	if (!module->symbol_table.symbols)
 		goto error;
 	for (i = 0; i < nums; i++) {
@@ -435,6 +444,10 @@ static int load_firmware(struct snd_cs46xx *chip,
 		goto error_inval;
 	module->segments =
 		kcalloc(nums, sizeof(struct dsp_segment_desc), GFP_KERNEL);
+	{
+		struct dsp_segment_desc __uncontained_tmp170;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp170;
+	}
 	if (!module->segments)
 		goto error;
 	for (i = 0; i < nums; i++) {

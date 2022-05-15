@@ -8,6 +8,11 @@
 #include <linux/capability.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ptp_private.h"
 
 static ssize_t clock_name_show(struct device *dev,
@@ -425,10 +430,18 @@ int ptp_populate_pin_groups(struct ptp_clock *ptp)
 
 	ptp->pin_dev_attr = kcalloc(n_pins, sizeof(*ptp->pin_dev_attr),
 				    GFP_KERNEL);
+	{
+		typeof((*ptp->pin_dev_attr)) __uncontained_tmp74;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!ptp->pin_dev_attr)
 		goto no_dev_attr;
 
 	ptp->pin_attr = kcalloc(1 + n_pins, sizeof(*ptp->pin_attr), GFP_KERNEL);
+	{
+		typeof((*ptp->pin_attr)) __uncontained_tmp75;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (!ptp->pin_attr)
 		goto no_pin_attr;
 

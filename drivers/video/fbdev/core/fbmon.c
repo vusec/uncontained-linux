@@ -33,6 +33,11 @@
 #include <video/edid.h>
 #include <video/of_videomode.h>
 #include <video/videomode.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "../edid.h"
 
 /*
@@ -622,6 +627,10 @@ static struct fb_videomode *fb_create_modedb(unsigned char *edid, int *dbsize,
 	int ver, rev;
 
 	mode = kcalloc(50, sizeof(struct fb_videomode), GFP_KERNEL);
+	{
+		struct fb_videomode __uncontained_tmp118;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+	}
 	if (mode == NULL)
 		return NULL;
 

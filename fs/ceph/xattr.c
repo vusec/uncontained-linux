@@ -12,6 +12,11 @@
 #include <linux/posix_acl_xattr.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define XATTR_CEPH_PREFIX "ceph."
 #define XATTR_CEPH_PREFIX_LEN (sizeof (XATTR_CEPH_PREFIX) - 1)
 
@@ -776,6 +781,10 @@ start:
 
 		xattrs = kcalloc(numattr, sizeof(struct ceph_inode_xattr *),
 				 GFP_NOFS);
+		{
+			struct ceph_inode_xattr *__uncontained_tmp108;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp108;
+		}
 		err = -ENOMEM;
 		if (!xattrs)
 			goto bad_lock;

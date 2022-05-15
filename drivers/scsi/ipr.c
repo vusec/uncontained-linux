@@ -71,6 +71,11 @@
 #include <scsi/scsi_eh.h>
 #include <scsi/scsi_cmnd.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -9677,7 +9682,15 @@ static int ipr_alloc_cmd_blks(struct ipr_ioa_cfg *ioa_cfg)
 		return -ENOMEM;
 
 	ioa_cfg->ipr_cmnd_list = kcalloc(IPR_NUM_CMD_BLKS, sizeof(struct ipr_cmnd *), GFP_KERNEL);
+	{
+		struct ipr_cmnd *__uncontained_tmp152;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp152;
+	}
 	ioa_cfg->ipr_cmnd_list_dma = kcalloc(IPR_NUM_CMD_BLKS, sizeof(dma_addr_t), GFP_KERNEL);
+	{
+		dma_addr_t __uncontained_tmp153;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp153;
+	}
 
 	if (!ioa_cfg->ipr_cmnd_list || !ioa_cfg->ipr_cmnd_list_dma) {
 		ipr_free_cmd_blks(ioa_cfg);
@@ -9783,6 +9796,10 @@ static int ipr_alloc_mem(struct ipr_ioa_cfg *ioa_cfg)
 	ioa_cfg->res_entries = kcalloc(ioa_cfg->max_devs_supported,
 				       sizeof(struct ipr_resource_entry),
 				       GFP_KERNEL);
+	{
+		struct ipr_resource_entry __uncontained_tmp154;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp154;
+	}
 
 	if (!ioa_cfg->res_entries)
 		goto out;
@@ -9846,6 +9863,10 @@ static int ipr_alloc_mem(struct ipr_ioa_cfg *ioa_cfg)
 	ioa_cfg->trace = kcalloc(IPR_NUM_TRACE_ENTRIES,
 				 sizeof(struct ipr_trace_entry),
 				 GFP_KERNEL);
+	{
+		struct ipr_trace_entry __uncontained_tmp155;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp155;
+	}
 
 	if (!ioa_cfg->trace)
 		goto out_free_hostrcb_dma;

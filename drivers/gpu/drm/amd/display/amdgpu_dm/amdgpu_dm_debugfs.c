@@ -25,6 +25,11 @@
 
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dc.h"
 #include "amdgpu.h"
 #include "amdgpu_dm.h"
@@ -190,6 +195,10 @@ static ssize_t dp_link_settings_read(struct file *f, char __user *buf,
 		return -EINVAL;
 
 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!rd_buf)
 		return 0;
 
@@ -259,6 +268,10 @@ static ssize_t dp_link_settings_write(struct file *f, const char __user *buf,
 		return -EINVAL;
 
 	wr_buf = kcalloc(wr_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp32;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!wr_buf)
 		return -ENOSPC;
 
@@ -376,6 +389,10 @@ static ssize_t dp_phy_settings_read(struct file *f, char __user *buf,
 		return -EINVAL;
 
 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!rd_buf)
 		return -EINVAL;
 
@@ -486,6 +503,10 @@ static ssize_t dp_phy_settings_write(struct file *f, const char __user *buf,
 		return -EINVAL;
 
 	wr_buf = kcalloc(wr_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp34;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!wr_buf)
 		return -ENOSPC;
 
@@ -638,6 +659,10 @@ static ssize_t dp_phy_test_pattern_debugfs_write(struct file *f, const char __us
 		return -EINVAL;
 
 	wr_buf = kcalloc(wr_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp35;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!wr_buf)
 		return -ENOSPC;
 
@@ -952,6 +977,10 @@ static ssize_t dp_dsc_passthrough_set(struct file *f, const char __user *buf,
 		return -EINVAL;
 
 	wr_buf = kcalloc(wr_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp36;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp36;
+	}
 
 	if (!wr_buf) {
 		DRM_DEBUG_DRIVER("no memory to allocate write buffer\n");
@@ -1249,6 +1278,10 @@ static ssize_t trigger_hotplug(struct file *f, const char __user *buf,
 		return -EINVAL;
 
 	wr_buf = kcalloc(wr_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp37;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp37;
+	}
 
 	if (!wr_buf) {
 		DRM_DEBUG_DRIVER("no memory to allocate write buffer\n");
@@ -1346,6 +1379,10 @@ static ssize_t dp_dsc_clock_en_read(struct file *f, char __user *buf,
 	int i, r, str_len = 30;
 
 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp38;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp38;
+	}
 
 	if (!rd_buf)
 		return -ENOMEM;
@@ -1434,6 +1471,10 @@ static ssize_t dp_dsc_clock_en_write(struct file *f, const char __user *buf,
 		return -EINVAL;
 
 	wr_buf = kcalloc(wr_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp39;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp39;
+	}
 
 	if (!wr_buf) {
 		DRM_DEBUG_DRIVER("no memory to allocate write buffer\n");
@@ -1533,6 +1574,10 @@ static ssize_t dp_dsc_slice_width_read(struct file *f, char __user *buf,
 	int i, r, str_len = 30;
 
 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp40;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp40;
+	}
 
 	if (!rd_buf)
 		return -ENOMEM;
@@ -1619,6 +1664,10 @@ static ssize_t dp_dsc_slice_width_write(struct file *f, const char __user *buf,
 		return -EINVAL;
 
 	wr_buf = kcalloc(wr_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp41;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp41;
+	}
 
 	if (!wr_buf) {
 		DRM_DEBUG_DRIVER("no memory to allocate write buffer\n");
@@ -1718,6 +1767,10 @@ static ssize_t dp_dsc_slice_height_read(struct file *f, char __user *buf,
 	int i, r, str_len = 30;
 
 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp42;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp42;
+	}
 
 	if (!rd_buf)
 		return -ENOMEM;
@@ -1804,6 +1857,10 @@ static ssize_t dp_dsc_slice_height_write(struct file *f, const char __user *buf,
 		return -EINVAL;
 
 	wr_buf = kcalloc(wr_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp43;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp43;
+	}
 
 	if (!wr_buf) {
 		DRM_DEBUG_DRIVER("no memory to allocate write buffer\n");
@@ -1899,6 +1956,10 @@ static ssize_t dp_dsc_bits_per_pixel_read(struct file *f, char __user *buf,
 	int i, r, str_len = 30;
 
 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp44;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp44;
+	}
 
 	if (!rd_buf)
 		return -ENOMEM;
@@ -1982,6 +2043,10 @@ static ssize_t dp_dsc_bits_per_pixel_write(struct file *f, const char __user *bu
 		return -EINVAL;
 
 	wr_buf = kcalloc(wr_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp45;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp45;
+	}
 
 	if (!wr_buf) {
 		DRM_DEBUG_DRIVER("no memory to allocate write buffer\n");
@@ -2075,6 +2140,10 @@ static ssize_t dp_dsc_pic_width_read(struct file *f, char __user *buf,
 	int i, r, str_len = 30;
 
 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp46;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+	}
 
 	if (!rd_buf)
 		return -ENOMEM;
@@ -2132,6 +2201,10 @@ static ssize_t dp_dsc_pic_height_read(struct file *f, char __user *buf,
 	int i, r, str_len = 30;
 
 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp47;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+	}
 
 	if (!rd_buf)
 		return -ENOMEM;
@@ -2204,6 +2277,10 @@ static ssize_t dp_dsc_chunk_size_read(struct file *f, char __user *buf,
 	int i, r, str_len = 30;
 
 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 
 	if (!rd_buf)
 		return -ENOMEM;
@@ -2276,6 +2353,10 @@ static ssize_t dp_dsc_slice_bpg_offset_read(struct file *f, char __user *buf,
 	int i, r, str_len = 30;
 
 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp49;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+	}
 
 	if (!rd_buf)
 		return -ENOMEM;
@@ -2342,6 +2423,10 @@ static ssize_t dp_max_bpc_read(struct file *f, char __user *buf,
 	int r;
 
 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp50;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp50;
+	}
 
 	if (!rd_buf)
 		return -ENOMEM;
@@ -2420,6 +2505,10 @@ static ssize_t dp_max_bpc_write(struct file *f, const char __user *buf,
 		return -EINVAL;
 
 	wr_buf = kcalloc(wr_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp51;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp51;
+	}
 
 	if (!wr_buf) {
 		DRM_DEBUG_DRIVER("no memory to allocate write buffer\n");
@@ -2818,6 +2907,10 @@ static ssize_t edp_ilr_write(struct file *f, const char __user *buf,
 		return -EINVAL;
 
 	wr_buf = kcalloc(wr_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp52;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!wr_buf)
 		return -ENOMEM;
 
@@ -3448,6 +3541,10 @@ static ssize_t dcc_en_bits_read(
 	int i, r;
 
 	dcc_en_bits = kcalloc(num_pipes, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp53;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp53;
+	}
 	if (!dcc_en_bits)
 		return -ENOMEM;
 
@@ -3459,6 +3556,10 @@ static ssize_t dcc_en_bits_read(
 	dc->hwss.get_dcc_en_bits(dc, dcc_en_bits);
 
 	rd_buf = kcalloc(rd_buf_size, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp54;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!rd_buf)
 		return -ENOMEM;
 

@@ -2057,6 +2057,10 @@ static int hclge_handle_all_ras_errors(struct hclge_dev *hdev)
 
 	bd_num = max_t(u32, mpf_bd_num, pf_bd_num);
 	desc = kcalloc(bd_num, sizeof(struct hclge_desc), GFP_KERNEL);
+	{
+		struct hclge_desc __uncontained_tmp72;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp72;
+	}
 	if (!desc)
 		return -ENOMEM;
 
@@ -2614,6 +2618,10 @@ static int hclge_handle_all_hw_msix_error(struct hclge_dev *hdev,
 
 	bd_num = max_t(u32, mpf_bd_num, pf_bd_num);
 	desc = kcalloc(bd_num, sizeof(struct hclge_desc), GFP_KERNEL);
+	{
+		struct hclge_desc __uncontained_tmp73;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp73;
+	}
 	if (!desc)
 		return -ENOMEM;
 
@@ -2703,6 +2711,10 @@ void hclge_handle_all_hns_hw_errors(struct hnae3_ae_dev *ae_dev)
 
 	bd_num = max_t(u32, mpf_bd_num, pf_bd_num);
 	desc = kcalloc(bd_num, sizeof(struct hclge_desc), GFP_KERNEL);
+	{
+		struct hclge_desc __uncontained_tmp74;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!desc)
 		return;
 

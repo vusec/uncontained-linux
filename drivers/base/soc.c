@@ -15,6 +15,11 @@
 #include <linux/err.h>
 #include <linux/glob.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static DEFINE_IDA(soc_ida);
 
 /* Prototype to allow declarations of DEVICE_ATTR(<foo>) before soc_info_show */
@@ -131,6 +136,10 @@ struct soc_device *soc_device_register(struct soc_device_attribute *soc_dev_attr
 	}
 
 	soc_attr_groups = kcalloc(3, sizeof(*soc_attr_groups), GFP_KERNEL);
+	{
+		typeof((*soc_attr_groups)) __uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!soc_attr_groups) {
 		ret = -ENOMEM;
 		goto out2;

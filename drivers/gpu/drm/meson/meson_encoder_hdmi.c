@@ -27,6 +27,11 @@
 #include <linux/media-bus-format.h>
 #include <linux/videodev2.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "meson_drv.h"
 #include "meson_registers.h"
 #include "meson_vclk.h"
@@ -279,6 +284,10 @@ meson_encoder_hdmi_get_inp_bus_fmts(struct drm_bridge *bridge,
 			input_fmts = kcalloc(*num_input_fmts,
 					     sizeof(*input_fmts),
 					     GFP_KERNEL);
+			{
+				typeof((*input_fmts)) __uncontained_tmp33;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+			}
 			if (!input_fmts)
 				return NULL;
 

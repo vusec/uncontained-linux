@@ -27,6 +27,11 @@
 #include <scsi/scsi_transport_sas.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -5084,6 +5089,10 @@ static int pqi_alloc_io_resources(struct pqi_ctrl_info *ctrl_info)
 
 	ctrl_info->io_request_pool = kcalloc(ctrl_info->max_io_slots,
 		sizeof(ctrl_info->io_request_pool[0]), GFP_KERNEL);
+	{
+		typeof((ctrl_info->io_request_pool[0])) __uncontained_tmp124;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp124;
+	}
 
 	if (!ctrl_info->io_request_pool) {
 		dev_err(&ctrl_info->pci_dev->dev,

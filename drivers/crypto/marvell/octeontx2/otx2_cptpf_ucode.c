@@ -3,6 +3,11 @@
 
 #include <linux/ctype.h>
 #include <linux/firmware.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "otx2_cptpf_ucode.h"
 #include "otx2_cpt_common.h"
 #include "otx2_cptpf.h"
@@ -1390,6 +1395,10 @@ int otx2_cpt_init_eng_grps(struct pci_dev *pdev,
 			grp->engs[j].bmap =
 				kcalloc(BITS_TO_LONGS(eng_grps->engs_num),
 					sizeof(long), GFP_KERNEL);
+			{
+				long __uncontained_tmp11;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp11;
+			}
 			if (!grp->engs[j].bmap) {
 				ret = -ENOMEM;
 				goto cleanup_eng_grps;

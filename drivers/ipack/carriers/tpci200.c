@@ -9,6 +9,11 @@
 
 #include <linux/module.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "tpci200.h"
 
 static const u16 tpci200_status_timeout[] = {
@@ -463,6 +468,10 @@ static int tpci200_install(struct tpci200_board *tpci200)
 
 	tpci200->slots = kcalloc(TPCI200_NB_SLOT, sizeof(struct tpci200_slot),
 				 GFP_KERNEL);
+	{
+		struct tpci200_slot __uncontained_tmp61;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (tpci200->slots == NULL)
 		return -ENOMEM;
 

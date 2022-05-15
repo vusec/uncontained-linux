@@ -21,6 +21,11 @@
 #include <linux/of.h>
 #include <linux/of_address.h>
 #include <linux/clk/ti.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "clock.h"
 
 #undef pr_fmt
@@ -368,6 +373,10 @@ int ti_clk_parse_divider_data(int *div_table, int num_dividers, int max_div,
 	num_dividers = i;
 
 	tmp = kcalloc(valid_div + 1, sizeof(*tmp), GFP_KERNEL);
+	{
+		typeof((*tmp)) __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!tmp)
 		return -ENOMEM;
 
@@ -424,6 +433,10 @@ static int __init ti_clk_get_div_table(struct device_node *node,
 	}
 
 	table = kcalloc(valid_div + 1, sizeof(*table), GFP_KERNEL);
+	{
+		typeof((*table)) __uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!table)
 		return -ENOMEM;
 

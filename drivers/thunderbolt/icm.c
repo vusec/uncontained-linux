@@ -19,6 +19,11 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ctl.h"
 #include "nhi_regs.h"
 #include "tb.h"
@@ -406,6 +411,10 @@ static int icm_fr_get_route(struct tb *tb, u8 link, u8 depth, u64 *route)
 	u8 i;
 
 	switches = kcalloc(npackets, sizeof(*switches), GFP_KERNEL);
+	{
+		typeof((*switches)) __uncontained_tmp143;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp143;
+	}
 	if (!switches)
 		return -ENOMEM;
 

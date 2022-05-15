@@ -11,6 +11,11 @@
 #include <linux/pm_runtime.h>
 #include <linux/bitops.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "linux/soc/qcom/qcom_aoss.h"
 
 #include "ipa.h"
@@ -121,6 +126,10 @@ static int ipa_interconnect_init(struct ipa_power *power, struct device *dev,
 
 	count = power->interconnect_count;
 	interconnect = kcalloc(count, sizeof(*interconnect), GFP_KERNEL);
+	{
+		typeof((*interconnect)) __uncontained_tmp90;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (!interconnect)
 		return -ENOMEM;
 	power->interconnect = interconnect;

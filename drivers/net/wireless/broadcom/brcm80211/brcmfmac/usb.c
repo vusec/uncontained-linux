@@ -12,6 +12,11 @@
 #include <brcmu_utils.h>
 #include <brcm_hw_ids.h>
 #include <brcmu_wifi.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "bus.h"
 #include "debug.h"
 #include "firmware.h"
@@ -436,6 +441,10 @@ brcmf_usbdev_qinit(struct list_head *q, int qsize)
 	struct brcmf_usbreq *req, *reqs;
 
 	reqs = kcalloc(qsize, sizeof(struct brcmf_usbreq), GFP_ATOMIC);
+	{
+		struct brcmf_usbreq __uncontained_tmp116;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (reqs == NULL)
 		return NULL;
 

@@ -31,6 +31,11 @@
 #include <linux/uaccess.h>
 #include <linux/nospec.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "uPD98401.h"
 #include "uPD98402.h"
 #include "zeprom.h"
@@ -607,6 +612,10 @@ static int start_rx(struct atm_dev *dev)
 	zatm_dev->rx_map = kcalloc(zatm_dev->chans,
 				   sizeof(*zatm_dev->rx_map),
 				   GFP_KERNEL);
+	{
+		typeof((*zatm_dev->rx_map)) __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!zatm_dev->rx_map) return -ENOMEM;
 	/* set VPI/VCI split (use all VCIs and give what's left to VPIs) */
 	zpokel(zatm_dev,(1 << dev->ci_range.vci_bits)-1,uPD98401_VRR);

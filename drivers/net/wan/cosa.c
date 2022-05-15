@@ -80,6 +80,11 @@
 #include <asm/dma.h>
 #include <asm/byteorder.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #undef COSA_SLOW_IO	/* for testing purposes only */
 
 #include "cosa.h"
@@ -541,6 +546,10 @@ static int cosa_probe(int base, int irq, int dma)
 
 	/* Initialize the per-channel data */
 	cosa->chan = kcalloc(cosa->nchannels, sizeof(struct channel_data), GFP_KERNEL);
+	{
+		struct channel_data __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!cosa->chan) {
 		err = -ENOMEM;
 		goto err_out3;

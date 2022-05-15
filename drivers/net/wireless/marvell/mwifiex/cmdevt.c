@@ -18,6 +18,11 @@
  */
 
 #include <asm/unaligned.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "decl.h"
 #include "ioctl.h"
 #include "util.h"
@@ -406,6 +411,10 @@ int mwifiex_alloc_cmd_buffer(struct mwifiex_adapter *adapter)
 	/* Allocate and initialize struct cmd_ctrl_node */
 	cmd_array = kcalloc(MWIFIEX_NUM_OF_CMD_BUFFER,
 			    sizeof(struct cmd_ctrl_node), GFP_KERNEL);
+	{
+		struct cmd_ctrl_node __uncontained_tmp67;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!cmd_array)
 		return -ENOMEM;
 

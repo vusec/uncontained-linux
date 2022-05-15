@@ -21,9 +21,17 @@ int mlx5dr_buddy_init(struct mlx5dr_icm_buddy_mem *buddy,
 	buddy->bitmap = kcalloc(buddy->max_order + 1,
 				sizeof(*buddy->bitmap),
 				GFP_KERNEL);
+	{
+		typeof((*buddy->bitmap)) __uncontained_tmp102;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp102;
+	}
 	buddy->num_free = kcalloc(buddy->max_order + 1,
 				  sizeof(*buddy->num_free),
 				  GFP_KERNEL);
+	{
+		typeof((*buddy->num_free)) __uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 
 	if (!buddy->bitmap || !buddy->num_free)
 		goto err_free_all;

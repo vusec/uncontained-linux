@@ -10,6 +10,11 @@
 #include <linux/slab.h>
 #include <linux/powercap.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define to_powercap_zone(n) container_of(n, struct powercap_zone, dev)
 #define to_powercap_control_type(n) \
 			container_of(n, struct powercap_control_type, dev)
@@ -535,6 +540,10 @@ struct powercap_zone *powercap_register_zone(
 	power_zone->constraints = kcalloc(nr_constraints,
 					  sizeof(*power_zone->constraints),
 					  GFP_KERNEL);
+	{
+		typeof((*power_zone->constraints)) __uncontained_tmp122;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp122;
+	}
 	if (!power_zone->constraints)
 		goto err_const_alloc;
 
@@ -542,6 +551,10 @@ struct powercap_zone *powercap_register_zone(
 						POWERCAP_ZONE_MAX_ATTRS + 1;
 	power_zone->zone_dev_attrs = kcalloc(nr_attrs, sizeof(void *),
 					     GFP_KERNEL);
+	{
+		void *__uncontained_tmp121;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+	}
 	if (!power_zone->zone_dev_attrs)
 		goto err_attr_alloc;
 	create_power_zone_common_attributes(power_zone);

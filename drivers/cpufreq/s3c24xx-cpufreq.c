@@ -27,6 +27,11 @@
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* note, cpufreq support deals in kHz, no Hz */
 static struct cpufreq_driver s3c24xx_driver;
 static struct s3c_cpufreq_config cpu_cur;
@@ -556,6 +561,10 @@ static int s3c_cpufreq_build_freq(void)
 	size++;
 
 	ftab = kcalloc(size, sizeof(*ftab), GFP_KERNEL);
+	{
+		typeof((*ftab)) __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!ftab)
 		return -ENOMEM;
 

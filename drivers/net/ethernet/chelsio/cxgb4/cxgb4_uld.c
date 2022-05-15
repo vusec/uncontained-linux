@@ -45,6 +45,11 @@
 #include <linux/skbuff.h>
 #include <linux/pci.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cxgb4.h"
 #include "cxgb4_uld.h"
 #include "t4_regs.h"
@@ -271,12 +276,20 @@ static int cfg_queues_uld(struct adapter *adap, unsigned int uld_type,
 	nrxq = rxq_info->nrxq + rxq_info->nciq; /* total rxq's */
 	rxq_info->uldrxq = kcalloc(nrxq, sizeof(struct sge_ofld_rxq),
 				   GFP_KERNEL);
+	{
+		struct sge_ofld_rxq __uncontained_tmp56;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!rxq_info->uldrxq) {
 		kfree(rxq_info);
 		return -ENOMEM;
 	}
 
 	rxq_info->rspq_id = kcalloc(nrxq, sizeof(unsigned short), GFP_KERNEL);
+	{
+		unsigned short __uncontained_tmp57;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!rxq_info->rspq_id) {
 		kfree(rxq_info->uldrxq);
 		kfree(rxq_info);
@@ -491,6 +504,10 @@ setup_sge_txq_uld(struct adapter *adap, unsigned int uld_type,
 	}
 	txq_info->uldtxq = kcalloc(txq_info->ntxq, sizeof(struct sge_uld_txq),
 				   GFP_KERNEL);
+	{
+		struct sge_uld_txq __uncontained_tmp58;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!txq_info->uldtxq) {
 		kfree(txq_info);
 		return -ENOMEM;
@@ -526,18 +543,30 @@ int t4_uld_mem_alloc(struct adapter *adap)
 	struct sge *s = &adap->sge;
 
 	adap->uld = kcalloc(CXGB4_ULD_MAX, sizeof(*adap->uld), GFP_KERNEL);
+	{
+		typeof((*adap->uld)) __uncontained_tmp61;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!adap->uld)
 		return -ENOMEM;
 
 	s->uld_rxq_info = kcalloc(CXGB4_ULD_MAX,
 				  sizeof(struct sge_uld_rxq_info *),
 				  GFP_KERNEL);
+	{
+		struct sge_uld_rxq_info *__uncontained_tmp59;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!s->uld_rxq_info)
 		goto err_uld;
 
 	s->uld_txq_info = kcalloc(CXGB4_TX_MAX,
 				  sizeof(struct sge_uld_txq_info *),
 				  GFP_KERNEL);
+	{
+		struct sge_uld_txq_info *__uncontained_tmp60;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!s->uld_txq_info)
 		goto err_uld_rx;
 	return 0;

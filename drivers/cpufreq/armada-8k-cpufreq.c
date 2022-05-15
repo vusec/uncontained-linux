@@ -21,6 +21,11 @@
 #include <linux/pm_opp.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * Setup the opps list with the divider for the max frequency, that
  * will be filled at runtime.
@@ -136,6 +141,10 @@ static int __init armada_8k_cpufreq_init(void)
 
 	nb_cpus = num_possible_cpus();
 	freq_tables = kcalloc(nb_cpus, sizeof(*freq_tables), GFP_KERNEL);
+	{
+		typeof((*freq_tables)) __uncontained_tmp22;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!freq_tables)
 		return -ENOMEM;
 	cpumask_copy(&cpus, cpu_possible_mask);

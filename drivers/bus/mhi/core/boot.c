@@ -16,6 +16,11 @@
 #include <linux/random.h>
 #include <linux/slab.h>
 #include <linux/wait.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "internal.h"
 
 /* Setup RDDM vector table for RDDM transfer and program RXVEC */
@@ -326,6 +331,10 @@ int mhi_alloc_bhie_table(struct mhi_controller *mhi_cntrl,
 	/* Allocate memory for entries */
 	img_info->mhi_buf = kcalloc(segments, sizeof(*img_info->mhi_buf),
 				    GFP_KERNEL);
+	{
+		typeof((*img_info->mhi_buf)) __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!img_info->mhi_buf)
 		goto error_alloc_mhi_buf;
 

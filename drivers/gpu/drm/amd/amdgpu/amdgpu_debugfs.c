@@ -28,6 +28,11 @@
 #include <linux/uaccess.h>
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "amdgpu.h"
 #include "amdgpu_pm.h"
 #include "amdgpu_dm_debugfs.h"
@@ -996,6 +1001,10 @@ static ssize_t amdgpu_debugfs_gpr_read(struct file *f, char __user *buf,
 	bank = (*pos & GENMASK_ULL(61, 60)) >> 60;
 
 	data = kcalloc(1024, sizeof(*data), GFP_KERNEL);
+	{
+		typeof((*data)) __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!data)
 		return -ENOMEM;
 
@@ -1513,6 +1522,10 @@ static int amdgpu_debugfs_ib_preempt(void *data, u64 val)
 
 	length = ring->fence_drv.num_fences_mask + 1;
 	fences = kcalloc(length, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp16;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!fences)
 		return -ENOMEM;
 

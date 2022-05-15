@@ -21,6 +21,11 @@
 #include <asm/page.h>
 #include <asm/mshyperv.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -612,6 +617,10 @@ static u64 *request_arr_init(u32 size)
 	u64 *req_arr;
 
 	req_arr = kcalloc(size, sizeof(u64), GFP_KERNEL);
+	{
+		u64 __uncontained_tmp30;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!req_arr)
 		return NULL;
 

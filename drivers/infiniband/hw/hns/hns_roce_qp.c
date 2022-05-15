@@ -35,6 +35,11 @@
 #include <rdma/ib_addr.h>
 #include <rdma/ib_umem.h>
 #include <rdma/uverbs_ioctl.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hns_roce_common.h"
 #include "hns_roce_device.h"
 #include "hns_roce_hem.h"
@@ -697,6 +702,10 @@ static int alloc_rq_inline_buf(struct hns_roce_qp *hr_qp,
 	/* allocate recv inline buf */
 	wqe_list = kcalloc(wqe_cnt, sizeof(struct hns_roce_rinl_wqe),
 			   GFP_KERNEL);
+	{
+		struct hns_roce_rinl_wqe __uncontained_tmp58;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!wqe_list)
 		goto err;
 
@@ -704,6 +713,10 @@ static int alloc_rq_inline_buf(struct hns_roce_qp *hr_qp,
 	wqe_list[0].sg_list = kcalloc(wqe_cnt, (max_recv_sge *
 				      sizeof(struct hns_roce_rinl_sge)),
 				      GFP_KERNEL);
+	{
+		struct hns_roce_rinl_sge __uncontained_tmp59;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!wqe_list[0].sg_list)
 		goto err_wqe_list;
 
@@ -977,6 +990,10 @@ static int alloc_kernel_wrid(struct hns_roce_dev *hr_dev,
 	int ret;
 
 	sq_wrid = kcalloc(hr_qp->sq.wqe_cnt, sizeof(u64), GFP_KERNEL);
+	{
+		u64 __uncontained_tmp60;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (ZERO_OR_NULL_PTR(sq_wrid)) {
 		ibdev_err(ibdev, "failed to alloc SQ wrid.\n");
 		return -ENOMEM;
@@ -984,6 +1001,10 @@ static int alloc_kernel_wrid(struct hns_roce_dev *hr_dev,
 
 	if (hr_qp->rq.wqe_cnt) {
 		rq_wrid = kcalloc(hr_qp->rq.wqe_cnt, sizeof(u64), GFP_KERNEL);
+		{
+			u64 __uncontained_tmp61;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+		}
 		if (ZERO_OR_NULL_PTR(rq_wrid)) {
 			ibdev_err(ibdev, "failed to alloc RQ wrid.\n");
 			ret = -ENOMEM;
@@ -1466,6 +1487,10 @@ int hns_roce_init_qp_table(struct hns_roce_dev *hr_dev)
 
 	qp_table->idx_table.spare_idx = kcalloc(hr_dev->caps.num_qps,
 					sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp62;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!qp_table->idx_table.spare_idx)
 		return -ENOMEM;
 

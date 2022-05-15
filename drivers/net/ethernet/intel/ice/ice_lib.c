@@ -3326,6 +3326,10 @@ int ice_vsi_rebuild(struct ice_vsi *vsi, bool init_vsi)
 
 	coalesce = kcalloc(vsi->num_q_vectors,
 			   sizeof(struct ice_coalesce_stored), GFP_KERNEL);
+	{
+		struct ice_coalesce_stored __uncontained_tmp70;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!coalesce)
 		return -ENOMEM;
 

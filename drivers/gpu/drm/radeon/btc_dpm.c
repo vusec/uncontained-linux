@@ -25,6 +25,11 @@
 #include <linux/pci.h>
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "atom.h"
 #include "btc_dpm.h"
 #include "btcd.h"
@@ -2583,6 +2588,10 @@ int btc_dpm_init(struct radeon_device *rdev)
 		kcalloc(4,
 			sizeof(struct radeon_clock_voltage_dependency_entry),
 			GFP_KERNEL);
+	{
+		struct radeon_clock_voltage_dependency_entry __uncontained_tmp39;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!rdev->pm.dpm.dyn_state.vddc_dependency_on_dispclk.entries) {
 		r600_free_extended_power_table(rdev);
 		return -ENOMEM;

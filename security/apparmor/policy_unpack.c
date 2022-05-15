@@ -18,6 +18,11 @@
 #include <linux/errno.h>
 #include <linux/zlib.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "include/apparmor.h"
 #include "include/audit.h"
 #include "include/cred.h"
@@ -488,6 +493,10 @@ static bool unpack_trans_table(struct aa_ext *e, struct aa_profile *profile)
 			goto fail;
 		profile->file.trans.table = kcalloc(size, sizeof(char *),
 						    GFP_KERNEL);
+		{
+			char *__uncontained_tmp148;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+		}
 		if (!profile->file.trans.table)
 			goto fail;
 
@@ -553,6 +562,10 @@ static bool unpack_xattrs(struct aa_ext *e, struct aa_profile *profile)
 		size = unpack_array(e, NULL);
 		profile->xattr_count = size;
 		profile->xattrs = kcalloc(size, sizeof(char *), GFP_KERNEL);
+		{
+			char *__uncontained_tmp149;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp149;
+		}
 		if (!profile->xattrs)
 			goto fail;
 		for (i = 0; i < size; i++) {
@@ -582,6 +595,10 @@ static bool unpack_secmark(struct aa_ext *e, struct aa_profile *profile)
 
 		profile->secmark = kcalloc(size, sizeof(struct aa_secmark),
 					   GFP_KERNEL);
+		{
+			struct aa_secmark __uncontained_tmp150;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp150;
+		}
 		if (!profile->secmark)
 			goto fail;
 

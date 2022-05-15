@@ -99,6 +99,10 @@ static int __init orangefs_init(void)
 
 	orangefs_htable_ops_in_progress =
 	    kcalloc(hash_table_size, sizeof(struct list_head), GFP_KERNEL);
+	{
+		struct list_head __uncontained_tmp133;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+	}
 	if (!orangefs_htable_ops_in_progress) {
 		ret = -ENOMEM;
 		goto cleanup_inode;

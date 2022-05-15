@@ -12,6 +12,11 @@
 #include <linux/comedi/comedidev.h>
 #include <linux/comedi/comedi_isadma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * comedi_isadma_program - program and enable an ISA DMA transfer
  * @desc:	the ISA DMA cookie to program and enable
@@ -166,6 +171,10 @@ struct comedi_isadma *comedi_isadma_alloc(struct comedi_device *dev,
 		goto no_dma;
 
 	desc = kcalloc(n_desc, sizeof(*desc), GFP_KERNEL);
+	{
+		typeof((*desc)) __uncontained_tmp11;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp11;
+	}
 	if (!desc)
 		goto no_dma;
 	dma->desc = desc;

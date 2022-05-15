@@ -19,6 +19,11 @@
 #include <linux/device.h>
 #include <linux/suspend.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../sleep.h"
 
 #ifdef CONFIG_SUSPEND
@@ -112,6 +117,10 @@ static void lpi_device_get_constraints_amd(void)
 			lpi_constraints_table = kcalloc(package->package.count,
 							sizeof(*lpi_constraints_table),
 							GFP_KERNEL);
+			{
+				typeof((*lpi_constraints_table)) __uncontained_tmp5;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+			}
 
 			if (!lpi_constraints_table)
 				goto free_acpi_buffer;
@@ -195,6 +204,10 @@ static void lpi_device_get_constraints(void)
 	lpi_constraints_table = kcalloc(out_obj->package.count,
 					sizeof(*lpi_constraints_table),
 					GFP_KERNEL);
+	{
+		typeof((*lpi_constraints_table)) __uncontained_tmp6;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!lpi_constraints_table)
 		goto free_acpi_buffer;
 

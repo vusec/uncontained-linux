@@ -17,6 +17,11 @@
 #include <linux/iommu.h>
 #include <net/ip.h>
 #include <net/checksum.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "net_driver.h"
 #include "efx.h"
 #include "filter.h"
@@ -702,6 +707,10 @@ int ef4_probe_rx_queue(struct ef4_rx_queue *rx_queue)
 	/* Allocate RX buffers */
 	rx_queue->buffer = kcalloc(entries, sizeof(*rx_queue->buffer),
 				   GFP_KERNEL);
+	{
+		typeof((*rx_queue->buffer)) __uncontained_tmp96;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!rx_queue->buffer)
 		return -ENOMEM;
 
@@ -733,6 +742,10 @@ static void ef4_init_rx_recycle_ring(struct ef4_nic *efx,
 					    efx->rx_bufs_per_page);
 	rx_queue->page_ring = kcalloc(page_ring_size,
 				      sizeof(*rx_queue->page_ring), GFP_KERNEL);
+	{
+		typeof((*rx_queue->page_ring)) __uncontained_tmp97;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!rx_queue->page_ring)
 		rx_queue->page_ptr_mask = 0;
 	else

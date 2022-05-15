@@ -11,6 +11,11 @@
 #include <linux/delay.h>
 #include <scsi/scsi_tcq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -3193,6 +3198,10 @@ int qla_edif_sadb_build_free_pool(struct qla_hw_data *ha)
 {
 	ha->edif_tx_sa_id_map =
 	    kcalloc(BITS_TO_LONGS(EDIF_NUM_SA_INDEX), sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp122;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp122;
+	}
 
 	if (!ha->edif_tx_sa_id_map) {
 		ql_log_pci(ql_log_fatal, ha->pdev, 0x0009,
@@ -3202,6 +3211,10 @@ int qla_edif_sadb_build_free_pool(struct qla_hw_data *ha)
 
 	ha->edif_rx_sa_id_map =
 	    kcalloc(BITS_TO_LONGS(EDIF_NUM_SA_INDEX), sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp123;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (!ha->edif_rx_sa_id_map) {
 		kfree(ha->edif_tx_sa_id_map);
 		ha->edif_tx_sa_id_map = NULL;

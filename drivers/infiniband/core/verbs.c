@@ -55,6 +55,11 @@
 #include "core_priv.h"
 #include <trace/events/rdma_core.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int ib_resolve_eth_dmac(struct ib_device *device,
 			       struct rdma_ah_attr *ah_attr);
 
@@ -2999,6 +3004,10 @@ struct rdma_hw_stats *rdma_alloc_hw_stats_struct(
 
 	stats->is_disabled = kcalloc(BITS_TO_LONGS(num_counters),
 				     sizeof(*stats->is_disabled), GFP_KERNEL);
+	{
+		typeof((*stats->is_disabled)) __uncontained_tmp63;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!stats->is_disabled)
 		goto err;
 

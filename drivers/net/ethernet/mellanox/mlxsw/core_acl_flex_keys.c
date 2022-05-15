@@ -6,6 +6,11 @@
 #include <linux/list.h>
 #include <linux/errno.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "item.h"
 #include "core_acl_flex_keys.h"
 
@@ -225,6 +230,10 @@ static int mlxsw_afk_picker(struct mlxsw_afk *mlxsw_afk,
 	int err;
 
 	picker = kcalloc(mlxsw_afk->blocks_count, sizeof(*picker), GFP_KERNEL);
+	{
+		typeof((*picker)) __uncontained_tmp104;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!picker)
 		return -ENOMEM;
 

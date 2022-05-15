@@ -911,10 +911,18 @@ static enum irdma_status_code irdma_create_cqp(struct irdma_pci_f *rf)
 	int i;
 
 	cqp->cqp_requests = kcalloc(sqsize, sizeof(*cqp->cqp_requests), GFP_KERNEL);
+	{
+		typeof((*cqp->cqp_requests)) __uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!cqp->cqp_requests)
 		return IRDMA_ERR_NO_MEMORY;
 
 	cqp->scratch_array = kcalloc(sqsize, sizeof(*cqp->scratch_array), GFP_KERNEL);
+	{
+		typeof((*cqp->scratch_array)) __uncontained_tmp32;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!cqp->scratch_array) {
 		kfree(cqp->cqp_requests);
 		return IRDMA_ERR_NO_MEMORY;
@@ -1215,6 +1223,10 @@ static enum irdma_status_code irdma_setup_ceq_0(struct irdma_pci_f *rf)
 
 	num_ceqs = min(rf->msix_count, rf->sc_dev.hmc_fpm_misc.max_ceqs);
 	rf->ceqlist = kcalloc(num_ceqs, sizeof(*rf->ceqlist), GFP_KERNEL);
+	{
+		typeof((*rf->ceqlist)) __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!rf->ceqlist) {
 		status = IRDMA_ERR_NO_MEMORY;
 		goto exit;
@@ -1987,6 +1999,10 @@ u32 irdma_initialize_hw_rsrc(struct irdma_pci_f *rf)
 		rf->allocated_ws_nodes =
 			kcalloc(BITS_TO_LONGS(IRDMA_MAX_WS_NODES),
 				sizeof(unsigned long), GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp30;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp30;
+		}
 		if (!rf->allocated_ws_nodes)
 			return -ENOMEM;
 

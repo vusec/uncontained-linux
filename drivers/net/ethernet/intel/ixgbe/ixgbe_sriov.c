@@ -12,6 +12,11 @@
 #include <linux/tcp.h>
 #include <linux/ipv6.h>
 #include <linux/if_bridge.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #ifdef NETIF_F_HW_VLAN_CTAG_TX
 #include <linux/if_vlan.h>
 #endif
@@ -35,6 +40,10 @@ static inline void ixgbe_alloc_vf_macvlans(struct ixgbe_adapter *adapter,
 
 	mv_list = kcalloc(num_vf_macvlans, sizeof(struct vf_macvlans),
 			  GFP_KERNEL);
+	{
+		struct vf_macvlans __uncontained_tmp51;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (mv_list) {
 		/* Initialize list of VF macvlans */
 		INIT_LIST_HEAD(&adapter->vf_mvs.l);
@@ -65,6 +74,10 @@ static int __ixgbe_enable_sriov(struct ixgbe_adapter *adapter,
 	/* Allocate memory for per VF control structures */
 	adapter->vfinfo = kcalloc(num_vfs, sizeof(struct vf_data_storage),
 				  GFP_KERNEL);
+	{
+		struct vf_data_storage __uncontained_tmp52;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!adapter->vfinfo)
 		return -ENOMEM;
 

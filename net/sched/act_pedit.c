@@ -21,6 +21,11 @@
 #include <uapi/linux/tc_act/tc_pedit.h>
 #include <net/pkt_cls.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static unsigned int pedit_net_id;
 static struct tc_action_ops act_pedit_ops;
 
@@ -47,6 +52,10 @@ static struct tcf_pedit_key_ex *tcf_pedit_keys_ex_parse(struct nlattr *nla,
 		return NULL;
 
 	keys_ex = kcalloc(n, sizeof(*k), GFP_KERNEL);
+	{
+		typeof((*k)) __uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!keys_ex)
 		return ERR_PTR(-ENOMEM);
 

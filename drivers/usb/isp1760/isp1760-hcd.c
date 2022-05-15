@@ -30,6 +30,11 @@
 #include <asm/unaligned.h>
 #include <asm/cacheflush.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "isp1760-core.h"
 #include "isp1760-hcd.h"
 #include "isp1760-regs.h"
@@ -2579,6 +2584,10 @@ int isp1760_hcd_register(struct isp1760_hcd *priv, struct resource *mem,
 
 	priv->atl_slots = kcalloc(mem_layout->slot_num,
 				  sizeof(struct isp1760_slotinfo), GFP_KERNEL);
+	{
+		struct isp1760_slotinfo __uncontained_tmp102;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (!priv->atl_slots) {
 		ret = -ENOMEM;
 		goto put_hcd;
@@ -2586,6 +2595,10 @@ int isp1760_hcd_register(struct isp1760_hcd *priv, struct resource *mem,
 
 	priv->int_slots = kcalloc(mem_layout->slot_num,
 				  sizeof(struct isp1760_slotinfo), GFP_KERNEL);
+	{
+		struct isp1760_slotinfo __uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!priv->int_slots) {
 		ret = -ENOMEM;
 		goto free_atl_slots;

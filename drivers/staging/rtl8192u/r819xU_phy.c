@@ -10,6 +10,11 @@
 #include "ieee80211/dot11d.h"
 #include <linux/bitops.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static u32 RF_CHANNEL_TABLE_ZEBRA[] = {
 	0,
 	0x085c, /* 2412 1  */
@@ -1196,16 +1201,28 @@ static u8 rtl8192_phy_SwChnlStepByStep(struct net_device *dev, u8 channel,
 	bool ret;
 
 	pre_cmd = kcalloc(MAX_PRECMD_CNT, sizeof(*pre_cmd), GFP_KERNEL);
+	{
+		typeof((*pre_cmd)) __uncontained_tmp108;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp108;
+	}
 	if (!pre_cmd)
 		return false;
 
 	post_cmd = kcalloc(MAX_POSTCMD_CNT, sizeof(*post_cmd), GFP_KERNEL);
+	{
+		typeof((*post_cmd)) __uncontained_tmp109;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp109;
+	}
 	if (!post_cmd) {
 		kfree(pre_cmd);
 		return false;
 	}
 
 	rf_cmd = kcalloc(MAX_RFDEPENDCMD_CNT, sizeof(*rf_cmd), GFP_KERNEL);
+	{
+		typeof((*rf_cmd)) __uncontained_tmp110;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (!rf_cmd) {
 		kfree(pre_cmd);
 		kfree(post_cmd);

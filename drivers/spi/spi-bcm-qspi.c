@@ -22,6 +22,11 @@
 #include <linux/spi/spi-mem.h>
 #include <linux/sysfs.h>
 #include <linux/types.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "spi-bcm-qspi.h"
 
 #define DRIVER_NAME "bcm_qspi"
@@ -1572,6 +1577,10 @@ int bcm_qspi_probe(struct platform_device *pdev,
 
 	qspi->dev_ids = kcalloc(num_irqs, sizeof(struct bcm_qspi_dev_id),
 				GFP_KERNEL);
+	{
+		struct bcm_qspi_dev_id __uncontained_tmp136;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp136;
+	}
 	if (!qspi->dev_ids)
 		return -ENOMEM;
 

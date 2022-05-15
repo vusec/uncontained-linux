@@ -20,6 +20,11 @@
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DM_MSG_PREFIX "cache"
 
 DECLARE_DM_KCOPYD_THROTTLE_WITH_MODULE_PARM(cache_copy_throttle,
@@ -2543,6 +2548,10 @@ static int copy_ctr_args(struct cache *cache, int argc, const char **argv)
 	const char **copy;
 
 	copy = kcalloc(argc, sizeof(*copy), GFP_KERNEL);
+	{
+		typeof((*copy)) __uncontained_tmp51;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (!copy)
 		return -ENOMEM;
 	for (i = 0; i < argc; i++) {

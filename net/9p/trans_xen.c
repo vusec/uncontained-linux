@@ -19,6 +19,11 @@
 #include <net/9p/client.h>
 #include <net/9p/transport.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define XEN_9PFS_NUM_RINGS 2
 #define XEN_9PFS_RING_ORDER 9
 #define XEN_9PFS_RING_SIZE(ring)  XEN_FLEX_RING_SIZE(ring->intf->ring_order)
@@ -396,6 +401,10 @@ static int xen_9pfs_front_probe(struct xenbus_device *dev,
 	priv->num_rings = XEN_9PFS_NUM_RINGS;
 	priv->rings = kcalloc(priv->num_rings, sizeof(*priv->rings),
 			      GFP_KERNEL);
+	{
+		typeof((*priv->rings)) __uncontained_tmp129;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp129;
+	}
 	if (!priv->rings) {
 		kfree(priv);
 		return -ENOMEM;

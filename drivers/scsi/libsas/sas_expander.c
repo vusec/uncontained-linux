@@ -18,6 +18,11 @@
 #include <scsi/sas_ata.h>
 #include <scsi/scsi_transport.h>
 #include <scsi/scsi_transport_sas.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "scsi_sas_internal.h"
 
 static int sas_discover_expander(struct domain_device *dev);
@@ -433,6 +438,10 @@ static int sas_expander_discover(struct domain_device *dev)
 	int res;
 
 	ex->ex_phy = kcalloc(ex->num_phys, sizeof(*ex->ex_phy), GFP_KERNEL);
+	{
+		typeof((*ex->ex_phy)) __uncontained_tmp92;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!ex->ex_phy)
 		return -ENOMEM;
 

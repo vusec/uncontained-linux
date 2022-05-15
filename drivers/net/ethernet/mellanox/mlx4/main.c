@@ -50,6 +50,11 @@
 #include <linux/mlx4/device.h>
 #include <linux/mlx4/doorbell.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mlx4.h"
 #include "fw.h"
 #include "icm.h"
@@ -870,6 +875,10 @@ static int mlx4_slave_special_qp_cap(struct mlx4_dev *dev)
 
 	func_cap = kzalloc(sizeof(*func_cap), GFP_KERNEL);
 	caps->spec_qps = kcalloc(caps->num_ports, sizeof(*caps->spec_qps), GFP_KERNEL);
+	{
+		typeof((*caps->spec_qps)) __uncontained_tmp85;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+	}
 
 	if (!func_cap || !caps->spec_qps) {
 		mlx4_err(dev, "Failed to allocate memory for special qps cap\n");
@@ -2949,6 +2958,10 @@ static void mlx4_enable_msi_x(struct mlx4_dev *dev)
 			nreq = min_t(int, nreq, msi_x);
 
 		entries = kcalloc(nreq, sizeof(*entries), GFP_KERNEL);
+		{
+			typeof((*entries)) __uncontained_tmp86;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+		}
 		if (!entries)
 			goto no_msi;
 
@@ -3125,6 +3138,10 @@ static int mlx4_init_steering(struct mlx4_dev *dev)
 
 	priv->steer = kcalloc(num_entries, sizeof(struct mlx4_steer),
 			      GFP_KERNEL);
+	{
+		struct mlx4_steer __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!priv->steer)
 		return -ENOMEM;
 
@@ -3231,6 +3248,10 @@ static u64 mlx4_enable_sriov(struct mlx4_dev *dev, struct pci_dev *pdev,
 	if (reset_flow) {
 		dev->dev_vfs = kcalloc(total_vfs, sizeof(*dev->dev_vfs),
 				       GFP_KERNEL);
+		{
+			typeof((*dev->dev_vfs)) __uncontained_tmp87;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+		}
 		if (!dev->dev_vfs)
 			goto free_mem;
 		return dev_flags;
@@ -3246,6 +3267,10 @@ static u64 mlx4_enable_sriov(struct mlx4_dev *dev, struct pci_dev *pdev,
 	}
 
 	dev->dev_vfs = kcalloc(total_vfs, sizeof(*dev->dev_vfs), GFP_KERNEL);
+	{
+		typeof((*dev->dev_vfs)) __uncontained_tmp88;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (NULL == dev->dev_vfs) {
 		mlx4_err(dev, "Failed to allocate memory for VFs\n");
 		goto disable_sriov;

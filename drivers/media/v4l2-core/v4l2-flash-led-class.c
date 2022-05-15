@@ -14,6 +14,11 @@
 #include <linux/types.h>
 #include <media/v4l2-flash-led-class.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define has_flash_op(v4l2_flash, op)				\
 	(v4l2_flash && v4l2_flash->ops && v4l2_flash->ops->op)
 
@@ -445,6 +450,10 @@ static int v4l2_flash_init_controls(struct v4l2_flash *v4l2_flash,
 	/* allocate memory dynamically so as not to exceed stack frame size */
 	ctrl_init_data = kcalloc(NUM_FLASH_CTRLS, sizeof(*ctrl_init_data),
 					GFP_KERNEL);
+	{
+		typeof((*ctrl_init_data)) __uncontained_tmp55;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!ctrl_init_data)
 		return -ENOMEM;
 

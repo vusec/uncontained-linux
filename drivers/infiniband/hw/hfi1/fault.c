@@ -10,6 +10,11 @@
 #include <linux/types.h>
 #include <linux/bitmap.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "debugfs.h"
 #include "fault.h"
 #include "trace.h"
@@ -97,6 +102,10 @@ static ssize_t fault_opcodes_write(struct file *file, const char __user *buf,
 	struct fault *fault = file->private_data;
 
 	data = kcalloc(datalen, sizeof(*data), GFP_KERNEL);
+	{
+		typeof((*data)) __uncontained_tmp35;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!data)
 		return -ENOMEM;
 	copy = min(len, datalen - 1);
@@ -172,6 +181,10 @@ static ssize_t fault_opcodes_read(struct file *file, char __user *buf,
 	size_t bitsize = sizeof(fault->opcodes) * BITS_PER_BYTE;
 
 	data = kcalloc(datalen, sizeof(*data), GFP_KERNEL);
+	{
+		typeof((*data)) __uncontained_tmp36;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!data)
 		return -ENOMEM;
 	ret = debugfs_file_get(file->f_path.dentry);

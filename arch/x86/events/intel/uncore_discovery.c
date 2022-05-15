@@ -102,6 +102,10 @@ add_uncore_discovery_type(struct uncore_unit_discovery *unit)
 		return NULL;
 
 	type->box_ctrl_die = kcalloc(__uncore_max_dies, sizeof(u64), GFP_KERNEL);
+	{
+		u64 __uncontained_tmp7;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!type->box_ctrl_die)
 		goto free_type;
 
@@ -158,10 +162,18 @@ uncore_insert_box_info(struct uncore_unit_discovery *unit,
 		return;
 
 	box_offset = kcalloc(type->num_boxes + 1, sizeof(unsigned int), GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp8;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp8;
+	}
 	if (!box_offset)
 		return;
 
 	ids = kcalloc(type->num_boxes + 1, sizeof(unsigned int), GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp9;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!ids)
 		goto free_box_offset;
 
@@ -579,6 +591,10 @@ intel_uncore_generic_init_uncores(enum uncore_access_type type_id, int num_extra
 
 	uncores = kcalloc(num_discovered_types[type_id] + num_extra + 1,
 			  sizeof(struct intel_uncore_type *), GFP_KERNEL);
+	{
+		struct intel_uncore_type *__uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!uncores)
 		return empty_uncore;
 

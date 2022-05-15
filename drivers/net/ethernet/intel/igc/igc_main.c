@@ -16,6 +16,11 @@
 
 #include <net/ipv6.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "igc.h"
 #include "igc_hw.h"
 #include "igc_tsn.h"
@@ -4116,6 +4121,10 @@ static void igc_set_interrupt_capability(struct igc_adapter *adapter,
 
 	adapter->msix_entries = kcalloc(numvecs, sizeof(struct msix_entry),
 					GFP_KERNEL);
+	{
+		struct msix_entry __uncontained_tmp76;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp76;
+	}
 
 	if (!adapter->msix_entries)
 		return;

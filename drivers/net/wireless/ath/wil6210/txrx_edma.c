@@ -10,6 +10,11 @@
 #include <linux/list.h>
 #include <linux/ip.h>
 #include <linux/ipv6.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "wil6210.h"
 #include "txrx_edma.h"
 #include "txrx.h"
@@ -317,6 +322,10 @@ static int wil_init_rx_buff_arr(struct wil6210_priv *wil,
 	wil->rx_buff_mgmt.buff_arr = kcalloc(size + 1,
 					     sizeof(struct wil_rx_buff),
 					     GFP_KERNEL);
+	{
+		struct wil_rx_buff __uncontained_tmp91;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (!wil->rx_buff_mgmt.buff_arr)
 		return -ENOMEM;
 
@@ -383,6 +392,10 @@ static int wil_ring_alloc_desc_ring(struct wil6210_priv *wil,
 	ring->swhead = 0;
 	ring->swtail = 0;
 	ring->ctx = kcalloc(ring->size, sizeof(ring->ctx[0]), GFP_KERNEL);
+	{
+		typeof((ring->ctx[0])) __uncontained_tmp92;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!ring->ctx)
 		goto err;
 

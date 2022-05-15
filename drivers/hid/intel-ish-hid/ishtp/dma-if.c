@@ -10,6 +10,11 @@
 #include <linux/wait.h>
 #include <linux/delay.h>
 #include <linux/dma-mapping.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ishtp-dev.h"
 #include "client.h"
 
@@ -44,6 +49,10 @@ void	ishtp_cl_alloc_dma_buf(struct ishtp_device *dev)
 	dev->ishtp_dma_tx_map = kcalloc(dev->ishtp_dma_num_slots,
 					sizeof(uint8_t),
 					GFP_KERNEL);
+	{
+		uint8_t __uncontained_tmp29;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp29;
+	}
 	spin_lock_init(&dev->ishtp_dma_tx_lock);
 
 	/* Allocate Rx buffer */

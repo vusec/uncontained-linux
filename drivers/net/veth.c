@@ -27,6 +27,11 @@
 #include <linux/bpf_trace.h>
 #include <linux/net_tstamp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRV_NAME	"veth"
 #define DRV_VERSION	"1.0"
 
@@ -1311,6 +1316,10 @@ static int veth_alloc_queues(struct net_device *dev)
 	int i;
 
 	priv->rq = kcalloc(dev->num_rx_queues, sizeof(*priv->rq), GFP_KERNEL);
+	{
+		typeof((*priv->rq)) __uncontained_tmp83;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!priv->rq)
 		return -ENOMEM;
 

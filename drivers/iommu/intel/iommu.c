@@ -46,6 +46,11 @@
 #include <asm/cacheflush.h>
 #include <asm/iommu.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -3149,6 +3154,10 @@ static int copy_translation_tables(struct intel_iommu *iommu)
 	ctxt_table_entries = ext ? 512 : 256;
 	ret = -ENOMEM;
 	ctxt_tbls = kcalloc(ctxt_table_entries, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp49;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (!ctxt_tbls)
 		goto out_unmap;
 
@@ -3305,6 +3314,10 @@ static int __init init_dmars(void)
 
 	g_iommus = kcalloc(g_num_of_iommus, sizeof(struct intel_iommu *),
 			GFP_KERNEL);
+	{
+		struct intel_iommu *__uncontained_tmp50;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!g_iommus) {
 		ret = -ENOMEM;
 		goto error;
@@ -3617,6 +3630,10 @@ static int iommu_suspend(void)
 	for_each_active_iommu(iommu, drhd) {
 		iommu->iommu_state = kcalloc(MAX_SR_DMAR_REGS, sizeof(u32),
 					     GFP_KERNEL);
+		{
+			u32 __uncontained_tmp51;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp51;
+		}
 		if (!iommu->iommu_state)
 			goto nomem;
 	}

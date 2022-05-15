@@ -23,6 +23,11 @@
 
 #include <linux/perf_event.h>
 #include <linux/init.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "amdgpu.h"
 #include "amdgpu_pmu.h"
 
@@ -449,23 +454,39 @@ static int amdgpu_pmu_alloc_pmu_attrs(
 {
 	*fmt_attr = kcalloc(config->num_formats, sizeof(**fmt_attr),
 								GFP_KERNEL);
+	{
+		typeof((**fmt_attr)) __uncontained_tmp37;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp37;
+	}
 
 	if (!(*fmt_attr))
 		return -ENOMEM;
 
 	fmt_attr_group->attrs = kcalloc(config->num_formats + 1,
 				sizeof(*fmt_attr_group->attrs), GFP_KERNEL);
+	{
+		typeof((*fmt_attr_group->attrs)) __uncontained_tmp38;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp38;
+	}
 
 	if (!fmt_attr_group->attrs)
 		goto err_fmt_attr_grp;
 
 	*evt_attr = kcalloc(config->num_events, sizeof(**evt_attr), GFP_KERNEL);
+	{
+		typeof((**evt_attr)) __uncontained_tmp39;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp39;
+	}
 
 	if (!(*evt_attr))
 		goto err_evt_attr;
 
 	evt_attr_group->attrs = kcalloc(config->num_events + 1,
 				sizeof(*evt_attr_group->attrs), GFP_KERNEL);
+	{
+		typeof((*evt_attr_group->attrs)) __uncontained_tmp40;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp40;
+	}
 
 	if (!evt_attr_group->attrs)
 		goto err_evt_attr_grp;

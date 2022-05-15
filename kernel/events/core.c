@@ -59,6 +59,11 @@
 
 #include <asm/irq_regs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -11746,6 +11751,10 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
 		event->addr_filter_ranges = kcalloc(pmu->nr_addr_filters,
 						    sizeof(struct perf_addr_filter_range),
 						    GFP_KERNEL);
+		{
+			struct perf_addr_filter_range __uncontained_tmp159;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp159;
+		}
 		if (!event->addr_filter_ranges) {
 			err = -ENOMEM;
 			goto err_per_task;

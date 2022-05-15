@@ -24,6 +24,11 @@
 #include <linux/types.h>
 #include <linux/reset.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "sparx5_main_regs.h"
 #include "sparx5_main.h"
 #include "sparx5_port.h"
@@ -742,6 +747,10 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
 
 	configs = kcalloc(sparx5->port_count,
 			  sizeof(struct initial_port_config), GFP_KERNEL);
+	{
+		struct initial_port_config __uncontained_tmp81;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!configs) {
 		err = -ENOMEM;
 		goto cleanup_pnode;

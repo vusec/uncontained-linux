@@ -16,6 +16,11 @@
 #include <linux/scatterlist.h>
 #include <linux/idr.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rnbd-clt.h"
 
 MODULE_DESCRIPTION("RDMA Network Block Device Client");
@@ -1452,6 +1457,10 @@ static struct rnbd_clt_dev *init_dev(struct rnbd_clt_session *sess,
 	dev->hw_queues = kcalloc(nr_cpu_ids + nr_poll_queues,
 				 sizeof(*dev->hw_queues),
 				 GFP_KERNEL);
+	{
+		typeof((*dev->hw_queues)) __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!dev->hw_queues) {
 		ret = -ENOMEM;
 		goto out_alloc;

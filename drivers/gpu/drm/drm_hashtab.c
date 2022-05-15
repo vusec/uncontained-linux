@@ -40,6 +40,11 @@
 
 #include <drm/drm_print.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -53,8 +58,13 @@ int drm_ht_create(struct drm_open_hash *ht, unsigned int order)
 
 	ht->order = order;
 	ht->table = NULL;
-	if (size <= PAGE_SIZE / sizeof(*ht->table))
+	if (size <= PAGE_SIZE / sizeof(*ht->table)) {
 		ht->table = kcalloc(size, sizeof(*ht->table), GFP_KERNEL);
+		{
+			typeof((*ht->table)) __uncontained_tmp42;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp42;
+		}
+	}
 	else {
 		ht->table = vzalloc(array_size(size, sizeof(*ht->table)));
 		{

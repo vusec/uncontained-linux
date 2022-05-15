@@ -29,6 +29,11 @@
 #include <asm/smp_plat.h>
 #include <asm/virt.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "irq-gic-common.h"
 
 #define GICD_INT_NMI_PRI	(GICD_INT_DEF_PRI & ~0x80)
@@ -1686,6 +1691,10 @@ static void gic_enable_nmi_support(void)
 		return;
 
 	ppi_nmi_refs = kcalloc(gic_data.ppi_nr, sizeof(*ppi_nmi_refs), GFP_KERNEL);
+	{
+		typeof((*ppi_nmi_refs)) __uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!ppi_nmi_refs)
 		return;
 
@@ -1858,6 +1867,10 @@ static void __init gic_populate_ppi_partitions(struct device_node *gic_node)
 		return;
 
 	gic_data.ppi_descs = kcalloc(gic_data.ppi_nr, sizeof(*gic_data.ppi_descs), GFP_KERNEL);
+	{
+		typeof((*gic_data.ppi_descs)) __uncontained_tmp49;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (!gic_data.ppi_descs)
 		return;
 
@@ -1867,6 +1880,10 @@ static void __init gic_populate_ppi_partitions(struct device_node *gic_node)
 		goto out_put_node;
 
 	parts = kcalloc(nr_parts, sizeof(*parts), GFP_KERNEL);
+	{
+		typeof((*parts)) __uncontained_tmp50;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (WARN_ON(!parts))
 		goto out_put_node;
 
@@ -1991,6 +2008,10 @@ static int __init gic_of_init(struct device_node *node, struct device_node *pare
 
 	rdist_regs = kcalloc(nr_redist_regions, sizeof(*rdist_regs),
 			     GFP_KERNEL);
+	{
+		typeof((*rdist_regs)) __uncontained_tmp51;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (!rdist_regs) {
 		err = -ENOMEM;
 		goto out_unmap_dist;

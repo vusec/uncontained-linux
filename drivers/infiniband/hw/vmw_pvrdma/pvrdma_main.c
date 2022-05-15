@@ -53,6 +53,11 @@
 #include <rdma/ib_user_verbs.h>
 #include <net/addrconf.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "pvrdma.h"
 
 #define DRV_NAME	"vmw_pvrdma"
@@ -218,12 +223,20 @@ static int pvrdma_register_device(struct pvrdma_dev *dev)
 
 	dev->cq_tbl = kcalloc(dev->dsr->caps.max_cq, sizeof(struct pvrdma_cq *),
 			      GFP_KERNEL);
+	{
+		struct pvrdma_cq *__uncontained_tmp42;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!dev->cq_tbl)
 		return ret;
 	spin_lock_init(&dev->cq_tbl_lock);
 
 	dev->qp_tbl = kcalloc(dev->dsr->caps.max_qp, sizeof(struct pvrdma_qp *),
 			      GFP_KERNEL);
+	{
+		struct pvrdma_qp *__uncontained_tmp43;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp43;
+	}
 	if (!dev->qp_tbl)
 		goto err_cq_free;
 	spin_lock_init(&dev->qp_tbl_lock);
@@ -235,6 +248,10 @@ static int pvrdma_register_device(struct pvrdma_dev *dev)
 		dev->srq_tbl = kcalloc(dev->dsr->caps.max_srq,
 				       sizeof(struct pvrdma_srq *),
 				       GFP_KERNEL);
+		{
+			struct pvrdma_srq *__uncontained_tmp44;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp44;
+		}
 		if (!dev->srq_tbl)
 			goto err_qp_free;
 	}
@@ -973,6 +990,10 @@ static int pvrdma_pci_probe(struct pci_dev *pdev,
 	/* Allocate GID table */
 	dev->sgid_tbl = kcalloc(dev->dsr->caps.gid_tbl_len,
 				sizeof(union ib_gid), GFP_KERNEL);
+	{
+		union ib_gid __uncontained_tmp45;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!dev->sgid_tbl) {
 		ret = -ENOMEM;
 		goto err_free_uar_table;

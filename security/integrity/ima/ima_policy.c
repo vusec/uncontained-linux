@@ -19,6 +19,11 @@
 #include <linux/seq_file.h>
 #include <linux/ima.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ima.h"
 
 /* flags definitions */
@@ -861,6 +866,10 @@ static int __init ima_init_arch_policy(void)
 
 	arch_policy_entry = kcalloc(arch_entries + 1,
 				    sizeof(*arch_policy_entry), GFP_KERNEL);
+	{
+		typeof((*arch_policy_entry)) __uncontained_tmp179;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp179;
+	}
 	if (!arch_policy_entry)
 		return 0;
 

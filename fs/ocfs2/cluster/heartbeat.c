@@ -21,6 +21,11 @@
 #include <linux/slab.h>
 #include <linux/bitmap.h>
 #include <linux/ktime.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "heartbeat.h"
 #include "tcp.h"
 #include "nodemanager.h"
@@ -1674,6 +1679,10 @@ static int o2hb_map_slot_data(struct o2hb_region *reg)
 
 	reg->hr_slots = kcalloc(reg->hr_blocks,
 				sizeof(struct o2hb_disk_slot), GFP_KERNEL);
+	{
+		struct o2hb_disk_slot __uncontained_tmp111;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (reg->hr_slots == NULL)
 		return -ENOMEM;
 
@@ -1691,6 +1700,10 @@ static int o2hb_map_slot_data(struct o2hb_region *reg)
 
 	reg->hr_slot_data = kcalloc(reg->hr_num_pages, sizeof(struct page *),
 				    GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp112;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (!reg->hr_slot_data)
 		return -ENOMEM;
 

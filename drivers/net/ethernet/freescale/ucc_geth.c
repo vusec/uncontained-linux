@@ -43,6 +43,11 @@
 #include <soc/fsl/qe/ucc_fast.h>
 #include <asm/machdep.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ucc_geth.h"
 
 #undef DEBUG
@@ -2173,6 +2178,10 @@ static int ucc_geth_alloc_tx(struct ucc_geth_private *ugeth)
 		ugeth->tx_skbuff[j] =
 			kcalloc(ugeth->ug_info->bdRingLenTx[j],
 				sizeof(struct sk_buff *), GFP_KERNEL);
+		{
+			struct sk_buff *__uncontained_tmp62;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+		}
 
 		if (ugeth->tx_skbuff[j] == NULL) {
 			if (netif_msg_ifup(ugeth))
@@ -2231,6 +2240,10 @@ static int ucc_geth_alloc_rx(struct ucc_geth_private *ugeth)
 		ugeth->rx_skbuff[j] =
 			kcalloc(ugeth->ug_info->bdRingLenRx[j],
 				sizeof(struct sk_buff *), GFP_KERNEL);
+		{
+			struct sk_buff *__uncontained_tmp63;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+		}
 
 		if (ugeth->rx_skbuff[j] == NULL) {
 			if (netif_msg_ifup(ugeth))

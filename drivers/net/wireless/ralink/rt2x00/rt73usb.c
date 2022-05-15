@@ -19,6 +19,11 @@
 #include <linux/slab.h>
 #include <linux/usb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rt2x00.h"
 #include "rt2x00usb.h"
 #include "rt73usb.h"
@@ -2137,6 +2142,10 @@ static int rt73usb_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 	 * Create channel information array
 	 */
 	info = kcalloc(spec->num_channels, sizeof(*info), GFP_KERNEL);
+	{
+		typeof((*info)) __uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!info)
 		return -ENOMEM;
 

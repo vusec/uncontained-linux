@@ -15,6 +15,11 @@
 #include <drm/drm_hdcp.h>
 #include <drm/i915_component.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "i915_drv.h"
 #include "i915_reg.h"
 #include "intel_connector.h"
@@ -2195,10 +2200,15 @@ static int initialize_hdcp_port_data(struct intel_connector *connector,
 	data->port_type = (u8)HDCP_PORT_TYPE_INTEGRATED;
 	data->protocol = (u8)shim->protocol;
 
-	if (!data->streams)
+	if (!data->streams) {
 		data->streams = kcalloc(INTEL_NUM_PIPES(dev_priv),
 					sizeof(struct hdcp2_streamid_type),
 					GFP_KERNEL);
+		{
+			struct hdcp2_streamid_type __uncontained_tmp24;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+		}
+	}
 	if (!data->streams) {
 		drm_err(&dev_priv->drm, "Out of Memory\n");
 		return -ENOMEM;

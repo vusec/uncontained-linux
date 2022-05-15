@@ -34,6 +34,11 @@
 #include <linux/timex.h>
 #include <linux/interrupt.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -194,6 +199,10 @@ static int test_mb_aead_jiffies(struct test_mb_aead_data *data, int enc,
 	int *rc;
 
 	rc = kcalloc(num_mb, sizeof(*rc), GFP_KERNEL);
+	{
+		typeof((*rc)) __uncontained_tmp9;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!rc)
 		return -ENOMEM;
 
@@ -221,6 +230,10 @@ static int test_mb_aead_cycles(struct test_mb_aead_data *data, int enc,
 	int *rc;
 
 	rc = kcalloc(num_mb, sizeof(*rc), GFP_KERNEL);
+	{
+		typeof((*rc)) __uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!rc)
 		return -ENOMEM;
 
@@ -284,6 +297,10 @@ static void test_mb_aead_speed(const char *algo, int enc, int secs,
 		e = "decryption";
 
 	data = kcalloc(num_mb, sizeof(*data), GFP_KERNEL);
+	{
+		typeof((*data)) __uncontained_tmp11;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp11;
+	}
 	if (!data)
 		goto out_free_iv;
 
@@ -1015,6 +1032,10 @@ static int test_mb_acipher_jiffies(struct test_mb_skcipher_data *data, int enc,
 	int *rc;
 
 	rc = kcalloc(num_mb, sizeof(*rc), GFP_KERNEL);
+	{
+		typeof((*rc)) __uncontained_tmp12;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!rc)
 		return -ENOMEM;
 
@@ -1042,6 +1063,10 @@ static int test_mb_acipher_cycles(struct test_mb_skcipher_data *data, int enc,
 	int *rc;
 
 	rc = kcalloc(num_mb, sizeof(*rc), GFP_KERNEL);
+	{
+		typeof((*rc)) __uncontained_tmp13;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!rc)
 		return -ENOMEM;
 
@@ -1093,6 +1118,10 @@ static void test_mb_skcipher_speed(const char *algo, int enc, int secs,
 		e = "decryption";
 
 	data = kcalloc(num_mb, sizeof(*data), GFP_KERNEL);
+	{
+		typeof((*data)) __uncontained_tmp14;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!data)
 		return;
 

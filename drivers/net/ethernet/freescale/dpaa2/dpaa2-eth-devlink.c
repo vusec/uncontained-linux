@@ -263,6 +263,10 @@ int dpaa2_eth_dl_traps_register(struct dpaa2_eth_priv *priv)
 	dpaa2_eth_trap_data->trap_items_arr = kcalloc(ARRAY_SIZE(dpaa2_eth_traps_arr),
 						      sizeof(struct dpaa2_eth_trap_item),
 						      GFP_KERNEL);
+	{
+		struct dpaa2_eth_trap_item __uncontained_tmp76;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (!dpaa2_eth_trap_data->trap_items_arr) {
 		err = -ENOMEM;
 		goto trap_data_free;

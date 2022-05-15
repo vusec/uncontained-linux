@@ -19,6 +19,11 @@
 #include <linux/vmalloc.h>
 #include <linux/zlib.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "isofs.h"
 #include "zisofs.h"
 
@@ -77,6 +82,10 @@ static loff_t zisofs_uncompress_block(struct inode *inode, loff_t block_start,
 	/* Because zlib is not thread-safe, do all the I/O at the top. */
 	blocknum = block_start >> bufshift;
 	bhs = kcalloc(needblocks + 1, sizeof(*bhs), GFP_KERNEL);
+	{
+		typeof((*bhs)) __uncontained_tmp156;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp156;
+	}
 	if (!bhs) {
 		*errp = -ENOMEM;
 		return 0;
@@ -333,6 +342,10 @@ static int zisofs_readpage(struct file *file, struct page *page)
 	}
 	pages = kcalloc(max_t(unsigned int, zisofs_pages_per_cblock, 1),
 					sizeof(*pages), GFP_KERNEL);
+	{
+		typeof((*pages)) __uncontained_tmp157;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp157;
+	}
 	if (!pages) {
 		unlock_page(page);
 		return -ENOMEM;

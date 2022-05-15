@@ -34,6 +34,11 @@
 #include <linux/highmem.h>
 #include <linux/ptp_clock_kernel.h>
 #include <rdma/mlx5-abi.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "lib/eq.h"
 #include "en.h"
 #include "clock.h"
@@ -657,6 +662,10 @@ static void mlx5_init_pin_config(struct mlx5_clock *clock)
 			kcalloc(clock->ptp_info.n_pins,
 				sizeof(*clock->ptp_info.pin_config),
 				GFP_KERNEL);
+	{
+		typeof((*clock->ptp_info.pin_config)) __uncontained_tmp85;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!clock->ptp_info.pin_config)
 		return;
 	clock->ptp_info.enable = mlx5_ptp_enable;

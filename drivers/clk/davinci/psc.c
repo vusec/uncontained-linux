@@ -29,6 +29,11 @@
 #include <linux/slab.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "psc.h"
 
 /* PSC register offsets */
@@ -389,6 +394,10 @@ __davinci_psc_register_clocks(struct device *dev,
 		clks[i] = ERR_PTR(-ENOENT);
 
 	pm_domains = kcalloc(num_clks, sizeof(*pm_domains), GFP_KERNEL);
+	{
+		typeof((*pm_domains)) __uncontained_tmp14;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!pm_domains) {
 		ret = -ENOMEM;
 		goto err_free_clks;

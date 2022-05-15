@@ -16,6 +16,11 @@
 #include <linux/topology.h>
 #include <linux/uacce.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "sec.h"
 
 #define SEC_VF_NUM			63
@@ -292,6 +297,10 @@ struct hisi_qp **sec_create_qps(void)
 	int ret;
 
 	qps = kcalloc(ctx_num, sizeof(struct hisi_qp *), GFP_KERNEL);
+	{
+		struct hisi_qp *__uncontained_tmp32;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!qps)
 		return NULL;
 

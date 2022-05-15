@@ -46,7 +46,12 @@
 #include <linux/uaccess.h>
 
 #include <asm/mach-au1x00/au1000.h>
-#include <asm/mach-au1x00/au1200fb.h>	/* platform_data */
+#include <asm/mach-au1x00/au1200fb.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/	/* platform_data */
 #include "au1200fb.h"
 
 #define DRIVER_NAME "au1200fb"
@@ -1545,6 +1550,10 @@ static int au1200fb_init_fbinfo(struct au1200fb_device *fbdev)
 	}
 
 	fbi->pseudo_palette = kcalloc(16, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp120;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (!fbi->pseudo_palette)
 		return -ENOMEM;
 

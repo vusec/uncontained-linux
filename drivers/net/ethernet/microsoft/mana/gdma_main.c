@@ -6,6 +6,11 @@
 #include <linux/utsname.h>
 #include <linux/version.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mana.h"
 
 static u32 mana_gd_r32(struct gdma_context *g, u64 offset)
@@ -1186,6 +1191,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
 
 	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
 				   GFP_KERNEL);
+	{
+		struct gdma_irq_context __uncontained_tmp89;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp89;
+	}
 	if (!gc->irq_contexts) {
 		err = -ENOMEM;
 		goto free_irq_vector;

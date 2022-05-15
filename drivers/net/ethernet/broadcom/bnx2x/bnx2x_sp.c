@@ -26,6 +26,11 @@
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
 #include <linux/crc32c.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "bnx2x.h"
 #include "bnx2x_cmn.h"
 #include "bnx2x_sp.h"
@@ -3847,6 +3852,10 @@ static inline int bnx2x_mcast_refresh_registry_e1(struct bnx2x *bp,
 			return 0;
 
 		elem = kcalloc(len, sizeof(*elem), GFP_ATOMIC);
+		{
+			typeof((*elem)) __uncontained_tmp87;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+		}
 		if (!elem) {
 			BNX2X_ERR("Failed to allocate registry memory\n");
 			return -ENOMEM;

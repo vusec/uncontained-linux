@@ -28,6 +28,11 @@
 #include <linux/clk/ti.h>
 #include <linux/delay.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clock.h"
 
 #define APLL_FORCE_LOCK 0x1
@@ -208,6 +213,10 @@ static void __init of_dra7_apll_setup(struct device_node *node)
 	}
 
 	parent_names = kcalloc(init->num_parents, sizeof(char *), GFP_KERNEL);
+	{
+		char *__uncontained_tmp12;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!parent_names)
 		goto cleanup;
 

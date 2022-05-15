@@ -14,6 +14,11 @@
 #include <net/ipv6.h>
 #include <linux/prefetch.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "wil6210.h"
 #include "wmi.h"
 #include "txrx.h"
@@ -120,6 +125,10 @@ static int wil_vring_alloc(struct wil6210_priv *wil, struct wil_ring *vring)
 	vring->swhead = 0;
 	vring->swtail = 0;
 	vring->ctx = kcalloc(vring->size, sizeof(vring->ctx[0]), GFP_KERNEL);
+	{
+		typeof((vring->ctx[0])) __uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!vring->ctx) {
 		vring->va = NULL;
 		return -ENOMEM;

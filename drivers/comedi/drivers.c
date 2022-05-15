@@ -18,6 +18,11 @@
 #include <linux/interrupt.h>
 #include <linux/firmware.h>
 #include <linux/comedi/comedidev.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "comedi_internal.h"
 
 struct comedi_driver *comedi_drivers;
@@ -102,6 +107,10 @@ int comedi_alloc_subdevices(struct comedi_device *dev, int num_subdevices)
 		return -EINVAL;
 
 	s = kcalloc(num_subdevices, sizeof(*s), GFP_KERNEL);
+	{
+		typeof((*s)) __uncontained_tmp16;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!s)
 		return -ENOMEM;
 	dev->subdevices = s;
@@ -143,6 +152,10 @@ int comedi_alloc_subdev_readback(struct comedi_subdevice *s)
 		return -EINVAL;
 
 	s->readback = kcalloc(s->n_chan, sizeof(*s->readback), GFP_KERNEL);
+	{
+		typeof((*s->readback)) __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!s->readback)
 		return -ENOMEM;
 

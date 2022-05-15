@@ -7,6 +7,11 @@
 
 #include <linux/crc32.h>
 #include <linux/bitmap.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ubi.h"
 
 /**
@@ -22,6 +27,10 @@ static inline unsigned long *init_seen(struct ubi_device *ubi)
 
 	ret = kcalloc(BITS_TO_LONGS(ubi->peb_count), sizeof(unsigned long),
 		      GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp62;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!ret)
 		return ERR_PTR(-ENOMEM);
 
@@ -1100,6 +1109,10 @@ int ubi_fastmap_init_checkmap(struct ubi_volume *vol, int leb_count)
 
 	vol->checkmap = kcalloc(BITS_TO_LONGS(leb_count), sizeof(unsigned long),
 				GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp63;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!vol->checkmap)
 		return -ENOMEM;
 

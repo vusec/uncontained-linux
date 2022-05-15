@@ -13,6 +13,11 @@
 #include <linux/cordic.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "b43.h"
 #include "main.h"
 #include "phy_lp.h"
@@ -1571,6 +1576,10 @@ static void lpphy_pr41573_workaround(struct b43_wldev *dev)
 	u16 tssi_npt, tssi_idx;
 
 	saved_tab = kcalloc(saved_tab_size, sizeof(saved_tab[0]), GFP_KERNEL);
+	{
+		typeof((saved_tab[0])) __uncontained_tmp100;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (!saved_tab) {
 		b43err(dev->wl, "PR41573 failed. Out of memory!\n");
 		return;

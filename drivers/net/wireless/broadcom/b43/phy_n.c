@@ -15,6 +15,11 @@
 #include <linux/slab.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "b43.h"
 #include "phy_n.h"
 #include "tables_nphy.h"
@@ -1507,6 +1512,10 @@ static int b43_nphy_load_samples(struct b43_wldev *dev,
 	u32 *data;
 
 	data = kcalloc(len, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp104;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!data) {
 		b43err(dev->wl, "allocation for samples loading failed\n");
 		return -ENOMEM;
@@ -1550,6 +1559,10 @@ static u16 b43_nphy_gen_load_samples(struct b43_wldev *dev, u32 freq, u16 max,
 	}
 
 	samples = kcalloc(len, sizeof(struct cordic_iq), GFP_KERNEL);
+	{
+		struct cordic_iq __uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!samples) {
 		b43err(dev->wl, "allocation for samples generation failed\n");
 		return 0;

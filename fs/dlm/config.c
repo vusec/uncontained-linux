@@ -19,6 +19,11 @@
 #include <net/ipv6.h>
 #include <net/sock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "config.h"
 #include "midcomms.h"
 #include "lowcomms.h"
@@ -893,6 +898,10 @@ int dlm_config_nodes(char *lsname, struct dlm_config_node **nodes_out,
 	count = sp->members_count;
 
 	nodes = kcalloc(count, sizeof(struct dlm_config_node), GFP_NOFS);
+	{
+		struct dlm_config_node __uncontained_tmp117;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!nodes) {
 		rv = -ENOMEM;
 		goto out;

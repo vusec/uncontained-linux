@@ -21,6 +21,11 @@
 #include <linux/pstore_ram.h>
 #include <linux/of.h>
 #include <linux/of_address.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "internal.h"
 
 #define RAMOOPS_KERNMSG_HDR "===="
@@ -525,6 +530,10 @@ static int ramoops_init_przs(const char *name,
 	}
 
 	prz_ar = kcalloc(*cnt, sizeof(**przs), GFP_KERNEL);
+	{
+		typeof((**przs)) __uncontained_tmp134;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp134;
+	}
 	if (!prz_ar)
 		goto fail;
 

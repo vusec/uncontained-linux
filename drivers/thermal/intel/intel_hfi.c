@@ -40,6 +40,11 @@
 
 #include <asm/msr.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../thermal_core.h"
 #include "intel_hfi.h"
 
@@ -210,6 +215,10 @@ static void update_capabilities(struct hfi_instance *hfi_instance)
 		goto out;
 
 	cpu_caps = kcalloc(cpu_count, sizeof(*cpu_caps), GFP_KERNEL);
+	{
+		typeof((*cpu_caps)) __uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!cpu_caps)
 		goto out;
 
@@ -543,6 +552,10 @@ void __init intel_hfi_init(void)
 	 */
 	hfi_instances = kcalloc(max_hfi_instances, sizeof(*hfi_instances),
 				GFP_KERNEL);
+	{
+		typeof((*hfi_instances)) __uncontained_tmp140;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!hfi_instances)
 		return;
 

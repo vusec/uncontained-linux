@@ -114,6 +114,11 @@
 #include <asm/isa-rev.h>
 #include <asm/uasm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "bpf_jit_comp.h"
 
 /* Convenience macros for descriptor access */
@@ -944,6 +949,10 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 	 */
 	ctx.descriptors = kcalloc(prog->len + 1, sizeof(*ctx.descriptors),
 				  GFP_KERNEL);
+	{
+		typeof((*ctx.descriptors)) __uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (ctx.descriptors == NULL)
 		goto out_err;
 

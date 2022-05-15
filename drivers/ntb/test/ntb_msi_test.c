@@ -7,6 +7,11 @@
 #include <linux/radix-tree.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_LICENSE("Dual BSD/GPL");
 MODULE_VERSION("0.1");
 MODULE_AUTHOR("Logan Gunthorpe <logang@deltatee.com>");
@@ -165,6 +170,10 @@ static void ntb_msit_db_event(void *ctx, int vec)
 			continue;
 
 		desc = kcalloc(irq_count, sizeof(*desc), GFP_ATOMIC);
+		{
+			typeof((*desc)) __uncontained_tmp122;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp122;
+		}
 		if (!desc)
 			continue;
 

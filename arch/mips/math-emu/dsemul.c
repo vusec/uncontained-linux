@@ -11,6 +11,11 @@
 #include <asm/mipsregs.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * struct emuframe - The 'emulation' frame structure
  * @emul:	The instruction to 'emulate'.
@@ -86,6 +91,10 @@ retry:
 			kcalloc(BITS_TO_LONGS(emupage_frame_count),
 					      sizeof(unsigned long),
 				GFP_ATOMIC);
+		{
+			unsigned long __uncontained_tmp0;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+		}
 
 		if (!mm_ctx->bd_emupage_allocmap) {
 			idx = BD_EMUFRAME_NONE;

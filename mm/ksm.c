@@ -41,6 +41,11 @@
 #include <linux/numa.h>
 
 #include <asm/tlbflush.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "internal.h"
 
 #ifdef CONFIG_NUMA
@@ -2960,6 +2965,10 @@ static ssize_t merge_across_nodes_store(struct kobject *kobj,
 			 */
 			buf = kcalloc(nr_node_ids + nr_node_ids, sizeof(*buf),
 				      GFP_KERNEL);
+			{
+				typeof((*buf)) __uncontained_tmp189;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp189;
+			}
 			/* Let us assume that RB_ROOT is NULL is zero */
 			if (!buf)
 				err = -ENOMEM;

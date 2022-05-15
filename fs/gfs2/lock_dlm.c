@@ -14,6 +14,11 @@
 #include <linux/gfs2_ondisk.h>
 #include <linux/sched/signal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "incore.h"
 #include "glock.h"
 #include "glops.h"
@@ -1080,7 +1085,15 @@ static int set_recover_size(struct gfs2_sbd *sdp, struct dlm_slot *slots,
 		return 0;
 
 	submit = kcalloc(new_size, sizeof(uint32_t), GFP_NOFS);
+	{
+		uint32_t __uncontained_tmp180;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp180;
+	}
 	result = kcalloc(new_size, sizeof(uint32_t), GFP_NOFS);
+	{
+		uint32_t __uncontained_tmp181;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp181;
+	}
 	if (!submit || !result) {
 		kfree(submit);
 		kfree(result);

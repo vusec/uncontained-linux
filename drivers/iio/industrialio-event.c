@@ -23,6 +23,11 @@
 #include <linux/iio/sysfs.h>
 #include <linux/iio/events.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * struct iio_event_interface - chrdev interface for an event line
  * @wait:		wait queue to allow blocking reads of events
@@ -534,6 +539,10 @@ int iio_device_register_eventset(struct iio_dev *indio_dev)
 	ev_int->group.attrs = kcalloc(attrcount + 1,
 				      sizeof(ev_int->group.attrs[0]),
 				      GFP_KERNEL);
+	{
+		typeof((ev_int->group.attrs[0])) __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (ev_int->group.attrs == NULL) {
 		ret = -ENOMEM;
 		goto error_free_setup_event_lines;

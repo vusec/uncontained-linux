@@ -23,6 +23,11 @@
 
 #include <mach/irqs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "iomap.h"
 
 #define DPS_RSTCT2_PER_EN	(1 << 0)
@@ -388,6 +393,10 @@ static void omap_mcbsp_register_board_cfg(struct resource *res, int res_count,
 
 	omap_mcbsp_devices = kcalloc(size, sizeof(struct platform_device *),
 				     GFP_KERNEL);
+	{
+		struct platform_device *__uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!omap_mcbsp_devices) {
 		printk(KERN_ERR "Could not register McBSP devices\n");
 		return;

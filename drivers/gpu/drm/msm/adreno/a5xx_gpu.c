@@ -9,6 +9,11 @@
 #include <linux/pm_opp.h>
 #include <linux/nvmem-consumer.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "msm_gem.h"
 #include "msm_mmu.h"
 #include "a5xx_gpu.h"
@@ -1523,6 +1528,10 @@ static void a5xx_gpu_state_get_hlsq_regs(struct msm_gpu *gpu,
 		count += a5xx_hlsq_aperture_regs[i].count;
 
 	a5xx_state->hlsqregs = kcalloc(count, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp38;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!a5xx_state->hlsqregs)
 		return;
 

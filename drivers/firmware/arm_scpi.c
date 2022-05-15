@@ -35,6 +35,11 @@
 #include <linux/sort.h>
 #include <linux/spinlock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define CMD_ID_MASK		GENMASK(6, 0)
 #define CMD_TOKEN_ID_MASK	GENMASK(15, 8)
 #define CMD_DATA_SIZE_MASK	GENMASK(24, 16)
@@ -635,6 +640,10 @@ static struct scpi_dvfs_info *scpi_dvfs_get_info(u8 domain)
 	info->latency = le16_to_cpu(buf.latency) * 1000; /* uS to nS */
 
 	info->opps = kcalloc(info->count, sizeof(*opp), GFP_KERNEL);
+	{
+		typeof((*opp)) __uncontained_tmp29;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!info->opps) {
 		kfree(info);
 		return ERR_PTR(-ENOMEM);

@@ -23,6 +23,11 @@
 #include <linux/slab.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* SPEAr CPUFreq driver data structure */
 static struct {
 	struct clk *clk;
@@ -197,6 +202,10 @@ static int spear_cpufreq_probe(struct platform_device *pdev)
 	val = prop->value;
 
 	freq_tbl = kcalloc(cnt + 1, sizeof(*freq_tbl), GFP_KERNEL);
+	{
+		typeof((*freq_tbl)) __uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!freq_tbl) {
 		ret = -ENOMEM;
 		goto out_put_node;

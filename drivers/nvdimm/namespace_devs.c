@@ -8,6 +8,11 @@
 #include <linux/slab.h>
 #include <linux/list.h>
 #include <linux/nd.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "nd-core.h"
 #include "pmem.h"
 #include "pfn.h"
@@ -1815,6 +1820,10 @@ static struct device **create_namespace_io(struct nd_region *nd_region)
 		return NULL;
 
 	devs = kcalloc(2, sizeof(struct device *), GFP_KERNEL);
+	{
+		struct device *__uncontained_tmp56;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!devs) {
 		kfree(nsio);
 		return NULL;
@@ -2361,6 +2370,10 @@ static struct device **scan_labels(struct nd_region *nd_region)
 		if (i < count)
 			continue;
 		__devs = kcalloc(count + 2, sizeof(dev), GFP_KERNEL);
+		{
+			typeof((dev)) __uncontained_tmp57;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp57;
+		}
 		if (!__devs)
 			goto err;
 		memcpy(__devs, devs, sizeof(dev) * count);
@@ -2398,6 +2411,10 @@ static struct device **scan_labels(struct nd_region *nd_region)
 		nd_mapping_free_labels(nd_mapping);
 
 		devs = kcalloc(2, sizeof(dev), GFP_KERNEL);
+		{
+			typeof((dev)) __uncontained_tmp58;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp58;
+		}
 		if (!devs)
 			goto err;
 		if (is_nd_blk(&nd_region->dev)) {

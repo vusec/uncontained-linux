@@ -50,6 +50,11 @@
 #include <linux/irq_work.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "trace.h"
 #include "trace_output.h"
 
@@ -4707,6 +4712,10 @@ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
 
 	iter->buffer_iter = kcalloc(nr_cpu_ids, sizeof(*iter->buffer_iter),
 				    GFP_KERNEL);
+	{
+		typeof((*iter->buffer_iter)) __uncontained_tmp133;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+	}
 	if (!iter->buffer_iter)
 		goto release;
 
@@ -8869,6 +8878,10 @@ create_trace_option_files(struct trace_array *tr, struct tracer *tracer)
 		;
 
 	topts = kcalloc(cnt + 1, sizeof(*topts), GFP_KERNEL);
+	{
+		typeof((*topts)) __uncontained_tmp134;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp134;
+	}
 	if (!topts)
 		return;
 

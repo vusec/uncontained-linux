@@ -52,6 +52,11 @@
 #include <net/net_namespace.h>
 #include <net/netns/generic.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
    This version of net/ipv6/sit.c is cloned of net/ipv4/ip_gre.c
 
@@ -335,6 +340,10 @@ static int ipip6_tunnel_get_prl(struct net_device *dev, struct ip_tunnel_prl __u
 		 */
 		kp = kcalloc(ca, sizeof(*kp), GFP_ATOMIC | __GFP_ACCOUNT |
 					      __GFP_NOWARN);
+		{
+			typeof((*kp)) __uncontained_tmp130;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp130;
+		}
 		if (!kp) {
 			ret = -ENOMEM;
 			goto out;

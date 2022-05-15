@@ -7,6 +7,11 @@
 #include <linux/iomap.h>
 #include <linux/nfs4.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "nfsd.h"
 #include "blocklayoutxdr.h"
 
@@ -127,6 +132,10 @@ nfsd4_block_decode_layoutupdate(__be32 *p, u32 len, struct iomap **iomapp,
 	}
 
 	iomaps = kcalloc(nr_iomaps, sizeof(*iomaps), GFP_KERNEL);
+	{
+		typeof((*iomaps)) __uncontained_tmp109;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp109;
+	}
 	if (!iomaps) {
 		dprintk("%s: failed to allocate extent array\n", __func__);
 		return -ENOMEM;
@@ -195,6 +204,10 @@ nfsd4_scsi_decode_layoutupdate(__be32 *p, u32 len, struct iomap **iomapp,
 	}
 
 	iomaps = kcalloc(nr_iomaps, sizeof(*iomaps), GFP_KERNEL);
+	{
+		typeof((*iomaps)) __uncontained_tmp110;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (!iomaps) {
 		dprintk("%s: failed to allocate extent array\n", __func__);
 		return -ENOMEM;

@@ -26,6 +26,11 @@
 #include <linux/aer.h>
 #include <linux/phylink.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "qed.h"
 #include "qed_sriov.h"
 #include "qed_sp.h"
@@ -623,6 +628,10 @@ static int qed_set_int_mode(struct qed_dev *cdev, bool force_mode)
 		/* Allocate MSIX table */
 		cnt = int_params->in.num_vectors;
 		int_params->msix_table = kcalloc(cnt, sizeof(*tbl), GFP_KERNEL);
+		{
+			typeof((*tbl)) __uncontained_tmp82;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+		}
 		if (!int_params->msix_table) {
 			rc = -ENOMEM;
 			goto out;

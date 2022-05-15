@@ -20,6 +20,11 @@
 #include <linux/fcntl.h>
 #include <linux/uio.h>
 #include <linux/writeback.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "internal.h"
 
 /**
@@ -1211,6 +1216,10 @@ static struct pstore_zone **psz_init_zones(enum pstore_type_id type,
 
 	c = total_size / record_size;
 	zones = kcalloc(c, sizeof(*zones), GFP_KERNEL);
+	{
+		typeof((*zones)) __uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!zones) {
 		pr_err("allocate for zones %s failed\n", name);
 		return ERR_PTR(-ENOMEM);

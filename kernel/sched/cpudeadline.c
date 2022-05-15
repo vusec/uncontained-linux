@@ -271,6 +271,10 @@ int cpudl_init(struct cpudl *cp)
 	cp->elements = kcalloc(nr_cpu_ids,
 			       sizeof(struct cpudl_item),
 			       GFP_KERNEL);
+	{
+		struct cpudl_item __uncontained_tmp150;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp150;
+	}
 	if (!cp->elements)
 		return -ENOMEM;
 

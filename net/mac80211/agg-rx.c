@@ -39,6 +39,11 @@
 #include <linux/slab.h>
 #include <linux/export.h>
 #include <net/mac80211.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ieee80211_i.h"
 #include "driver-ops.h"
 
@@ -402,8 +407,16 @@ void ___ieee80211_start_rx_ba_session(struct sta_info *sta,
 	/* prepare reordering buffer */
 	tid_agg_rx->reorder_buf =
 		kcalloc(buf_size, sizeof(struct sk_buff_head), GFP_KERNEL);
+	{
+		struct sk_buff_head __uncontained_tmp102;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp102;
+	}
 	tid_agg_rx->reorder_time =
 		kcalloc(buf_size, sizeof(unsigned long), GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!tid_agg_rx->reorder_buf || !tid_agg_rx->reorder_time) {
 		kfree(tid_agg_rx->reorder_buf);
 		kfree(tid_agg_rx->reorder_time);

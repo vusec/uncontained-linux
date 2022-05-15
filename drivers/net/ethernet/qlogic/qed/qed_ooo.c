@@ -11,6 +11,11 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/string.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qed.h"
 #include "qed_iscsi.h"
 #include "qed_ll2.h"
@@ -121,6 +126,10 @@ int qed_ooo_alloc(struct qed_hwfn *p_hwfn)
 	p_ooo_info->p_isles_mem = kcalloc(max_num_isles,
 					  sizeof(struct qed_ooo_isle),
 					  GFP_KERNEL);
+	{
+		struct qed_ooo_isle __uncontained_tmp93;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!p_ooo_info->p_isles_mem)
 		goto no_isles_mem;
 
@@ -134,6 +143,10 @@ int qed_ooo_alloc(struct qed_hwfn *p_hwfn)
 				kcalloc(max_num_archipelagos,
 					sizeof(struct qed_ooo_archipelago),
 					GFP_KERNEL);
+	{
+		struct qed_ooo_archipelago __uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!p_ooo_info->p_archipelagos_mem)
 		goto no_archipelagos_mem;
 
@@ -144,6 +157,10 @@ int qed_ooo_alloc(struct qed_hwfn *p_hwfn)
 				kcalloc(QED_MAX_NUM_OOO_HISTORY_ENTRIES,
 					sizeof(struct ooo_opaque),
 					GFP_KERNEL);
+	{
+		struct ooo_opaque __uncontained_tmp95;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (!p_ooo_info->ooo_history.p_cqes)
 		goto no_history_mem;
 

@@ -30,6 +30,11 @@
 
 #include <linux/bitops.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "of_private.h"
 
 static struct unittest_results {
@@ -175,6 +180,10 @@ static void __init of_unittest_dynamic(void)
 
 	/* Array of 4 properties for the purpose of testing */
 	prop = kcalloc(4, sizeof(*prop), GFP_KERNEL);
+	{
+		typeof((*prop)) __uncontained_tmp111;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (!prop) {
 		unittest(0, "kzalloc() failed\n");
 		return;

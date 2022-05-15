@@ -14,6 +14,11 @@
 #include <linux/raid/xor.h>
 #include <linux/mm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1810,6 +1815,10 @@ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
 	int i;
 
 	pointers = kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
+	{
+		void *__uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!pointers) {
 		err = BLK_STS_RESOURCE;
 		goto cleanup_io;
@@ -1820,6 +1829,10 @@ static void __raid_recover_end_io(struct btrfs_raid_bio *rbio)
 	 * reconstruction so that kunmap_local works.
 	 */
 	unmap_array = kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
+	{
+		void *__uncontained_tmp140;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!unmap_array) {
 		err = BLK_STS_RESOURCE;
 		goto cleanup_pointers;

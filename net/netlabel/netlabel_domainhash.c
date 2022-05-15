@@ -26,6 +26,11 @@
 #include <net/calipso.h>
 #include <asm/bug.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "netlabel_mgmt.h"
 #include "netlabel_addrlist.h"
 #include "netlabel_calipso.h"
@@ -374,6 +379,10 @@ int __init netlbl_domhsh_init(u32 size)
 	hsh_tbl->tbl = kcalloc(hsh_tbl->size,
 			       sizeof(struct list_head),
 			       GFP_KERNEL);
+	{
+		struct list_head __uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (hsh_tbl->tbl == NULL) {
 		kfree(hsh_tbl);
 		return -ENOMEM;

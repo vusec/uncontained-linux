@@ -4,6 +4,11 @@
 #include <linux/mlx5/driver.h>
 #include <linux/mlx5/device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mlx5_core.h"
 #include "lib/mlx5.h"
 
@@ -37,6 +42,10 @@ struct mlx5_dm *mlx5_dm_create(struct mlx5_core_dev *dev)
 		dm->steering_sw_icm_alloc_blocks =
 			kcalloc(BITS_TO_LONGS(steering_icm_blocks),
 				sizeof(unsigned long), GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp100;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+		}
 		if (!dm->steering_sw_icm_alloc_blocks)
 			goto err_steering;
 	}
@@ -49,6 +58,10 @@ struct mlx5_dm *mlx5_dm_create(struct mlx5_core_dev *dev)
 		dm->header_modify_sw_icm_alloc_blocks =
 			kcalloc(BITS_TO_LONGS(header_modify_icm_blocks),
 				sizeof(unsigned long), GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp101;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+		}
 		if (!dm->header_modify_sw_icm_alloc_blocks)
 			goto err_modify_hdr;
 	}

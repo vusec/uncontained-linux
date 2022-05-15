@@ -11,6 +11,11 @@
 
 #include <cluster/masklog.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ocfs2.h"
 
 #include "dlmglue.h"
@@ -367,6 +372,10 @@ static int ocfs2_map_slot_buffers(struct ocfs2_super *osb,
 
 	si->si_bh = kcalloc(si->si_blocks, sizeof(struct buffer_head *),
 			    GFP_KERNEL);
+	{
+		struct buffer_head *__uncontained_tmp159;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp159;
+	}
 	if (!si->si_bh) {
 		status = -ENOMEM;
 		mlog_errno(status);

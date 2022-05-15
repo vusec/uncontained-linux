@@ -923,6 +923,10 @@ bfad_im_num_of_discovered_ports_show(struct device *dev,
 
 	rports = kcalloc(nrports, sizeof(struct bfa_rport_qualifier_s),
 			 GFP_ATOMIC);
+	{
+		struct bfa_rport_qualifier_s __uncontained_tmp98;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp98;
+	}
 	if (rports == NULL)
 		return snprintf(buf, PAGE_SIZE, "Failed\n");
 

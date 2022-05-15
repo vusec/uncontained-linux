@@ -11,6 +11,11 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/string.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qed.h"
 #include "qed_hsi.h"
 #include "qed_hw.h"
@@ -212,11 +217,19 @@ int qed_init_alloc(struct qed_hwfn *p_hwfn)
 
 	rt_data->b_valid = kcalloc(RUNTIME_ARRAY_SIZE, sizeof(bool),
 				   GFP_KERNEL);
+	{
+		bool __uncontained_tmp77;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp77;
+	}
 	if (!rt_data->b_valid)
 		return -ENOMEM;
 
 	rt_data->init_val = kcalloc(RUNTIME_ARRAY_SIZE, sizeof(u32),
 				    GFP_KERNEL);
+	{
+		u32 __uncontained_tmp78;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!rt_data->init_val) {
 		kfree(rt_data->b_valid);
 		rt_data->b_valid = NULL;

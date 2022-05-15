@@ -6,6 +6,11 @@
 #include <linux/debugfs.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dpu_core_irq.h"
 #include "dpu_kms.h"
 #include "dpu_hw_interrupts.h"
@@ -421,6 +426,10 @@ struct dpu_hw_intr *dpu_hw_intr_init(void __iomem *addr,
 
 	intr->cache_irq_mask = kcalloc(ARRAY_SIZE(dpu_intr_set), sizeof(u32),
 			GFP_KERNEL);
+	{
+		u32 __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (intr->cache_irq_mask == NULL) {
 		kfree(intr);
 		return ERR_PTR(-ENOMEM);
@@ -581,8 +590,16 @@ void dpu_core_irq_preinstall(struct dpu_kms *dpu_kms)
 	/* Create irq callbacks for all possible irq_idx */
 	dpu_kms->hw_intr->irq_cb_tbl = kcalloc(dpu_kms->hw_intr->total_irqs,
 			sizeof(struct list_head), GFP_KERNEL);
+	{
+		struct list_head __uncontained_tmp20;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+	}
 	dpu_kms->hw_intr->irq_counts = kcalloc(dpu_kms->hw_intr->total_irqs,
 			sizeof(atomic_t), GFP_KERNEL);
+	{
+		typeof((atomic_t)) __uncontained_tmp21;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp21;
+	}
 	for (i = 0; i < dpu_kms->hw_intr->total_irqs; i++) {
 		INIT_LIST_HEAD(&dpu_kms->hw_intr->irq_cb_tbl[i]);
 		atomic_set(&dpu_kms->hw_intr->irq_counts[i], 0);

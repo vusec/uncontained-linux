@@ -35,6 +35,11 @@
 
 #include <linux/dma-mapping.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRV_NAME	"grcan"
 
 #define GRCAN_NAPI_WEIGHT	32
@@ -1052,6 +1057,10 @@ static int grcan_open(struct net_device *dev)
 
 	priv->echo_skb = kcalloc(dma->tx.size, sizeof(*priv->echo_skb),
 				 GFP_KERNEL);
+	{
+		typeof((*priv->echo_skb)) __uncontained_tmp81;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!priv->echo_skb) {
 		err = -ENOMEM;
 		goto exit_free_dma_buffers;

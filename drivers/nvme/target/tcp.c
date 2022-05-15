@@ -15,6 +15,11 @@
 #include <linux/llist.h>
 #include <crypto/hash.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "nvmet.h"
 
 #define NVMET_TCP_DEF_INLINE_DATA_SIZE	(4 * PAGE_SIZE)
@@ -1381,6 +1386,10 @@ static int nvmet_tcp_alloc_cmds(struct nvmet_tcp_queue *queue)
 	int i, ret = -EINVAL, nr_cmds = queue->nr_cmds;
 
 	cmds = kcalloc(nr_cmds, sizeof(struct nvmet_tcp_cmd), GFP_KERNEL);
+	{
+		struct nvmet_tcp_cmd __uncontained_tmp106;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!cmds)
 		goto out;
 

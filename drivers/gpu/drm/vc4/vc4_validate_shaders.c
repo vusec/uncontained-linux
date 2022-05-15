@@ -794,10 +794,18 @@ vc4_validate_shader(struct drm_gem_cma_object *shader_obj)
 	validation_state.branch_targets =
 		kcalloc(BITS_TO_LONGS(validation_state.max_ip),
 			sizeof(unsigned long), GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp34;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!validation_state.branch_targets)
 		goto fail;
 
 	validated_shader = kcalloc(1, sizeof(*validated_shader), GFP_KERNEL);
+	{
+		typeof((*validated_shader)) __uncontained_tmp35;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!validated_shader)
 		goto fail;
 

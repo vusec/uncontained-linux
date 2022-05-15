@@ -23,6 +23,11 @@
 #include <target/target_core_base.h>
 #include <target/target_core_backend.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "target_core_rd.h"
 
 static inline struct rd_dev *RD_DEV(struct se_device *dev)
@@ -193,6 +198,10 @@ static int rd_build_device_space(struct rd_dev *rd_dev)
 
 	sg_tables = (total_sg_needed / max_sg_per_table) + 1;
 	sg_table = kcalloc(sg_tables, sizeof(*sg_table), GFP_KERNEL);
+	{
+		typeof((*sg_table)) __uncontained_tmp78;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!sg_table)
 		return -ENOMEM;
 
@@ -250,6 +259,10 @@ static int rd_build_prot_space(struct rd_dev *rd_dev, int prot_length, int block
 
 	sg_tables = (total_sg_needed / max_sg_per_table) + 1;
 	sg_table = kcalloc(sg_tables, sizeof(*sg_table), GFP_KERNEL);
+	{
+		typeof((*sg_table)) __uncontained_tmp79;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!sg_table)
 		return -ENOMEM;
 

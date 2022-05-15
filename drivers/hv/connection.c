@@ -23,6 +23,11 @@
 #include <linux/set_memory.h>
 #include <asm/mshyperv.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -338,6 +343,10 @@ int vmbus_connect(void)
 	vmbus_connection.channels = kcalloc(MAX_CHANNEL_RELIDS,
 					    sizeof(struct vmbus_channel *),
 					    GFP_KERNEL);
+	{
+		struct vmbus_channel *__uncontained_tmp47;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (vmbus_connection.channels == NULL) {
 		ret = -ENOMEM;
 		goto cleanup;

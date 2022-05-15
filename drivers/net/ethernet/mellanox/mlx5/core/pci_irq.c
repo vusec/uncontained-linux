@@ -5,6 +5,11 @@
 #include <linux/notifier.h>
 #include <linux/module.h>
 #include <linux/mlx5/driver.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "mlx5_core.h"
 #include "mlx5_irq.h"
 #include "pci_irq.h"
@@ -567,6 +572,10 @@ static int irq_pools_init(struct mlx5_core_dev *dev, int sf_vec, int pf_vec)
 	}
 
 	table->sf_comp_pool->irqs_per_cpu = kcalloc(nr_cpu_ids, sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp85;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!table->sf_comp_pool->irqs_per_cpu) {
 		err = -ENOMEM;
 		goto err_irqs_per_cpu;

@@ -22,6 +22,11 @@
 #include "xpc.h"
 #include <asm/uv/uv_hub.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* XPC is exiting flag */
 int xpc_exiting;
 
@@ -432,6 +437,10 @@ xpc_discovery(void)
 
 	discovered_nasids = kcalloc(xpc_nasid_mask_nlongs, sizeof(long),
 				    GFP_KERNEL);
+	{
+		long __uncontained_tmp67;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (discovered_nasids == NULL) {
 		kfree(remote_rp_base);
 		return;

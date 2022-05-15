@@ -34,6 +34,11 @@
 #include <linux/io-64-nonatomic-lo-hi.h>
 #include <generated/utsrelease.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rocker_hw.h"
 #include "rocker.h"
 #include "rocker_tlv.h"
@@ -438,6 +443,10 @@ static int rocker_dma_ring_create(const struct rocker *rocker,
 	info->tail = 0;
 	info->desc_info = kcalloc(info->size, sizeof(*info->desc_info),
 				  GFP_KERNEL);
+	{
+		typeof((*info->desc_info)) __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!info->desc_info)
 		return -ENOMEM;
 

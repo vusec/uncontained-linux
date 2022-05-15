@@ -16,6 +16,11 @@
 #include <linux/raid/md_u.h>
 #include <linux/seq_file.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "md.h"
 #include "md-multipath.h"
 
@@ -368,6 +373,10 @@ static int multipath_run (struct mddev *mddev)
 	conf->multipaths = kcalloc(mddev->raid_disks,
 				   sizeof(struct multipath_info),
 				   GFP_KERNEL);
+	{
+		struct multipath_info __uncontained_tmp55;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!conf->multipaths)
 		goto out_free_conf;
 

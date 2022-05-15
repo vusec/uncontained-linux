@@ -4,6 +4,11 @@
 #include <drm/drm_simple_kms_helper.h>
 #include <drm/drm_vblank.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "amdgpu.h"
 #ifdef CONFIG_DRM_AMDGPU_SI
 #include "dce_v6_0.h"
@@ -483,6 +488,10 @@ static int amdgpu_vkms_sw_init(void *handle)
 
 	adev->amdgpu_vkms_output = kcalloc(adev->mode_info.num_crtc,
 		sizeof(struct amdgpu_vkms_output), GFP_KERNEL);
+	{
+		struct amdgpu_vkms_output __uncontained_tmp40;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!adev->amdgpu_vkms_output)
 		return -ENOMEM;
 

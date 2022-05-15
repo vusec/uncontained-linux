@@ -94,6 +94,11 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "echo.h"
 
 #define MIN_TX_POWER_FOR_ADAPTION	64
@@ -156,11 +161,19 @@ struct oslec_state *oslec_create(int len, int adaption_mode)
 
 	ec->fir_taps16[0] =
 	    kcalloc(ec->taps, sizeof(int16_t), GFP_KERNEL);
+	{
+		int16_t __uncontained_tmp56;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!ec->fir_taps16[0])
 		goto error_oom_0;
 
 	ec->fir_taps16[1] =
 	    kcalloc(ec->taps, sizeof(int16_t), GFP_KERNEL);
+	{
+		int16_t __uncontained_tmp57;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!ec->fir_taps16[1])
 		goto error_oom_1;
 
@@ -178,6 +191,10 @@ struct oslec_state *oslec_create(int len, int adaption_mode)
 	oslec_adaption_mode(ec, adaption_mode);
 
 	ec->snapshot = kcalloc(ec->taps, sizeof(int16_t), GFP_KERNEL);
+	{
+		int16_t __uncontained_tmp58;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!ec->snapshot)
 		goto error_snap;
 

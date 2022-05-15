@@ -17,6 +17,11 @@
 #include <linux/platform_device.h>
 #include <linux/skbuff.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1984,6 +1989,10 @@ static void hns_nic_dump(struct hns_nic_priv *priv)
 		reg_num = ops->get_regs_len(priv->ae_handle);
 		reg_num = (reg_num + 3ul) & ~3ul;
 		data = kcalloc(reg_num, sizeof(u32), GFP_KERNEL);
+		{
+			u32 __uncontained_tmp48;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+		}
 		if (data) {
 			ops->get_regs(priv->ae_handle, data);
 			for (i = 0; i < reg_num; i += 4)

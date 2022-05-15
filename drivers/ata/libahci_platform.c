@@ -22,6 +22,11 @@
 #include <linux/pm_runtime.h>
 #include <linux/of_platform.h>
 #include <linux/reset.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ahci.h"
 
 static void ahci_host_stop(struct ata_host *host);
@@ -471,6 +476,10 @@ struct ahci_host_priv *ahci_platform_get_resources(struct platform_device *pdev,
 	 * target_pwrs after devm_ have freed memory
 	 */
 	hpriv->target_pwrs = kcalloc(hpriv->nports, sizeof(*hpriv->target_pwrs), GFP_KERNEL);
+	{
+		typeof((*hpriv->target_pwrs)) __uncontained_tmp8;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp8;
+	}
 	if (!hpriv->target_pwrs) {
 		rc = -ENOMEM;
 		goto err_out;

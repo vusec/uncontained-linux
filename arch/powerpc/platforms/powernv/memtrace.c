@@ -20,6 +20,11 @@
 #include <asm/machdep.h>
 #include <asm/cacheflush.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* This enables us to keep track of the memory removed from each node. */
 struct memtrace_entry {
 	void *mem;
@@ -150,6 +155,10 @@ static int memtrace_init_regions_runtime(u64 size)
 
 	memtrace_array = kcalloc(num_online_nodes(),
 				sizeof(struct memtrace_entry), GFP_KERNEL);
+	{
+		struct memtrace_entry __uncontained_tmp1;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!memtrace_array) {
 		pr_err("Failed to allocate memtrace_array\n");
 		return -EINVAL;

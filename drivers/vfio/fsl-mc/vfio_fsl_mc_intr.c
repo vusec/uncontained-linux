@@ -10,6 +10,11 @@
 #include <linux/eventfd.h>
 #include <linux/msi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "linux/fsl/mc.h"
 #include "vfio_fsl_mc_private.h"
 
@@ -31,6 +36,10 @@ static int vfio_fsl_mc_irqs_allocate(struct vfio_fsl_mc_device *vdev)
 	irq_count = mc_dev->obj_desc.irq_count;
 
 	mc_irq = kcalloc(irq_count, sizeof(*mc_irq), GFP_KERNEL);
+	{
+		typeof((*mc_irq)) __uncontained_tmp87;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (!mc_irq)
 		return -ENOMEM;
 

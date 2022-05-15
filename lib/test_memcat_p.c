@@ -8,6 +8,11 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct test_struct {
 	int		num;
 	unsigned int	magic;
@@ -25,10 +30,18 @@ static int __init test_memcat_p_init(void)
 	int err = -ENOMEM, i, r, total = 0;
 
 	in0 = kcalloc(INPUT_MAX, sizeof(*in0), GFP_KERNEL);
+	{
+		typeof((*in0)) __uncontained_tmp143;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp143;
+	}
 	if (!in0)
 		return err;
 
 	in1 = kcalloc(INPUT_MAX, sizeof(*in1), GFP_KERNEL);
+	{
+		typeof((*in1)) __uncontained_tmp144;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp144;
+	}
 	if (!in1)
 		goto err_free_in0;
 

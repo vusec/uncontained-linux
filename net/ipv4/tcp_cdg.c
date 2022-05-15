@@ -32,6 +32,11 @@
 
 #include <net/tcp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define HYSTART_ACK_TRAIN	1
 #define HYSTART_DELAY		2
 
@@ -376,9 +381,14 @@ static void tcp_cdg_init(struct sock *sk)
 	struct tcp_sock *tp = tcp_sk(sk);
 
 	/* We silently fall back to window = 1 if allocation fails. */
-	if (window > 1)
+	if (window > 1) {
 		ca->gradients = kcalloc(window, sizeof(ca->gradients[0]),
 					GFP_NOWAIT | __GFP_NOWARN);
+		{
+			typeof((ca->gradients[0])) __uncontained_tmp191;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp191;
+		}
+	}
 	ca->rtt_seq = tp->snd_nxt;
 	ca->shadow_wnd = tp->snd_cwnd;
 }

@@ -28,6 +28,11 @@
 #include <asm/processor.h>
 #include <asm/cpu_device_id.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRVNAME	"coretemp"
 
 /*
@@ -731,6 +736,10 @@ static int __init coretemp_init(void)
 	max_zones = topology_max_packages() * topology_max_die_per_package();
 	zone_devices = kcalloc(max_zones, sizeof(struct platform_device *),
 			      GFP_KERNEL);
+	{
+		struct platform_device *__uncontained_tmp41;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!zone_devices)
 		return -ENOMEM;
 

@@ -24,6 +24,11 @@
 #include <linux/types.h>
 #include <linux/u64_stats_sync.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* General Register Group */
 #define AVE_IDR			0x000	/* ID */
 #define AVE_VR			0x004	/* Version */
@@ -1274,6 +1279,10 @@ static int ave_open(struct net_device *ndev)
 
 	priv->tx.desc = kcalloc(priv->tx.ndesc, sizeof(*priv->tx.desc),
 				GFP_KERNEL);
+	{
+		typeof((*priv->tx.desc)) __uncontained_tmp112;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (!priv->tx.desc) {
 		ret = -ENOMEM;
 		goto out_free_irq;
@@ -1281,6 +1290,10 @@ static int ave_open(struct net_device *ndev)
 
 	priv->rx.desc = kcalloc(priv->rx.ndesc, sizeof(*priv->rx.desc),
 				GFP_KERNEL);
+	{
+		typeof((*priv->rx.desc)) __uncontained_tmp113;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!priv->rx.desc) {
 		kfree(priv->tx.desc);
 		ret = -ENOMEM;

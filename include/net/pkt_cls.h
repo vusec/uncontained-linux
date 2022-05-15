@@ -8,6 +8,11 @@
 #include <net/act_api.h>
 #include <net/net_namespace.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* TC action not accessible from user space */
 #define TC_ACT_CONSUMED		(TC_ACT_VALUE_MAX + 1)
 
@@ -224,6 +229,10 @@ static inline int tcf_exts_init(struct tcf_exts *exts, struct net *net,
 	exts->net = net;
 	exts->actions = kcalloc(TCA_ACT_MAX_PRIO, sizeof(struct tc_action *),
 				GFP_KERNEL);
+	{
+		struct tc_action *__uncontained_tmp138;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp138;
+	}
 	if (!exts->actions)
 		return -ENOMEM;
 #endif

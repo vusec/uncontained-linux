@@ -34,6 +34,11 @@
 #include "edac_module.h"
 #include <ras/ras_event.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifdef CONFIG_EDAC_ATOMIC_SCRUB
 #include <asm/edac.h>
 #else
@@ -270,6 +275,10 @@ static int edac_mc_alloc_csrows(struct mem_ctl_info *mci)
 	 * Alocate and fill the csrow/channels structs
 	 */
 	mci->csrows = kcalloc(tot_csrows, sizeof(*mci->csrows), GFP_KERNEL);
+	{
+		typeof((*mci->csrows)) __uncontained_tmp28;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (!mci->csrows)
 		return -ENOMEM;
 
@@ -286,6 +295,10 @@ static int edac_mc_alloc_csrows(struct mem_ctl_info *mci)
 		csr->nr_channels = tot_channels;
 		csr->channels = kcalloc(tot_channels, sizeof(*csr->channels),
 					GFP_KERNEL);
+		{
+			typeof((*csr->channels)) __uncontained_tmp29;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp29;
+		}
 		if (!csr->channels)
 			return -ENOMEM;
 
@@ -316,6 +329,10 @@ static int edac_mc_alloc_dimms(struct mem_ctl_info *mci)
 	 * Allocate and fill the dimm structs
 	 */
 	mci->dimms  = kcalloc(mci->tot_dimms, sizeof(*mci->dimms), GFP_KERNEL);
+	{
+		typeof((*mci->dimms)) __uncontained_tmp30;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!mci->dimms)
 		return -ENOMEM;
 

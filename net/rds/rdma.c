@@ -33,7 +33,12 @@
 #include <linux/pagemap.h>
 #include <linux/slab.h>
 #include <linux/rbtree.h>
-#include <linux/dma-mapping.h> /* for DMA_*_DEVICE */
+#include <linux/dma-mapping.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/ /* for DMA_*_DEVICE */
 
 #include "rds.h"
 
@@ -229,6 +234,10 @@ static int __rds_rdma_map(struct rds_sock *rs, struct rds_get_mr_args *args,
 
 	/* XXX clamp nr_pages to limit the size of this alloc? */
 	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp104;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!pages) {
 		ret = -ENOMEM;
 		goto out;
@@ -571,6 +580,10 @@ int rds_rdma_extra_size(struct rds_rdma_args *args,
 	iov->iov = kcalloc(args->nr_local,
 			   sizeof(struct rds_iovec),
 			   GFP_KERNEL);
+	{
+		struct rds_iovec __uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!iov->iov)
 		return -ENOMEM;
 
@@ -652,6 +665,10 @@ int rds_cmsg_rdma_args(struct rds_sock *rs, struct rds_message *rm,
 	}
 
 	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp106;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!pages) {
 		ret = -ENOMEM;
 		goto out_ret;

@@ -10,6 +10,11 @@
 #include <linux/crc32c.h>
 #include <linux/async_tx.h>
 #include <linux/raid/md_p.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "md.h"
 #include "raid5.h"
 #include "raid5-log.h"
@@ -1388,6 +1393,10 @@ int ppl_init_log(struct r5conf *conf)
 	ppl_conf->count = conf->raid_disks;
 	ppl_conf->child_logs = kcalloc(ppl_conf->count, sizeof(struct ppl_log),
 				       GFP_KERNEL);
+	{
+		struct ppl_log __uncontained_tmp64;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!ppl_conf->child_logs) {
 		ret = -ENOMEM;
 		goto err;

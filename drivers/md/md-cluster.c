@@ -9,6 +9,11 @@
 #include <linux/dlm.h>
 #include <linux/sched.h>
 #include <linux/raid/md_p.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "md.h"
 #include "md-bitmap.h"
 #include "md-cluster.h"
@@ -1486,6 +1491,10 @@ static int lock_all_bitmaps(struct mddev *mddev)
 	cinfo->other_bitmap_lockres =
 		kcalloc(mddev->bitmap_info.nodes - 1,
 			sizeof(struct dlm_lock_resource *), GFP_KERNEL);
+	{
+		struct dlm_lock_resource *__uncontained_tmp45;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!cinfo->other_bitmap_lockres) {
 		pr_err("md: can't alloc mem for other bitmap locks\n");
 		return 0;

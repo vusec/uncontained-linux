@@ -39,6 +39,11 @@
 #include <linux/bug.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -176,6 +181,10 @@ static int __init cipso_v4_cache_init(void)
 	cipso_v4_cache = kcalloc(CIPSO_V4_CACHE_BUCKETS,
 				 sizeof(struct cipso_v4_map_cache_bkt),
 				 GFP_KERNEL);
+	{
+		struct cipso_v4_map_cache_bkt __uncontained_tmp135;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp135;
+	}
 	if (!cipso_v4_cache)
 		return -ENOMEM;
 

@@ -20,6 +20,11 @@
 #include <linux/iommu.h>
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * Gaudi security scheme:
  *
@@ -527,6 +532,10 @@ static int gaudi_set_fixed_properties(struct hl_device *hdev)
 	prop->hw_queues_props = kcalloc(prop->max_queues,
 			sizeof(struct hw_queue_properties),
 			GFP_KERNEL);
+	{
+		struct hw_queue_properties __uncontained_tmp51;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp51;
+	}
 
 	if (!prop->hw_queues_props)
 		return -ENOMEM;
@@ -9444,12 +9453,20 @@ static int gaudi_print_fences_single_engine(
 
 	statuses = kcalloc(sds->props[SP_ENGINE_NUM_OF_QUEUES],
 			sizeof(*statuses), GFP_KERNEL);
+	{
+		typeof((*statuses)) __uncontained_tmp52;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!statuses)
 		goto out;
 
 	fences = kcalloc(sds->props[SP_ENGINE_NUM_OF_FENCES] *
 				sds->props[SP_ENGINE_NUM_OF_QUEUES],
 			 sizeof(*fences), GFP_KERNEL);
+	{
+		typeof((*fences)) __uncontained_tmp53;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp53;
+	}
 	if (!fences)
 		goto free_status;
 

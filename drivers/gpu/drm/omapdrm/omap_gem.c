@@ -13,6 +13,11 @@
 #include <drm/drm_prime.h>
 #include <drm/drm_vma_manager.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "omap_drv.h"
 #include "omap_dmm_tiler.h"
 
@@ -271,6 +276,10 @@ static int omap_gem_attach_pages(struct drm_gem_object *obj)
 		}
 	} else {
 		addrs = kcalloc(npages, sizeof(*addrs), GFP_KERNEL);
+		{
+			typeof((*addrs)) __uncontained_tmp46;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+		}
 		if (!addrs) {
 			ret = -ENOMEM;
 			goto free_pages;
@@ -1394,6 +1403,10 @@ struct drm_gem_object *omap_gem_new_dmabuf(struct drm_device *dev, size_t size,
 
 		npages = DIV_ROUND_UP(size, PAGE_SIZE);
 		pages = kcalloc(npages, sizeof(*pages), GFP_KERNEL);
+		{
+			typeof((*pages)) __uncontained_tmp47;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+		}
 		if (!pages) {
 			omap_gem_free_object(obj);
 			obj = ERR_PTR(-ENOMEM);
@@ -1458,6 +1471,10 @@ void omap_gem_init(struct drm_device *dev)
 	}
 
 	usergart = kcalloc(3, sizeof(*usergart), GFP_KERNEL);
+	{
+		typeof((*usergart)) __uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!usergart)
 		return;
 

@@ -25,6 +25,11 @@
 
 #include <uapi/linux/psci.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define NUM_SUSPEND_CYCLE (10)
 
 static unsigned int nb_available_cpus;
@@ -157,6 +162,10 @@ static int alloc_init_cpu_groups(cpumask_var_t **pcpu_groups)
 
 	cpu_groups = kcalloc(nb_available_cpus, sizeof(*cpu_groups),
 			     GFP_KERNEL);
+	{
+		typeof((*cpu_groups)) __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!cpu_groups) {
 		free_cpumask_var(tmp);
 		return -ENOMEM;

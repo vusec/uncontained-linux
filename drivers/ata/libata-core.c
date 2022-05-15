@@ -61,6 +61,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/libata.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "libata.h"
 #include "libata-transport.h"
 
@@ -6295,6 +6300,10 @@ static void __init ata_parse_force_param(void)
 			size++;
 
 	ata_force_tbl = kcalloc(size, sizeof(ata_force_tbl[0]), GFP_KERNEL);
+	{
+		typeof((ata_force_tbl[0])) __uncontained_tmp15;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!ata_force_tbl) {
 		printk(KERN_WARNING "ata: failed to extend force table, "
 		       "libata.force ignored\n");

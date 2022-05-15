@@ -11,6 +11,11 @@
 #include <linux/device.h>
 #include <linux/dma-mapping.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MAX_SGTS 16
 
 struct msu_sink_private {
@@ -28,6 +33,10 @@ static void *msu_sink_assign(struct device *dev, int *mode)
 		return NULL;
 
 	priv->sgts = kcalloc(MAX_SGTS, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp42;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!priv->sgts) {
 		kfree(priv);
 		return NULL;

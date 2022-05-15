@@ -12,6 +12,11 @@
 #include <linux/of_device.h>
 #include <linux/of_dma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define TI_XBAR_DRA7		0
 #define TI_XBAR_AM335X		1
 static const u32 ti_xbar_type[] = {
@@ -383,6 +388,10 @@ static int ti_dra7_xbar_probe(struct platform_device *pdev)
 			return -EINVAL;
 
 		rsv_events = kcalloc(nelm, sizeof(*rsv_events), GFP_KERNEL);
+		{
+			typeof((*rsv_events)) __uncontained_tmp14;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+		}
 		if (!rsv_events)
 			return -ENOMEM;
 

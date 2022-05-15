@@ -24,6 +24,11 @@
 
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 #define AD_SD_COMM_CHAN_MASK	0x3
 
@@ -190,6 +195,10 @@ int ad_sd_reset(struct ad_sigma_delta *sigma_delta,
 
 	size = DIV_ROUND_UP(reset_length, 8);
 	buf = kcalloc(size, sizeof(*buf), GFP_KERNEL);
+	{
+		typeof((*buf)) __uncontained_tmp37;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!buf)
 		return -ENOMEM;
 

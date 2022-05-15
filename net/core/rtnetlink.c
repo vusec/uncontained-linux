@@ -54,6 +54,11 @@
 #include <net/rtnetlink.h>
 #include <net/net_namespace.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define RTNL_MAX_TYPE		50
 #define RTNL_SLAVE_MAX_TYPE	40
 
@@ -186,6 +191,10 @@ static int rtnl_register_internal(struct module *owner,
 	tab = rtnl_dereference(rtnl_msg_handlers[protocol]);
 	if (tab == NULL) {
 		tab = kcalloc(RTM_NR_MSGTYPES, sizeof(void *), GFP_KERNEL);
+		{
+			void *__uncontained_tmp160;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp160;
+		}
 		if (!tab)
 			goto unlock;
 

@@ -59,6 +59,11 @@
 #include <xen/interface/memory.h>
 #include <xen/interface/grant_table.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Module parameters */
 #define MAX_QUEUES_DEFAULT 8
 static unsigned int xennet_max_queues;
@@ -2191,6 +2196,10 @@ static int xennet_create_queues(struct netfront_info *info,
 
 	info->queues = kcalloc(*num_queues, sizeof(struct netfront_queue),
 			       GFP_KERNEL);
+	{
+		struct netfront_queue __uncontained_tmp91;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (!info->queues)
 		return -ENOMEM;
 

@@ -3,6 +3,11 @@
 
 #include <net/devlink.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "prestera_devlink.h"
 #include "prestera_hw.h"
 
@@ -478,6 +483,10 @@ int prestera_devlink_traps_register(struct prestera_switch *sw)
 	trap_data->trap_items_arr = kcalloc(traps_count,
 					    sizeof(struct prestera_trap_item),
 					    GFP_KERNEL);
+	{
+		struct prestera_trap_item __uncontained_tmp78;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!trap_data->trap_items_arr) {
 		err = -ENOMEM;
 		goto err_trap_items_alloc;

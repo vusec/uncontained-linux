@@ -27,6 +27,11 @@
 
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 /*
  * This supports access to SPI devices using normal userspace I/O calls.
@@ -209,6 +214,10 @@ static int spidev_message(struct spidev_data *spidev,
 
 	spi_message_init(&msg);
 	k_xfers = kcalloc(n_xfers, sizeof(*k_tmp), GFP_KERNEL);
+	{
+		typeof((*k_tmp)) __uncontained_tmp110;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (k_xfers == NULL)
 		return -ENOMEM;
 

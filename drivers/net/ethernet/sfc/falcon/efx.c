@@ -19,6 +19,11 @@
 #include <linux/gfp.h>
 #include <linux/aer.h>
 #include <linux/interrupt.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "net_driver.h"
 #include "efx.h"
 #include "nic.h"
@@ -1703,6 +1708,10 @@ static int ef4_probe_filters(struct ef4_nic *efx)
 				kcalloc(efx->type->max_rx_ip_filters,
 					sizeof(*channel->rps_flow_id),
 					GFP_KERNEL);
+			{
+				typeof((*channel->rps_flow_id)) __uncontained_tmp49;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+			}
 			if (!channel->rps_flow_id)
 				success = 0;
 			else

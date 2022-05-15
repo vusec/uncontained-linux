@@ -11,6 +11,11 @@
 #include <linux/err.h>
 #include <linux/sfp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "core_env.h"
 
@@ -755,6 +760,10 @@ mlxsw_thermal_modules_init(struct device *dev, struct mlxsw_core *core,
 	thermal->tz_module_arr = kcalloc(thermal->tz_module_num,
 					 sizeof(*thermal->tz_module_arr),
 					 GFP_KERNEL);
+	{
+		typeof((*thermal->tz_module_arr)) __uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!thermal->tz_module_arr)
 		return -ENOMEM;
 
@@ -855,6 +864,10 @@ mlxsw_thermal_gearboxes_init(struct device *dev, struct mlxsw_core *core,
 	thermal->tz_gearbox_arr = kcalloc(thermal->tz_gearbox_num,
 					  sizeof(*thermal->tz_gearbox_arr),
 					  GFP_KERNEL);
+	{
+		typeof((*thermal->tz_gearbox_arr)) __uncontained_tmp87;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (!thermal->tz_gearbox_arr)
 		return -ENOMEM;
 

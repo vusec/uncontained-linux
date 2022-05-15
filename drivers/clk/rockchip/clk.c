@@ -23,6 +23,11 @@
 #include <linux/reboot.h>
 #include <linux/rational.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../clk-fractional-divider.h"
 #include "clk.h"
 
@@ -362,6 +367,10 @@ struct rockchip_clk_provider *rockchip_clk_init(struct device_node *np,
 		return ERR_PTR(-ENOMEM);
 
 	clk_table = kcalloc(nr_clks, sizeof(struct clk *), GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp14;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!clk_table)
 		goto err_free;
 

@@ -609,6 +609,11 @@ static struct lock_torture_ops rwsem_lock_ops = {
 };
 
 #include <linux/percpu-rwsem.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 static struct percpu_rw_semaphore pcpu_rwsem;
 
 static void torture_percpu_rwsem_init(void)
@@ -1046,6 +1051,10 @@ static int __init lock_torture_init(void)
 		writer_tasks = kcalloc(cxt.nrealwriters_stress,
 				       sizeof(writer_tasks[0]),
 				       GFP_KERNEL);
+		{
+			typeof((writer_tasks[0])) __uncontained_tmp134;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp134;
+		}
 		if (writer_tasks == NULL) {
 			TOROUT_ERRSTRING("writer_tasks: Out of memory");
 			firsterr = -ENOMEM;
@@ -1057,6 +1066,10 @@ static int __init lock_torture_init(void)
 		reader_tasks = kcalloc(cxt.nrealreaders_stress,
 				       sizeof(reader_tasks[0]),
 				       GFP_KERNEL);
+		{
+			typeof((reader_tasks[0])) __uncontained_tmp135;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp135;
+		}
 		if (reader_tasks == NULL) {
 			TOROUT_ERRSTRING("reader_tasks: Out of memory");
 			kfree(writer_tasks);

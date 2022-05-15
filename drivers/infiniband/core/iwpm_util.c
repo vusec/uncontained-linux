@@ -60,11 +60,19 @@ int iwpm_init(u8 nl_client)
 {
 	iwpm_hash_bucket = kcalloc(IWPM_MAPINFO_HASH_SIZE,
 				   sizeof(struct hlist_head), GFP_KERNEL);
+	{
+		struct hlist_head __uncontained_tmp52;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!iwpm_hash_bucket)
 		return -ENOMEM;
 
 	iwpm_reminfo_bucket = kcalloc(IWPM_REMINFO_HASH_SIZE,
 				      sizeof(struct hlist_head), GFP_KERNEL);
+	{
+		struct hlist_head __uncontained_tmp53;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp53;
+	}
 	if (!iwpm_reminfo_bucket) {
 		kfree(iwpm_hash_bucket);
 		return -ENOMEM;

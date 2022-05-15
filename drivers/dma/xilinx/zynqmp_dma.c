@@ -18,6 +18,11 @@
 #include <linux/io-64-nonatomic-lo-hi.h>
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../dmaengine.h"
 
 /* Register Offsets */
@@ -470,6 +475,10 @@ static int zynqmp_dma_alloc_chan_resources(struct dma_chan *dchan)
 
 	chan->sw_desc_pool = kcalloc(ZYNQMP_DMA_NUM_DESCS, sizeof(*desc),
 				     GFP_KERNEL);
+	{
+		typeof((*desc)) __uncontained_tmp20;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!chan->sw_desc_pool)
 		return -ENOMEM;
 

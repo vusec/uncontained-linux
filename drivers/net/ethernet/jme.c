@@ -29,6 +29,11 @@
 #include <linux/if_vlan.h>
 #include <linux/slab.h>
 #include <net/ip6_checksum.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "jme.h"
 
 static int force_pseudohp = -1;
@@ -578,6 +583,10 @@ jme_setup_tx_resources(struct jme_adapter *jme)
 	txring->bufinf		= kcalloc(jme->tx_ring_size,
 						sizeof(struct jme_buffer_info),
 						GFP_ATOMIC);
+	{
+		struct jme_buffer_info __uncontained_tmp81;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (unlikely(!(txring->bufinf)))
 		goto err_free_txring;
 
@@ -821,6 +830,10 @@ jme_setup_rx_resources(struct jme_adapter *jme)
 	rxring->bufinf		= kcalloc(jme->rx_ring_size,
 						sizeof(struct jme_buffer_info),
 						GFP_ATOMIC);
+	{
+		struct jme_buffer_info __uncontained_tmp82;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (unlikely(!(rxring->bufinf)))
 		goto err_free_rxring;
 

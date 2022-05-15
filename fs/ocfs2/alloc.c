@@ -18,6 +18,11 @@
 
 #include <cluster/masklog.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ocfs2.h"
 
 #include "alloc.h"
@@ -1196,6 +1201,10 @@ static int ocfs2_add_branch(handle_t *handle,
 	/* allocate the number of new eb blocks we need */
 	new_eb_bhs = kcalloc(new_blocks, sizeof(struct buffer_head *),
 			     GFP_KERNEL);
+	{
+		struct buffer_head *__uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!new_eb_bhs) {
 		status = -ENOMEM;
 		mlog_errno(status);
@@ -6957,6 +6966,10 @@ int ocfs2_zero_range_for_truncate(struct inode *inode, handle_t *handle,
 
 	pages = kcalloc(ocfs2_pages_per_cluster(sb),
 			sizeof(struct page *), GFP_NOFS);
+	{
+		struct page *__uncontained_tmp95;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (pages == NULL) {
 		ret = -ENOMEM;
 		mlog_errno(ret);

@@ -36,6 +36,11 @@
 
 #include <linux/sunrpc/metrics.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../nfs4session.h"
 #include "../internal.h"
 #include "../delegation.h"
@@ -702,6 +707,10 @@ filelayout_decode_layout(struct pnfs_layout_hdr *flo,
 	if (fl->num_fh > 0) {
 		fl->fh_array = kcalloc(fl->num_fh, sizeof(fl->fh_array[0]),
 				       gfp_flags);
+		{
+			typeof((fl->fh_array[0])) __uncontained_tmp135;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp135;
+		}
 		if (!fl->fh_array)
 			goto out_err;
 	}

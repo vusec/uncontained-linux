@@ -9,6 +9,11 @@
 #include <linux/interrupt.h>
 #include <linux/numa.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hfi.h"
 #include "affinity.h"
 #include "sdma.h"
@@ -151,6 +156,10 @@ int node_affinity_init(void)
 
 	hfi1_per_node_cntr = kcalloc(node_affinity.num_possible_nodes,
 				     sizeof(*hfi1_per_node_cntr), GFP_KERNEL);
+	{
+		typeof((*hfi1_per_node_cntr)) __uncontained_tmp40;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!hfi1_per_node_cntr)
 		return -ENOMEM;
 
@@ -418,6 +427,10 @@ static int _dev_comp_vect_mappings_create(struct hfi1_devdata *dd,
 	dd->comp_vect_mappings = kcalloc(dd->comp_vect_possible_cpus,
 					 sizeof(*dd->comp_vect_mappings),
 					 GFP_KERNEL);
+	{
+		typeof((*dd->comp_vect_mappings)) __uncontained_tmp41;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!dd->comp_vect_mappings) {
 		ret = -ENOMEM;
 		goto fail;

@@ -6,6 +6,11 @@
 #include <linux/delay.h>
 #include <linux/pci_ids.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -384,6 +389,10 @@ static int qat_uclo_init_ustore(struct icp_qat_fw_loader_handle *handle,
 	uof_image = image->img_ptr;
 	fill_data = kcalloc(ICP_QAT_UCLO_MAX_USTORE, sizeof(u64),
 			    GFP_KERNEL);
+	{
+		u64 __uncontained_tmp23;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!fill_data)
 		return -ENOMEM;
 	for (i = 0; i < ICP_QAT_UCLO_MAX_USTORE; i++)
@@ -1003,6 +1012,10 @@ static int qat_uclo_parse_uof_obj(struct icp_qat_fw_loader_handle *handle)
 	}
 	obj_handle->uword_buf = kcalloc(UWORD_CPYBUF_SIZE, sizeof(u64),
 					GFP_KERNEL);
+	{
+		u64 __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!obj_handle->uword_buf)
 		return -ENOMEM;
 	obj_handle->ustore_phy_size = ICP_QAT_UCLO_MAX_USTORE;
@@ -1186,6 +1199,10 @@ static int qat_uclo_map_suof(struct icp_qat_fw_loader_handle *handle,
 		suof_img_hdr = kcalloc(suof_handle->img_table.num_simgs,
 				       sizeof(img_header),
 				       GFP_KERNEL);
+		{
+			typeof((img_header)) __uncontained_tmp25;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+		}
 		if (!suof_img_hdr)
 			return -ENOMEM;
 		suof_handle->img_table.simg_hdr = suof_img_hdr;

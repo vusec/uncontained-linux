@@ -26,6 +26,11 @@
 #include <net/cipso_ipv4.h>
 #include <linux/atomic.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "netlabel_user.h"
 #include "netlabel_cipso_v4.h"
 #include "netlabel_mgmt.h"
@@ -188,6 +193,10 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
 	doi_def->map.std->lvl.local = kcalloc(doi_def->map.std->lvl.local_size,
 					      sizeof(u32),
 					      GFP_KERNEL | __GFP_NOWARN);
+	{
+		u32 __uncontained_tmp132;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (doi_def->map.std->lvl.local == NULL) {
 		ret_val = -ENOMEM;
 		goto add_std_failure;
@@ -195,6 +204,10 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
 	doi_def->map.std->lvl.cipso = kcalloc(doi_def->map.std->lvl.cipso_size,
 					      sizeof(u32),
 					      GFP_KERNEL | __GFP_NOWARN);
+	{
+		u32 __uncontained_tmp133;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+	}
 	if (doi_def->map.std->lvl.cipso == NULL) {
 		ret_val = -ENOMEM;
 		goto add_std_failure;
@@ -264,6 +277,10 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
 					      doi_def->map.std->cat.local_size,
 					      sizeof(u32),
 					      GFP_KERNEL | __GFP_NOWARN);
+		{
+			u32 __uncontained_tmp134;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp134;
+		}
 		if (doi_def->map.std->cat.local == NULL) {
 			ret_val = -ENOMEM;
 			goto add_std_failure;
@@ -272,6 +289,10 @@ static int netlbl_cipsov4_add_std(struct genl_info *info,
 					      doi_def->map.std->cat.cipso_size,
 					      sizeof(u32),
 					      GFP_KERNEL | __GFP_NOWARN);
+		{
+			u32 __uncontained_tmp135;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp135;
+		}
 		if (doi_def->map.std->cat.cipso == NULL) {
 			ret_val = -ENOMEM;
 			goto add_std_failure;

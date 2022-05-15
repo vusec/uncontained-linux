@@ -40,6 +40,11 @@
 #include <asm/cpu_device_id.h>
 #include <acpi/processor.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "longhaul.h"
 
 #define TYPE_LONGHAUL_V1	1
@@ -476,6 +481,10 @@ static int longhaul_get_ranges(void)
 
 	longhaul_table = kcalloc(numscales + 1, sizeof(*longhaul_table),
 				 GFP_KERNEL);
+	{
+		typeof((*longhaul_table)) __uncontained_tmp21;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!longhaul_table)
 		return -ENOMEM;
 

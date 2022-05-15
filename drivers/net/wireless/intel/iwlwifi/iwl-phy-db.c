@@ -7,6 +7,11 @@
 #include <linux/string.h>
 #include <linux/export.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "iwl-drv.h"
 #include "iwl-phy-db.h"
 #include "iwl-debug.h"
@@ -177,6 +182,10 @@ int iwl_phy_db_set_section(struct iwl_phy_db *phy_db,
 			phy_db->calib_ch_group_papd = kcalloc(chg_id + 1,
 							      sizeof(struct iwl_phy_db_entry),
 							      GFP_ATOMIC);
+			{
+				struct iwl_phy_db_entry __uncontained_tmp100;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+			}
 			if (!phy_db->calib_ch_group_papd)
 				return -ENOMEM;
 			phy_db->n_group_papd = chg_id + 1;
@@ -191,6 +200,10 @@ int iwl_phy_db_set_section(struct iwl_phy_db *phy_db,
 			phy_db->calib_ch_group_txp = kcalloc(chg_id + 1,
 							     sizeof(struct iwl_phy_db_entry),
 							     GFP_ATOMIC);
+			{
+				struct iwl_phy_db_entry __uncontained_tmp101;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+			}
 			if (!phy_db->calib_ch_group_txp)
 				return -ENOMEM;
 			phy_db->n_group_txp = chg_id + 1;

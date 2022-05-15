@@ -37,6 +37,11 @@
 #include <net/devlink.h>
 #include <net/ipv6_stubs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "eswitch.h"
 #include "en.h"
 #include "en_rep.h"
@@ -408,6 +413,10 @@ int mlx5e_add_sqs_fwd_rules(struct mlx5e_priv *priv)
 
 	sqs = kcalloc(priv->channels.num * mlx5e_get_dcb_num_tc(&priv->channels.params),
 		      sizeof(*sqs), GFP_KERNEL);
+	{
+		typeof((*sqs)) __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!sqs)
 		goto out;
 

@@ -14,6 +14,11 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define PLT_CLK_NAME_BASE	"pmc_plt_clk"
 
 #define PMC_CLK_CTL_OFFSET		0x60
@@ -283,6 +288,10 @@ static const char **plt_clk_register_parents(struct platform_device *pdev,
 
 	parent_names = kcalloc(nparents, sizeof(*parent_names),
 			       GFP_KERNEL);
+	{
+		typeof((*parent_names)) __uncontained_tmp21;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!parent_names)
 		return ERR_PTR(-ENOMEM);
 

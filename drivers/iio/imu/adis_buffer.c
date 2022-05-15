@@ -19,6 +19,11 @@
 #include <linux/iio/triggered_buffer.h>
 #include <linux/iio/imu/adis.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -39,6 +44,10 @@ static int adis_update_scan_mode_burst(struct iio_dev *indio_dev,
 		burst_max_length = burst_length;
 
 	adis->xfer = kcalloc(2, sizeof(*adis->xfer), GFP_KERNEL);
+	{
+		typeof((*adis->xfer)) __uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!adis->xfer)
 		return -ENOMEM;
 
@@ -93,6 +102,10 @@ int adis_update_scan_mode(struct iio_dev *indio_dev,
 	scan_count = indio_dev->scan_bytes / 2;
 
 	adis->xfer = kcalloc(scan_count + 1, sizeof(*adis->xfer), GFP_KERNEL);
+	{
+		typeof((*adis->xfer)) __uncontained_tmp32;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!adis->xfer)
 		return -ENOMEM;
 

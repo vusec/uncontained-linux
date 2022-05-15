@@ -53,6 +53,11 @@
 #include <asm/xen/hypercall.h>
 #include <asm/xen/hypervisor.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static struct mc_info g_mi;
 static struct mcinfo_logical_cpu *g_physinfo;
 static uint32_t ncpus;
@@ -378,6 +383,10 @@ static int bind_virq_for_mce(void)
 	ncpus = mc_op.u.mc_physcpuinfo.ncpus;
 	g_physinfo = kcalloc(ncpus, sizeof(struct mcinfo_logical_cpu),
 			     GFP_KERNEL);
+	{
+		struct mcinfo_logical_cpu __uncontained_tmp136;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp136;
+	}
 	if (!g_physinfo)
 		return -ENOMEM;
 	set_xen_guest_handle(mc_op.u.mc_physcpuinfo.info, g_physinfo);

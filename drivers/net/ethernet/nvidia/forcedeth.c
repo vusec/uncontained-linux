@@ -56,6 +56,11 @@
 
 #include <asm/irq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define TX_WORK_PER_LOOP  64
 #define RX_WORK_PER_LOOP  64
 
@@ -5867,7 +5872,15 @@ static int nv_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
 		np->tx_ring.ex = &np->rx_ring.ex[np->rx_ring_size];
 	}
 	np->rx_skb = kcalloc(np->rx_ring_size, sizeof(struct nv_skb_map), GFP_KERNEL);
+	{
+		struct nv_skb_map __uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 	np->tx_skb = kcalloc(np->tx_ring_size, sizeof(struct nv_skb_map), GFP_KERNEL);
+	{
+		struct nv_skb_map __uncontained_tmp95;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (!np->rx_skb || !np->tx_skb)
 		goto out_freering;
 

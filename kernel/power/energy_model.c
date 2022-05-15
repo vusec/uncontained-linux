@@ -17,6 +17,11 @@
 #include <linux/sched/topology.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -134,6 +139,10 @@ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
 	u64 fmax;
 
 	table = kcalloc(nr_states, sizeof(*table), GFP_KERNEL);
+	{
+		typeof((*table)) __uncontained_tmp161;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp161;
+	}
 	if (!table)
 		return -ENOMEM;
 

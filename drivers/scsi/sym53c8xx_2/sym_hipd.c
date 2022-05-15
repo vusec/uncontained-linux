@@ -26,7 +26,12 @@
  */
 
 #include <linux/slab.h>
-#include <asm/param.h>		/* for timeouts in units of HZ */
+#include <asm/param.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/		/* for timeouts in units of HZ */
 
 #include "sym_glue.h"
 #include "sym_nvram.h"
@@ -4992,6 +4997,10 @@ struct sym_lcb *sym_alloc_lcb (struct sym_hcb *np, u_char tn, u_char ln)
 	if (ln && !tp->lunmp) {
 		tp->lunmp = kcalloc(SYM_CONF_MAX_LUN, sizeof(struct sym_lcb *),
 				GFP_ATOMIC);
+		{
+			struct sym_lcb *__uncontained_tmp157;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp157;
+		}
 		if (!tp->lunmp)
 			goto fail;
 	}
@@ -5656,6 +5665,10 @@ int sym_hcb_attach(struct Scsi_Host *shost, struct sym_fw *fw, struct sym_nvram 
 	 *  Allocate the array of lists of CCBs hashed by DSA.
 	 */
 	np->ccbh = kcalloc(CCB_HASH_SIZE, sizeof(*np->ccbh), GFP_KERNEL);
+	{
+		typeof((*np->ccbh)) __uncontained_tmp158;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp158;
+	}
 	if (!np->ccbh)
 		goto attach_failed;
 

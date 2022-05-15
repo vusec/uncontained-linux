@@ -19,6 +19,11 @@
 #include <asm/traps.h>
 #include <asm/kprobes.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define CREATE_TRACE_POINTS
 #include "trace-events-emulation.h"
 
@@ -236,6 +241,10 @@ static void __init register_insn_emulation_sysctl(void)
 
 	insns_sysctl = kcalloc(nr_insn_emulated + 1, sizeof(*sysctl),
 			       GFP_KERNEL);
+	{
+		typeof((*sysctl)) __uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!insns_sysctl)
 		return;
 

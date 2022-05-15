@@ -66,6 +66,11 @@
 
 #include <linux/io-64-nonatomic-lo-hi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define PCI_DEVICE_ID_INTEL_THERMAL_SENSOR 0x3b32
 
 /*
@@ -951,11 +956,35 @@ static int ips_monitor(void *data)
 	u8 cur_seqno, last_seqno;
 
 	mcp_samples = kcalloc(IPS_SAMPLE_COUNT, sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp141;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp141;
+	}
 	ctv1_samples = kcalloc(IPS_SAMPLE_COUNT, sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp142;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+	}
 	ctv2_samples = kcalloc(IPS_SAMPLE_COUNT, sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp143;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp143;
+	}
 	mch_samples = kcalloc(IPS_SAMPLE_COUNT, sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp144;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp144;
+	}
 	cpu_samples = kcalloc(IPS_SAMPLE_COUNT, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp145;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp145;
+	}
 	mchp_samples = kcalloc(IPS_SAMPLE_COUNT, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp146;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp146;
+	}
 	if (!mcp_samples || !ctv1_samples || !ctv2_samples || !mch_samples ||
 			!cpu_samples || !mchp_samples) {
 		dev_err(ips->dev,

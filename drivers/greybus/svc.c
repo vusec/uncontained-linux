@@ -10,6 +10,11 @@
 #include <linux/workqueue.h>
 #include <linux/greybus.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SVC_INTF_EJECT_TIMEOUT		9000
 #define SVC_INTF_ACTIVATE_TIMEOUT	6000
 #define SVC_INTF_RESUME_TIMEOUT		3000
@@ -782,6 +787,10 @@ static void gb_svc_pwrmon_debugfs_init(struct gb_svc *svc)
 
 	svc->pwrmon_rails = kcalloc(rail_count, sizeof(*svc->pwrmon_rails),
 				    GFP_KERNEL);
+	{
+		typeof((*svc->pwrmon_rails)) __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!svc->pwrmon_rails)
 		goto err_pwrmon_debugfs_free;
 

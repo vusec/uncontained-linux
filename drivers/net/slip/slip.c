@@ -85,6 +85,11 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/workqueue.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "slip.h"
 #ifdef CONFIG_INET
 #include <linux/ip.h>
@@ -1299,6 +1304,10 @@ static int __init slip_init(void)
 
 	slip_devs = kcalloc(slip_maxdev, sizeof(struct net_device *),
 								GFP_KERNEL);
+	{
+		struct net_device *__uncontained_tmp82;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!slip_devs)
 		return -ENOMEM;
 

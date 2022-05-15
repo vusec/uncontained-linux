@@ -12,6 +12,11 @@
 #include <asm/dmabrg.h>
 #include <asm/io.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * The DMABRG is a special DMA unit within the SH7760. It does transfers
  * from USB-SRAM/Audio units to main memory (and also the LCDC; but that
@@ -155,6 +160,10 @@ static int __init dmabrg_init(void)
 
 	dmabrg_handlers = kcalloc(10, sizeof(struct dmabrg_handler),
 				  GFP_KERNEL);
+	{
+		struct dmabrg_handler __uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!dmabrg_handlers)
 		return -ENOMEM;
 

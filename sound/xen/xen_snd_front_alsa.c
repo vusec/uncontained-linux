@@ -17,6 +17,11 @@
 #include <xen/xenbus.h>
 #include <xen/xen-front-pgdir-shbuf.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "xen_snd_front.h"
 #include "xen_snd_front_alsa.h"
 #include "xen_snd_front_cfg.h"
@@ -449,6 +454,10 @@ static int shbuf_setup_backstore(struct xen_snd_front_pcm_stream_info *stream,
 	stream->num_pages = DIV_ROUND_UP(stream->buffer_sz, PAGE_SIZE);
 	stream->pages = kcalloc(stream->num_pages, sizeof(struct page *),
 				GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp180;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp180;
+	}
 	if (!stream->pages)
 		return -ENOMEM;
 

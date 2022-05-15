@@ -143,6 +143,10 @@ static int xlgmac_init_ring(struct xlgmac_pdata *pdata,
 	ring->desc_data_head = kcalloc(dma_desc_count,
 					sizeof(struct xlgmac_desc_data),
 					GFP_KERNEL);
+	{
+		struct xlgmac_desc_data __uncontained_tmp116;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (!ring->desc_data_head)
 		return -ENOMEM;
 
@@ -236,6 +240,10 @@ static int xlgmac_alloc_channels(struct xlgmac_pdata *pdata)
 
 	channel_head = kcalloc(pdata->channel_count,
 			       sizeof(struct xlgmac_channel), GFP_KERNEL);
+	{
+		struct xlgmac_channel __uncontained_tmp117;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!channel_head)
 		return ret;
 
@@ -244,11 +252,19 @@ static int xlgmac_alloc_channels(struct xlgmac_pdata *pdata)
 
 	tx_ring = kcalloc(pdata->tx_ring_count, sizeof(struct xlgmac_ring),
 			  GFP_KERNEL);
+	{
+		struct xlgmac_ring __uncontained_tmp118;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+	}
 	if (!tx_ring)
 		goto err_tx_ring;
 
 	rx_ring = kcalloc(pdata->rx_ring_count, sizeof(struct xlgmac_ring),
 			  GFP_KERNEL);
+	{
+		struct xlgmac_ring __uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!rx_ring)
 		goto err_rx_ring;
 

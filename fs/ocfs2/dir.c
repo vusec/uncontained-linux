@@ -30,6 +30,11 @@
 
 #include <cluster/masklog.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ocfs2.h"
 
 #include "alloc.h"
@@ -2498,6 +2503,10 @@ static struct buffer_head **ocfs2_dx_dir_kmalloc_leaves(struct super_block *sb,
 
 	dx_leaves = kcalloc(num_dx_leaves, sizeof(struct buffer_head *),
 			    GFP_NOFS);
+	{
+		struct buffer_head *__uncontained_tmp156;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp156;
+	}
 	if (dx_leaves && ret_num_leaves)
 		*ret_num_leaves = num_dx_leaves;
 

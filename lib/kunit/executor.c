@@ -5,6 +5,11 @@
 #include <linux/glob.h>
 #include <linux/moduleparam.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * These symbols point to the .kunit_test_suites section and are defined in
  * include/asm-generic/vmlinux.lds.h, and consequently must be extern.
@@ -74,6 +79,10 @@ kunit_filter_tests(struct kunit_suite *const suite, const char *test_glob)
 	memcpy(copy, suite, sizeof(*copy));
 
 	filtered = kcalloc(n + 1, sizeof(*filtered), GFP_KERNEL);
+	{
+		typeof((*filtered)) __uncontained_tmp96;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+	}
 
 	n = 0;
 	kunit_suite_for_each_test_case(suite, test_case) {

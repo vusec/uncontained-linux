@@ -12,6 +12,11 @@
 #include <linux/slab.h>
 #include <linux/soc/qcom/smem.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SMEM_AARM_PARTITION_TABLE	9
 #define SMEM_APPS			0
 
@@ -124,6 +129,10 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
 	}
 
 	parts = kcalloc(numparts, sizeof(*parts), GFP_KERNEL);
+	{
+		typeof((*parts)) __uncontained_tmp80;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!parts)
 		return -ENOMEM;
 

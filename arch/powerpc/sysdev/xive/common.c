@@ -31,6 +31,11 @@
 #include <asm/xive-regs.h>
 #include <asm/xmon.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "xive-internal.h"
 
 #undef DEBUG_FLUSH
@@ -1147,6 +1152,10 @@ static int __init xive_init_ipis(void)
 		goto out_free_fwnode;
 
 	xive_ipis = kcalloc(nr_node_ids, sizeof(*xive_ipis), GFP_KERNEL | __GFP_NOFAIL);
+	{
+		typeof((*xive_ipis)) __uncontained_tmp1;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!xive_ipis)
 		goto out_free_domain;
 

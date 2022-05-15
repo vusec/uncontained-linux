@@ -21,6 +21,11 @@
 
 #include <xen/xen-front-pgdir-shbuf.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef GRANT_INVALID_REF
 /*
  * FIXME: usage of grant reference 0 as invalid grant reference:
@@ -216,6 +221,10 @@ static int backend_unmap(struct xen_front_pgdir_shbuf *buf)
 
 	unmap_ops = kcalloc(buf->num_pages, sizeof(*unmap_ops),
 			    GFP_KERNEL);
+	{
+		typeof((*unmap_ops)) __uncontained_tmp133;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+	}
 	if (!unmap_ops)
 		return -ENOMEM;
 
@@ -260,12 +269,20 @@ static int backend_map(struct xen_front_pgdir_shbuf *buf)
 	int ret, cur_gref, cur_dir_page, cur_page, grefs_left;
 
 	map_ops = kcalloc(buf->num_pages, sizeof(*map_ops), GFP_KERNEL);
+	{
+		typeof((*map_ops)) __uncontained_tmp134;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp134;
+	}
 	if (!map_ops)
 		return -ENOMEM;
 
 	buf->backend_map_handles = kcalloc(buf->num_pages,
 					   sizeof(*buf->backend_map_handles),
 					   GFP_KERNEL);
+	{
+		typeof((*buf->backend_map_handles)) __uncontained_tmp135;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp135;
+	}
 	if (!buf->backend_map_handles) {
 		kfree(map_ops);
 		return -ENOMEM;
@@ -484,6 +501,10 @@ static int grant_references(struct xen_front_pgdir_shbuf *buf)
 static int alloc_storage(struct xen_front_pgdir_shbuf *buf)
 {
 	buf->grefs = kcalloc(buf->num_grefs, sizeof(*buf->grefs), GFP_KERNEL);
+	{
+		typeof((*buf->grefs)) __uncontained_tmp136;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp136;
+	}
 	if (!buf->grefs)
 		return -ENOMEM;
 

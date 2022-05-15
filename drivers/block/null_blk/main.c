@@ -9,6 +9,11 @@
 #include <linux/sched.h>
 #include <linux/fs.h>
 #include <linux/init.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "null_blk.h"
 
 #define FREE_BATCH		16
@@ -1787,11 +1792,19 @@ static int setup_commands(struct nullb_queue *nq)
 	int i, tag_size;
 
 	nq->cmds = kcalloc(nq->queue_depth, sizeof(*cmd), GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!nq->cmds)
 		return -ENOMEM;
 
 	tag_size = ALIGN(nq->queue_depth, BITS_PER_LONG) / BITS_PER_LONG;
 	nq->tag_map = kcalloc(tag_size, sizeof(unsigned long), GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp16;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!nq->tag_map) {
 		kfree(nq->cmds);
 		return -ENOMEM;
@@ -1814,6 +1827,10 @@ static int setup_queues(struct nullb *nullb)
 
 	nullb->queues = kcalloc(nqueues, sizeof(struct nullb_queue),
 				GFP_KERNEL);
+	{
+		struct nullb_queue __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!nullb->queues)
 		return -ENOMEM;
 

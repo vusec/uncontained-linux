@@ -33,6 +33,11 @@
 #include <scsi/scsi_dbg.h>
 #include <scsi/scsi_eh.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRV_NAME "stex"
 #define ST_DRIVER_VERSION	"6.02.0000.01"
 #define ST_VER_MAJOR		6
@@ -1754,6 +1759,10 @@ static int stex_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	}
 
 	hba->ccb = kcalloc(ci->rq_count, sizeof(struct st_ccb), GFP_KERNEL);
+	{
+		struct st_ccb __uncontained_tmp114;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!hba->ccb) {
 		err = -ENOMEM;
 		printk(KERN_ERR DRV_NAME "(%s): ccb alloc failed\n",

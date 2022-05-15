@@ -18,6 +18,11 @@
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -4980,12 +4985,20 @@ static int load_video_binaries(struct ia_css_pipe *pipe)
 		mycs->yuv_scaler_binary = kcalloc(cas_scaler_descr.num_stage,
 						  sizeof(struct ia_css_binary),
 						  GFP_KERNEL);
+		{
+			struct ia_css_binary __uncontained_tmp135;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp135;
+		}
 		if (!mycs->yuv_scaler_binary) {
 			err = -ENOMEM;
 			return err;
 		}
 		mycs->is_output_stage = kcalloc(cas_scaler_descr.num_stage,
 						sizeof(bool), GFP_KERNEL);
+		{
+			bool __uncontained_tmp136;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp136;
+		}
 		if (!mycs->is_output_stage) {
 			err = -ENOMEM;
 			return err;
@@ -5567,6 +5580,10 @@ static int load_primary_binaries(
 		mycs->yuv_scaler_binary = kcalloc(cas_scaler_descr.num_stage,
 						  sizeof(struct ia_css_binary),
 						  GFP_KERNEL);
+		{
+			struct ia_css_binary __uncontained_tmp137;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp137;
+		}
 		if (!mycs->yuv_scaler_binary) {
 			err = -ENOMEM;
 			IA_CSS_LEAVE_ERR_PRIVATE(err);
@@ -5574,6 +5591,10 @@ static int load_primary_binaries(
 		}
 		mycs->is_output_stage = kcalloc(cas_scaler_descr.num_stage,
 						sizeof(bool), GFP_KERNEL);
+		{
+			bool __uncontained_tmp138;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp138;
+		}
 		if (!mycs->is_output_stage) {
 			err = -ENOMEM;
 			IA_CSS_LEAVE_ERR_PRIVATE(err);
@@ -6642,12 +6663,20 @@ load_yuvpp_binaries(struct ia_css_pipe *pipe)
 		mycs->yuv_scaler_binary = kcalloc(cas_scaler_descr.num_stage,
 						  sizeof(struct ia_css_binary),
 						  GFP_KERNEL);
+		{
+			struct ia_css_binary __uncontained_tmp139;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+		}
 		if (!mycs->yuv_scaler_binary) {
 			err = -ENOMEM;
 			goto ERR;
 		}
 		mycs->is_output_stage = kcalloc(cas_scaler_descr.num_stage,
 						sizeof(bool), GFP_KERNEL);
+		{
+			bool __uncontained_tmp140;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+		}
 		if (!mycs->is_output_stage) {
 			err = -ENOMEM;
 			goto ERR;
@@ -6750,6 +6779,10 @@ load_yuvpp_binaries(struct ia_css_pipe *pipe)
 	mycs->vf_pp_binary = kcalloc(mycs->num_vf_pp,
 				     sizeof(struct ia_css_binary),
 				     GFP_KERNEL);
+	{
+		struct ia_css_binary __uncontained_tmp141;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp141;
+	}
 	if (!mycs->vf_pp_binary) {
 		err = -ENOMEM;
 		goto ERR;
@@ -8751,6 +8784,10 @@ ia_css_stream_create(const struct ia_css_stream_config *stream_config,
 	/* allocate pipes */
 	curr_stream->num_pipes = num_pipes;
 	curr_stream->pipes = kcalloc(num_pipes, sizeof(struct ia_css_pipe *), GFP_KERNEL);
+	{
+		struct ia_css_pipe *__uncontained_tmp142;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+	}
 	if (!curr_stream->pipes) {
 		curr_stream->num_pipes = 0;
 		kfree(curr_stream);

@@ -74,6 +74,11 @@
 #include <linux/crc-ccitt.h>
 #include <linux/crc32.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "via-velocity.h"
 
 enum velocity_bus_type {
@@ -1633,6 +1638,10 @@ static int velocity_init_rd_ring(struct velocity_info *vptr)
 
 	vptr->rx.info = kcalloc(vptr->options.numrx,
 				sizeof(struct velocity_rd_info), GFP_KERNEL);
+	{
+		struct velocity_rd_info __uncontained_tmp120;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (!vptr->rx.info)
 		goto out;
 
@@ -1667,6 +1676,10 @@ static int velocity_init_td_ring(struct velocity_info *vptr)
 		vptr->tx.infos[j] = kcalloc(vptr->options.numtx,
 					    sizeof(struct velocity_td_info),
 					    GFP_KERNEL);
+		{
+			struct velocity_td_info __uncontained_tmp121;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+		}
 		if (!vptr->tx.infos[j])	{
 			while (--j >= 0)
 				kfree(vptr->tx.infos[j]);

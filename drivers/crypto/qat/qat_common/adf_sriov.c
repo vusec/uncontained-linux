@@ -4,6 +4,11 @@
 #include <linux/pci.h>
 #include <linux/device.h>
 #include <linux/iommu.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "adf_common_drv.h"
 #include "adf_cfg.h"
 #include "adf_pfvf_pf_msg.h"
@@ -209,6 +214,10 @@ int adf_sriov_configure(struct pci_dev *pdev, int numvfs)
 	accel_dev->pf.vf_info = kcalloc(totalvfs,
 					sizeof(struct adf_accel_vf_info),
 					GFP_KERNEL);
+	{
+		struct adf_accel_vf_info __uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!accel_dev->pf.vf_info)
 		return -ENOMEM;
 

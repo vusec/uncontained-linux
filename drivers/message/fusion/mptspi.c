@@ -66,6 +66,11 @@
 #include <scsi/scsi_transport_spi.h>
 #include <scsi/scsi_dbg.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mptbase.h"
 #include "mptscsih.h"
 
@@ -1494,6 +1499,10 @@ mptspi_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	 * (with size equal to req_depth*PtrSz!)
 	 */
 	ioc->ScsiLookup = kcalloc(ioc->req_depth, sizeof(void *), GFP_ATOMIC);
+	{
+		void *__uncontained_tmp83;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!ioc->ScsiLookup) {
 		error = -ENOMEM;
 		goto out_mptspi_probe;

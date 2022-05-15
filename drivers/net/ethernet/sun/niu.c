@@ -33,6 +33,11 @@
 #include <linux/io.h>
 #include <linux/of_device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "niu.h"
 
 #define DRV_MODULE_NAME		"niu"
@@ -4324,6 +4329,10 @@ static int niu_alloc_rx_ring_info(struct niu *np,
 
 	rp->rxhash = kcalloc(MAX_RBR_RING_SIZE, sizeof(struct page *),
 			     GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp85;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!rp->rxhash)
 		return -ENOMEM;
 
@@ -4468,6 +4477,10 @@ static int niu_alloc_channels(struct niu *np)
 
 	rx_rings = kcalloc(num_rx_rings, sizeof(struct rx_ring_info),
 			   GFP_KERNEL);
+	{
+		struct rx_ring_info __uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	err = -ENOMEM;
 	if (!rx_rings)
 		goto out_err;
@@ -4508,6 +4521,10 @@ static int niu_alloc_channels(struct niu *np)
 
 	tx_rings = kcalloc(num_tx_rings, sizeof(struct tx_ring_info),
 			   GFP_KERNEL);
+	{
+		struct tx_ring_info __uncontained_tmp87;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+	}
 	err = -ENOMEM;
 	if (!tx_rings)
 		goto out_err;

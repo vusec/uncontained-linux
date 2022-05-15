@@ -43,6 +43,11 @@
 #include <scsi/scsicam.h>
 #include <scsi/scsi_eh.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "aacraid.h"
 
 #define AAC_DRIVER_VERSION		"1.2.1"
@@ -1662,6 +1667,10 @@ static int aac_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
 	aac->fibs = kcalloc(shost->can_queue + AAC_NUM_MGT_FIB,
 			    sizeof(struct fib),
 			    GFP_KERNEL);
+	{
+		struct fib __uncontained_tmp120;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (!aac->fibs) {
 		error = -ENOMEM;
 		goto out_free_host;

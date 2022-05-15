@@ -124,6 +124,10 @@ int alloc_int_data(void)
 	wmi_priv.integer_instances_count = get_instance_count(DELL_WMI_BIOS_INTEGER_ATTRIBUTE_GUID);
 	wmi_priv.integer_data = kcalloc(wmi_priv.integer_instances_count,
 					sizeof(struct integer_data), GFP_KERNEL);
+	{
+		struct integer_data __uncontained_tmp107;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp107;
+	}
 	if (!wmi_priv.integer_data) {
 		wmi_priv.integer_instances_count = 0;
 		ret = -ENOMEM;

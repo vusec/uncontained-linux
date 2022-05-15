@@ -22,6 +22,11 @@
 #include <linux/jhash.h>
 #include <net/dsa.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mtk_eth_soc.h"
 
 static int mtk_msg_level = -1;
@@ -1555,6 +1560,10 @@ static int mtk_tx_alloc(struct mtk_eth *eth)
 
 	ring->buf = kcalloc(MTK_DMA_SIZE, sizeof(*ring->buf),
 			       GFP_KERNEL);
+	{
+		typeof((*ring->buf)) __uncontained_tmp69;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!ring->buf)
 		goto no_tx_mem;
 
@@ -1679,6 +1688,10 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
 	ring->buf_size = mtk_max_buf_size(ring->frag_size);
 	ring->data = kcalloc(rx_dma_size, sizeof(*ring->data),
 			     GFP_KERNEL);
+	{
+		typeof((*ring->data)) __uncontained_tmp70;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!ring->data)
 		return -ENOMEM;
 

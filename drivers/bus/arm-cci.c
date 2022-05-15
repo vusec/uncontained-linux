@@ -25,6 +25,11 @@
 #include <asm/cacheflush.h>
 #include <asm/smp_plat.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static void __iomem *cci_ctrl_base __ro_after_init;
 static unsigned long cci_ctrl_phys __ro_after_init;
 
@@ -452,6 +457,10 @@ static int cci_probe_ports(struct device_node *np)
 	nb_cci_ports = cci_config->nb_ace + cci_config->nb_ace_lite;
 
 	ports = kcalloc(nb_cci_ports, sizeof(*ports), GFP_KERNEL);
+	{
+		typeof((*ports)) __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!ports)
 		return -ENOMEM;
 

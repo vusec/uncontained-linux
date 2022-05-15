@@ -39,6 +39,11 @@
 #include <asm/page.h>
 #include <linux/cache.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "t4_values.h"
 #include "csio_hw.h"
 #include "csio_wr.h"
@@ -281,6 +286,10 @@ csio_wr_alloc_q(struct csio_hw *hw, uint32_t qsize, uint32_t wrsize,
 			flq->un.fl.bufs = kcalloc(flq->credits,
 						  sizeof(struct csio_dma_buf),
 						  GFP_KERNEL);
+			{
+				struct csio_dma_buf __uncontained_tmp147;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp147;
+			}
 			if (!flq->un.fl.bufs) {
 				csio_err(hw,
 					 "Failed to allocate FL queue bufs"
@@ -1653,6 +1662,10 @@ csio_wrm_init(struct csio_wrm *wrm, struct csio_hw *hw)
 	}
 
 	wrm->q_arr = kcalloc(wrm->num_q, sizeof(struct csio_q *), GFP_KERNEL);
+	{
+		struct csio_q *__uncontained_tmp148;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (!wrm->q_arr)
 		goto err;
 

@@ -48,6 +48,11 @@
 #include <linux/mlx4/cmd.h>
 #include <linux/mlx4/cq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mlx4_en.h"
 #include "en_port.h"
 
@@ -2239,12 +2244,20 @@ static int mlx4_en_copy_priv(struct mlx4_en_priv *dst,
 		dst->tx_ring[t] = kcalloc(MAX_TX_RINGS,
 					  sizeof(struct mlx4_en_tx_ring *),
 					  GFP_KERNEL);
+		{
+			struct mlx4_en_tx_ring *__uncontained_tmp80;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp80;
+		}
 		if (!dst->tx_ring[t])
 			goto err_free_tx;
 
 		dst->tx_cq[t] = kcalloc(MAX_TX_RINGS,
 					sizeof(struct mlx4_en_cq *),
 					GFP_KERNEL);
+		{
+			struct mlx4_en_cq *__uncontained_tmp81;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+		}
 		if (!dst->tx_cq[t]) {
 			kfree(dst->tx_ring[t]);
 			goto err_free_tx;
@@ -3214,6 +3227,10 @@ int mlx4_en_init_netdev(struct mlx4_en_dev *mdev, int port,
 		priv->tx_ring[t] = kcalloc(MAX_TX_RINGS,
 					   sizeof(struct mlx4_en_tx_ring *),
 					   GFP_KERNEL);
+		{
+			struct mlx4_en_tx_ring *__uncontained_tmp82;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+		}
 		if (!priv->tx_ring[t]) {
 			err = -ENOMEM;
 			goto out;
@@ -3221,6 +3238,10 @@ int mlx4_en_init_netdev(struct mlx4_en_dev *mdev, int port,
 		priv->tx_cq[t] = kcalloc(MAX_TX_RINGS,
 					 sizeof(struct mlx4_en_cq *),
 					 GFP_KERNEL);
+		{
+			struct mlx4_en_cq *__uncontained_tmp83;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+		}
 		if (!priv->tx_cq[t]) {
 			err = -ENOMEM;
 			goto out;

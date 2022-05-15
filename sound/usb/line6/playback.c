@@ -10,6 +10,11 @@
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "capture.h"
 #include "driver.h"
 #include "pcm.h"
@@ -406,6 +411,10 @@ int line6_create_audio_out_urbs(struct snd_line6_pcm *line6pcm)
 
 	line6pcm->out.urbs = kcalloc(line6->iso_buffers, sizeof(struct urb *),
 				     GFP_KERNEL);
+	{
+		struct urb *__uncontained_tmp172;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp172;
+	}
 	if (line6pcm->out.urbs == NULL)
 		return -ENOMEM;
 

@@ -6,6 +6,11 @@
 #include <linux/gcd.h>
 #include <net/cfg80211.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "debug.h"
 #include "fwil.h"
@@ -322,6 +327,10 @@ static int brcmf_pno_prep_fwconfig(struct brcmf_pno_info *pi,
 
 	*buckets = NULL;
 	fw_buckets = kcalloc(pi->n_reqs, sizeof(*fw_buckets), GFP_KERNEL);
+	{
+		typeof((*fw_buckets)) __uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!fw_buckets)
 		return -ENOMEM;
 

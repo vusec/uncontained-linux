@@ -4740,6 +4740,10 @@ ahc_init_scbdata(struct ahc_softc *ahc)
 	/* Allocate SCB resources */
 	scb_data->scbarray = kcalloc(AHC_SCB_MAX_ALLOC, sizeof(struct scb),
 				     GFP_ATOMIC);
+	{
+		struct scb __uncontained_tmp67;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (scb_data->scbarray == NULL)
 		return (ENOMEM);
 

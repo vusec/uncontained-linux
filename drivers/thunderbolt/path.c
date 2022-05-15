@@ -11,6 +11,11 @@
 #include <linux/delay.h>
 #include <linux/ktime.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "tb.h"
 
 static void tb_dump_hop(const struct tb_path_hop *hop, const struct tb_regs_hop *regs)
@@ -161,6 +166,10 @@ struct tb_path *tb_path_discover(struct tb_port *src, int src_hopid,
 	path->alloc_hopid = alloc_hopid;
 
 	path->hops = kcalloc(num_hops, sizeof(*path->hops), GFP_KERNEL);
+	{
+		typeof((*path->hops)) __uncontained_tmp101;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!path->hops) {
 		kfree(path);
 		return NULL;
@@ -262,6 +271,10 @@ struct tb_path *tb_path_alloc(struct tb *tb, struct tb_port *src, int src_hopid,
 	num_hops = i / 2;
 
 	path->hops = kcalloc(num_hops, sizeof(*path->hops), GFP_KERNEL);
+	{
+		typeof((*path->hops)) __uncontained_tmp102;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (!path->hops) {
 		kfree(path);
 		return NULL;

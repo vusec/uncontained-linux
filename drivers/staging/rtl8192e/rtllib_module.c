@@ -32,6 +32,11 @@
 #include <linux/etherdevice.h>
 #include <linux/uaccess.h>
 #include <net/arp.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "rtllib.h"
 
 u32 rt_global_debug_component = COMP_ERR;
@@ -44,6 +49,10 @@ static inline int rtllib_networks_allocate(struct rtllib_device *ieee)
 
 	ieee->networks = kcalloc(MAX_NETWORK_COUNT,
 				 sizeof(struct rtllib_network), GFP_KERNEL);
+	{
+		struct rtllib_network __uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!ieee->networks)
 		return -ENOMEM;
 

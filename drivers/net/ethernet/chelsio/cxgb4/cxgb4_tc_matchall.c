@@ -499,6 +499,10 @@ int cxgb4_init_tc_matchall(struct adapter *adap)
 	tc_port_matchall = kcalloc(adap->params.nports,
 				   sizeof(*tc_port_matchall),
 				   GFP_KERNEL);
+	{
+		typeof((*tc_port_matchall)) __uncontained_tmp61;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!tc_port_matchall) {
 		ret = -ENOMEM;
 		goto out_free_matchall;

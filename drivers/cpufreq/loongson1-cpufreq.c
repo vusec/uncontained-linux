@@ -21,6 +21,11 @@
 #include <cpufreq.h>
 #include <loongson1.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct ls1x_cpufreq {
 	struct device *dev;
 	struct clk *clk;	/* CPU clk */
@@ -87,6 +92,10 @@ static int ls1x_cpufreq_init(struct cpufreq_policy *policy)
 
 	steps = 1 << DIV_CPU_WIDTH;
 	freq_tbl = kcalloc(steps, sizeof(*freq_tbl), GFP_KERNEL);
+	{
+		typeof((*freq_tbl)) __uncontained_tmp29;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!freq_tbl)
 		return -ENOMEM;
 

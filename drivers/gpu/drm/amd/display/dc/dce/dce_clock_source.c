@@ -25,6 +25,11 @@
 
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dm_services.h"
 
 
@@ -1261,6 +1266,10 @@ static void get_ss_info_from_atombios(
 	ss_info = kcalloc(*ss_entries_num,
 			  sizeof(struct spread_spectrum_info),
 			  GFP_KERNEL);
+	{
+		struct spread_spectrum_info __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	ss_info_cur = ss_info;
 	if (ss_info == NULL)
 		return;
@@ -1268,6 +1277,10 @@ static void get_ss_info_from_atombios(
 	ss_data = kcalloc(*ss_entries_num,
 			  sizeof(struct spread_spectrum_data),
 			  GFP_KERNEL);
+	{
+		struct spread_spectrum_data __uncontained_tmp34;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (ss_data == NULL)
 		goto out_free_info;
 

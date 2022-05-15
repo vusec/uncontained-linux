@@ -25,6 +25,11 @@
 #include <linux/firmware.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1187,6 +1192,10 @@ static int mwl8k_rxq_init(struct ieee80211_hw *hw, int index)
 	}
 
 	rxq->buf = kcalloc(MWL8K_RX_DESCS, sizeof(*rxq->buf), GFP_KERNEL);
+	{
+		typeof((*rxq->buf)) __uncontained_tmp90;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (rxq->buf == NULL) {
 		dma_free_coherent(&priv->pdev->dev, size, rxq->rxd,
 				  rxq->rxd_dma);
@@ -1479,6 +1488,10 @@ static int mwl8k_txq_init(struct ieee80211_hw *hw, int index)
 	}
 
 	txq->skb = kcalloc(MWL8K_TX_DESCS, sizeof(*txq->skb), GFP_KERNEL);
+	{
+		typeof((*txq->skb)) __uncontained_tmp91;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (txq->skb == NULL) {
 		dma_free_coherent(&priv->pdev->dev, size, txq->txd,
 				  txq->txd_dma);

@@ -40,6 +40,11 @@
 #include <linux/spi/mxs-spi.h>
 #include <trace/events/spi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRIVER_NAME		"mxs-spi"
 
 /* Use 10S timeout for very long transfers, it should suffice. */
@@ -182,6 +187,10 @@ static int mxs_spi_txrx_dma(struct mxs_spi *spi,
 		return -EINVAL;
 
 	dma_xfer = kcalloc(sgs, sizeof(*dma_xfer), GFP_KERNEL);
+	{
+		typeof((*dma_xfer)) __uncontained_tmp137;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp137;
+	}
 	if (!dma_xfer)
 		return -ENOMEM;
 

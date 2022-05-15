@@ -868,6 +868,10 @@ mlx5dr_action_create_mult_dest_tbl(struct mlx5dr_domain *dmn,
 	}
 
 	hw_dests = kcalloc(num_of_dests, sizeof(*hw_dests), GFP_KERNEL);
+	{
+		typeof((*hw_dests)) __uncontained_tmp75;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (!hw_dests)
 		return NULL;
 
@@ -875,6 +879,10 @@ mlx5dr_action_create_mult_dest_tbl(struct mlx5dr_domain *dmn,
 		goto free_hw_dests;
 
 	ref_actions = kcalloc(ref_act_cnt, sizeof(*ref_actions), GFP_KERNEL);
+	{
+		typeof((*ref_actions)) __uncontained_tmp76;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (!ref_actions)
 		goto free_hw_dests;
 

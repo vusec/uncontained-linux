@@ -15,6 +15,11 @@
 #include <linux/debugfs.h>
 #include <linux/platform_data/iommu-omap.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "omap-iopgtable.h"
 #include "omap-iommu.h"
 
@@ -148,6 +153,10 @@ static size_t omap_dump_tlb_entries(struct omap_iommu *obj, struct seq_file *s)
 	num = obj->nr_tlb_entries;
 
 	cr = kcalloc(num, sizeof(*cr), GFP_KERNEL);
+	{
+		typeof((*cr)) __uncontained_tmp36;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!cr)
 		return 0;
 

@@ -191,6 +191,10 @@ int qlcnic_alloc_sw_resources(struct qlcnic_adapter *adapter)
 
 	rds_ring = kcalloc(adapter->max_rds_rings,
 			   sizeof(struct qlcnic_host_rds_ring), GFP_KERNEL);
+	{
+		struct qlcnic_host_rds_ring __uncontained_tmp93;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (rds_ring == NULL)
 		goto err_out;
 
@@ -455,6 +459,10 @@ int qlcnic_pinit_from_rom(struct qlcnic_adapter *adapter)
 	}
 
 	buf = kcalloc(n, sizeof(struct crb_addr_pair), GFP_KERNEL);
+	{
+		struct crb_addr_pair __uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (buf == NULL)
 		return -ENOMEM;
 

@@ -19,6 +19,11 @@
 
 #include <dt-bindings/clock/r8a7779-clock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define CPG_NUM_CLOCKS			(R8A7779_CLK_OUT + 1)
 
 struct r8a7779_cpg {
@@ -136,6 +141,10 @@ static void __init r8a7779_cpg_clocks_init(struct device_node *np)
 
 	cpg = kzalloc(sizeof(*cpg), GFP_KERNEL);
 	clks = kcalloc(CPG_NUM_CLOCKS, sizeof(*clks), GFP_KERNEL);
+	{
+		typeof((*clks)) __uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (cpg == NULL || clks == NULL) {
 		/* We're leaking memory on purpose, there's no point in cleaning
 		 * up as the system won't boot anyway.

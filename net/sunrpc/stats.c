@@ -27,6 +27,11 @@
 
 #include <trace/events/sunrpc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "netns.h"
 
 #define RPCDBG_FACILITY	RPCDBG_MISC
@@ -122,6 +127,10 @@ struct rpc_iostats *rpc_alloc_iostats(struct rpc_clnt *clnt)
 	int i;
 
 	stats = kcalloc(clnt->cl_maxproc, sizeof(*stats), GFP_KERNEL);
+	{
+		typeof((*stats)) __uncontained_tmp202;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp202;
+	}
 	if (stats) {
 		for (i = 0; i < clnt->cl_maxproc; i++)
 			spin_lock_init(&stats[i].om_lock);

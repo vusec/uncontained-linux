@@ -22,7 +22,12 @@
 #include <linux/list.h>
 #include <linux/slab.h>
 
-#include <asm/types.h>	     // for variable types
+#include <asm/types.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/	     // for variable types
 
 #define TAPE_DBF_AREA	tape_core_dbf
 
@@ -688,6 +693,10 @@ tape_alloc_request(int cplength, int datasize)
 	if (cplength > 0) {
 		request->cpaddr = kcalloc(cplength, sizeof(struct ccw1),
 					  GFP_ATOMIC | GFP_DMA);
+		{
+			struct ccw1 __uncontained_tmp113;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+		}
 		if (request->cpaddr == NULL) {
 			DBF_EXCEPTION(1, "cqra nomem\n");
 			kfree(request);

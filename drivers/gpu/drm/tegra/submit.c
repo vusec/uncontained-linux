@@ -18,6 +18,11 @@
 #include <drm/drm_file.h>
 #include <drm/drm_syncobj.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "drm.h"
 #include "gem.h"
 #include "submit.h"
@@ -276,6 +281,10 @@ static int submit_process_bufs(struct tegra_drm_context *context, struct gather_
 	}
 
 	mappings = kcalloc(args->num_bufs, sizeof(*mappings), GFP_KERNEL);
+	{
+		typeof((*mappings)) __uncontained_tmp30;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!mappings) {
 		SUBMIT_ERR(context, "failed to allocate memory for mapping info");
 		err = -ENOMEM;

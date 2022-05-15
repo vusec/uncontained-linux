@@ -63,6 +63,11 @@
 
 #include <asm/xen/hypervisor.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * The minimal size of segment supported by the block framework is PAGE_SIZE.
  * When Linux is using a different page size than Xen, it may not be possible
@@ -444,6 +449,10 @@ static int xlbd_reserve_minors(unsigned int minor, unsigned int nr)
 
 		bitmap = kcalloc(BITS_TO_LONGS(end), sizeof(*bitmap),
 				 GFP_KERNEL);
+		{
+			typeof((*bitmap)) __uncontained_tmp5;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+		}
 		if (bitmap == NULL)
 			return -ENOMEM;
 

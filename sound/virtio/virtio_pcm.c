@@ -6,6 +6,11 @@
 #include <linux/moduleparam.h>
 #include <linux/virtio_config.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "virtio_card.h"
 
 static u32 pcm_buffer_ms = 160;
@@ -338,6 +343,10 @@ int virtsnd_pcm_parse_cfg(struct virtio_snd *snd)
 		return -ENOMEM;
 
 	info = kcalloc(snd->nsubstreams, sizeof(*info), GFP_KERNEL);
+	{
+		typeof((*info)) __uncontained_tmp173;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp173;
+	}
 	if (!info)
 		return -ENOMEM;
 

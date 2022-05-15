@@ -11463,9 +11463,17 @@ int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
 	int i;
 
 	tg->cfs_rq = kcalloc(nr_cpu_ids, sizeof(cfs_rq), GFP_KERNEL);
+	{
+		typeof((cfs_rq)) __uncontained_tmp162;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp162;
+	}
 	if (!tg->cfs_rq)
 		goto err;
 	tg->se = kcalloc(nr_cpu_ids, sizeof(se), GFP_KERNEL);
+	{
+		typeof((se)) __uncontained_tmp163;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp163;
+	}
 	if (!tg->se)
 		goto err;
 

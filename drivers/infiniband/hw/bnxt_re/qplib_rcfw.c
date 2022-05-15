@@ -44,6 +44,11 @@
 #include <linux/prefetch.h>
 #include <linux/delay.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "roce_hsi.h"
 #include "qplib_res.h"
 #include "qplib_rcfw.h"
@@ -609,6 +614,10 @@ int bnxt_qplib_alloc_rcfw_channel(struct bnxt_qplib_res *res,
 
 	rcfw->crsqe_tbl = kcalloc(cmdq->hwq.max_elements,
 				  sizeof(*rcfw->crsqe_tbl), GFP_KERNEL);
+	{
+		typeof((*rcfw->crsqe_tbl)) __uncontained_tmp39;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!rcfw->crsqe_tbl)
 		goto fail;
 
@@ -620,6 +629,10 @@ int bnxt_qplib_alloc_rcfw_channel(struct bnxt_qplib_res *res,
 	rcfw->qp_tbl_size = qp_tbl_sz + 1;
 	rcfw->qp_tbl = kcalloc(rcfw->qp_tbl_size, sizeof(struct bnxt_qplib_qp_node),
 			       GFP_KERNEL);
+	{
+		struct bnxt_qplib_qp_node __uncontained_tmp38;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!rcfw->qp_tbl)
 		goto fail;
 

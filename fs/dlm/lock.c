@@ -60,6 +60,11 @@
 #include <linux/slab.h>
 #include "dlm_internal.h"
 #include <linux/dlm_device.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "memory.h"
 #include "midcomms.h"
 #include "requestqueue.h"
@@ -1433,6 +1438,10 @@ void dlm_scan_waiters(struct dlm_ls *ls)
 		if (!num_nodes) {
 			num_nodes = ls->ls_num_nodes;
 			warned = kcalloc(num_nodes, sizeof(int), GFP_KERNEL);
+			{
+				int __uncontained_tmp131;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp131;
+			}
 		}
 		if (!warned)
 			continue;

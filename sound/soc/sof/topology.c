@@ -16,6 +16,11 @@
 #include <sound/tlv.h>
 #include <sound/pcm_params.h>
 #include <uapi/sound/sof/tokens.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "sof-priv.h"
 #include "sof-audio.h"
 #include "ops.h"
@@ -354,6 +359,10 @@ static int set_up_volume_table(struct snd_sof_control *scontrol,
 
 	/* init the volume table */
 	scontrol->volume_table = kcalloc(size, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp147;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp147;
+	}
 	if (!scontrol->volume_table)
 		return -ENOMEM;
 
@@ -2115,6 +2124,10 @@ static int sof_process_load(struct snd_soc_component *scomp, int index,
 		wdata = kcalloc(widget->num_kcontrols,
 				sizeof(*wdata),
 				GFP_KERNEL);
+		{
+			typeof((*wdata)) __uncontained_tmp148;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+		}
 
 		if (!wdata)
 			return -ENOMEM;
@@ -3301,6 +3314,10 @@ static int sof_link_load(struct snd_soc_component *scomp, int index,
 
 	/* Reserve memory for all hw configs, eventually freed by widget */
 	config = kcalloc(num_conf, sizeof(*config), GFP_KERNEL);
+	{
+		typeof((*config)) __uncontained_tmp149;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp149;
+	}
 	if (!config)
 		return -ENOMEM;
 

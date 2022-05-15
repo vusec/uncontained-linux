@@ -64,6 +64,11 @@ MODULE_DESCRIPTION("Adaptec I2O RAID Driver");
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_tcq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dpt/dptsig.h"
 #include "dpti.h"
 
@@ -1703,6 +1708,10 @@ static int adpt_i2o_passthru(adpt_hba* pHba, u32 __user *arg)
 	}
 
 	sg_list = kcalloc(pHba->sg_tablesize, sizeof(*sg_list), GFP_KERNEL);
+	{
+		typeof((*sg_list)) __uncontained_tmp109;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp109;
+	}
 	if (!sg_list) {
 		rcode = -ENOMEM;
 		goto free;

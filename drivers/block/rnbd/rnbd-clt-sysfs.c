@@ -21,6 +21,11 @@
 #include <rdma/ib.h>
 #include <rdma/rdma_cm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rnbd-clt.h"
 
 static struct device *rnbd_dev;
@@ -582,6 +587,10 @@ static ssize_t rnbd_clt_map_device_store(struct kobject *kobj,
 	opt.access_mode = &access_mode;
 	opt.nr_poll_queues = &nr_poll_queues;
 	addrs = kcalloc(ARRAY_SIZE(paths) * 2, sizeof(*addrs), GFP_KERNEL);
+	{
+		typeof((*addrs)) __uncontained_tmp8;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp8;
+	}
 	if (!addrs)
 		return -ENOMEM;
 

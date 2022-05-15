@@ -16,6 +16,11 @@
 #include <linux/of_address.h>
 #include <linux/syscore_ops.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk.h"
 
 static LIST_HEAD(clock_reg_cache_list);
@@ -44,6 +49,10 @@ struct samsung_clk_reg_dump *samsung_clk_alloc_reg_dump(
 	unsigned int i;
 
 	rd = kcalloc(nr_rdump, sizeof(*rd), GFP_KERNEL);
+	{
+		typeof((*rd)) __uncontained_tmp20;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!rd)
 		return NULL;
 

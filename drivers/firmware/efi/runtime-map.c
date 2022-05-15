@@ -13,6 +13,11 @@
 
 #include <asm/setup.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct efi_runtime_map_entry {
 	efi_memory_desc_t md;
 	struct kobject kobj;   /* kobject for each entry */
@@ -167,6 +172,10 @@ int __init efi_runtime_map_init(struct kobject *efi_kobj)
 		return 0;
 
 	map_entries = kcalloc(efi.memmap.nr_map, sizeof(entry), GFP_KERNEL);
+	{
+		typeof((entry)) __uncontained_tmp23;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!map_entries) {
 		ret = -ENOMEM;
 		goto out;

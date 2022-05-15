@@ -52,6 +52,11 @@
 #include <linux/inetdevice.h>
 #include <rdma/ib_cache.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1709,6 +1714,10 @@ static int ipoib_dev_init_default(struct net_device *dev)
 	priv->rx_ring =	kcalloc(ipoib_recvq_size,
 				       sizeof(*priv->rx_ring),
 				       GFP_KERNEL);
+	{
+		typeof((*priv->rx_ring)) __uncontained_tmp46;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!priv->rx_ring)
 		goto out;
 

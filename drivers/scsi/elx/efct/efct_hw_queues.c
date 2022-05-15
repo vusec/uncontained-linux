@@ -101,6 +101,10 @@ efct_hw_map_wq_cpu(struct efct_hw *hw)
 	/* Init cpu_map array */
 	hw->wq_cpu_array = kcalloc(num_possible_cpus(), sizeof(void *),
 				   GFP_KERNEL);
+	{
+		void *__uncontained_tmp133;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+	}
 	if (!hw->wq_cpu_array)
 		return -ENOMEM;
 

@@ -29,6 +29,11 @@
 
 #include <asm/io.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * Multiblock erase if number of blocks to erase is 2 or more.
  * Maximum number of blocks for simultaneous erase is 64.
@@ -3718,6 +3723,10 @@ static int onenand_probe(struct mtd_info *mtd)
 			kcalloc(this->dies << 1,
 				sizeof(struct mtd_erase_region_info),
 				GFP_KERNEL);
+		{
+			struct mtd_erase_region_info __uncontained_tmp90;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp90;
+		}
 		if (!mtd->eraseregions)
 			return -ENOMEM;
 	}

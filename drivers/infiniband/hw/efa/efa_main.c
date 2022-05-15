@@ -10,6 +10,11 @@
 
 #include <rdma/ib_user_verbs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "efa.h"
 
 #define PCI_DEV_ID_EFA0_VF 0xefa0
@@ -320,6 +325,10 @@ static int efa_create_eqs(struct efa_dev *dev)
 	neqs = min_t(unsigned int, neqs, num_online_cpus());
 	dev->neqs = neqs;
 	dev->eqs = kcalloc(neqs, sizeof(*dev->eqs), GFP_KERNEL);
+	{
+		typeof((*dev->eqs)) __uncontained_tmp34;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!dev->eqs)
 		return -ENOMEM;
 

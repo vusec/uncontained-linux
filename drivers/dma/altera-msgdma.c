@@ -21,6 +21,11 @@
 #include <linux/slab.h>
 #include <linux/of_dma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dmaengine.h"
 
 #define MSGDMA_MAX_TRANS_LEN		U32_MAX
@@ -657,6 +662,10 @@ static int msgdma_alloc_chan_resources(struct dma_chan *dchan)
 	int i;
 
 	mdev->sw_desq = kcalloc(MSGDMA_DESC_NUM, sizeof(*desc), GFP_NOWAIT);
+	{
+		typeof((*desc)) __uncontained_tmp34;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!mdev->sw_desq)
 		return -ENOMEM;
 

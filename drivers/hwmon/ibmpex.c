@@ -15,6 +15,11 @@
 #include <linux/slab.h>
 #include <linux/err.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define REFRESH_INTERVAL	(2 * HZ)
 #define DRVNAME			"ibmpex"
 
@@ -374,6 +379,10 @@ static int ibmpex_find_sensors(struct ibmpex_bmc_data *data)
 
 	data->sensors = kcalloc(data->num_sensors, sizeof(*data->sensors),
 				GFP_KERNEL);
+	{
+		typeof((*data->sensors)) __uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!data->sensors)
 		return -ENOMEM;
 

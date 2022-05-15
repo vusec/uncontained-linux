@@ -288,6 +288,10 @@ int cpupri_init(struct cpupri *cp)
 	}
 
 	cp->cpu_to_pri = kcalloc(nr_cpu_ids, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp117;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!cp->cpu_to_pri)
 		goto cleanup;
 

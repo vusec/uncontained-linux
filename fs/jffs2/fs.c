@@ -25,6 +25,11 @@
 #include <linux/vmalloc.h>
 #include <linux/vfs.h>
 #include <linux/crc32.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "nodelist.h"
 
 static int jffs2_flash_setup(struct jffs2_sb_info *c);
@@ -563,6 +568,10 @@ int jffs2_do_fill_super(struct super_block *sb, struct fs_context *fc)
 
 	c->inocache_hashsize = calculate_inocache_hashsize(c->flash_size);
 	c->inocache_list = kcalloc(c->inocache_hashsize, sizeof(struct jffs2_inode_cache *), GFP_KERNEL);
+	{
+		struct jffs2_inode_cache *__uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!c->inocache_list) {
 		ret = -ENOMEM;
 		goto out_wbuf;

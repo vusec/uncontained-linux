@@ -1536,6 +1536,10 @@ int mwifiex_scan_networks(struct mwifiex_private *priv,
 	scan_chan_list = kcalloc(MWIFIEX_USER_SCAN_CHAN_MAX,
 				 sizeof(struct mwifiex_chan_scan_param_set),
 				 GFP_KERNEL);
+	{
+		struct mwifiex_chan_scan_param_set __uncontained_tmp100;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (!scan_chan_list) {
 		kfree(scan_cfg_out);
 		ret = -ENOMEM;

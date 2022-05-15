@@ -3,6 +3,11 @@
 
 #include <asm/cpu_device_id.h>
 #include <asm/intel-family.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "uncore.h"
 #include "uncore_discovery.h"
 
@@ -969,6 +974,10 @@ static int __init uncore_type_init(struct intel_uncore_type *type, bool setid)
 	int i, j;
 
 	pmus = kcalloc(type->num_boxes, sizeof(*pmus), GFP_KERNEL);
+	{
+		typeof((*pmus)) __uncontained_tmp7;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!pmus)
 		return -ENOMEM;
 

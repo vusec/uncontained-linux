@@ -12,6 +12,11 @@
 #include <linux/pci.h>
 #include <linux/pci-p2pdma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "nvmet.h"
 
 static const struct config_item_type nvmet_host_type;
@@ -1601,6 +1606,10 @@ static struct config_group *nvmet_ports_make(struct config_group *group,
 
 	port->ana_state = kcalloc(NVMET_MAX_ANAGRPS + 1,
 			sizeof(*port->ana_state), GFP_KERNEL);
+	{
+		typeof((*port->ana_state)) __uncontained_tmp93;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!port->ana_state) {
 		kfree(port);
 		return ERR_PTR(-ENOMEM);

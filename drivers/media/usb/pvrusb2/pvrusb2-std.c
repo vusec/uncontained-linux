@@ -9,6 +9,11 @@
 #include <asm/string.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct std_name {
 	const char *name;
 	v4l2_std_id id;
@@ -353,6 +358,10 @@ struct v4l2_standard *pvr2_std_create_enum(unsigned int *countptr,
 
 	stddefs = kcalloc(std_cnt, sizeof(struct v4l2_standard),
 			  GFP_KERNEL);
+	{
+		struct v4l2_standard __uncontained_tmp60;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!stddefs)
 		return NULL;
 

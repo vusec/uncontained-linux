@@ -14,6 +14,11 @@
 #include <linux/rculist.h>
 #include <linux/random.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rtrs-clt.h"
 #include "rtrs-log.h"
 
@@ -1368,6 +1373,10 @@ static int alloc_path_reqs(struct rtrs_clt_path *clt_path)
 	clt_path->reqs = kcalloc(clt_path->queue_depth,
 				 sizeof(*clt_path->reqs),
 				 GFP_KERNEL);
+	{
+		typeof((*clt_path->reqs)) __uncontained_tmp58;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!clt_path->reqs)
 		return -ENOMEM;
 
@@ -1381,6 +1390,10 @@ static int alloc_path_reqs(struct rtrs_clt_path *clt_path)
 			goto out;
 
 		req->sge = kcalloc(2, sizeof(*req->sge), GFP_KERNEL);
+		{
+			typeof((*req->sge)) __uncontained_tmp59;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp59;
+		}
 		if (!req->sge)
 			goto out;
 
@@ -1413,6 +1426,10 @@ static int alloc_permits(struct rtrs_clt_sess *clt)
 
 	clt->permits_map = kcalloc(BITS_TO_LONGS(clt->queue_depth),
 				   sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp57;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!clt->permits_map) {
 		err = -ENOMEM;
 		goto out_err;
@@ -1531,6 +1548,10 @@ static struct rtrs_clt_path *alloc_path(struct rtrs_clt_sess *clt,
 	total_con = con_num + nr_poll_queues + 1;
 	clt_path->s.con = kcalloc(total_con, sizeof(*clt_path->s.con),
 				  GFP_KERNEL);
+	{
+		typeof((*clt_path->s.con)) __uncontained_tmp60;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!clt_path->s.con)
 		goto err_free_path;
 
@@ -1858,6 +1879,10 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
 			clt_path->rbufs = kcalloc(queue_depth,
 						  sizeof(*clt_path->rbufs),
 						  GFP_KERNEL);
+			{
+				typeof((*clt_path->rbufs)) __uncontained_tmp61;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+			}
 			if (!clt_path->rbufs)
 				return -ENOMEM;
 		}

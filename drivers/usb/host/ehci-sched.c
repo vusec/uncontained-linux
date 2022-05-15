@@ -120,6 +120,10 @@ static struct ehci_tt *find_tt(struct usb_device *udev)
 			tt_index = kcalloc(utt->hub->maxchild,
 					   sizeof(*tt_index),
 					   GFP_ATOMIC);
+			{
+				typeof((*tt_index)) __uncontained_tmp173;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp173;
+			}
 			if (!tt_index)
 				return ERR_PTR(-ENOMEM);
 			utt->hcpriv = tt_index;

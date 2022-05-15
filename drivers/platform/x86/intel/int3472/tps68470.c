@@ -10,6 +10,11 @@
 #include <linux/regmap.h>
 #include <linux/string.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "common.h"
 #include "tps68470.h"
 
@@ -132,6 +137,10 @@ static int skl_int3472_tps68470_probe(struct i2c_client *client)
 			return dev_err_probe(&client->dev, -ENODEV, "No board-data found for this model\n");
 
 		cells = kcalloc(TPS68470_WIN_MFD_CELL_COUNT, sizeof(*cells), GFP_KERNEL);
+		{
+			typeof((*cells)) __uncontained_tmp140;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+		}
 		if (!cells)
 			return -ENOMEM;
 

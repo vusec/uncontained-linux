@@ -66,6 +66,11 @@
 
 #include <asm/sync_bitops.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* External tools reserve first few grant table entries. */
 #define NR_RESERVED_ENTRIES 8
 #define GNTTAB_LIST_END 0xffffffff
@@ -750,6 +755,10 @@ int gnttab_setup_auto_xlat_frames(phys_addr_t addr)
 		return -ENOMEM;
 	}
 	pfn = kcalloc(max_nr_gframes, sizeof(pfn[0]), GFP_KERNEL);
+	{
+		typeof((pfn[0])) __uncontained_tmp130;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp130;
+	}
 	if (!pfn) {
 		xen_unmap(vaddr);
 		return -ENOMEM;

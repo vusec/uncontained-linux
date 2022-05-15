@@ -17,6 +17,11 @@
 #include <linux/sync_file.h>
 #include <uapi/linux/sync_file.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static const struct file_operations sync_file_fops;
 
 static struct sync_file *sync_file_alloc(void)
@@ -226,6 +231,10 @@ static struct sync_file *sync_file_merge(const char *name, struct sync_file *a,
 	num_fences = a_num_fences + b_num_fences;
 
 	fences = kcalloc(num_fences, sizeof(*fences), GFP_KERNEL);
+	{
+		typeof((*fences)) __uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!fences)
 		goto err;
 

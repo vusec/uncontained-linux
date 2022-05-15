@@ -31,6 +31,11 @@
 
 #include <asm/cacheflush.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "spc.h"
 
 #define SPCLOG "vexpress-spc: "
@@ -404,6 +409,10 @@ static int ve_spc_populate_opps(uint32_t cluster)
 	struct ve_spc_opp *opps;
 
 	opps = kcalloc(MAX_OPPS, sizeof(*opps), GFP_KERNEL);
+	{
+		typeof((*opps)) __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!opps)
 		return -ENOMEM;
 

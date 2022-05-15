@@ -26,6 +26,11 @@
 #include <xen/interface/platform.h>
 #include <asm/xen/hypercall.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int no_hypercall;
 MODULE_PARM_DESC(off, "Inhibit the hypercall.");
 module_param_named(off, no_hypercall, int, 0400);
@@ -63,6 +68,10 @@ static int push_cxx_to_hypervisor(struct acpi_processor *_pr)
 
 	dst_cx_states = kcalloc(_pr->power.count,
 				sizeof(struct xen_processor_cx), GFP_KERNEL);
+	{
+		struct xen_processor_cx __uncontained_tmp123;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (!dst_cx_states)
 		return -ENOMEM;
 
@@ -144,6 +153,10 @@ xen_copy_pss_data(struct acpi_processor *_pr,
 
 	dst_states = kcalloc(_pr->performance->state_count,
 			     sizeof(struct xen_processor_px), GFP_KERNEL);
+	{
+		struct xen_processor_px __uncontained_tmp124;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (!dst_states)
 		return ERR_PTR(-ENOMEM);
 
@@ -414,6 +427,10 @@ static int check_acpi_ids(struct acpi_processor *pr_backup)
 
 	acpi_psd = kcalloc(nr_acpi_bits, sizeof(struct acpi_psd_package),
 			   GFP_KERNEL);
+	{
+		struct acpi_psd_package __uncontained_tmp125;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (!acpi_psd) {
 		bitmap_free(acpi_id_present);
 		bitmap_free(acpi_id_cst_present);

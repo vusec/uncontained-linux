@@ -10,6 +10,11 @@
 #include <linux/pci.h>
 #include <linux/rtnetlink.h>
 #include <linux/power_supply.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "wil6210.h"
 #include "wmi.h"
 #include "txrx.h"
@@ -2488,6 +2493,10 @@ int wil6210_debugfs_init(struct wil6210_priv *wil)
 	wil->dbg_data.data_arr = kcalloc(dbg_off_count,
 					 sizeof(struct wil_debugfs_iomem_data),
 					 GFP_KERNEL);
+	{
+		struct wil_debugfs_iomem_data __uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!wil->dbg_data.data_arr) {
 		debugfs_remove_recursive(dbg);
 		wil->debug = NULL;

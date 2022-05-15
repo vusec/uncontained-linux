@@ -2080,6 +2080,10 @@ ice_add_rss_cfg_sync(struct ice_hw *hw, u16 vsi_handle, u64 hashed_flds,
 		return -EINVAL;
 
 	segs = kcalloc(segs_cnt, sizeof(*segs), GFP_KERNEL);
+	{
+		typeof((*segs)) __uncontained_tmp96;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!segs)
 		return -ENOMEM;
 
@@ -2214,6 +2218,10 @@ ice_rem_rss_cfg_sync(struct ice_hw *hw, u16 vsi_handle, u64 hashed_flds,
 	int status;
 
 	segs = kcalloc(segs_cnt, sizeof(*segs), GFP_KERNEL);
+	{
+		typeof((*segs)) __uncontained_tmp97;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!segs)
 		return -ENOMEM;
 

@@ -19,6 +19,11 @@
 #include <linux/slab.h>
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define GICP_ODMIN_SET			0x40
 #define   GICP_ODMI_INT_NUM_SHIFT	12
 #define GICP_ODMIN_GM_EP_R0		0x110
@@ -168,6 +173,10 @@ static int __init mvebu_odmi_init(struct device_node *node,
 		return -EINVAL;
 
 	odmis = kcalloc(odmis_count, sizeof(struct odmi_data), GFP_KERNEL);
+	{
+		struct odmi_data __uncontained_tmp62;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!odmis)
 		return -ENOMEM;
 

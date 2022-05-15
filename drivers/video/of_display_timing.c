@@ -12,6 +12,11 @@
 #include <video/display_timing.h>
 #include <video/of_display_timing.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * parse_timing_property - parse timing_entry from device_node
  * @np: device_node with the property
@@ -187,6 +192,10 @@ struct display_timings *of_get_display_timings(const struct device_node *np)
 	disp->timings = kcalloc(disp->num_timings,
 				sizeof(struct display_timing *),
 				GFP_KERNEL);
+	{
+		struct display_timing *__uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!disp->timings) {
 		pr_err("%pOF: could not allocate timings array\n", np);
 		goto entryfail;

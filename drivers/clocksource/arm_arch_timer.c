@@ -33,6 +33,11 @@
 
 #include <clocksource/arm_arch_timer.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define CNTTIDR		0x08
 #define CNTTIDR_VIRT(n)	(BIT(1) << ((n) * 4))
 
@@ -1642,6 +1647,10 @@ static int __init arch_timer_mem_acpi_init(int platform_timer_count)
 
 	timers = kcalloc(platform_timer_count, sizeof(*timers),
 			    GFP_KERNEL);
+	{
+		typeof((*timers)) __uncontained_tmp22;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!timers)
 		return -ENOMEM;
 

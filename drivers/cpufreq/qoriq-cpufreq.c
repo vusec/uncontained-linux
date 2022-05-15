@@ -20,6 +20,11 @@
 #include <linux/smp.h>
 #include <linux/platform_device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * struct cpu_data
  * @pclk: the parent clock of cpu
@@ -182,10 +187,18 @@ static int qoriq_cpufreq_cpu_init(struct cpufreq_policy *policy)
 	count = clk_hw_get_num_parents(hwclk);
 
 	data->pclk = kcalloc(count, sizeof(struct clk *), GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp30;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!data->pclk)
 		goto err_nomem2;
 
 	table = kcalloc(count + 1, sizeof(*table), GFP_KERNEL);
+	{
+		typeof((*table)) __uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!table)
 		goto err_pclk;
 

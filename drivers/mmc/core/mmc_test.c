@@ -17,6 +17,11 @@
 #include <linux/seq_file.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "card.h"
 #include "host.h"
@@ -359,6 +364,10 @@ static struct mmc_test_mem *mmc_test_alloc_mem(unsigned long min_sz,
 		return NULL;
 
 	mem->arr = kcalloc(max_segs, sizeof(*mem->arr), GFP_KERNEL);
+	{
+		typeof((*mem->arr)) __uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!mem->arr)
 		goto out_free;
 

@@ -34,6 +34,11 @@
 #include <asm/vdso_datapage.h>
 #include <asm/setup.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* The alignment of the vDSO */
 #define VDSO_ALIGNMENT	(1 << 16)
 
@@ -356,6 +361,10 @@ static struct page ** __init vdso_setup_pages(void *start, void *end)
 	int pages = (end - start) >> PAGE_SHIFT;
 
 	pagelist = kcalloc(pages + 1, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!pagelist)
 		panic("%s: Cannot allocate page list for VDSO", __func__);
 

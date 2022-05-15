@@ -13,6 +13,11 @@
 #include <linux/seq_file.h>
 #include <linux/crc32.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2828,6 +2833,10 @@ int efx_farch_filter_table_probe(struct efx_nic *efx)
 		table->used_bitmap = kcalloc(BITS_TO_LONGS(table->size),
 					     sizeof(unsigned long),
 					     GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp83;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+		}
 		if (!table->used_bitmap)
 			goto fail;
 		table->spec = vzalloc(array_size(sizeof(*table->spec),

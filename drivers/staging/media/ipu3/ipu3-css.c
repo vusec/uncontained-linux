@@ -5,6 +5,11 @@
 #include <linux/iopoll.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ipu3.h"
 #include "ipu3-css.h"
 #include "ipu3-css-fw.h"
@@ -1704,6 +1709,10 @@ int imgu_css_fmt_try(struct imgu_css *css,
 	int i, s, ret;
 
 	q = kcalloc(IPU3_CSS_QUEUES, sizeof(struct imgu_css_queue), GFP_KERNEL);
+	{
+		struct imgu_css_queue __uncontained_tmp136;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp136;
+	}
 	if (!q)
 		return -ENOMEM;
 

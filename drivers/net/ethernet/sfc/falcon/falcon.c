@@ -15,6 +15,11 @@
 #include <linux/slab.h>
 #include <linux/sched/signal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "net_driver.h"
 #include "bitfield.h"
 #include "efx.h"
@@ -930,6 +935,10 @@ static int falcon_mtd_probe(struct ef4_nic *efx)
 
 	/* Allocate space for maximum number of partitions */
 	parts = kcalloc(2, sizeof(*parts), GFP_KERNEL);
+	{
+		typeof((*parts)) __uncontained_tmp81;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!parts)
 		return -ENOMEM;
 	n_parts = 0;

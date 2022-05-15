@@ -39,6 +39,11 @@
 #include <drm/drm_drv.h>
 #include <drm/drm_print.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "drm_legacy.h"
 
 #define DEBUG_SCATTER 0
@@ -105,12 +110,20 @@ int drm_legacy_sg_alloc(struct drm_device *dev, void *data,
 
 	entry->pages = pages;
 	entry->pagelist = kcalloc(pages, sizeof(*entry->pagelist), GFP_KERNEL);
+	{
+		typeof((*entry->pagelist)) __uncontained_tmp26;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!entry->pagelist) {
 		kfree(entry);
 		return -ENOMEM;
 	}
 
 	entry->busaddr = kcalloc(pages, sizeof(*entry->busaddr), GFP_KERNEL);
+	{
+		typeof((*entry->busaddr)) __uncontained_tmp27;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!entry->busaddr) {
 		kfree(entry->pagelist);
 		kfree(entry);

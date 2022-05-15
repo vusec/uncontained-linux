@@ -94,6 +94,11 @@ struct clk_core {
 #define CREATE_TRACE_POINTS
 #include <trace/events/clk.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct clk {
 	struct clk_core	*core;
 	struct device *dev;
@@ -3813,6 +3818,10 @@ static int clk_core_populate_parent_map(struct clk_core *core,
 	 * having a cache of names/clk_hw pointers to clk_core pointers.
 	 */
 	parents = kcalloc(num_parents, sizeof(*parents), GFP_KERNEL);
+	{
+		typeof((*parents)) __uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	core->parents = parents;
 	if (!parents)
 		return -ENOMEM;

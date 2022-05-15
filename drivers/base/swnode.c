@@ -11,6 +11,11 @@
 #include <linux/property.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "base.h"
 
 struct swnode {
@@ -322,6 +327,10 @@ property_entries_dup(const struct property_entry *properties)
 		n++;
 
 	p = kcalloc(n + 1, sizeof(*p), GFP_KERNEL);
+	{
+		typeof((*p)) __uncontained_tmp11;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp11;
+	}
 	if (!p)
 		return ERR_PTR(-ENOMEM);
 

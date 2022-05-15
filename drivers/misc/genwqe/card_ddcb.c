@@ -29,6 +29,11 @@
 #include <linux/interrupt.h>
 #include <linux/crc-itu-t.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "card_base.h"
 #include "card_ddcb.h"
 
@@ -1048,6 +1053,10 @@ static int setup_ddcb_queue(struct genwqe_dev *cd, struct ddcb_queue *queue)
 	}
 	queue->ddcb_req = kcalloc(queue->ddcb_max, sizeof(struct ddcb_requ *),
 				  GFP_KERNEL);
+	{
+		struct ddcb_requ *__uncontained_tmp49;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (!queue->ddcb_req) {
 		rc = -ENOMEM;
 		goto free_ddcbs;
@@ -1056,6 +1065,10 @@ static int setup_ddcb_queue(struct genwqe_dev *cd, struct ddcb_queue *queue)
 	queue->ddcb_waitqs = kcalloc(queue->ddcb_max,
 				     sizeof(wait_queue_head_t),
 				     GFP_KERNEL);
+	{
+		typeof((wait_queue_head_t)) __uncontained_tmp50;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!queue->ddcb_waitqs) {
 		rc = -ENOMEM;
 		goto free_requs;

@@ -14,6 +14,11 @@
 #include <asm/smp.h>
 #include <linux/string.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Nest IMC data structures and variables */
 
 /*
@@ -254,6 +259,10 @@ static int update_events_in_group(struct device_node *node, struct imc_pmu *pmu)
 
 	/* Allocate memory for the events */
 	pmu->events = kcalloc(ct, sizeof(struct imc_events), GFP_KERNEL);
+	{
+		struct imc_events __uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!pmu->events)
 		return -ENOMEM;
 
@@ -281,6 +290,10 @@ static int update_events_in_group(struct device_node *node, struct imc_pmu *pmu)
 	 * event_unit).
 	 */
 	attrs = kcalloc(((ct * 3) + 1), sizeof(struct attribute *), GFP_KERNEL);
+	{
+		struct attribute *__uncontained_tmp3;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!attrs) {
 		kfree(attr_group);
 		imc_free_events(pmu->events, ct);
@@ -1515,6 +1528,10 @@ static int init_nest_pmu_ref(void)
 
 	nest_imc_refc = kcalloc(num_possible_nodes(), sizeof(*nest_imc_refc),
 								GFP_KERNEL);
+	{
+		typeof((*nest_imc_refc)) __uncontained_tmp8;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp8;
+	}
 
 	if (!nest_imc_refc)
 		return -ENOMEM;
@@ -1688,6 +1705,10 @@ static int imc_mem_init(struct imc_pmu *pmu_ptr, struct device_node *parent,
 			per_nest_pmu_arr = kcalloc(get_max_nest_dev() + 1,
 						sizeof(struct imc_pmu *),
 						GFP_KERNEL);
+			{
+				struct imc_pmu *__uncontained_tmp4;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+			}
 			if (!per_nest_pmu_arr)
 				goto err;
 		}
@@ -1702,12 +1723,20 @@ static int imc_mem_init(struct imc_pmu *pmu_ptr, struct device_node *parent,
 		nr_cores = DIV_ROUND_UP(num_possible_cpus(), threads_per_core);
 		pmu_ptr->mem_info = kcalloc(nr_cores, sizeof(struct imc_mem_info),
 								GFP_KERNEL);
+		{
+			struct imc_mem_info __uncontained_tmp5;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+		}
 
 		if (!pmu_ptr->mem_info)
 			goto err;
 
 		core_imc_refc = kcalloc(nr_cores, sizeof(struct imc_pmu_ref),
 								GFP_KERNEL);
+		{
+			struct imc_pmu_ref __uncontained_tmp6;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp6;
+		}
 
 		if (!core_imc_refc) {
 			kfree(pmu_ptr->mem_info);
@@ -1742,6 +1771,10 @@ static int imc_mem_init(struct imc_pmu *pmu_ptr, struct device_node *parent,
 		nr_cores = DIV_ROUND_UP(num_possible_cpus(), threads_per_core);
 		trace_imc_refc = kcalloc(nr_cores, sizeof(struct imc_pmu_ref),
 								GFP_KERNEL);
+		{
+			struct imc_pmu_ref __uncontained_tmp7;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp7;
+		}
 		if (!trace_imc_refc)
 			return -ENOMEM;
 

@@ -98,6 +98,11 @@
 #include <linux/of.h>
 #include <linux/of_net.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gianfar.h"
 
 #define TX_TIMEOUT      (5*HZ)
@@ -1398,6 +1403,10 @@ static int gfar_alloc_skb_resources(struct net_device *ndev)
 		rx_queue->rx_buff = kcalloc(rx_queue->rx_ring_size,
 					    sizeof(*rx_queue->rx_buff),
 					    GFP_KERNEL);
+		{
+			typeof((*rx_queue->rx_buff)) __uncontained_tmp94;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+		}
 		if (!rx_queue->rx_buff)
 			goto cleanup;
 	}

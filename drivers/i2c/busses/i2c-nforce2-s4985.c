@@ -25,6 +25,11 @@
 #include <linux/i2c.h>
 #include <linux/mutex.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 extern struct i2c_adapter *nforce2_smbus;
 
 static struct i2c_adapter *s4985_adapter;
@@ -156,11 +161,19 @@ static int __init nforce2_s4985_init(void)
 	printk(KERN_INFO "Enabling SMBus multiplexing for Tyan S4985\n");
 	/* Define the 5 virtual adapters and algorithms structures */
 	s4985_adapter = kcalloc(5, sizeof(struct i2c_adapter), GFP_KERNEL);
+	{
+		struct i2c_adapter __uncontained_tmp46;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!s4985_adapter) {
 		error = -ENOMEM;
 		goto ERROR1;
 	}
 	s4985_algo = kcalloc(5, sizeof(struct i2c_algorithm), GFP_KERNEL);
+	{
+		struct i2c_algorithm __uncontained_tmp47;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!s4985_algo) {
 		error = -ENOMEM;
 		goto ERROR2;

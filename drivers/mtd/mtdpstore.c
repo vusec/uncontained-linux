@@ -9,6 +9,11 @@
 #include <linux/bitops.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static struct mtdpstore_context {
 	int index;
 	struct pstore_blk_config info;
@@ -418,10 +423,22 @@ static void mtdpstore_notify_add(struct mtd_info *mtd)
 
 	longcnt = BITS_TO_LONGS(div_u64(mtd->size, info->kmsg_size));
 	cxt->rmmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp76;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp76;
+	}
 	cxt->usedmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp77;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp77;
+	}
 
 	longcnt = BITS_TO_LONGS(div_u64(mtd->size, mtd->erasesize));
 	cxt->badmap = kcalloc(longcnt, sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp78;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+	}
 
 	/* just support dmesg right now */
 	cxt->dev.flags = PSTORE_FLAGS_DMESG;

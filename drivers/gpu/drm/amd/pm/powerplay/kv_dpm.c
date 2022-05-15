@@ -31,6 +31,11 @@
 #include "gfx_v7_0.h"
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "smu/smu_7_0_0_d.h"
 #include "smu/smu_7_0_0_sh_mask.h"
 
@@ -2733,6 +2738,10 @@ static int kv_parse_power_table(struct amdgpu_device *adev)
 	adev->pm.dpm.ps = kcalloc(state_array->ucNumEntries,
 				  sizeof(struct amdgpu_ps),
 				  GFP_KERNEL);
+	{
+		struct amdgpu_ps __uncontained_tmp15;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!adev->pm.dpm.ps)
 		return -ENOMEM;
 	power_state_offset = (u8 *)state_array->states;

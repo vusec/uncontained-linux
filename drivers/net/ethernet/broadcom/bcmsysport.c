@@ -25,6 +25,11 @@
 #include <net/ip.h>
 #include <net/ipv6.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "bcmsysport.h"
 
 /* I/O accessors register helpers */
@@ -1509,6 +1514,10 @@ static int bcm_sysport_init_tx_ring(struct bcm_sysport_priv *priv,
 	size = 256;
 
 	ring->cbs = kcalloc(size, sizeof(struct bcm_sysport_cb), GFP_KERNEL);
+	{
+		struct bcm_sysport_cb __uncontained_tmp70;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!ring->cbs) {
 		netif_err(priv, hw, priv->netdev, "CB allocation failed\n");
 		return -ENOMEM;
@@ -1689,6 +1698,10 @@ static int bcm_sysport_init_rx_ring(struct bcm_sysport_priv *priv)
 	priv->rx_read_ptr = 0;
 	priv->rx_cbs = kcalloc(priv->num_rx_bds, sizeof(struct bcm_sysport_cb),
 				GFP_KERNEL);
+	{
+		struct bcm_sysport_cb __uncontained_tmp71;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (!priv->rx_cbs) {
 		netif_err(priv, hw, priv->netdev, "CB allocation failed\n");
 		return -ENOMEM;

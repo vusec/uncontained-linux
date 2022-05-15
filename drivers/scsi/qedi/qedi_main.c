@@ -24,6 +24,11 @@
 #include <scsi/scsi_host.h>
 #include <scsi/scsi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -415,6 +420,10 @@ static int qedi_alloc_fp(struct qedi_ctx *qedi)
 
 	qedi->fp_array = kcalloc(MIN_NUM_CPUS_MSIX(qedi),
 				 sizeof(struct qedi_fastpath), GFP_KERNEL);
+	{
+		struct qedi_fastpath __uncontained_tmp110;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (!qedi->fp_array) {
 		QEDI_ERR(&qedi->dbg_ctx,
 			 "fastpath fp array allocation failed.\n");
@@ -423,6 +432,10 @@ static int qedi_alloc_fp(struct qedi_ctx *qedi)
 
 	qedi->sb_array = kcalloc(MIN_NUM_CPUS_MSIX(qedi),
 				 sizeof(struct qed_sb_info), GFP_KERNEL);
+	{
+		struct qed_sb_info __uncontained_tmp111;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (!qedi->sb_array) {
 		QEDI_ERR(&qedi->dbg_ctx,
 			 "fastpath sb array allocation failed.\n");
@@ -541,6 +554,10 @@ static int qedi_init_id_tbl(struct qedi_portid_tbl *id_tbl, u16 size,
 	id_tbl->next = next;
 	spin_lock_init(&id_tbl->lock);
 	id_tbl->table = kcalloc(BITS_TO_LONGS(size), sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp112;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (!id_tbl->table)
 		return -ENOMEM;
 
@@ -1920,6 +1937,10 @@ static int qedi_alloc_itt(struct qedi_ctx *qedi)
 {
 	qedi->itt_map = kcalloc(MAX_ISCSI_TASK_ENTRIES,
 				sizeof(struct qedi_itt_map), GFP_KERNEL);
+	{
+		struct qedi_itt_map __uncontained_tmp113;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!qedi->itt_map) {
 		QEDI_ERR(&qedi->dbg_ctx,
 			 "Unable to allocate itt map array memory\n");

@@ -18,6 +18,11 @@
 #include <linux/mvebu-pmsu.h>
 #include <asm/smp_plat.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SYS_CTRL_CLK_DIVIDER_CTRL_OFFSET               0x0
 #define   SYS_CTRL_CLK_DIVIDER_CTRL_RESET_ALL          0xff
 #define   SYS_CTRL_CLK_DIVIDER_CTRL_RESET_SHIFT        8
@@ -185,10 +190,18 @@ static void __init of_cpu_clk_setup(struct device_node *node)
 		ncpus++;
 
 	cpuclk = kcalloc(ncpus, sizeof(*cpuclk), GFP_KERNEL);
+	{
+		typeof((*cpuclk)) __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (WARN_ON(!cpuclk))
 		goto cpuclk_out;
 
 	clks = kcalloc(ncpus, sizeof(*clks), GFP_KERNEL);
+	{
+		typeof((*clks)) __uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (WARN_ON(!clks))
 		goto clks_out;
 

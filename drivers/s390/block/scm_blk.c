@@ -19,6 +19,11 @@
 #include <linux/list.h>
 #include <asm/eadm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -92,6 +97,10 @@ static int __scm_alloc_rq(void)
 
 	scmrq->request = kcalloc(nr_requests_per_io, sizeof(scmrq->request[0]),
 				 GFP_KERNEL);
+	{
+		typeof((scmrq->request[0])) __uncontained_tmp66;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!scmrq->request)
 		goto free;
 

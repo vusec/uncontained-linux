@@ -9,6 +9,11 @@
 #include <linux/mutex.h>
 #include <linux/list.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mdio-boardinfo.h"
 
 static LIST_HEAD(mdio_board_list);
@@ -65,6 +70,10 @@ int mdiobus_register_board_info(const struct mdio_board_info *info,
 	unsigned int i;
 
 	be = kcalloc(n, sizeof(*be), GFP_KERNEL);
+	{
+		typeof((*be)) __uncontained_tmp79;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!be)
 		return -ENOMEM;
 

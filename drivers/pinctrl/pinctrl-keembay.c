@@ -15,6 +15,11 @@
 
 #include <linux/platform_device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "pinmux.h"
 
@@ -1607,6 +1612,10 @@ static int keembay_build_functions(struct keembay_pinctrl *kpc)
 	 */
 	kpc->nfuncs = 0;
 	keembay_funcs = kcalloc(kpc->npins * 8, sizeof(*keembay_funcs), GFP_KERNEL);
+	{
+		typeof((*keembay_funcs)) __uncontained_tmp107;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp107;
+	}
 	if (!keembay_funcs)
 		return -ENOMEM;
 

@@ -47,6 +47,11 @@
 #include <linux/acpi.h>
 #include <linux/ctype.h>
 #include <linux/time64.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ipmi_dmi.h"
 
 #define DEVICE_NAME "ipmi_ssif"
@@ -1968,6 +1973,10 @@ static unsigned short *ssif_address_list(void)
 
 	address_list = kcalloc(count + 1, sizeof(*address_list),
 			       GFP_KERNEL);
+	{
+		typeof((*address_list)) __uncontained_tmp12;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!address_list)
 		return NULL;
 

@@ -9,6 +9,11 @@
 #include <linux/acpi.h>
 #include <acpi/acpi_lpat.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * acpi_lpat_raw_to_temp(): Return temperature from raw value through
  * LPAT conversion table
@@ -105,6 +110,10 @@ struct acpi_lpat_conversion_table *acpi_lpat_get_conversion_table(acpi_handle
 		goto out;
 
 	lpat = kcalloc(obj_p->package.count, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp12;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!lpat)
 		goto out;
 

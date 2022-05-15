@@ -43,6 +43,11 @@
 #endif
 #include <rdma/rdma_vt.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -137,6 +142,10 @@ int qib_create_ctxts(struct qib_devdata *dd)
 	 * cleanup iterates across all possible ctxts.
 	 */
 	dd->rcd = kcalloc(dd->ctxtcnt, sizeof(*dd->rcd), GFP_KERNEL);
+	{
+		typeof((*dd->rcd)) __uncontained_tmp41;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!dd->rcd)
 		return -ENOMEM;
 
@@ -1121,6 +1130,10 @@ struct qib_devdata *qib_alloc_devdata(struct pci_dev *pdev, size_t extra)
 
 		qib_cpulist = kcalloc(BITS_TO_LONGS(count), sizeof(long),
 				      GFP_KERNEL);
+		{
+			long __uncontained_tmp40;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp40;
+		}
 		if (qib_cpulist)
 			qib_cpulist_count = count;
 	}

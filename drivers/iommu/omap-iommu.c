@@ -29,6 +29,11 @@
 
 #include <linux/platform_data/iommu-omap.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "omap-iopgtable.h"
 #include "omap-iommu.h"
 
@@ -1418,6 +1423,10 @@ static int omap_iommu_attach_init(struct device *dev,
 
 	odomain->iommus = kcalloc(odomain->num_iommus, sizeof(*iommu),
 				  GFP_ATOMIC);
+	{
+		typeof((*iommu)) __uncontained_tmp55;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!odomain->iommus)
 		return -ENOMEM;
 
@@ -1664,6 +1673,10 @@ static struct iommu_device *omap_iommu_probe_device(struct device *dev)
 		return 0;
 
 	arch_data = kcalloc(num_iommus + 1, sizeof(*arch_data), GFP_KERNEL);
+	{
+		typeof((*arch_data)) __uncontained_tmp56;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!arch_data)
 		return ERR_PTR(-ENOMEM);
 

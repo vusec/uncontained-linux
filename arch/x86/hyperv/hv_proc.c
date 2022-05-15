@@ -14,6 +14,11 @@
 
 #include <asm/trace/hyperv.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * See struct hv_deposit_memory. The first u64 is partition ID, the rest
  * are GPAs.
@@ -46,6 +51,10 @@ int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages)
 	pages = page_address(page);
 
 	counts = kcalloc(HV_DEPOSIT_MAX, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp5;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!counts) {
 		free_page((unsigned long)pages);
 		return -ENOMEM;

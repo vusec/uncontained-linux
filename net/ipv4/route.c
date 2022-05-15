@@ -103,6 +103,11 @@
 #include <net/secure_seq.h>
 #include <net/ip_tunnels.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "fib_lookup.h"
 
 #define RT_FL_TOS(oldflp4) \
@@ -313,6 +318,10 @@ static int rt_acct_proc_show(struct seq_file *m, void *v)
 	unsigned int i, j;
 
 	dst = kcalloc(256, sizeof(struct ip_rt_acct), GFP_KERNEL);
+	{
+		struct ip_rt_acct __uncontained_tmp120;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (!dst)
 		return -ENOMEM;
 
@@ -644,6 +653,10 @@ static void update_or_create_fnhe(struct fib_nh_common *nhc, __be32 daddr,
 	hash = rcu_dereference(nhc->nhc_exceptions);
 	if (!hash) {
 		hash = kcalloc(FNHE_HASH_SIZE, sizeof(*hash), GFP_ATOMIC);
+		{
+			typeof((*hash)) __uncontained_tmp121;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+		}
 		if (!hash)
 			goto out_unlock;
 		rcu_assign_pointer(nhc->nhc_exceptions, hash);

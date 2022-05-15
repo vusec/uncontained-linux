@@ -29,6 +29,11 @@
 #include <asm/opal.h>
 #include <linux/timer.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define POWERNV_MAX_PSTATES_ORDER  8
 #define POWERNV_MAX_PSTATES	(1UL << (POWERNV_MAX_PSTATES_ORDER))
 #define PMSR_PSAFE_ENABLE	(1UL << 30)
@@ -1051,11 +1056,19 @@ static int init_chip_info(void)
 	int ret = 0;
 
 	chip = kcalloc(num_possible_cpus(), sizeof(*chip), GFP_KERNEL);
+	{
+		typeof((*chip)) __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!chip)
 		return -ENOMEM;
 
 	/* Allocate a chip cpu mask large enough to fit mask for all chips */
 	chip_cpu_mask = kcalloc(MAX_NR_CHIPS, sizeof(cpumask_t), GFP_KERNEL);
+	{
+		cpumask_t __uncontained_tmp22;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!chip_cpu_mask) {
 		ret = -ENOMEM;
 		goto free_and_return;
@@ -1072,6 +1085,10 @@ static int init_chip_info(void)
 	}
 
 	chips = kcalloc(nr_chips, sizeof(struct chip), GFP_KERNEL);
+	{
+		struct chip __uncontained_tmp23;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!chips) {
 		ret = -ENOMEM;
 		goto out_free_chip_cpu_mask;

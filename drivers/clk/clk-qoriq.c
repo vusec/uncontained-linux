@@ -21,6 +21,11 @@
 #include <linux/of.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define PLL_DIV1	0
 #define PLL_DIV2	1
 #define PLL_DIV3	2
@@ -1315,6 +1320,10 @@ static void __init legacy_pll_init(struct device_node *np, int idx)
 
 	BUILD_BUG_ON(ARRAY_SIZE(pll->div) < 4);
 	subclks = kcalloc(4, sizeof(struct clk *), GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!subclks)
 		return;
 

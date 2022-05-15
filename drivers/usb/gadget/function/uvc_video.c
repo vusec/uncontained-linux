@@ -16,6 +16,11 @@
 
 #include <media/v4l2-dev.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "uvc.h"
 #include "uvc_queue.h"
 #include "uvc_video.h"
@@ -315,6 +320,10 @@ uvc_video_alloc_requests(struct uvc_video *video)
 		 * (video->ep->mult);
 
 	video->ureq = kcalloc(video->uvc_num_requests, sizeof(struct uvc_request), GFP_KERNEL);
+	{
+		struct uvc_request __uncontained_tmp142;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+	}
 	if (video->ureq == NULL)
 		return -ENOMEM;
 

@@ -41,6 +41,11 @@
 #include <linux/debugfs.h>
 #include <trace/events/kmem.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 /*
@@ -5233,6 +5238,10 @@ static ssize_t show_slab_objects(struct kmem_cache *s,
 	int len = 0;
 
 	nodes = kcalloc(nr_node_ids, sizeof(unsigned long), GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp149;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp149;
+	}
 	if (!nodes)
 		return -ENOMEM;
 

@@ -43,6 +43,11 @@
 #include <linux/pci.h>
 #include <rdma/ib_verbs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "usnic_log.h"
 #include "usnic_uiom.h"
 #include "usnic_uiom_interval_tree.h"
@@ -539,6 +544,10 @@ struct device **usnic_uiom_get_dev_list(struct usnic_uiom_pd *pd)
 
 	spin_lock(&pd->lock);
 	devs = kcalloc(pd->dev_cnt + 1, sizeof(*devs), GFP_ATOMIC);
+	{
+		typeof((*devs)) __uncontained_tmp55;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!devs) {
 		devs = ERR_PTR(-ENOMEM);
 		goto out;

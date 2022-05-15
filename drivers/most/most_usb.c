@@ -24,6 +24,11 @@
 #include <linux/uaccess.h>
 #include <linux/most.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define USB_MTU			512
 #define NO_ISOCHRONOUS_URB	0
 #define AV_PACKETS_PER_XACT	2
@@ -997,21 +1002,37 @@ hdm_probe(struct usb_interface *interface, const struct usb_device_id *id)
 	mdev->dev.parent = &interface->dev;
 	mdev->dev.release = release_mdev;
 	mdev->conf = kcalloc(num_endpoints, sizeof(*mdev->conf), GFP_KERNEL);
+	{
+		typeof((*mdev->conf)) __uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!mdev->conf)
 		goto err_free_mdev;
 
 	mdev->cap = kcalloc(num_endpoints, sizeof(*mdev->cap), GFP_KERNEL);
+	{
+		typeof((*mdev->cap)) __uncontained_tmp87;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (!mdev->cap)
 		goto err_free_conf;
 
 	mdev->iface.channel_vector = mdev->cap;
 	mdev->ep_address =
 		kcalloc(num_endpoints, sizeof(*mdev->ep_address), GFP_KERNEL);
+	{
+		typeof((*mdev->ep_address)) __uncontained_tmp88;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (!mdev->ep_address)
 		goto err_free_cap;
 
 	mdev->busy_urbs =
 		kcalloc(num_endpoints, sizeof(*mdev->busy_urbs), GFP_KERNEL);
+	{
+		typeof((*mdev->busy_urbs)) __uncontained_tmp89;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp89;
+	}
 	if (!mdev->busy_urbs)
 		goto err_free_ep_address;
 

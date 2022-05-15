@@ -74,6 +74,11 @@
 #include <acpi/battery.h>
 #include <acpi/video.h>
 #include <drm/drm_privacy_screen_driver.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "dual_accel_detect.h"
 
 /* ThinkPad CMOS commands */
@@ -5930,6 +5935,10 @@ static int __init led_init(struct ibm_init_struct *iibm)
 
 	tpacpi_leds = kcalloc(TPACPI_LED_NUMLEDS, sizeof(*tpacpi_leds),
 			      GFP_KERNEL);
+	{
+		typeof((*tpacpi_leds)) __uncontained_tmp99;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
+	}
 	if (!tpacpi_leds) {
 		pr_err("Out of memory for LED data\n");
 		return -ENOMEM;

@@ -18,6 +18,11 @@
 #include <linux/vmalloc.h>
 #include <linux/wait.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -653,6 +658,10 @@ static int parse_ev_cfg(struct mhi_controller *mhi_cntrl,
 	mhi_cntrl->total_ev_rings = num;
 	mhi_cntrl->mhi_event = kcalloc(num, sizeof(*mhi_cntrl->mhi_event),
 				       GFP_KERNEL);
+	{
+		typeof((*mhi_cntrl->mhi_event)) __uncontained_tmp16;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!mhi_cntrl->mhi_event)
 		return -ENOMEM;
 
@@ -906,6 +915,10 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
 
 	mhi_cntrl->mhi_cmd = kcalloc(NR_OF_CMD_RINGS,
 				     sizeof(*mhi_cntrl->mhi_cmd), GFP_KERNEL);
+	{
+		typeof((*mhi_cntrl->mhi_cmd)) __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!mhi_cntrl->mhi_cmd) {
 		ret = -ENOMEM;
 		goto err_free_event;

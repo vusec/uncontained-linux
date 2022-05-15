@@ -19,6 +19,11 @@
 #include <linux/eeprom_93cx6.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rt2x00.h"
 #include "rt2x00mmio.h"
 #include "rt2x00pci.h"
@@ -1590,6 +1595,10 @@ static int rt2400pci_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 	 * Create channel information array
 	 */
 	info = kcalloc(spec->num_channels, sizeof(*info), GFP_KERNEL);
+	{
+		typeof((*info)) __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!info)
 		return -ENOMEM;
 

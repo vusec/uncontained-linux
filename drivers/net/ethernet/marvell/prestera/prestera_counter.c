@@ -159,6 +159,10 @@ prestera_counter_block_get(struct prestera_counter *counter, u32 client)
 
 	block->stats = kcalloc(block->num_counters,
 			       sizeof(*block->stats), GFP_KERNEL);
+	{
+		typeof((*block->stats)) __uncontained_tmp78;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!block->stats) {
 		err = -ENOMEM;
 		goto err_stats;
@@ -167,6 +171,10 @@ prestera_counter_block_get(struct prestera_counter *counter, u32 client)
 	block->counter_flag = kcalloc(block->num_counters,
 				      sizeof(*block->counter_flag),
 				      GFP_KERNEL);
+	{
+		typeof((*block->counter_flag)) __uncontained_tmp79;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!block->counter_flag) {
 		err = -ENOMEM;
 		goto err_flag;

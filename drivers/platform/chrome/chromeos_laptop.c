@@ -17,6 +17,11 @@
 #include <linux/platform_device.h>
 #include <linux/property.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define ATMEL_TP_I2C_ADDR	0x4b
 #define ATMEL_TP_I2C_BL_ADDR	0x25
 #define ATMEL_TS_I2C_ADDR	0x4a
@@ -810,6 +815,10 @@ chromeos_laptop_prepare_acpi_peripherals(struct chromeos_laptop *cros_laptop,
 	acpi_peripherals = kcalloc(n_peripherals,
 				   sizeof(*src->acpi_peripherals),
 				   GFP_KERNEL);
+	{
+		typeof((*src->acpi_peripherals)) __uncontained_tmp120;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (!acpi_peripherals)
 		return -ENOMEM;
 

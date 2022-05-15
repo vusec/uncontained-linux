@@ -7,6 +7,11 @@
 #include <drm/drm_probe_helper.h>
 #include <drm/drm_vblank.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vkms_drv.h"
 
 static enum hrtimer_restart vkms_vblank_simulate(struct hrtimer *timer)
@@ -203,6 +208,10 @@ static int vkms_crtc_atomic_check(struct drm_crtc *crtc,
 	}
 
 	vkms_state->active_planes = kcalloc(i, sizeof(plane), GFP_KERNEL);
+	{
+		typeof((plane)) __uncontained_tmp35;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!vkms_state->active_planes)
 		return -ENOMEM;
 	vkms_state->num_active_planes = i;

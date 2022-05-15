@@ -67,6 +67,11 @@
 #include <linux/if_vlan.h>
 #include <linux/utsname.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ibmvnic.h"
 
 static const char ibmvnic_driver_name[] = "ibmvnic";
@@ -511,6 +516,10 @@ static int init_stats_buffers(struct ibmvnic_adapter *adapter)
 				kcalloc(IBMVNIC_MAX_QUEUES,
 					sizeof(struct ibmvnic_tx_queue_stats),
 					GFP_KERNEL);
+	{
+		struct ibmvnic_tx_queue_stats __uncontained_tmp66;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!adapter->tx_stats_buffers)
 		return -ENOMEM;
 
@@ -518,6 +527,10 @@ static int init_stats_buffers(struct ibmvnic_adapter *adapter)
 				kcalloc(IBMVNIC_MAX_QUEUES,
 					sizeof(struct ibmvnic_rx_queue_stats),
 					GFP_KERNEL);
+	{
+		struct ibmvnic_rx_queue_stats __uncontained_tmp67;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!adapter->rx_stats_buffers)
 		return -ENOMEM;
 
@@ -675,6 +688,10 @@ static int init_rx_pools(struct net_device *netdev)
 	adapter->rx_pool = kcalloc(num_pools,
 				   sizeof(struct ibmvnic_rx_pool),
 				   GFP_KERNEL);
+	{
+		struct ibmvnic_rx_pool __uncontained_tmp68;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!adapter->rx_pool) {
 		dev_err(dev, "Failed to allocate rx pools\n");
 		return -ENOMEM;
@@ -698,6 +715,10 @@ static int init_rx_pools(struct net_device *netdev)
 
 		rx_pool->free_map = kcalloc(rx_pool->size, sizeof(int),
 					    GFP_KERNEL);
+		{
+			int __uncontained_tmp69;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp69;
+		}
 		if (!rx_pool->free_map) {
 			dev_err(dev, "Couldn't alloc free_map %d\n", i);
 			rc = -ENOMEM;
@@ -707,6 +728,10 @@ static int init_rx_pools(struct net_device *netdev)
 		rx_pool->rx_buff = kcalloc(rx_pool->size,
 					   sizeof(struct ibmvnic_rx_buff),
 					   GFP_KERNEL);
+		{
+			struct ibmvnic_rx_buff __uncontained_tmp70;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp70;
+		}
 		if (!rx_pool->rx_buff) {
 			dev_err(dev, "Couldn't alloc rx buffers\n");
 			rc = -ENOMEM;
@@ -822,10 +847,18 @@ static int init_one_tx_pool(struct net_device *netdev,
 	tx_pool->tx_buff = kcalloc(pool_size,
 				   sizeof(struct ibmvnic_tx_buff),
 				   GFP_KERNEL);
+	{
+		struct ibmvnic_tx_buff __uncontained_tmp71;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (!tx_pool->tx_buff)
 		return -ENOMEM;
 
 	tx_pool->free_map = kcalloc(pool_size, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp72;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp72;
+	}
 	if (!tx_pool->free_map) {
 		kfree(tx_pool->tx_buff);
 		tx_pool->tx_buff = NULL;
@@ -919,11 +952,19 @@ static int init_tx_pools(struct net_device *netdev)
 
 	adapter->tx_pool = kcalloc(num_pools,
 				   sizeof(struct ibmvnic_tx_pool), GFP_KERNEL);
+	{
+		struct ibmvnic_tx_pool __uncontained_tmp73;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp73;
+	}
 	if (!adapter->tx_pool)
 		return -ENOMEM;
 
 	adapter->tso_pool = kcalloc(num_pools,
 				    sizeof(struct ibmvnic_tx_pool), GFP_KERNEL);
+	{
+		struct ibmvnic_tx_pool __uncontained_tmp74;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp74;
+	}
 	/* To simplify release_tx_pools() ensure that ->tx_pool and
 	 * ->tso_pool are either both NULL or both non-NULL.
 	 */
@@ -1050,6 +1091,10 @@ static int init_napi(struct ibmvnic_adapter *adapter)
 
 	adapter->napi = kcalloc(adapter->req_rx_queues,
 				sizeof(struct napi_struct), GFP_KERNEL);
+	{
+		struct napi_struct __uncontained_tmp75;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (!adapter->napi)
 		return -ENOMEM;
 
@@ -3862,6 +3907,10 @@ static int init_sub_crqs(struct ibmvnic_adapter *adapter)
 	total_queues = adapter->req_tx_queues + adapter->req_rx_queues;
 
 	allqueues = kcalloc(total_queues, sizeof(*allqueues), GFP_KERNEL);
+	{
+		typeof((*allqueues)) __uncontained_tmp76;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (!allqueues)
 		return -ENOMEM;
 
@@ -3902,6 +3951,10 @@ static int init_sub_crqs(struct ibmvnic_adapter *adapter)
 
 	adapter->tx_scrq = kcalloc(adapter->req_tx_queues,
 				   sizeof(*adapter->tx_scrq), GFP_KERNEL);
+	{
+		typeof((*adapter->tx_scrq)) __uncontained_tmp77;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp77;
+	}
 	if (!adapter->tx_scrq)
 		goto tx_failed;
 
@@ -3913,6 +3966,10 @@ static int init_sub_crqs(struct ibmvnic_adapter *adapter)
 
 	adapter->rx_scrq = kcalloc(adapter->req_rx_queues,
 				   sizeof(*adapter->rx_scrq), GFP_KERNEL);
+	{
+		typeof((*adapter->rx_scrq)) __uncontained_tmp78;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!adapter->rx_scrq)
 		goto rx_failed;
 

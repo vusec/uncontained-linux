@@ -21,6 +21,11 @@
 #include <linux/mfd/samsung/s2mps15.h>
 #include <linux/mfd/samsung/s2mpu02.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* The highest number of possible regulators for supported devices. */
 #define S2MPS_REGULATOR_MAX		S2MPS13_REGULATOR_MAX
 struct s2mps11_info {
@@ -1171,6 +1176,10 @@ static int s2mps11_pmic_probe(struct platform_device *pdev)
 		return -ENOMEM;
 
 	rdata = kcalloc(rdev_num, sizeof(*rdata), GFP_KERNEL);
+	{
+		typeof((*rdata)) __uncontained_tmp112;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (!rdata)
 		return -ENOMEM;
 

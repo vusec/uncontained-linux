@@ -6,6 +6,11 @@
 
 #include <linux/prime_numbers.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gem/i915_gem_pm.h"
 #include "gt/intel_engine_pm.h"
 #include "gt/intel_gt.h"
@@ -54,6 +59,10 @@ static int live_nop_switch(void *arg)
 		return PTR_ERR(file);
 
 	ctx = kcalloc(nctx, sizeof(*ctx), GFP_KERNEL);
+	{
+		typeof((*ctx)) __uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!ctx) {
 		err = -ENOMEM;
 		goto out_file;
@@ -302,6 +311,10 @@ static int live_parallel_switch(void *arg)
 	count = engines->num_engines;
 
 	data = kcalloc(count, sizeof(*data), GFP_KERNEL);
+	{
+		typeof((*data)) __uncontained_tmp26;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!data) {
 		i915_gem_context_unlock_engines(ctx);
 		err = -ENOMEM;

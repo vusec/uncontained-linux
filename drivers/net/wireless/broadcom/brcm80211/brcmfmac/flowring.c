@@ -9,6 +9,11 @@
 #include <linux/etherdevice.h>
 #include <brcmu_utils.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "debug.h"
 #include "bus.h"
@@ -371,6 +376,10 @@ struct brcmf_flowring *brcmf_flowring_attach(struct device *dev, u16 nrofrings)
 			flow->hash[i].ifidx = BRCMF_FLOWRING_INVALID_IFIDX;
 		flow->rings = kcalloc(nrofrings, sizeof(*flow->rings),
 				      GFP_KERNEL);
+		{
+			typeof((*flow->rings)) __uncontained_tmp87;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+		}
 		if (!flow->rings) {
 			kfree(flow);
 			flow = NULL;

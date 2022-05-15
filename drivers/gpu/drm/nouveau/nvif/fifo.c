@@ -21,6 +21,11 @@
  */
 #include <nvif/fifo.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int
 nvif_fifo_runlists(struct nvif_device *device)
 {
@@ -54,6 +59,10 @@ nvif_fifo_runlists(struct nvif_device *device)
 	device->runlists = fls64(a->v.runlists.data);
 	device->runlist = kcalloc(device->runlists, sizeof(*device->runlist),
 				  GFP_KERNEL);
+	{
+		typeof((*device->runlist)) __uncontained_tmp32;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!device->runlist) {
 		ret = -ENOMEM;
 		goto done;

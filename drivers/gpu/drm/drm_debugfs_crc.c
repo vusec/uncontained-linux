@@ -37,6 +37,11 @@
 #include <drm/drm_drv.h>
 #include <drm/drm_print.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "drm_internal.h"
 
 /**
@@ -224,6 +229,10 @@ static int crtc_crc_open(struct inode *inode, struct file *filep)
 		return -EINVAL;
 
 	entries = kcalloc(DRM_CRC_ENTRIES_NR, sizeof(*entries), GFP_KERNEL);
+	{
+		typeof((*entries)) __uncontained_tmp36;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!entries)
 		return -ENOMEM;
 

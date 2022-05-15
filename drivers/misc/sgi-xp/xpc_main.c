@@ -52,6 +52,11 @@
 #include <linux/reboot.h>
 #include <linux/kdebug.h>
 #include <linux/kthread.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "xpc.h"
 
 #ifdef CONFIG_X86_64
@@ -413,6 +418,10 @@ xpc_setup_ch_structures(struct xpc_partition *part)
 	part->channels = kcalloc(XPC_MAX_NCHANNELS,
 				 sizeof(struct xpc_channel),
 				 GFP_KERNEL);
+	{
+		struct xpc_channel __uncontained_tmp65;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (part->channels == NULL) {
 		dev_err(xpc_chan, "can't get memory for channels\n");
 		return xpNoMemory;
@@ -903,6 +912,10 @@ xpc_setup_partitions(void)
 	xpc_partitions = kcalloc(xp_max_npartitions,
 				 sizeof(struct xpc_partition),
 				 GFP_KERNEL);
+	{
+		struct xpc_partition __uncontained_tmp66;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (xpc_partitions == NULL) {
 		dev_err(xpc_part, "can't get memory for partition structure\n");
 		return -ENOMEM;

@@ -12,6 +12,11 @@
 #include <linux/slab.h>
 #include <asm/page.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "smc.h"
 #include "smc_core.h"
 #include "smc_ism.h"
@@ -402,6 +407,10 @@ struct smcd_dev *smcd_alloc_dev(struct device *parent, const char *name,
 		return NULL;
 	smcd->conn = kcalloc(max_dmbs, sizeof(struct smc_connection *),
 			     GFP_KERNEL);
+	{
+		struct smc_connection *__uncontained_tmp147;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp147;
+	}
 	if (!smcd->conn) {
 		kfree(smcd);
 		return NULL;

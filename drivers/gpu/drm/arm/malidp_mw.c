@@ -15,6 +15,11 @@
 #include <drm/drm_probe_helper.h>
 #include <drm/drm_writeback.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "malidp_drv.h"
 #include "malidp_hw.h"
 #include "malidp_mw.h"
@@ -190,6 +195,10 @@ static u32 *get_writeback_formats(struct malidp_drm *malidp, int *n_formats)
 
 	formats = kcalloc(map->n_pixel_formats, sizeof(*formats),
 			  GFP_KERNEL);
+	{
+		typeof((*formats)) __uncontained_tmp34;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!formats)
 		return NULL;
 

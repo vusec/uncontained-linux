@@ -15,6 +15,11 @@
 #include "testmode.h"
 #include <linux/bitfield.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /***************/
 /* TLV helpers */
 /**************/
@@ -145,6 +150,10 @@ ath10k_wmi_tlv_parse_alloc(struct ath10k *ar, const void *ptr,
 	int ret;
 
 	tb = kcalloc(WMI_TLV_TAG_MAX, sizeof(*tb), gfp);
+	{
+		typeof((*tb)) __uncontained_tmp117;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!tb)
 		return ERR_PTR(-ENOMEM);
 

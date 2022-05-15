@@ -24,6 +24,11 @@
 #include <rdma/ib_cm.h>
 
 #include <linux/nvme-rdma.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "nvmet.h"
 
 /*
@@ -373,6 +378,10 @@ nvmet_rdma_alloc_cmds(struct nvmet_rdma_device *ndev,
 	int ret = -EINVAL, i;
 
 	cmds = kcalloc(nr_cmds, sizeof(struct nvmet_rdma_cmd), GFP_KERNEL);
+	{
+		struct nvmet_rdma_cmd __uncontained_tmp104;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!cmds)
 		goto out;
 
@@ -457,6 +466,10 @@ nvmet_rdma_alloc_rsps(struct nvmet_rdma_queue *queue)
 
 	queue->rsps = kcalloc(nr_rsps, sizeof(struct nvmet_rdma_rsp),
 			GFP_KERNEL);
+	{
+		struct nvmet_rdma_rsp __uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!queue->rsps)
 		goto out;
 
@@ -1152,6 +1165,10 @@ static int nvmet_rdma_init_srqs(struct nvmet_rdma_device *ndev)
 			      ndev->device->attrs.max_srq);
 
 	ndev->srqs = kcalloc(ndev->srq_count, sizeof(*ndev->srqs), GFP_KERNEL);
+	{
+		typeof((*ndev->srqs)) __uncontained_tmp106;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!ndev->srqs)
 		return -ENOMEM;
 

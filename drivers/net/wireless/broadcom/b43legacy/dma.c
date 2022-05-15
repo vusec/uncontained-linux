@@ -27,6 +27,11 @@
 #include <linux/slab.h>
 #include <net/dst.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* 32bit DMA ops. */
 static
 struct b43legacy_dmadesc32 *op32_idx2desc(struct b43legacy_dmaring *ring,
@@ -630,12 +635,20 @@ struct b43legacy_dmaring *b43legacy_setup_dmaring(struct b43legacy_wldev *dev,
 
 	ring->meta = kcalloc(nr_slots, sizeof(struct b43legacy_dmadesc_meta),
 			     GFP_KERNEL);
+	{
+		struct b43legacy_dmadesc_meta __uncontained_tmp113;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!ring->meta)
 		goto err_kfree_ring;
 	if (for_tx) {
 		ring->txhdr_cache = kcalloc(nr_slots,
 					sizeof(struct b43legacy_txhdr_fw3),
 					GFP_KERNEL);
+		{
+			struct b43legacy_txhdr_fw3 __uncontained_tmp114;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+		}
 		if (!ring->txhdr_cache)
 			goto err_kfree_meta;
 
@@ -651,6 +664,10 @@ struct b43legacy_dmaring *b43legacy_setup_dmaring(struct b43legacy_wldev *dev,
 			ring->txhdr_cache = kcalloc(nr_slots,
 					sizeof(struct b43legacy_txhdr_fw3),
 					GFP_KERNEL | GFP_DMA);
+			{
+				struct b43legacy_txhdr_fw3 __uncontained_tmp115;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+			}
 			if (!ring->txhdr_cache)
 				goto err_kfree_meta;
 

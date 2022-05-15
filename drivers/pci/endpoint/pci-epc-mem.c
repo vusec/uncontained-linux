@@ -12,6 +12,11 @@
 
 #include <linux/pci-epc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * pci_epc_mem_get_order() - determine the allocation order of a memory size
  * @mem: address space of the endpoint controller
@@ -63,6 +68,10 @@ int pci_epc_multi_mem_init(struct pci_epc *epc,
 		return -EINVAL;
 
 	epc->windows = kcalloc(num_windows, sizeof(*epc->windows), GFP_KERNEL);
+	{
+		typeof((*epc->windows)) __uncontained_tmp111;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (!epc->windows)
 		return -ENOMEM;
 

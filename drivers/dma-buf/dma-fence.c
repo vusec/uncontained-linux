@@ -20,6 +20,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/dma_fence.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 EXPORT_TRACEPOINT_SYMBOL(dma_fence_emit);
 EXPORT_TRACEPOINT_SYMBOL(dma_fence_enable_signal);
 EXPORT_TRACEPOINT_SYMBOL(dma_fence_signaled);
@@ -862,6 +867,10 @@ dma_fence_wait_any_timeout(struct dma_fence **fences, uint32_t count,
 	}
 
 	cb = kcalloc(count, sizeof(struct default_wait_cb), GFP_KERNEL);
+	{
+		struct default_wait_cb __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (cb == NULL) {
 		ret = -ENOMEM;
 		goto err_free_cb;

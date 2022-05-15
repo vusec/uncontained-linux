@@ -41,6 +41,11 @@
 #include <asm/sections.h>
 #include <asm/setup.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ftrace_internal.h"
 #include "trace_output.h"
 #include "trace_stat.h"
@@ -652,6 +657,10 @@ static int ftrace_profile_init_cpu(int cpu)
 	size = FTRACE_PROFILE_HASH_SIZE;
 
 	stat->hash = kcalloc(size, sizeof(struct hlist_head), GFP_KERNEL);
+	{
+		struct hlist_head __uncontained_tmp147;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp147;
+	}
 
 	if (!stat->hash)
 		return -ENOMEM;
@@ -1267,6 +1276,10 @@ static struct ftrace_hash *alloc_ftrace_hash(int size_bits)
 
 	size = 1 << size_bits;
 	hash->buckets = kcalloc(size, sizeof(*hash->buckets), GFP_KERNEL);
+	{
+		typeof((*hash->buckets)) __uncontained_tmp148;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+	}
 
 	if (!hash->buckets) {
 		kfree(hash);

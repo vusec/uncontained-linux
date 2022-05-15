@@ -2,6 +2,11 @@
 /* Copyright (c) 2019-2020, Mellanox Technologies inc. All rights reserved. */
 
 #include <net/xdp_sock_drv.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "pool.h"
 #include "setup.h"
 #include "en/params.h"
@@ -25,6 +30,10 @@ static int mlx5e_xsk_get_pools(struct mlx5e_xsk *xsk)
 	if (!xsk->pools) {
 		xsk->pools = kcalloc(MLX5E_MAX_NUM_CHANNELS,
 				     sizeof(*xsk->pools), GFP_KERNEL);
+		{
+			typeof((*xsk->pools)) __uncontained_tmp83;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+		}
 		if (unlikely(!xsk->pools))
 			return -ENOMEM;
 	}

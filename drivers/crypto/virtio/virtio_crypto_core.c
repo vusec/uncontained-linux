@@ -10,6 +10,11 @@
 #include <linux/cpu.h>
 
 #include <uapi/linux/virtio_crypto.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "virtio_crypto_common.h"
 
 
@@ -63,12 +68,24 @@ static int virtcrypto_find_vqs(struct virtio_crypto *vi)
 
 	/* Allocate space for find_vqs parameters */
 	vqs = kcalloc(total_vqs, sizeof(*vqs), GFP_KERNEL);
+	{
+		typeof((*vqs)) __uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!vqs)
 		goto err_vq;
 	callbacks = kcalloc(total_vqs, sizeof(*callbacks), GFP_KERNEL);
+	{
+		typeof((*callbacks)) __uncontained_tmp26;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!callbacks)
 		goto err_callback;
 	names = kcalloc(total_vqs, sizeof(*names), GFP_KERNEL);
+	{
+		typeof((*names)) __uncontained_tmp27;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!names)
 		goto err_names;
 
@@ -122,6 +139,10 @@ static int virtcrypto_alloc_queues(struct virtio_crypto *vi)
 {
 	vi->data_vq = kcalloc(vi->max_data_queues, sizeof(*vi->data_vq),
 				GFP_KERNEL);
+	{
+		typeof((*vi->data_vq)) __uncontained_tmp28;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (!vi->data_vq)
 		return -ENOMEM;
 

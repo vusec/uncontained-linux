@@ -38,6 +38,11 @@
 #include <linux/seq_file.h>
 #include <linux/firmware.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MC_CG_ARB_FREQ_F0           0x0a
 #define MC_CG_ARB_FREQ_F1           0x0b
 #define MC_CG_ARB_FREQ_F2           0x0c
@@ -7244,6 +7249,10 @@ static int si_parse_power_table(struct amdgpu_device *adev)
 	adev->pm.dpm.ps = kcalloc(state_array->ucNumEntries,
 				  sizeof(struct amdgpu_ps),
 				  GFP_KERNEL);
+	{
+		struct amdgpu_ps __uncontained_tmp42;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!adev->pm.dpm.ps)
 		return -ENOMEM;
 	power_state_offset = (u8 *)state_array->states;
@@ -7348,6 +7357,10 @@ static int si_dpm_init(struct amdgpu_device *adev)
 		kcalloc(4,
 			sizeof(struct amdgpu_clock_voltage_dependency_entry),
 			GFP_KERNEL);
+	{
+		struct amdgpu_clock_voltage_dependency_entry __uncontained_tmp43;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp43;
+	}
 	if (!adev->pm.dpm.dyn_state.vddc_dependency_on_dispclk.entries) {
 		amdgpu_free_extended_power_table(adev);
 		return -ENOMEM;

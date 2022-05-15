@@ -14,6 +14,11 @@
 #include <linux/of_mdio.h>
 #include <linux/of_net.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "nic_reg.h"
 #include "nic.h"
 #include "thunder_bgx.h"
@@ -1086,6 +1091,10 @@ static int bgx_lmac_enable(struct bgx *bgx, u8 lmacid)
 	lmac->dmacs_count = (RX_DMAC_COUNT / bgx->lmac_count);
 	lmac->dmacs = kcalloc(lmac->dmacs_count, sizeof(*lmac->dmacs),
 			      GFP_KERNEL);
+	{
+		typeof((*lmac->dmacs)) __uncontained_tmp64;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!lmac->dmacs)
 		return -ENOMEM;
 

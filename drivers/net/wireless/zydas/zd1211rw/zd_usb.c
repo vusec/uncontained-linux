@@ -19,6 +19,11 @@
 #include <net/mac80211.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "zd_def.h"
 #include "zd_mac.h"
 #include "zd_usb.h"
@@ -752,6 +757,10 @@ static int __zd_usb_enable_rx(struct zd_usb *usb)
 
 	r = -ENOMEM;
 	urbs = kcalloc(RX_URBS_COUNT, sizeof(struct urb *), GFP_KERNEL);
+	{
+		struct urb *__uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!urbs)
 		goto error;
 	for (i = 0; i < RX_URBS_COUNT; i++) {

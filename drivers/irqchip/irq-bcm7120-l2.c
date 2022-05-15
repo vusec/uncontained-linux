@@ -25,6 +25,11 @@
 #include <linux/irqchip.h>
 #include <linux/irqchip/chained_irq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Register offset in the L2 interrupt controller */
 #define IRQEN		0x00
 #define IRQSTAT		0x04
@@ -247,6 +252,10 @@ static int __init bcm7120_l2_intc_probe(struct device_node *dn,
 
 	data->l1_data = kcalloc(data->num_parent_irqs, sizeof(*data->l1_data),
 				GFP_KERNEL);
+	{
+		typeof((*data->l1_data)) __uncontained_tmp37;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!data->l1_data) {
 		ret = -ENOMEM;
 		goto out_free_l1_data;

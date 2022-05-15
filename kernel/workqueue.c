@@ -376,6 +376,11 @@ static void show_one_worker_pool(struct worker_pool *pool);
 #define CREATE_TRACE_POINTS
 #include <trace/events/workqueue.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -5987,6 +5992,10 @@ static void __init wq_numa_init(void)
 	 * fully initialized by now.
 	 */
 	tbl = kcalloc(nr_node_ids, sizeof(tbl[0]), GFP_KERNEL);
+	{
+		typeof((tbl[0])) __uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	BUG_ON(!tbl);
 
 	for_each_node(node)

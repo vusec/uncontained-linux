@@ -7,6 +7,11 @@
  */
 #include <linux/delay.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "common.h"
 #include "pipe.h"
 
@@ -822,6 +827,10 @@ int usbhs_pipe_probe(struct usbhs_priv *priv)
 
 	info->pipe = kcalloc(pipe_size, sizeof(struct usbhs_pipe),
 			     GFP_KERNEL);
+	{
+		struct usbhs_pipe __uncontained_tmp108;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp108;
+	}
 	if (!info->pipe)
 		return -ENOMEM;
 

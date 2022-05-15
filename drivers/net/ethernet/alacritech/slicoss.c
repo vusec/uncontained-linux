@@ -23,6 +23,11 @@
 #include <linux/list.h>
 #include <linux/u64_stats_sync.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "slic.h"
 
 #define DRV_NAME			"slicoss"
@@ -846,6 +851,10 @@ static int slic_init_tx_queue(struct slic_device *sdev)
 	txq->done_idx = 0;
 
 	txq->txbuffs = kcalloc(txq->len, sizeof(*buff), GFP_KERNEL);
+	{
+		typeof((*buff)) __uncontained_tmp66;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!txq->txbuffs)
 		return -ENOMEM;
 
@@ -923,6 +932,10 @@ static int slic_init_rx_queue(struct slic_device *sdev)
 	rxq->put_idx = 0;
 
 	buff = kcalloc(rxq->len, sizeof(*buff), GFP_KERNEL);
+	{
+		typeof((*buff)) __uncontained_tmp67;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!buff)
 		return -ENOMEM;
 

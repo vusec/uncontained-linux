@@ -7,6 +7,11 @@
 #include <linux/of_address.h>
 #include <linux/ioport.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "debug.h"
 #include "mhi.h"
@@ -263,6 +268,10 @@ static int ath11k_mhi_get_msi(struct ath11k_pci *ab_pci)
 		   num_vectors, base_vector);
 
 	irq = kcalloc(num_vectors, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!irq)
 		return -ENOMEM;
 

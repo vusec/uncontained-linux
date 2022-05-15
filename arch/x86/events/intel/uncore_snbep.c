@@ -3770,6 +3770,10 @@ static int skx_iio_get_topology(struct intel_uncore_type *type)
 
 	type->topology = kcalloc(uncore_max_dies(), sizeof(*type->topology),
 				 GFP_KERNEL);
+	{
+		typeof((*type->topology)) __uncontained_tmp3;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!type->topology)
 		return -ENOMEM;
 
@@ -3820,10 +3824,18 @@ pmu_iio_set_mapping(struct intel_uncore_type *type, struct attribute_group *ag)
 
 	/* One more for NULL. */
 	attrs = kcalloc((uncore_max_dies() + 1), sizeof(*attrs), GFP_KERNEL);
+	{
+		typeof((*attrs)) __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!attrs)
 		goto clear_topology;
 
 	eas = kcalloc(uncore_max_dies(), sizeof(*eas), GFP_KERNEL);
+	{
+		typeof((*eas)) __uncontained_tmp5;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!eas)
 		goto clear_attrs;
 
@@ -4463,6 +4475,10 @@ static int sad_cfg_iio_topology(struct intel_uncore_type *type, u8 *sad_pmon_map
 
 	type->topology = kcalloc(uncore_max_dies(), sizeof(*type->topology),
 				 GFP_KERNEL);
+	{
+		typeof((*type->topology)) __uncontained_tmp6;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!type->topology)
 		return -ENOMEM;
 

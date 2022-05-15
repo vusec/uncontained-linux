@@ -13,6 +13,11 @@
 #include <linux/uuid.h>
 #include <linux/thunderbolt.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct tb_property_entry {
 	u32 key_hi;
 	u32 key_lo;
@@ -125,6 +130,10 @@ static struct tb_property *tb_property_parse(const u32 *block, size_t block_len,
 	case TB_PROPERTY_TYPE_DATA:
 		property->value.data = kcalloc(property->length, sizeof(u32),
 					       GFP_KERNEL);
+		{
+			u32 __uncontained_tmp98;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp98;
+		}
 		if (!property->value.data) {
 			kfree(property);
 			return NULL;
@@ -136,6 +145,10 @@ static struct tb_property *tb_property_parse(const u32 *block, size_t block_len,
 	case TB_PROPERTY_TYPE_TEXT:
 		property->value.text = kcalloc(property->length, sizeof(u32),
 					       GFP_KERNEL);
+		{
+			u32 __uncontained_tmp99;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
+		}
 		if (!property->value.text) {
 			kfree(property);
 			return NULL;

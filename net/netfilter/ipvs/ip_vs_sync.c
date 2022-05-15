@@ -58,6 +58,11 @@
 
 #include <net/ip_vs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define IP_VS_SYNC_GROUP 0xe0000051    /* multicast addr - 224.0.0.81 */
 #define IP_VS_SYNC_PORT  8848          /* multicast port */
 
@@ -1840,6 +1845,10 @@ int start_sync_thread(struct netns_ipvs *ipvs, struct ipvs_sync_daemon_cfg *c,
 
 		result = -ENOMEM;
 		ipvs->ms = kcalloc(count, sizeof(ipvs->ms[0]), GFP_KERNEL);
+		{
+			typeof((ipvs->ms[0])) __uncontained_tmp138;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp138;
+		}
 		if (!ipvs->ms)
 			goto out;
 		ms = ipvs->ms;
@@ -1855,6 +1864,10 @@ int start_sync_thread(struct netns_ipvs *ipvs, struct ipvs_sync_daemon_cfg *c,
 	result = -ENOMEM;
 	ti = kcalloc(count, sizeof(struct ip_vs_sync_thread_data),
 		     GFP_KERNEL);
+	{
+		struct ip_vs_sync_thread_data __uncontained_tmp137;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp137;
+	}
 	if (!ti)
 		goto out;
 

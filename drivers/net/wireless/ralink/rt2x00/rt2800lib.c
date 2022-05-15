@@ -26,6 +26,11 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rt2x00.h"
 #include "rt2800lib.h"
 #include "rt2800.h"
@@ -10133,12 +10138,20 @@ static int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 	 * Create channel information and survey arrays
 	 */
 	info = kcalloc(spec->num_channels, sizeof(*info), GFP_KERNEL);
+	{
+		typeof((*info)) __uncontained_tmp69;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!info)
 		return -ENOMEM;
 
 	rt2x00dev->chan_survey =
 		kcalloc(spec->num_channels, sizeof(struct rt2x00_chan_survey),
 			GFP_KERNEL);
+	{
+		struct rt2x00_chan_survey __uncontained_tmp68;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!rt2x00dev->chan_survey) {
 		kfree(info);
 		return -ENOMEM;

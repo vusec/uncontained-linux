@@ -12,6 +12,11 @@
 #include <linux/spinlock.h>
 #include <linux/of_address.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SUN8I_MBUS_ENABLE	31
 #define SUN8I_MBUS_MUX_SHIFT	24
 #define SUN8I_MBUS_MUX_MASK	0x3
@@ -35,6 +40,10 @@ static void __init sun8i_a23_mbus_setup(struct device_node *node)
 	int err;
 
 	parents = kcalloc(num_parents, sizeof(*parents), GFP_KERNEL);
+	{
+		typeof((*parents)) __uncontained_tmp15;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!parents)
 		return;
 

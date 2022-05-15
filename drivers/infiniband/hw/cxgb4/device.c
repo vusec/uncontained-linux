@@ -37,6 +37,11 @@
 
 #include <rdma/ib_verbs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "iw_cxgb4.h"
 
 #define DRV_VERSION "0.1"
@@ -884,6 +889,10 @@ static int c4iw_rdev_open(struct c4iw_rdev *rdev)
 		rdev->wr_log = kcalloc(1 << c4iw_wr_log_size_order,
 				       sizeof(*rdev->wr_log),
 				       GFP_KERNEL);
+		{
+			typeof((*rdev->wr_log)) __uncontained_tmp43;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp43;
+		}
 		if (rdev->wr_log) {
 			rdev->wr_log_size = 1 << c4iw_wr_log_size_order;
 			atomic_set(&rdev->wr_log_idx, 0);
@@ -1440,6 +1449,10 @@ static void recover_queues(struct uld_ctx *ctx)
 		count++;
 
 	qp_list.qps = kcalloc(count, sizeof(*qp_list.qps), GFP_ATOMIC);
+	{
+		typeof((*qp_list.qps)) __uncontained_tmp44;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!qp_list.qps) {
 		xa_unlock_irq(&ctx->dev->qps);
 		return;

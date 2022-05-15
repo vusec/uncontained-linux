@@ -25,6 +25,11 @@
 #include <linux/pid_namespace.h>
 #include <uapi/linux/magic.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_AUTHOR("Miklos Szeredi <miklos@szeredi.hu>");
 MODULE_DESCRIPTION("Filesystem in Userspace");
 MODULE_LICENSE("GPL");
@@ -1324,6 +1329,10 @@ struct fuse_dev *fuse_dev_alloc(void)
 		return NULL;
 
 	pq = kcalloc(FUSE_PQ_HASH_SIZE, sizeof(struct list_head), GFP_KERNEL);
+	{
+		struct list_head __uncontained_tmp153;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp153;
+	}
 	if (!pq) {
 		kfree(fud);
 		return NULL;

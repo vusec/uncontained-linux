@@ -8,6 +8,11 @@
 
 #include <linux/bpf.h>
 #include <linux/filter.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "bpf_jit.h"
 
 /* Number of iterations to try until offsets converge. */
@@ -79,6 +84,10 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 
 	ctx->prog = prog;
 	ctx->offset = kcalloc(prog->len, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!ctx->offset) {
 		prog = orig_prog;
 		goto out_offset;

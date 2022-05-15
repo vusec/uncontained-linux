@@ -10,6 +10,11 @@
 #include <linux/pci-p2pdma.h>
 #include <linux/scatterlist.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define CREATE_TRACE_POINTS
 #include "trace.h"
 
@@ -1393,6 +1398,10 @@ u16 nvmet_alloc_ctrl(const char *subsysnqn, const char *hostnqn,
 	ctrl->sqs = kcalloc(subsys->max_qid + 1,
 			sizeof(struct nvmet_sq *),
 			GFP_KERNEL);
+	{
+		struct nvmet_sq *__uncontained_tmp107;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp107;
+	}
 	if (!ctrl->sqs)
 		goto out_free_changed_ns_list;
 

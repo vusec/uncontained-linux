@@ -43,6 +43,11 @@
 
 #include <target/iscsi/iscsi_transport.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static LIST_HEAD(g_tiqn_list);
 static LIST_HEAD(g_np_list);
 static DEFINE_SPINLOCK(tiqn_lock);
@@ -984,6 +989,10 @@ static int iscsit_allocate_iovecs(struct iscsi_cmd *cmd)
 
 	iov_count += ISCSI_IOV_DATA_BUFFER;
 	cmd->iov_data = kcalloc(iov_count, sizeof(*cmd->iov_data), GFP_KERNEL);
+	{
+		typeof((*cmd->iov_data)) __uncontained_tmp120;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (!cmd->iov_data)
 		return -ENOMEM;
 
@@ -3958,6 +3967,10 @@ static void iscsit_get_rx_pdu(struct iscsi_conn *conn)
 	struct kvec iov;
 
 	buffer = kcalloc(ISCSI_HDR_LEN, sizeof(*buffer), GFP_KERNEL);
+	{
+		typeof((*buffer)) __uncontained_tmp121;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+	}
 	if (!buffer)
 		return;
 

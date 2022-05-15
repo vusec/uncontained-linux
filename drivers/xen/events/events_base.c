@@ -66,6 +66,11 @@
 #include <xen/xenbus.h>
 #include <asm/hw_irq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "events_internal.h"
 
 #undef MODULE_PARAM_PREFIX
@@ -2258,6 +2263,10 @@ void __init xen_init_IRQ(void)
 
 	evtchn_to_irq = kcalloc(EVTCHN_ROW(xen_evtchn_max_channels()),
 				sizeof(*evtchn_to_irq), GFP_KERNEL);
+	{
+		typeof((*evtchn_to_irq)) __uncontained_tmp163;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp163;
+	}
 	BUG_ON(!evtchn_to_irq);
 
 	/* No event channels are 'live' right now. */

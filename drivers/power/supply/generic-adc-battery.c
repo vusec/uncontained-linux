@@ -24,6 +24,11 @@
 #include <linux/iio/types.h>
 #include <linux/power/generic-adc-battery.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define JITTER_DEFAULT 10 /* hope 10ms is enough */
 
 enum gab_chan_type {
@@ -270,6 +275,10 @@ static int gab_probe(struct platform_device *pdev)
 			     ARRAY_SIZE(gab_chan_name),
 			     sizeof(*properties),
 			     GFP_KERNEL);
+	{
+		typeof((*properties)) __uncontained_tmp125;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (!properties) {
 		ret = -ENOMEM;
 		goto first_mem_fail;

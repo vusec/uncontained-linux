@@ -19,6 +19,11 @@
 #include <linux/of.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct nvmem_device {
 	struct module		*owner;
 	struct device		dev;
@@ -516,6 +521,10 @@ static int nvmem_add_cells(struct nvmem_device *nvmem,
 	int i, rval;
 
 	cells = kcalloc(ncells, sizeof(*cells), GFP_KERNEL);
+	{
+		typeof((*cells)) __uncontained_tmp90;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (!cells)
 		return -ENOMEM;
 

@@ -5,6 +5,11 @@
 
 #include <linux/sort.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "selftests/i915_random.h"
 
 static const unsigned int sizes[] = {
@@ -344,6 +349,10 @@ static int threaded_migrate(struct intel_migrate *migrate,
 	int err = 0;
 
 	thread = kcalloc(n_cpus, sizeof(*thread), GFP_KERNEL);
+	{
+		typeof((*thread)) __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!thread)
 		return 0;
 

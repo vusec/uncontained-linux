@@ -198,9 +198,17 @@ int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent)
 	int i;
 
 	tg->rt_rq = kcalloc(nr_cpu_ids, sizeof(rt_rq), GFP_KERNEL);
+	{
+		typeof((rt_rq)) __uncontained_tmp118;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+	}
 	if (!tg->rt_rq)
 		goto err;
 	tg->rt_se = kcalloc(nr_cpu_ids, sizeof(rt_se), GFP_KERNEL);
+	{
+		typeof((rt_se)) __uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!tg->rt_se)
 		goto err;
 

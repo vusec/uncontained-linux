@@ -12,6 +12,11 @@
 #include <linux/slab.h>
 #include <linux/greybus.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define PROP_MAX 32
 
 struct gb_power_supply_prop {
@@ -547,6 +552,10 @@ static int gb_power_supply_prop_descriptors_get(struct gb_power_supply *gbpsy)
 
 	gbpsy->props = kcalloc(gbpsy->properties_count, sizeof(*gbpsy->props),
 			      GFP_KERNEL);
+	{
+		typeof((*gbpsy->props)) __uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!gbpsy->props) {
 		ret = -ENOMEM;
 		goto out_put_operation;
@@ -554,6 +563,10 @@ static int gb_power_supply_prop_descriptors_get(struct gb_power_supply *gbpsy)
 
 	gbpsy->props_raw = kcalloc(gbpsy->properties_count,
 				   sizeof(*gbpsy->props_raw), GFP_KERNEL);
+	{
+		typeof((*gbpsy->props_raw)) __uncontained_tmp140;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!gbpsy->props_raw) {
 		ret = -ENOMEM;
 		goto out_put_operation;
@@ -945,6 +958,10 @@ static int gb_power_supplies_setup(struct gb_power_supplies *supplies)
 	supplies->supply = kcalloc(supplies->supplies_count,
 				     sizeof(struct gb_power_supply),
 				     GFP_KERNEL);
+	{
+		struct gb_power_supply __uncontained_tmp138;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp138;
+	}
 
 	if (!supplies->supply) {
 		ret = -ENOMEM;

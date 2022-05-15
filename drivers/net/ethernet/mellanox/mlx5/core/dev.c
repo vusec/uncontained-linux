@@ -34,6 +34,11 @@
 #include <linux/mlx5/eswitch.h>
 #include <linux/mlx5/mlx5_ifc_vdpa.h>
 #include <linux/mlx5/vport.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "mlx5_core.h"
 
 /* intf dev list mutex */
@@ -270,6 +275,10 @@ int mlx5_adev_init(struct mlx5_core_dev *dev)
 
 	priv->adev = kcalloc(ARRAY_SIZE(mlx5_adev_devices),
 			     sizeof(struct mlx5_adev *), GFP_KERNEL);
+	{
+		struct mlx5_adev *__uncontained_tmp43;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp43;
+	}
 	if (!priv->adev)
 		return -ENOMEM;
 

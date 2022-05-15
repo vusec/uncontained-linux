@@ -19,6 +19,11 @@
 #include <linux/hwspinlock.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define CREATE_TRACE_POINTS
 #include "trace.h"
 
@@ -1335,6 +1340,10 @@ int regmap_field_bulk_alloc(struct regmap *regmap,
 	int i;
 
 	rf = kcalloc(num_fields, sizeof(*rf), GFP_KERNEL);
+	{
+		typeof((*rf)) __uncontained_tmp12;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!rf)
 		return -ENOMEM;
 

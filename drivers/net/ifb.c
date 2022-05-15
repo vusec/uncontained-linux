@@ -36,6 +36,11 @@
 #include <net/pkt_sched.h>
 #include <net/net_namespace.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define TX_Q_LIMIT    32
 
 struct ifb_q_stats {
@@ -188,6 +193,10 @@ static int ifb_dev_init(struct net_device *dev)
 	int i;
 
 	txp = kcalloc(dev->num_tx_queues, sizeof(*txp), GFP_KERNEL);
+	{
+		typeof((*txp)) __uncontained_tmp114;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!txp)
 		return -ENOMEM;
 	dp->tx_private = txp;

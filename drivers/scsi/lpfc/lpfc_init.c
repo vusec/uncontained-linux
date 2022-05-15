@@ -50,6 +50,11 @@
 #include <scsi/scsi_tcq.h>
 #include <scsi/fc/fc_fs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "lpfc_hw4.h"
 #include "lpfc_hw.h"
 #include "lpfc_sli.h"
@@ -1355,6 +1360,10 @@ lpfc_hb_eq_delay_work(struct work_struct *work)
 
 	ena_delay = kcalloc(phba->sli4_hba.num_possible_cpu, sizeof(*ena_delay),
 			    GFP_KERNEL);
+	{
+		typeof((*ena_delay)) __uncontained_tmp121;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+	}
 	if (!ena_delay)
 		goto requeue;
 
@@ -2919,6 +2928,10 @@ lpfc_hba_init(struct lpfc_hba *phba, uint32_t *hbainit)
 	uint32_t *pwwnn = (uint32_t *) phba->wwnn;
 
 	HashWorking = kcalloc(80, sizeof(uint32_t), GFP_KERNEL);
+	{
+		uint32_t __uncontained_tmp110;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (!HashWorking)
 		return;
 
@@ -4531,6 +4544,10 @@ lpfc_vmid_res_alloc(struct lpfc_hba *phba, struct lpfc_vport *vport)
 		vport->vmid =
 		    kcalloc(phba->cfg_max_vmid, sizeof(struct lpfc_vmid),
 			    GFP_KERNEL);
+		{
+			struct lpfc_vmid __uncontained_tmp111;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp111;
+		}
 		if (!vport->vmid)
 			return -ENOMEM;
 
@@ -7710,10 +7727,15 @@ lpfc_sli_driver_resource_setup(struct lpfc_hba *phba)
 			phba->cfg_sg_seg_cnt = LPFC_DEFAULT_MENLO_SG_SEG_CNT;
 	}
 
-	if (!phba->sli.sli3_ring)
+	if (!phba->sli.sli3_ring) {
 		phba->sli.sli3_ring = kcalloc(LPFC_SLI3_MAX_RING,
 					      sizeof(struct lpfc_sli_ring),
 					      GFP_KERNEL);
+		{
+			struct lpfc_sli_ring __uncontained_tmp112;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+		}
+	}
 	if (!phba->sli.sli3_ring)
 		return -ENOMEM;
 
@@ -8289,6 +8311,10 @@ lpfc_sli4_driver_resource_setup(struct lpfc_hba *phba)
 	longs = (LPFC_SLI4_FCF_TBL_INDX_MAX + BITS_PER_LONG - 1)/BITS_PER_LONG;
 	phba->fcf.fcf_rr_bmask = kcalloc(longs, sizeof(unsigned long),
 					 GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp113;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!phba->fcf.fcf_rr_bmask) {
 		lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
 				"2759 Failed allocate memory for FCF round "
@@ -8300,6 +8326,10 @@ lpfc_sli4_driver_resource_setup(struct lpfc_hba *phba)
 	phba->sli4_hba.hba_eq_hdl = kcalloc(phba->cfg_irq_chann,
 					    sizeof(struct lpfc_hba_eq_hdl),
 					    GFP_KERNEL);
+	{
+		struct lpfc_hba_eq_hdl __uncontained_tmp114;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!phba->sli4_hba.hba_eq_hdl) {
 		lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
 				"2572 Failed allocate memory for "
@@ -8311,6 +8341,10 @@ lpfc_sli4_driver_resource_setup(struct lpfc_hba *phba)
 	phba->sli4_hba.cpu_map = kcalloc(phba->sli4_hba.num_possible_cpu,
 					sizeof(struct lpfc_vector_map_info),
 					GFP_KERNEL);
+	{
+		struct lpfc_vector_map_info __uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!phba->sli4_hba.cpu_map) {
 		lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
 				"3327 Failed allocate memory for msi-x "
@@ -8330,6 +8364,10 @@ lpfc_sli4_driver_resource_setup(struct lpfc_hba *phba)
 	phba->sli4_hba.idle_stat = kcalloc(phba->sli4_hba.num_possible_cpu,
 					   sizeof(*phba->sli4_hba.idle_stat),
 					   GFP_KERNEL);
+	{
+		typeof((*phba->sli4_hba.idle_stat)) __uncontained_tmp122;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp122;
+	}
 	if (!phba->sli4_hba.idle_stat) {
 		lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
 				"3390 Failed allocation for idle_stat\n");
@@ -10348,6 +10386,10 @@ lpfc_sli4_queue_create(struct lpfc_hba *phba)
 		phba->sli4_hba.hdwq = kcalloc(
 			phba->cfg_hdw_queue, sizeof(struct lpfc_sli4_hdw_queue),
 			GFP_KERNEL);
+		{
+			struct lpfc_sli4_hdw_queue __uncontained_tmp116;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+		}
 		if (!phba->sli4_hba.hdwq) {
 			lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
 					"6427 Failed allocate memory for "
@@ -10380,6 +10422,10 @@ lpfc_sli4_queue_create(struct lpfc_hba *phba)
 					phba->cfg_nvmet_mrq,
 					sizeof(struct lpfc_queue *),
 					GFP_KERNEL);
+			{
+				struct lpfc_queue *__uncontained_tmp117;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+			}
 			if (!phba->sli4_hba.nvmet_cqset) {
 				lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
 					"3121 Fail allocate memory for "
@@ -10390,6 +10436,10 @@ lpfc_sli4_queue_create(struct lpfc_hba *phba)
 					phba->cfg_nvmet_mrq,
 					sizeof(struct lpfc_queue *),
 					GFP_KERNEL);
+			{
+				struct lpfc_queue *__uncontained_tmp118;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+			}
 			if (!phba->sli4_hba.nvmet_mrq_hdr) {
 				lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
 					"3122 Fail allocate memory for "
@@ -10400,6 +10450,10 @@ lpfc_sli4_queue_create(struct lpfc_hba *phba)
 					phba->cfg_nvmet_mrq,
 					sizeof(struct lpfc_queue *),
 					GFP_KERNEL);
+			{
+				struct lpfc_queue *__uncontained_tmp119;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+			}
 			if (!phba->sli4_hba.nvmet_mrq_data) {
 				lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
 					"3124 Fail allocate memory for "
@@ -11283,6 +11337,10 @@ lpfc_sli4_queue_setup(struct lpfc_hba *phba)
 		kfree(phba->sli4_hba.cq_lookup);
 		phba->sli4_hba.cq_lookup = kcalloc((phba->sli4_hba.cq_max + 1),
 			sizeof(struct lpfc_queue *), GFP_KERNEL);
+		{
+			struct lpfc_queue *__uncontained_tmp120;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+		}
 		if (!phba->sli4_hba.cq_lookup) {
 			lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
 					"0549 Failed setup of CQ Lookup table: "

@@ -18,6 +18,11 @@
 #include <asm/barrier.h>
 #include <asm/cpufeature.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "coresight-self-hosted-trace.h"
 #include "coresight-trbe.h"
 
@@ -695,6 +700,10 @@ static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
 		return ERR_PTR(-ENOMEM);
 
 	pglist = kcalloc(nr_pages, sizeof(*pglist), GFP_KERNEL);
+	{
+		typeof((*pglist)) __uncontained_tmp56;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!pglist) {
 		kfree(buf);
 		return ERR_PTR(-ENOMEM);

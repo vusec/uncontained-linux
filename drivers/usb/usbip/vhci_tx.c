@@ -7,6 +7,11 @@
 #include <linux/slab.h>
 #include <linux/scatterlist.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "usbip_common.h"
 #include "vhci.h"
 
@@ -83,6 +88,10 @@ static int vhci_send_cmd_submit(struct vhci_device *vdev)
 			iovnum = 3;
 
 		iov = kcalloc(iovnum, sizeof(*iov), GFP_KERNEL);
+		{
+			typeof((*iov)) __uncontained_tmp130;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp130;
+		}
 		if (!iov) {
 			usbip_event_add(&vdev->ud, SDEV_EVENT_ERROR_MALLOC);
 			return -ENOMEM;

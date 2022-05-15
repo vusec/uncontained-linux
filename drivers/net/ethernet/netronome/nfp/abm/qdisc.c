@@ -6,6 +6,11 @@
 #include <net/pkt_sched.h>
 #include <net/red.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../nfpcore/nfp_cpp.h"
 #include "../nfp_app.h"
 #include "../nfp_main.h"
@@ -350,6 +355,10 @@ nfp_abm_qdisc_alloc(struct net_device *netdev, struct nfp_abm_link *alink,
 
 	if (children) {
 		qdisc->children = kcalloc(children, sizeof(void *), GFP_KERNEL);
+		{
+			void *__uncontained_tmp93;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+		}
 		if (!qdisc->children)
 			goto err_free_qdisc;
 	}

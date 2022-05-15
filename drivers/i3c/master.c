@@ -17,6 +17,11 @@
 #include <linux/spinlock.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internals.h"
 
 static DEFINE_IDR(i3c_bus_idr);
@@ -2339,6 +2344,10 @@ i3c_generic_ibi_alloc_pool(struct i3c_dev_desc *dev,
 	INIT_LIST_HEAD(&pool->pending);
 
 	pool->slots = kcalloc(req->num_slots, sizeof(*slot), GFP_KERNEL);
+	{
+		typeof((*slot)) __uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!pool->slots) {
 		ret = -ENOMEM;
 		goto err_free_pool;

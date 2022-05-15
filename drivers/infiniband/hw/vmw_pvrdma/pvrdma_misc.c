@@ -47,6 +47,11 @@
 #include <linux/slab.h>
 #include <linux/bitmap.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "pvrdma.h"
 
 int pvrdma_page_dir_init(struct pvrdma_dev *dev, struct pvrdma_page_dir *pdir,
@@ -67,6 +72,10 @@ int pvrdma_page_dir_init(struct pvrdma_dev *dev, struct pvrdma_page_dir *pdir,
 	pdir->ntables = PVRDMA_PAGE_DIR_TABLE(npages - 1) + 1;
 	pdir->tables = kcalloc(pdir->ntables, sizeof(*pdir->tables),
 			       GFP_KERNEL);
+	{
+		typeof((*pdir->tables)) __uncontained_tmp67;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!pdir->tables)
 		goto err;
 
@@ -83,6 +92,10 @@ int pvrdma_page_dir_init(struct pvrdma_dev *dev, struct pvrdma_page_dir *pdir,
 	if (alloc_pages) {
 		pdir->pages = kcalloc(npages, sizeof(*pdir->pages),
 				      GFP_KERNEL);
+		{
+			typeof((*pdir->pages)) __uncontained_tmp68;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp68;
+		}
 		if (!pdir->pages)
 			goto err;
 

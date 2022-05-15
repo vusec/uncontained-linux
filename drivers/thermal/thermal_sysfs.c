@@ -19,6 +19,11 @@
 #include <linux/string.h>
 #include <linux/jiffies.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "thermal_core.h"
 
 /* sys I/F for thermal zone */
@@ -421,11 +426,19 @@ static int create_trip_attrs(struct thermal_zone_device *tz, int mask)
 
 	tz->trip_type_attrs = kcalloc(tz->trips, sizeof(*tz->trip_type_attrs),
 				      GFP_KERNEL);
+	{
+		typeof((*tz->trip_type_attrs)) __uncontained_tmp166;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp166;
+	}
 	if (!tz->trip_type_attrs)
 		return -ENOMEM;
 
 	tz->trip_temp_attrs = kcalloc(tz->trips, sizeof(*tz->trip_temp_attrs),
 				      GFP_KERNEL);
+	{
+		typeof((*tz->trip_temp_attrs)) __uncontained_tmp167;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp167;
+	}
 	if (!tz->trip_temp_attrs) {
 		kfree(tz->trip_type_attrs);
 		return -ENOMEM;
@@ -435,6 +448,10 @@ static int create_trip_attrs(struct thermal_zone_device *tz, int mask)
 		tz->trip_hyst_attrs = kcalloc(tz->trips,
 					      sizeof(*tz->trip_hyst_attrs),
 					      GFP_KERNEL);
+		{
+			typeof((*tz->trip_hyst_attrs)) __uncontained_tmp168;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp168;
+		}
 		if (!tz->trip_hyst_attrs) {
 			kfree(tz->trip_type_attrs);
 			kfree(tz->trip_temp_attrs);
@@ -443,6 +460,10 @@ static int create_trip_attrs(struct thermal_zone_device *tz, int mask)
 	}
 
 	attrs = kcalloc(tz->trips * 3 + 1, sizeof(*attrs), GFP_KERNEL);
+	{
+		typeof((*attrs)) __uncontained_tmp169;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp169;
+	}
 	if (!attrs) {
 		kfree(tz->trip_type_attrs);
 		kfree(tz->trip_temp_attrs);
@@ -534,6 +555,10 @@ int thermal_zone_create_device_groups(struct thermal_zone_device *tz,
 	size = ARRAY_SIZE(thermal_zone_attribute_groups) + 2;
 	/* This also takes care of API requirement to be NULL terminated */
 	groups = kcalloc(size, sizeof(*groups), GFP_KERNEL);
+	{
+		typeof((*groups)) __uncontained_tmp170;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp170;
+	}
 	if (!groups)
 		return -ENOMEM;
 

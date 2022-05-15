@@ -7,6 +7,11 @@
 #include <linux/vmalloc.h>
 #include <linux/delay.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "qla_def.h"
 #include "qla_gbl.h"
 
@@ -3798,6 +3803,10 @@ qla8044_write_optrom_data(struct scsi_qla_host *vha, void *buf,
 	erase_offset = offset;
 
 	p_cache = kcalloc(length, sizeof(uint8_t), GFP_KERNEL);
+	{
+		uint8_t __uncontained_tmp156;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp156;
+	}
 	if (!p_cache)
 		return QLA_FUNCTION_FAILED;
 

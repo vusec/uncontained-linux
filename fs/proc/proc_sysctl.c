@@ -18,6 +18,11 @@
 #include <linux/mount.h>
 #include <linux/kmemleak.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1525,6 +1530,10 @@ static int register_leaf_sysctl_tables(const char *path, char *pos,
 		struct ctl_table *new;
 		files = kcalloc(nr_files + 1, sizeof(struct ctl_table),
 				GFP_KERNEL);
+		{
+			struct ctl_table __uncontained_tmp143;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp143;
+		}
 		if (!files)
 			goto out;
 

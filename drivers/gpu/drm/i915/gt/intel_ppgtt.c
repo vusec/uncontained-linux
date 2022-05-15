@@ -5,6 +5,11 @@
 
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gem/i915_gem_lmem.h"
 
 #include "i915_trace.h"
@@ -39,6 +44,10 @@ struct i915_page_directory *__alloc_pd(int count)
 		return NULL;
 
 	pd->entry = kcalloc(count, sizeof(*pd->entry), I915_GFP_ALLOW_FAIL);
+	{
+		typeof((*pd->entry)) __uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (unlikely(!pd->entry)) {
 		kfree(pd);
 		return NULL;

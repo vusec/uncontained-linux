@@ -40,6 +40,11 @@
 
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -599,9 +604,17 @@ static int pm8001_prep_sas_ha_init(struct Scsi_Host *shost,
 	port_nr = phy_nr;
 	memset(sha, 0x00, sizeof(*sha));
 	arr_phy = kcalloc(phy_nr, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp129;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp129;
+	}
 	if (!arr_phy)
 		goto exit;
 	arr_port = kcalloc(port_nr, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp130;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp130;
+	}
 	if (!arr_port)
 		goto exit_free2;
 
@@ -1209,6 +1222,10 @@ pm8001_init_ccb_tag(struct pm8001_hba_info *pm8001_ha, struct Scsi_Host *shost,
 	pm8001_ha->ccb_count = ccb_count;
 	pm8001_ha->ccb_info =
 		kcalloc(ccb_count, sizeof(struct pm8001_ccb_info), GFP_KERNEL);
+	{
+		struct pm8001_ccb_info __uncontained_tmp131;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp131;
+	}
 	if (!pm8001_ha->ccb_info) {
 		pm8001_dbg(pm8001_ha, FAIL,
 			   "Unable to allocate memory for ccb\n");

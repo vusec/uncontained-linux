@@ -7,6 +7,11 @@
 #include <sound/jack.h>
 #include <sound/hda_verbs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "virtio_card.h"
 
 /**
@@ -145,6 +150,10 @@ int virtsnd_jack_parse_cfg(struct virtio_snd *snd)
 		return -ENOMEM;
 
 	info = kcalloc(snd->njacks, sizeof(*info), GFP_KERNEL);
+	{
+		typeof((*info)) __uncontained_tmp144;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp144;
+	}
 	if (!info)
 		return -ENOMEM;
 

@@ -40,6 +40,10 @@ int msix_initialize(struct hfi1_devdata *dd)
 
 	entries = kcalloc(total, sizeof(*dd->msix_info.msix_entries),
 			  GFP_KERNEL);
+	{
+		typeof((*dd->msix_info.msix_entries)) __uncontained_tmp46;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!entries) {
 		pci_free_irq_vectors(dd->pcidev);
 		return -ENOMEM;

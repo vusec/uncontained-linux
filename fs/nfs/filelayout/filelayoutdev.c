@@ -32,6 +32,11 @@
 #include <linux/vmalloc.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../internal.h"
 #include "../nfs4session.h"
 #include "filelayout.h"
@@ -100,6 +105,10 @@ nfs4_fl_alloc_deviceid_node(struct nfs_server *server, struct pnfs_device *pdev,
 
 	/* read stripe indices */
 	stripe_indices = kcalloc(cnt, sizeof(u8), gfp_flags);
+	{
+		u8 __uncontained_tmp158;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp158;
+	}
 	if (!stripe_indices)
 		goto out_err_free_scratch;
 

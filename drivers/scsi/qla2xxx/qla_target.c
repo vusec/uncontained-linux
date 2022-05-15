@@ -28,6 +28,11 @@
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_tcq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "qla_def.h"
 #include "qla_target.h"
 
@@ -6493,6 +6498,10 @@ int qlt_add_target(struct qla_hw_data *ha, struct scsi_qla_host *base_vha)
 	tgt->qphints = kcalloc(ha->max_qpairs + 1,
 			       sizeof(struct qla_qpair_hint),
 			       GFP_KERNEL);
+	{
+		struct qla_qpair_hint __uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!tgt->qphints) {
 		kfree(tgt);
 		ql_log(ql_log_warn, base_vha, 0x0197,
@@ -7320,6 +7329,10 @@ qlt_mem_alloc(struct qla_hw_data *ha)
 	ha->tgt.tgt_vp_map = kcalloc(MAX_MULTI_ID_FABRIC,
 				     sizeof(struct qla_tgt_vp_map),
 				     GFP_KERNEL);
+	{
+		struct qla_tgt_vp_map __uncontained_tmp104;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!ha->tgt.tgt_vp_map)
 		return -ENOMEM;
 

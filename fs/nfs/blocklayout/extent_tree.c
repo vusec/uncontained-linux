@@ -5,6 +5,11 @@
 
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "blocklayout.h"
 
 #define NFSDBG_FACILITY		NFSDBG_PNFS_LD
@@ -579,6 +584,10 @@ retry:
 		arg->layoutupdate_pages =
 			kcalloc(DIV_ROUND_UP(buffer_size, PAGE_SIZE),
 				sizeof(struct page *), GFP_NOFS);
+		{
+			struct page *__uncontained_tmp140;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+		}
 		if (!arg->layoutupdate_pages)
 			return -ENOMEM;
 

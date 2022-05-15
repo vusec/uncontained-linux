@@ -37,11 +37,19 @@ int efx_probe_tx_queue(struct efx_tx_queue *tx_queue)
 	/* Allocate software ring */
 	tx_queue->buffer = kcalloc(entries, sizeof(*tx_queue->buffer),
 				   GFP_KERNEL);
+	{
+		typeof((*tx_queue->buffer)) __uncontained_tmp109;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp109;
+	}
 	if (!tx_queue->buffer)
 		return -ENOMEM;
 
 	tx_queue->cb_page = kcalloc(efx_tx_cb_page_count(tx_queue),
 				    sizeof(tx_queue->cb_page[0]), GFP_KERNEL);
+	{
+		typeof((tx_queue->cb_page[0])) __uncontained_tmp110;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (!tx_queue->cb_page) {
 		rc = -ENOMEM;
 		goto fail1;

@@ -5,6 +5,11 @@
 
 #include "mlx5_ib.h"
 #include <linux/mlx5/eswitch.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "counters.h"
 #include "ib_rep.h"
 #include "qp.h"
@@ -108,6 +113,10 @@ static int mlx5_ib_read_counters(struct ib_counters *counters,
 
 	mread_attr.out = kcalloc(mcounters->counters_num, sizeof(u64),
 				 GFP_KERNEL);
+	{
+		u64 __uncontained_tmp63;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!mread_attr.out) {
 		ret = -ENOMEM;
 		goto err_bound;
@@ -601,11 +610,19 @@ static int __mlx5_ib_alloc_counters(struct mlx5_ib_dev *dev,
 	num_counters += num_op_counters;
 	cnts->descs = kcalloc(num_counters,
 			      sizeof(struct rdma_stat_desc), GFP_KERNEL);
+	{
+		struct rdma_stat_desc __uncontained_tmp64;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!cnts->descs)
 		return -ENOMEM;
 
 	cnts->offsets = kcalloc(num_counters,
 				sizeof(*cnts->offsets), GFP_KERNEL);
+	{
+		typeof((*cnts->offsets)) __uncontained_tmp65;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!cnts->offsets)
 		goto err;
 
@@ -757,6 +774,10 @@ int mlx5_ib_flow_counters_set_data(struct ib_counters *ibcounters,
 		desc_data = kcalloc(cntrs_data->ncounters,
 				    sizeof(*desc_data),
 				    GFP_KERNEL);
+		{
+			typeof((*desc_data)) __uncontained_tmp66;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp66;
+		}
 		if (!desc_data)
 			return  -ENOMEM;
 

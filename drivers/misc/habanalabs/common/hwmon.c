@@ -10,6 +10,11 @@
 #include <linux/pci.h>
 #include <linux/hwmon.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define HWMON_NR_SENSOR_TYPES		(hwmon_max)
 
 #ifdef _HAS_HWMON_HWMON_T_ENABLE
@@ -178,6 +183,10 @@ int hl_build_hwmon_channel_info(struct hl_device *hdev, struct cpucp_sensor *sen
 		dev_dbg(hdev->dev, "num_sensors_for_type %d = %d\n", i, num_sensors_for_type);
 
 		curr_arr = kcalloc(num_sensors_for_type, sizeof(*curr_arr), GFP_KERNEL);
+		{
+			typeof((*curr_arr)) __uncontained_tmp63;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+		}
 		if (!curr_arr) {
 			rc = -ENOMEM;
 			goto sensors_type_err;
@@ -195,6 +204,10 @@ int hl_build_hwmon_channel_info(struct hl_device *hdev, struct cpucp_sensor *sen
 	}
 
 	channels_info = kcalloc(num_active_sensor_types + 1, sizeof(*channels_info), GFP_KERNEL);
+	{
+		typeof((*channels_info)) __uncontained_tmp64;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!channels_info) {
 		rc = -ENOMEM;
 		goto channels_info_array_err;

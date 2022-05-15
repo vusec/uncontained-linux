@@ -16,6 +16,11 @@
 #include <linux/tee_drv.h>
 #include <linux/types.h>
 #include <linux/workqueue.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "optee_private.h"
 
 int optee_pool_op_alloc_helper(struct tee_shm_pool_mgr *poolm,
@@ -43,6 +48,10 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool_mgr *poolm,
 		struct page **pages;
 
 		pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
+		{
+			typeof((*pages)) __uncontained_tmp100;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+		}
 		if (!pages) {
 			rc = -ENOMEM;
 			goto err;

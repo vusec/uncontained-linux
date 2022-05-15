@@ -39,6 +39,11 @@
 #include <linux/vmalloc.h>
 #include <linux/mlx5/driver.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mlx5_core.h"
 
 struct mlx5_db_pgdir {
@@ -128,6 +133,10 @@ int mlx5_frag_buf_alloc_node(struct mlx5_core_dev *dev, int size,
 	buf->page_shift = PAGE_SHIFT;
 	buf->frags = kcalloc(buf->npages, sizeof(struct mlx5_buf_list),
 			     GFP_KERNEL);
+	{
+		struct mlx5_buf_list __uncontained_tmp99;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
+	}
 	if (!buf->frags)
 		goto err_out;
 

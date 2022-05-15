@@ -35,6 +35,11 @@
 #include <linux/llist.h>
 #include <linux/bitmap.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vhost.h"
 
 #define VHOST_SCSI_VERSION  "v0.1"
@@ -1482,6 +1487,10 @@ static int vhost_scsi_setup_vq_cmds(struct vhost_virtqueue *vq, int max_cmds)
 	svq->max_cmds = max_cmds;
 
 	svq->scsi_cmds = kcalloc(max_cmds, sizeof(*tv_cmd), GFP_KERNEL);
+	{
+		typeof((*tv_cmd)) __uncontained_tmp129;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp129;
+	}
 	if (!svq->scsi_cmds) {
 		sbitmap_free(&svq->scsi_tags);
 		return -ENOMEM;
@@ -1493,6 +1502,10 @@ static int vhost_scsi_setup_vq_cmds(struct vhost_virtqueue *vq, int max_cmds)
 		tv_cmd->tvc_sgl = kcalloc(VHOST_SCSI_PREALLOC_SGLS,
 					  sizeof(struct scatterlist),
 					  GFP_KERNEL);
+		{
+			struct scatterlist __uncontained_tmp126;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp126;
+		}
 		if (!tv_cmd->tvc_sgl) {
 			pr_err("Unable to allocate tv_cmd->tvc_sgl\n");
 			goto out;
@@ -1501,6 +1514,10 @@ static int vhost_scsi_setup_vq_cmds(struct vhost_virtqueue *vq, int max_cmds)
 		tv_cmd->tvc_upages = kcalloc(VHOST_SCSI_PREALLOC_UPAGES,
 					     sizeof(struct page *),
 					     GFP_KERNEL);
+		{
+			struct page *__uncontained_tmp127;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp127;
+		}
 		if (!tv_cmd->tvc_upages) {
 			pr_err("Unable to allocate tv_cmd->tvc_upages\n");
 			goto out;
@@ -1509,6 +1526,10 @@ static int vhost_scsi_setup_vq_cmds(struct vhost_virtqueue *vq, int max_cmds)
 		tv_cmd->tvc_prot_sgl = kcalloc(VHOST_SCSI_PREALLOC_PROT_SGLS,
 					       sizeof(struct scatterlist),
 					       GFP_KERNEL);
+		{
+			struct scatterlist __uncontained_tmp128;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp128;
+		}
 		if (!tv_cmd->tvc_prot_sgl) {
 			pr_err("Unable to allocate tv_cmd->tvc_prot_sgl\n");
 			goto out;

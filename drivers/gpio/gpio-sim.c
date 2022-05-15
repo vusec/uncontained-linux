@@ -29,6 +29,11 @@
 #include <linux/string_helpers.h>
 #include <linux/sysfs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gpiolib.h"
 
 #define GPIO_SIM_PROP_MAX	4 /* Max 3 properties + sentinel. */
@@ -714,6 +719,10 @@ static char **gpio_sim_make_line_names(struct gpio_sim_bank *bank,
 	*line_names_size = max_offset + 1;
 
 	line_names = kcalloc(*line_names_size, sizeof(*line_names), GFP_KERNEL);
+	{
+		typeof((*line_names)) __uncontained_tmp32;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!line_names)
 		return ERR_PTR(-ENOMEM);
 
@@ -760,6 +769,10 @@ static int gpio_sim_add_hogs(struct gpio_sim_device *dev)
 
 	/* Allocate one more for the sentinel. */
 	dev->hogs = kcalloc(num_hogs + 1, sizeof(*dev->hogs), GFP_KERNEL);
+	{
+		typeof((*dev->hogs)) __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!dev->hogs)
 		return -ENOMEM;
 

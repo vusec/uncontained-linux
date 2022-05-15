@@ -28,6 +28,11 @@
 #include <linux/slab.h>
 #include <asm/div64.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 /* Required number of TX DMA slots per TX frame.
  * This currently is 2, because we put the header and the ieee80211 frame
@@ -848,6 +853,10 @@ struct b43_dmaring *b43_setup_dmaring(struct b43_wldev *dev,
 
 	ring->meta = kcalloc(ring->nr_slots, sizeof(struct b43_dmadesc_meta),
 			     GFP_KERNEL);
+	{
+		struct b43_dmadesc_meta __uncontained_tmp128;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp128;
+	}
 	if (!ring->meta)
 		goto err_kfree_ring;
 	for (i = 0; i < ring->nr_slots; i++)

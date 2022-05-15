@@ -5163,6 +5163,10 @@ __set_power_wells(struct i915_power_domains *power_domains,
 				kcalloc(power_well_count,
 					sizeof(*power_domains->power_wells),
 					GFP_KERNEL);
+	{
+		typeof((*power_domains->power_wells)) __uncontained_tmp47;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!power_domains->power_wells)
 		return -ENOMEM;
 

@@ -24,6 +24,11 @@
 #include <linux/regulator/consumer.h>
 #include <linux/platform_data/dma-ste-dma40.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2520,6 +2525,10 @@ dma40_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t dma_addr,
 	int i;
 
 	sg = kcalloc(periods + 1, sizeof(struct scatterlist), GFP_NOWAIT);
+	{
+		struct scatterlist __uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!sg)
 		return NULL;
 
@@ -3258,18 +3267,30 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 	base->phy_res = kcalloc(num_phy_chans,
 				sizeof(*base->phy_res),
 				GFP_KERNEL);
+	{
+		typeof((*base->phy_res)) __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!base->phy_res)
 		goto free_base;
 
 	base->lookup_phy_chans = kcalloc(num_phy_chans,
 					 sizeof(*base->lookup_phy_chans),
 					 GFP_KERNEL);
+	{
+		typeof((*base->lookup_phy_chans)) __uncontained_tmp20;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!base->lookup_phy_chans)
 		goto free_phy_res;
 
 	base->lookup_log_chans = kcalloc(num_log_chans,
 					 sizeof(*base->lookup_log_chans),
 					 GFP_KERNEL);
+	{
+		typeof((*base->lookup_log_chans)) __uncontained_tmp21;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!base->lookup_log_chans)
 		goto free_phy_chans;
 
@@ -3283,6 +3304,10 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 					    * D40_LCLA_LINK_PER_EVENT_GRP,
 					    sizeof(*base->lcla_pool.alloc_map),
 					    GFP_KERNEL);
+	{
+		typeof((*base->lcla_pool.alloc_map)) __uncontained_tmp22;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!base->lcla_pool.alloc_map)
 		goto free_backup_chan;
 

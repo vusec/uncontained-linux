@@ -7,6 +7,11 @@
  *  Common directory handling for ADFS
  */
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "adfs.h"
 
 /*
@@ -108,6 +113,10 @@ int adfs_dir_read_buffers(struct super_block *sb, u32 indaddr,
 			return -EINVAL;
 
 		bhs = kcalloc(num, sizeof(*bhs), GFP_KERNEL);
+		{
+			typeof((*bhs)) __uncontained_tmp126;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp126;
+		}
 		if (!bhs)
 			return -ENOMEM;
 

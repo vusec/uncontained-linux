@@ -10,6 +10,11 @@
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 static inline unsigned int regcache_flat_get_index(const struct regmap *map,
@@ -28,6 +33,10 @@ static int regcache_flat_init(struct regmap *map)
 
 	map->cache = kcalloc(regcache_flat_get_index(map, map->max_register)
 			     + 1, sizeof(unsigned int), GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp5;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!map->cache)
 		return -ENOMEM;
 

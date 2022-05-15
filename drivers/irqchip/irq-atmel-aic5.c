@@ -31,6 +31,11 @@
 #include <asm/exception.h>
 #include <asm/mach/irq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "irq-atmel-aic-common.h"
 
 /* Number of irq lines managed by AIC */
@@ -372,6 +377,10 @@ static int __init sama5d2_aic5_of_init(struct device_node *node,
 #ifdef CONFIG_PM
 	smr_cache = kcalloc(DIV_ROUND_UP(NR_SAMA5D2_IRQS, 32) * 32,
 			    sizeof(*smr_cache), GFP_KERNEL);
+	{
+		typeof((*smr_cache)) __uncontained_tmp70;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!smr_cache)
 		return -ENOMEM;
 #endif

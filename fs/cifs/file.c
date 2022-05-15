@@ -22,6 +22,11 @@
 #include <linux/swap.h>
 #include <linux/mm.h>
 #include <asm/div64.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "cifsfs.h"
 #include "cifspdu.h"
 #include "cifsglob.h"
@@ -1287,6 +1292,10 @@ cifs_push_mandatory_locks(struct cifsFileInfo *cfile)
 	max_num = (max_buf - sizeof(struct smb_hdr)) /
 						sizeof(LOCKING_ANDX_RANGE);
 	buf = kcalloc(max_num, sizeof(LOCKING_ANDX_RANGE), GFP_KERNEL);
+	{
+		LOCKING_ANDX_RANGE __uncontained_tmp154;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp154;
+	}
 	if (!buf) {
 		free_xid(xid);
 		return -ENOMEM;
@@ -1629,6 +1638,10 @@ cifs_unlock_range(struct cifsFileInfo *cfile, struct file_lock *flock,
 	max_num = (max_buf - sizeof(struct smb_hdr)) /
 						sizeof(LOCKING_ANDX_RANGE);
 	buf = kcalloc(max_num, sizeof(LOCKING_ANDX_RANGE), GFP_KERNEL);
+	{
+		LOCKING_ANDX_RANGE __uncontained_tmp155;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp155;
+	}
 	if (!buf)
 		return -ENOMEM;
 

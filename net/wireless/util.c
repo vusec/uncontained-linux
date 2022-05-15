@@ -20,6 +20,11 @@
 #include <linux/gcd.h>
 #include <linux/bitfield.h>
 #include <linux/nospec.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "core.h"
 #include "rdev-ops.h"
 
@@ -2092,6 +2097,10 @@ int cfg80211_sinfo_alloc_tid_stats(struct station_info *sinfo, gfp_t gfp)
 	sinfo->pertid = kcalloc(IEEE80211_NUM_TIDS + 1,
 				sizeof(*(sinfo->pertid)),
 				gfp);
+	{
+		typeof((*(sinfo->pertid))) __uncontained_tmp144;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp144;
+	}
 	if (!sinfo->pertid)
 		return -ENOMEM;
 

@@ -17,6 +17,11 @@
  ***********************************************************************/
 #include <linux/pci.h>
 #include <linux/if_vlan.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "liquidio_common.h"
 #include "octeon_droq.h"
 #include "octeon_iq.h"
@@ -85,11 +90,19 @@ int lio_setup_glists(struct octeon_device *oct, struct lio *lio, int num_iqs)
 
 	lio->glist_lock =
 	    kcalloc(num_iqs, sizeof(*lio->glist_lock), GFP_KERNEL);
+	{
+		typeof((*lio->glist_lock)) __uncontained_tmp66;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!lio->glist_lock)
 		return -ENOMEM;
 
 	lio->glist =
 	    kcalloc(num_iqs, sizeof(*lio->glist), GFP_KERNEL);
+	{
+		typeof((*lio->glist)) __uncontained_tmp67;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!lio->glist) {
 		kfree(lio->glist_lock);
 		lio->glist_lock = NULL;
@@ -104,8 +117,16 @@ int lio_setup_glists(struct octeon_device *oct, struct lio *lio, int num_iqs)
 	 */
 	lio->glists_virt_base = kcalloc(num_iqs, sizeof(*lio->glists_virt_base),
 					GFP_KERNEL);
+	{
+		typeof((*lio->glists_virt_base)) __uncontained_tmp68;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp68;
+	}
 	lio->glists_dma_base = kcalloc(num_iqs, sizeof(*lio->glists_dma_base),
 				       GFP_KERNEL);
+	{
+		typeof((*lio->glists_dma_base)) __uncontained_tmp69;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp69;
+	}
 
 	if (!lio->glists_virt_base || !lio->glists_dma_base) {
 		lio_delete_glists(lio);
@@ -1043,6 +1064,10 @@ int octeon_setup_interrupt(struct octeon_device *oct, u32 num_ioqs)
 		oct->msix_entries = kcalloc(oct->num_msix_irqs,
 					    sizeof(struct msix_entry),
 					    GFP_KERNEL);
+		{
+			struct msix_entry __uncontained_tmp65;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp65;
+		}
 		if (!oct->msix_entries) {
 			dev_err(&oct->pci_dev->dev, "Memory Alloc failed...\n");
 			kfree(oct->irq_name_storage);

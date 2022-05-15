@@ -20,6 +20,11 @@
 #include <linux/smp.h>
 #include <linux/sysfs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* pointer to per cpu cacheinfo */
 static DEFINE_PER_CPU(struct cpu_cacheinfo, ci_cpu_cacheinfo);
 #define ci_cacheinfo(cpu)	(&per_cpu(ci_cpu_cacheinfo, cpu))
@@ -319,6 +324,10 @@ static int detect_cache_attributes(unsigned int cpu)
 
 	per_cpu_cacheinfo(cpu) = kcalloc(cache_leaves(cpu),
 					 sizeof(struct cacheinfo), GFP_KERNEL);
+	{
+		struct cacheinfo __uncontained_tmp15;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (per_cpu_cacheinfo(cpu) == NULL)
 		return -ENOMEM;
 
@@ -598,6 +607,10 @@ static int cpu_cache_sysfs_init(unsigned int cpu)
 	/* Allocate all required memory */
 	per_cpu_index_dev(cpu) = kcalloc(cache_leaves(cpu),
 					 sizeof(struct device *), GFP_KERNEL);
+	{
+		struct device *__uncontained_tmp16;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (unlikely(per_cpu_index_dev(cpu) == NULL))
 		goto err_out;
 

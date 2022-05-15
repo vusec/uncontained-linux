@@ -15,6 +15,11 @@
 #include <linux/of_irq.h>
 #include <linux/platform_device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mtu3.h"
 #include "mtu3_dr.h"
 #include "mtu3_debug.h"
@@ -614,6 +619,10 @@ static int mtu3_mem_alloc(struct mtu3 *mtu)
 	/* one for ep0, another is reserved */
 	mtu->num_eps = min(in_ep_num, out_ep_num) + 1;
 	ep_array = kcalloc(mtu->num_eps * 2, sizeof(*ep_array), GFP_KERNEL);
+	{
+		typeof((*ep_array)) __uncontained_tmp159;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp159;
+	}
 	if (ep_array == NULL)
 		return -ENOMEM;
 

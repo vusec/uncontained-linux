@@ -24,6 +24,11 @@
 #include <asm/sync_bitops.h>
 #include <asm/mshyperv.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hyperv_net.h"
 #include "netvsc_trace.h"
 
@@ -1037,6 +1042,10 @@ static int netvsc_dma_map(struct hv_device *hv_dev,
 	packet->dma_range = kcalloc(page_count,
 				    sizeof(*packet->dma_range),
 				    GFP_KERNEL);
+	{
+		typeof((*packet->dma_range)) __uncontained_tmp111;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (!packet->dma_range)
 		return -ENOMEM;
 

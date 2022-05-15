@@ -22,6 +22,11 @@
 
 #include <keys/trusted_tpm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static const char hmac_alg[] = "hmac(sha1)";
 static const char hash_alg[] = "sha1";
 static struct tpm_chip *chip;
@@ -1018,6 +1023,10 @@ static int __init init_digests(void)
 
 	digests = kcalloc(chip->nr_allocated_banks, sizeof(*digests),
 			  GFP_KERNEL);
+	{
+		typeof((*digests)) __uncontained_tmp167;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp167;
+	}
 	if (!digests)
 		return -ENOMEM;
 

@@ -21,6 +21,11 @@
 #include <linux/slab.h>
 #include <linux/gpio/driver.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Chip Id numbers */
 #define NO_DEV_ID	0xffff
 #define IT8613_ID	0x8613
@@ -364,8 +369,16 @@ static int __init it87_gpio_init(void)
 	 */
 	labels = kcalloc(it87_gpio->chip.ngpio, sizeof("it87_gpXY"),
 								GFP_KERNEL);
+	{
+		typeof(("it87_gpXY")) __uncontained_tmp15;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp15;
+	}
 	labels_table = kcalloc(it87_gpio->chip.ngpio, sizeof(const char *),
 								GFP_KERNEL);
+	{
+		const char *__uncontained_tmp14;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+	}
 
 	if (!labels || !labels_table) {
 		rc = -ENOMEM;

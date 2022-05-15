@@ -13,6 +13,11 @@
 
 #include <asm/opal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static DEFINE_MUTEX(psr_mutex);
 
 static struct kobject *psr_kobj;
@@ -134,6 +139,10 @@ void __init opal_psr_init(void)
 
 	psr_attrs = kcalloc(of_get_child_count(psr), sizeof(*psr_attrs),
 			    GFP_KERNEL);
+	{
+		typeof((*psr_attrs)) __uncontained_tmp3;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!psr_attrs)
 		return;
 

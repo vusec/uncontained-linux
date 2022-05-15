@@ -26,6 +26,11 @@
 #include <vdso/helpers.h>
 #include <vdso/vsyscall.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MAX_SYMNAME	64
 
 static struct page **vdso_text_pagelist;
@@ -194,6 +199,10 @@ static int __init vdso_init(void)
 	/* Allocate the VDSO text pagelist */
 	vdso_text_pagelist = kcalloc(text_pages, sizeof(struct page *),
 				     GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (vdso_text_pagelist == NULL)
 		return -ENOMEM;
 

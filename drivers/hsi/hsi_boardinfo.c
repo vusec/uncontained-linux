@@ -9,6 +9,11 @@
 #include <linux/hsi/hsi.h>
 #include <linux/list.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hsi_core.h"
 
 /*
@@ -37,6 +42,10 @@ int __init hsi_register_board_info(struct hsi_board_info const *info,
 	struct hsi_cl_info *cl_info;
 
 	cl_info = kcalloc(len, sizeof(*cl_info), GFP_KERNEL);
+	{
+		typeof((*cl_info)) __uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!cl_info)
 		return -ENOMEM;
 

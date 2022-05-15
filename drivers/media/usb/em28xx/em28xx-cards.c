@@ -36,6 +36,11 @@
 #include <media/v4l2-common.h>
 #include <sound/ac97_codec.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRIVER_NAME         "em28xx"
 
 static int tuner = -1;
@@ -3873,6 +3878,10 @@ static int em28xx_usb_probe(struct usb_interface *intf,
 	dev->alt_max_pkt_size_isoc = kcalloc(intf->num_altsetting,
 					     sizeof(dev->alt_max_pkt_size_isoc[0]),
 					     GFP_KERNEL);
+	{
+		typeof((dev->alt_max_pkt_size_isoc[0])) __uncontained_tmp40;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!dev->alt_max_pkt_size_isoc) {
 		kfree(dev);
 		retval = -ENOMEM;

@@ -25,6 +25,11 @@
 #include <net/sock.h>
 #include <net/tcp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static LIST_HEAD(taprio_list);
 static DEFINE_SPINLOCK(taprio_list_lock);
 
@@ -1709,6 +1714,10 @@ static int taprio_init(struct Qdisc *sch, struct nlattr *opt,
 	q->qdiscs = kcalloc(dev->num_tx_queues,
 			    sizeof(q->qdiscs[0]),
 			    GFP_KERNEL);
+	{
+		typeof((q->qdiscs[0])) __uncontained_tmp107;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp107;
+	}
 
 	if (!q->qdiscs)
 		return -ENOMEM;

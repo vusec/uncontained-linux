@@ -42,6 +42,11 @@
 #include <linux/dma-mapping.h>
 #include <asm/set_memory.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_AUTHOR("Abhay Salunke <abhay_salunke@dell.com>");
 MODULE_DESCRIPTION("Driver for updating BIOS image on DELL systems");
 MODULE_LICENSE("GPL");
@@ -136,6 +141,10 @@ static int create_packet(void *data, size_t length)
 	packet_array_size = max_t(unsigned int, allocation_floor / rbu_data.packetsize, 1);
 	invalid_addr_packet_array = kcalloc(packet_array_size, sizeof(void *),
 						GFP_KERNEL);
+	{
+		void *__uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 
 	if (!invalid_addr_packet_array) {
 		pr_warn("failed to allocate invalid_addr_packet_array\n");

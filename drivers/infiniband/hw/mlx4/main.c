@@ -60,6 +60,11 @@
 #include "mlx4_ib.h"
 #include <rdma/mlx4-abi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRV_NAME	MLX4_IB_DRV_NAME
 #define DRV_VERSION	"4.0-0"
 
@@ -2158,10 +2163,18 @@ static int __mlx4_ib_alloc_diag_counters(struct mlx4_ib_dev *ibdev,
 
 	*pdescs = kcalloc(num_counters, sizeof(struct rdma_stat_desc),
 			  GFP_KERNEL);
+	{
+		struct rdma_stat_desc __uncontained_tmp45;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!*pdescs)
 		return -ENOMEM;
 
 	*offset = kcalloc(num_counters, sizeof(**offset), GFP_KERNEL);
+	{
+		typeof((**offset)) __uncontained_tmp46;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!*offset)
 		goto err;
 
@@ -2434,6 +2447,10 @@ static void mlx4_ib_alloc_eqs(struct mlx4_dev *dev, struct mlx4_ib_dev *ibdev)
 
 	ibdev->eq_table = kcalloc(dev->caps.num_comp_vectors,
 				  sizeof(ibdev->eq_table[0]), GFP_KERNEL);
+	{
+		typeof((ibdev->eq_table[0])) __uncontained_tmp47;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!ibdev->eq_table)
 		return;
 
@@ -3012,6 +3029,10 @@ static void do_slave_init(struct mlx4_ib_dev *ibdev, int slave, int do_init)
 	first_port = find_first_bit(actv_ports.ports, dev->caps.num_ports);
 
 	dm = kcalloc(ports, sizeof(*dm), GFP_ATOMIC);
+	{
+		typeof((*dm)) __uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!dm)
 		return;
 

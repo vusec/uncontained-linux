@@ -21,6 +21,11 @@
 
 #include <uapi/misc/cxl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "backend.h"
 #include "ocxl_hw.h"
 
@@ -633,6 +638,10 @@ static int alloc_afu_irqs(struct ocxlflash_context *ctx, int num)
 	}
 
 	irqs = kcalloc(num, sizeof(*irqs), GFP_KERNEL);
+	{
+		typeof((*irqs)) __uncontained_tmp118;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+	}
 	if (unlikely(!irqs)) {
 		dev_err(dev, "%s: Context irqs allocation failed\n", __func__);
 		rc = -ENOMEM;

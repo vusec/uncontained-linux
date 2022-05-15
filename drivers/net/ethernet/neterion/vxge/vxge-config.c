@@ -17,6 +17,11 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2225,21 +2230,37 @@ __vxge_hw_channel_allocate(struct __vxge_hw_vpath_handle *vph,
 	channel->vp_id = vp_id;
 
 	channel->work_arr = kcalloc(length, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp85;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (channel->work_arr == NULL)
 		goto exit1;
 
 	channel->free_arr = kcalloc(length, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (channel->free_arr == NULL)
 		goto exit1;
 	channel->free_ptr = length;
 
 	channel->reserve_arr = kcalloc(length, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp87;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (channel->reserve_arr == NULL)
 		goto exit1;
 	channel->reserve_ptr = length;
 	channel->reserve_top = 0;
 
 	channel->orig_arr = kcalloc(length, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp88;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (channel->orig_arr == NULL)
 		goto exit1;
 

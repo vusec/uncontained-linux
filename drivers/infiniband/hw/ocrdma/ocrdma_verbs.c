@@ -55,6 +55,11 @@
 #include "ocrdma_verbs.h"
 #include <rdma/ocrdma-abi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 int ocrdma_query_pkey(struct ib_device *ibdev, u32 port, u16 index, u16 *pkey)
 {
 	if (index > 0)
@@ -796,6 +801,10 @@ static int ocrdma_build_pbl_tbl(struct ocrdma_dev *dev, struct ocrdma_hw_mr *mr)
 
 	mr->pbl_table = kcalloc(mr->num_pbls, sizeof(struct ocrdma_pbl),
 				GFP_KERNEL);
+	{
+		struct ocrdma_pbl __uncontained_tmp61;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+	}
 
 	if (!mr->pbl_table)
 		return -ENOMEM;
@@ -1252,10 +1261,18 @@ static int ocrdma_alloc_wr_id_tbl(struct ocrdma_qp *qp)
 	qp->wqe_wr_id_tbl =
 	    kcalloc(qp->sq.max_cnt, sizeof(*(qp->wqe_wr_id_tbl)),
 		    GFP_KERNEL);
+	{
+		typeof((*(qp->wqe_wr_id_tbl))) __uncontained_tmp65;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (qp->wqe_wr_id_tbl == NULL)
 		return -ENOMEM;
 	qp->rqe_wr_id_tbl =
 	    kcalloc(qp->rq.max_cnt, sizeof(u64), GFP_KERNEL);
+	{
+		u64 __uncontained_tmp62;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (qp->rqe_wr_id_tbl == NULL)
 		return -ENOMEM;
 
@@ -1789,6 +1806,10 @@ int ocrdma_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init_attr,
 	if (!udata) {
 		srq->rqe_wr_id_tbl = kcalloc(srq->rq.max_cnt, sizeof(u64),
 					     GFP_KERNEL);
+		{
+			u64 __uncontained_tmp63;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+		}
 		if (!srq->rqe_wr_id_tbl) {
 			status = -ENOMEM;
 			goto arm_err;
@@ -2913,6 +2934,10 @@ struct ib_mr *ocrdma_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
 		return ERR_PTR(-ENOMEM);
 
 	mr->pages = kcalloc(max_num_sg, sizeof(u64), GFP_KERNEL);
+	{
+		u64 __uncontained_tmp64;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!mr->pages) {
 		status = -ENOMEM;
 		goto pl_err;

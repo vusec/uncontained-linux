@@ -36,6 +36,11 @@
 #include <linux/bitops.h>
 #include <linux/vmalloc.h>
 #include <linux/aer.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qede.h"
 #include "qede_ptp.h"
 
@@ -965,6 +970,10 @@ static int qede_alloc_fp_array(struct qede_dev *edev)
 
 	edev->fp_array = kcalloc(QEDE_QUEUE_CNT(edev),
 				 sizeof(*edev->fp_array), GFP_KERNEL);
+	{
+		typeof((*edev->fp_array)) __uncontained_tmp46;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!edev->fp_array) {
 		DP_NOTICE(edev, "fp array allocation failed\n");
 		goto err;
@@ -1008,6 +1017,10 @@ static int qede_alloc_fp_array(struct qede_dev *edev)
 		if (fp->type & QEDE_FASTPATH_TX) {
 			fp->txq = kcalloc(edev->dev_info.num_tc,
 					  sizeof(*fp->txq), GFP_KERNEL);
+			{
+				typeof((*fp->txq)) __uncontained_tmp47;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+			}
 			if (!fp->txq)
 				goto err;
 		}

@@ -11,6 +11,11 @@
 #include <linux/pm_runtime.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "tb.h"
 
 #define PORT_CAP_PCIE_LEN	1
@@ -194,6 +199,10 @@ static int port_clear_all_counters(struct tb_port *port)
 
 	buf = kcalloc(COUNTER_SET_LEN * port->config.max_counters, sizeof(u32),
 		      GFP_KERNEL);
+	{
+		u32 __uncontained_tmp104;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!buf)
 		return -ENOMEM;
 

@@ -14,6 +14,11 @@
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
 #include <linux/usb/otg.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "common.h"
 
 /*
@@ -1089,6 +1094,10 @@ int usbhs_mod_gadget_probe(struct usbhs_priv *priv)
 		return -ENOMEM;
 
 	uep = kcalloc(pipe_size, sizeof(struct usbhsg_uep), GFP_KERNEL);
+	{
+		struct usbhsg_uep __uncontained_tmp148;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (!uep) {
 		ret = -ENOMEM;
 		goto usbhs_mod_gadget_probe_err_gpriv;

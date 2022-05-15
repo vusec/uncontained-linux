@@ -10,6 +10,11 @@
 #include <linux/slab.h>
 #include <linux/tee_drv.h>
 #include <linux/uio.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "tee_private.h"
 
 static void release_registered_pages(struct tee_shm *shm)
@@ -187,6 +192,10 @@ struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
 	shm->size = length;
 	num_pages = (roundup(addr + length, PAGE_SIZE) - start) / PAGE_SIZE;
 	shm->pages = kcalloc(num_pages, sizeof(*shm->pages), GFP_KERNEL);
+	{
+		typeof((*shm->pages)) __uncontained_tmp80;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!shm->pages) {
 		ret = ERR_PTR(-ENOMEM);
 		goto err;
@@ -200,6 +209,10 @@ struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
 		int i;
 
 		kiov = kcalloc(num_pages, sizeof(*kiov), GFP_KERNEL);
+		{
+			typeof((*kiov)) __uncontained_tmp81;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+		}
 		if (!kiov) {
 			ret = ERR_PTR(-ENOMEM);
 			goto err;

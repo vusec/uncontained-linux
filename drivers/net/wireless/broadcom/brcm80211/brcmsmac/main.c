@@ -24,6 +24,11 @@
 #include <brcm_hw_ids.h>
 #include <aiutils.h>
 #include <chipcommon.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "rate.h"
 #include "scb.h"
 #include "phy/phy_hal.h"
@@ -508,6 +513,10 @@ brcms_c_attach_malloc(uint unit, uint *err, uint devid)
 
 	wlc->hw->bandstate[0] =
 		kcalloc(MAXBANDS, sizeof(struct brcms_hw_band), GFP_ATOMIC);
+	{
+		struct brcms_hw_band __uncontained_tmp88;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (wlc->hw->bandstate[0] == NULL) {
 		*err = 1006;
 		goto fail;
@@ -523,6 +532,10 @@ brcms_c_attach_malloc(uint unit, uint *err, uint devid)
 	wlc->modulecb =
 		kcalloc(BRCMS_MAXMODULES, sizeof(struct modulecb),
 			GFP_ATOMIC);
+	{
+		struct modulecb __uncontained_tmp89;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp89;
+	}
 	if (wlc->modulecb == NULL) {
 		*err = 1009;
 		goto fail;
@@ -555,6 +568,10 @@ brcms_c_attach_malloc(uint unit, uint *err, uint devid)
 
 	wlc->bandstate[0] =
 		kcalloc(MAXBANDS, sizeof(struct brcms_band), GFP_ATOMIC);
+	{
+		struct brcms_band __uncontained_tmp90;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (wlc->bandstate[0] == NULL) {
 		*err = 1025;
 		goto fail;

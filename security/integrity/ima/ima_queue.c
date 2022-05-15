@@ -17,6 +17,11 @@
 
 #include <linux/rculist.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ima.h"
 
 #define AUDIT_CAUSE_LEN_MAX 32
@@ -222,6 +227,10 @@ int __init ima_init_digests(void)
 
 	digests = kcalloc(ima_tpm_chip->nr_allocated_banks, sizeof(*digests),
 			  GFP_NOFS);
+	{
+		typeof((*digests)) __uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!digests)
 		return -ENOMEM;
 

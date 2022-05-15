@@ -421,6 +421,10 @@ static struct xge_desc_ring *xge_create_desc_ring(struct net_device *ndev)
 
 	ring->pkt_info = kcalloc(XGENE_ENET_NUM_DESC, sizeof(*ring->pkt_info),
 				 GFP_KERNEL);
+	{
+		typeof((*ring->pkt_info)) __uncontained_tmp82;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!ring->pkt_info)
 		goto err;
 

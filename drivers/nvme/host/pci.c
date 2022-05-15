@@ -28,6 +28,11 @@
 #include <linux/sed-opal.h>
 #include <linux/pci-p2pdma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "trace.h"
 #include "nvme.h"
 
@@ -2042,6 +2047,10 @@ static int __nvme_alloc_host_mem(struct nvme_dev *dev, u64 preferred,
 		goto out;
 
 	bufs = kcalloc(max_entries, sizeof(*bufs), GFP_KERNEL);
+	{
+		typeof((*bufs)) __uncontained_tmp123;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (!bufs)
 		goto out_free_descs;
 

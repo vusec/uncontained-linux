@@ -11,6 +11,11 @@
 #include "net_driver.h"
 #include <linux/module.h>
 #include <linux/filter.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "efx_channels.h"
 #include "efx.h"
 #include "efx_common.h"
@@ -900,6 +905,10 @@ int efx_set_channels(struct efx_nic *efx)
 		efx->xdp_tx_queues = kcalloc(efx->xdp_tx_queue_count,
 					     sizeof(*efx->xdp_tx_queues),
 					     GFP_KERNEL);
+		{
+			typeof((*efx->xdp_tx_queues)) __uncontained_tmp112;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+		}
 		if (!efx->xdp_tx_queues)
 			return -ENOMEM;
 	}

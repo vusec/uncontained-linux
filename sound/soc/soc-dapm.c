@@ -39,6 +39,11 @@
 
 #include <trace/events/asoc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DAPM_UPDATE_STAT(widget, val) widget->dapm->card->dapm_stats.val++;
 
 #define SND_SOC_DAPM_DIR_REVERSE(x) ((x == SND_SOC_DAPM_DIR_IN) ? \
@@ -3249,6 +3254,10 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
 			w->kcontrols = kcalloc(w->num_kcontrols,
 						sizeof(struct snd_kcontrol *),
 						GFP_KERNEL);
+			{
+				struct snd_kcontrol *__uncontained_tmp165;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp165;
+			}
 			if (!w->kcontrols) {
 				mutex_unlock(&card->dapm_mutex);
 				return -ENOMEM;

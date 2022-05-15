@@ -57,6 +57,11 @@ static const char *verstr = "20160209";
 #include <scsi/scsi_ioctl.h>
 #include <scsi/sg.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 /* The driver prints some debugging information on the console if DEBUG
    is defined and non-zero. */
@@ -3878,6 +3883,10 @@ static struct st_buffer *new_tape_buffer(int max_sg)
 
 	tb->reserved_pages = kcalloc(max_sg, sizeof(struct page *),
 				     GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp121;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+	}
 	if (!tb->reserved_pages) {
 		kfree(tb);
 		return NULL;

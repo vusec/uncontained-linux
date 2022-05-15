@@ -10,6 +10,11 @@
 #include <linux/vmalloc.h>
 #include <rdma/uverbs_ioctl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rxe.h"
 #include "rxe_loc.h"
 #include "rxe_queue.h"
@@ -111,6 +116,10 @@ static int alloc_rd_atomic_resources(struct rxe_qp *qp, unsigned int n)
 	qp->resp.res_head = 0;
 	qp->resp.res_tail = 0;
 	qp->resp.resources = kcalloc(n, sizeof(struct resp_res), GFP_KERNEL);
+	{
+		struct resp_res __uncontained_tmp44;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp44;
+	}
 
 	if (!qp->resp.resources)
 		return -ENOMEM;

@@ -33,6 +33,11 @@
 #include <linux/radix-tree.h>
 #include <linux/export.h>
 #include <linux/sort.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "internals.h"
 
 LIST_HEAD(intc_list);
@@ -220,6 +225,10 @@ int __init register_intc_controller(struct intc_desc *desc)
 		d->nr_windows = desc->num_resources;
 		d->window = kcalloc(d->nr_windows, sizeof(*d->window),
 				    GFP_NOWAIT);
+		{
+			typeof((*d->window)) __uncontained_tmp117;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+		}
 		if (!d->window)
 			goto err1;
 
@@ -246,11 +255,19 @@ int __init register_intc_controller(struct intc_desc *desc)
 	d->nr_reg += hw->subgroups ? hw->nr_subgroups : 0;
 
 	d->reg = kcalloc(d->nr_reg, sizeof(*d->reg), GFP_NOWAIT);
+	{
+		typeof((*d->reg)) __uncontained_tmp118;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+	}
 	if (!d->reg)
 		goto err2;
 
 #ifdef CONFIG_SMP
 	d->smp = kcalloc(d->nr_reg, sizeof(*d->smp), GFP_NOWAIT);
+	{
+		typeof((*d->smp)) __uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!d->smp)
 		goto err3;
 #endif
@@ -270,6 +287,10 @@ int __init register_intc_controller(struct intc_desc *desc)
 	if (hw->prio_regs) {
 		d->prio = kcalloc(hw->nr_vectors, sizeof(*d->prio),
 				  GFP_NOWAIT);
+		{
+			typeof((*d->prio)) __uncontained_tmp120;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+		}
 		if (!d->prio)
 			goto err4;
 
@@ -286,6 +307,10 @@ int __init register_intc_controller(struct intc_desc *desc)
 	if (hw->sense_regs) {
 		d->sense = kcalloc(hw->nr_vectors, sizeof(*d->sense),
 				   GFP_NOWAIT);
+		{
+			typeof((*d->sense)) __uncontained_tmp121;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+		}
 		if (!d->sense)
 			goto err5;
 

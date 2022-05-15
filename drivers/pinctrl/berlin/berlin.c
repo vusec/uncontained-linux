@@ -19,6 +19,11 @@
 #include <linux/regmap.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../core.h"
 #include "../pinctrl-utils.h"
 #include "berlin.h"
@@ -216,6 +221,10 @@ static int berlin_pinctrl_build_state(struct platform_device *pdev)
 	/* we will reallocate later */
 	pctrl->functions = kcalloc(max_functions,
 				   sizeof(*pctrl->functions), GFP_KERNEL);
+	{
+		typeof((*pctrl->functions)) __uncontained_tmp60;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!pctrl->functions)
 		return -ENOMEM;
 

@@ -25,6 +25,11 @@
 #include <linux/pci.h>
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "atom.h"
 #include "r600_dpm.h"
 #include "radeon.h"
@@ -807,6 +812,10 @@ static int rs780_parse_power_table(struct radeon_device *rdev)
 	rdev->pm.dpm.ps = kcalloc(power_info->pplib.ucNumStates,
 				  sizeof(struct radeon_ps),
 				  GFP_KERNEL);
+	{
+		struct radeon_ps __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!rdev->pm.dpm.ps)
 		return -ENOMEM;
 

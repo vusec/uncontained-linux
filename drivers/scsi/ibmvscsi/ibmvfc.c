@@ -31,6 +31,11 @@
 #include <scsi/scsi_tcq.h>
 #include <scsi/scsi_transport_fc.h>
 #include <scsi/scsi_bsg_fc.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ibmvfc.h"
 
 static unsigned int init_timeout = IBMVFC_INIT_TIMEOUT;
@@ -788,6 +793,10 @@ static int ibmvfc_init_event_pool(struct ibmvfc_host *vhost,
 
 	pool->size = size;
 	pool->events = kcalloc(size, sizeof(*pool->events), GFP_KERNEL);
+	{
+		typeof((*pool->events)) __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!pool->events)
 		return -ENOMEM;
 
@@ -5841,6 +5850,10 @@ static void ibmvfc_init_sub_crqs(struct ibmvfc_host *vhost)
 	vhost->scsi_scrqs.scrqs = kcalloc(nr_scsi_hw_queues,
 					  sizeof(*vhost->scsi_scrqs.scrqs),
 					  GFP_KERNEL);
+	{
+		typeof((*vhost->scsi_scrqs.scrqs)) __uncontained_tmp85;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!vhost->scsi_scrqs.scrqs) {
 		vhost->do_enquiry = 0;
 		return;
@@ -5949,6 +5962,10 @@ static int ibmvfc_alloc_mem(struct ibmvfc_host *vhost)
 
 	vhost->trace = kcalloc(IBMVFC_NUM_TRACE_ENTRIES,
 			       sizeof(struct ibmvfc_trace_entry), GFP_KERNEL);
+	{
+		struct ibmvfc_trace_entry __uncontained_tmp83;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+	}
 	atomic_set(&vhost->trace_index, -1);
 
 	if (!vhost->trace)

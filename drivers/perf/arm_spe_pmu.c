@@ -39,6 +39,11 @@
 #include <asm/mmu.h>
 #include <asm/sysreg.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define ARM_SPE_BUF_PAD_BYTE			0
 
 struct arm_spe_pmu_buf {
@@ -852,6 +857,10 @@ static void *arm_spe_pmu_setup_aux(struct perf_event *event, void **pages,
 		return NULL;
 
 	pglist = kcalloc(nr_pages, sizeof(*pglist), GFP_KERNEL);
+	{
+		typeof((*pglist)) __uncontained_tmp130;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp130;
+	}
 	if (!pglist)
 		goto out_free_buf;
 

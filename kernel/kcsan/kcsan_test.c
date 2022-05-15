@@ -32,6 +32,11 @@
 #include <linux/types.h>
 #include <trace/events/printk.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define KCSAN_TEST_REQUIRES(test, cond) do {			\
 	if (!(cond))						\
 		kunit_skip((test), "Test requires: " #cond);	\
@@ -1519,6 +1524,10 @@ static int test_init(struct kunit *test)
 		goto err;
 
 	threads = kcalloc(nthreads + 1, sizeof(struct task_struct *), GFP_KERNEL);
+	{
+		struct task_struct *__uncontained_tmp148;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (WARN_ON(!threads))
 		goto err;
 

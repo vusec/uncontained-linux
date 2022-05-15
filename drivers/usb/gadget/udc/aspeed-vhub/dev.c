@@ -27,6 +27,11 @@
 #include <linux/usb.h>
 #include <linux/usb/hcd.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vhub.h"
 
 void ast_vhub_dev_irq(struct ast_vhub_dev *d)
@@ -559,6 +564,10 @@ int ast_vhub_init_dev(struct ast_vhub *vhub, unsigned int idx)
 	 */
 	d->max_epns = min_t(u32, vhub->max_epns, 30);
 	d->epns = kcalloc(d->max_epns, sizeof(*d->epns), GFP_KERNEL);
+	{
+		typeof((*d->epns)) __uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!d->epns)
 		return -ENOMEM;
 

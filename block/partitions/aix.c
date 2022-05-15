@@ -200,6 +200,10 @@ int aix_partition(struct parsed_partitions *state)
 		put_dev_sector(sect);
 	}
 	lvip = kcalloc(state->limit, sizeof(struct lv_info), GFP_KERNEL);
+	{
+		struct lv_info __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!lvip)
 		return 0;
 	if (numlvs && (d = read_part_sector(state, vgda_sector + 1, &sect))) {

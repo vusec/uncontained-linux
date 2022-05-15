@@ -19,6 +19,11 @@
 
 #include <dt-bindings/clock/marvell,pxa910.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk.h"
 #include "reset.h"
 
@@ -241,6 +246,10 @@ static void pxa910_clk_reset_init(struct device_node *np,
 	nr_resets_apbcp = ARRAY_SIZE(apbcp_gate_clks);
 	nr_resets = nr_resets_apbc + nr_resets_apbcp;
 	cells = kcalloc(nr_resets, sizeof(*cells), GFP_KERNEL);
+	{
+		typeof((*cells)) __uncontained_tmp9;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!cells)
 		return;
 

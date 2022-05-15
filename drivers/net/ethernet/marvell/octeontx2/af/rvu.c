@@ -12,6 +12,11 @@
 #include <linux/pci.h>
 #include <linux/sysfs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cgx.h"
 #include "rvu.h"
 #include "rvu_reg.h"
@@ -206,6 +211,10 @@ int rvu_alloc_bitmap(struct rsrc_bmap *rsrc)
 {
 	rsrc->bmap = kcalloc(BITS_TO_LONGS(rsrc->max),
 			     sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp102;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (!rsrc->bmap)
 		return -ENOMEM;
 	return 0;
@@ -2321,6 +2330,10 @@ static int rvu_mbox_init(struct rvu *rvu, struct mbox_wq_info *mw,
 	const char *name;
 
 	mbox_regions = kcalloc(num, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!mbox_regions)
 		return -ENOMEM;
 

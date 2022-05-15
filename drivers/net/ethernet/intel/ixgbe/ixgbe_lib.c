@@ -770,6 +770,10 @@ static int ixgbe_acquire_msix_vectors(struct ixgbe_adapter *adapter)
 	adapter->msix_entries = kcalloc(vectors,
 					sizeof(struct msix_entry),
 					GFP_KERNEL);
+	{
+		struct msix_entry __uncontained_tmp101;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!adapter->msix_entries)
 		return -ENOMEM;
 

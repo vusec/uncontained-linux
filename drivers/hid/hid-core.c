@@ -33,6 +33,11 @@
 #include <linux/hid-debug.h>
 #include <linux/hidraw.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1263,6 +1268,10 @@ int hid_open_report(struct hid_device *device)
 
 	device->collection = kcalloc(HID_DEFAULT_NUM_COLLECTIONS,
 				     sizeof(struct hid_collection), GFP_KERNEL);
+	{
+		struct hid_collection __uncontained_tmp49;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (!device->collection) {
 		ret = -ENOMEM;
 		goto err;

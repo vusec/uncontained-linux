@@ -2168,6 +2168,10 @@ static int
 ice_ptp_alloc_tx_tracker(struct ice_ptp_tx *tx)
 {
 	tx->tstamps = kcalloc(tx->len, sizeof(*tx->tstamps), GFP_KERNEL);
+	{
+		typeof((*tx->tstamps)) __uncontained_tmp75;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (!tx->tstamps)
 		return -ENOMEM;
 

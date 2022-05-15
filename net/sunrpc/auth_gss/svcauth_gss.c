@@ -52,6 +52,11 @@
 
 #include <trace/events/rpcgss.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gss_rpc_upcall.h"
 
 
@@ -1167,6 +1172,10 @@ static int gss_read_proxy_verf(struct svc_rqst *rqstp,
 
 	pages = DIV_ROUND_UP(inlen, PAGE_SIZE);
 	in_token->pages = kcalloc(pages, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp157;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp157;
+	}
 	if (!in_token->pages)
 		return SVC_DENIED;
 	in_token->page_base = 0;

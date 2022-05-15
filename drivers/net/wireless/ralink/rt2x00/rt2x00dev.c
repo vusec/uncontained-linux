@@ -18,6 +18,11 @@
 #include <linux/of.h>
 #include <linux/of_net.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rt2x00.h"
 #include "rt2x00lib.h"
 
@@ -1014,10 +1019,18 @@ static int rt2x00lib_probe_hw_modes(struct rt2x00_dev *rt2x00dev,
 		num_rates += 8;
 
 	channels = kcalloc(spec->num_channels, sizeof(*channels), GFP_KERNEL);
+	{
+		typeof((*channels)) __uncontained_tmp107;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp107;
+	}
 	if (!channels)
 		return -ENOMEM;
 
 	rates = kcalloc(num_rates, sizeof(*rates), GFP_KERNEL);
+	{
+		typeof((*rates)) __uncontained_tmp108;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp108;
+	}
 	if (!rates)
 		goto exit_free_channels;
 

@@ -10,6 +10,11 @@
 #include <linux/mm.h>
 #include <linux/slab.h>
 #include <asm/set_memory.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "agp.h"
 
 #define AMD_MMBASE_BAR	1
@@ -87,6 +92,10 @@ static int amd_create_gatt_pages(int nr_tables)
 
 	tables = kcalloc(nr_tables + 1, sizeof(struct amd_page_map *),
 			 GFP_KERNEL);
+	{
+		struct amd_page_map *__uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (tables == NULL)
 		return -ENOMEM;
 

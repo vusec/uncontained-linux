@@ -8,6 +8,11 @@
 #include <linux/scatterlist.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct sg_splitter {
 	struct scatterlist *in_sg0;
 	int nents;
@@ -155,6 +160,10 @@ int sg_split(struct scatterlist *in, const int in_mapped_nents,
 	struct sg_splitter *splitters;
 
 	splitters = kcalloc(nb_splits, sizeof(*splitters), gfp_mask);
+	{
+		typeof((*splitters)) __uncontained_tmp142;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+	}
 	if (!splitters)
 		return -ENOMEM;
 

@@ -34,6 +34,11 @@
 #include <linux/string.h>
 #include <linux/errno.h>
 #include <linux/audit.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "security.h"
 
 #include "policydb.h"
@@ -737,18 +742,30 @@ static int policydb_index(struct policydb *p)
 	p->class_val_to_struct = kcalloc(p->p_classes.nprim,
 					 sizeof(*p->class_val_to_struct),
 					 GFP_KERNEL);
+	{
+		typeof((*p->class_val_to_struct)) __uncontained_tmp166;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp166;
+	}
 	if (!p->class_val_to_struct)
 		return -ENOMEM;
 
 	p->role_val_to_struct = kcalloc(p->p_roles.nprim,
 					sizeof(*p->role_val_to_struct),
 					GFP_KERNEL);
+	{
+		typeof((*p->role_val_to_struct)) __uncontained_tmp167;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp167;
+	}
 	if (!p->role_val_to_struct)
 		return -ENOMEM;
 
 	p->user_val_to_struct = kcalloc(p->p_users.nprim,
 					sizeof(*p->user_val_to_struct),
 					GFP_KERNEL);
+	{
+		typeof((*p->user_val_to_struct)) __uncontained_tmp168;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp168;
+	}
 	if (!p->user_val_to_struct)
 		return -ENOMEM;
 

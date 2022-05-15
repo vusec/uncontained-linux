@@ -17,6 +17,11 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MAX_CHIPS 10
 
 /*
@@ -332,6 +337,10 @@ static int __init i2c_stub_allocate_banks(int i)
 	chip->bank_words = kcalloc(chip->bank_mask * chip->bank_size,
 				   sizeof(u16),
 				   GFP_KERNEL);
+	{
+		u16 __uncontained_tmp49;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (!chip->bank_words)
 		return -ENOMEM;
 
@@ -374,6 +383,10 @@ static int __init i2c_stub_init(void)
 	stub_chips_nr = i;
 	stub_chips = kcalloc(stub_chips_nr, sizeof(struct stub_chip),
 			     GFP_KERNEL);
+	{
+		struct stub_chip __uncontained_tmp50;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!stub_chips)
 		return -ENOMEM;
 

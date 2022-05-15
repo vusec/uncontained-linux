@@ -8,6 +8,11 @@
 #include <linux/sched/mm.h>
 #include <crypto/hash.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -913,6 +918,10 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
 
 	sblocks_for_recheck = kcalloc(BTRFS_MAX_MIRRORS,
 				      sizeof(*sblocks_for_recheck), GFP_KERNEL);
+	{
+		typeof((*sblocks_for_recheck)) __uncontained_tmp137;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp137;
+	}
 	if (!sblocks_for_recheck) {
 		spin_lock(&sctx->stat_lock);
 		sctx->stat.malloc_errors++;

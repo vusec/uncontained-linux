@@ -54,6 +54,11 @@
 #include <asm/dma.h>
 #include <asm/irq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * PCI device identifiers for "new style" Linux PCI Device Drivers
  */
@@ -492,10 +497,18 @@ static void pcnet32_realloc_tx_ring(struct net_device *dev,
 		return;
 
 	new_dma_addr_list = kcalloc(entries, sizeof(dma_addr_t), GFP_ATOMIC);
+	{
+		dma_addr_t __uncontained_tmp83;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!new_dma_addr_list)
 		goto free_new_tx_ring;
 
 	new_skb_list = kcalloc(entries, sizeof(struct sk_buff *), GFP_ATOMIC);
+	{
+		struct sk_buff *__uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!new_skb_list)
 		goto free_new_lists;
 
@@ -551,10 +564,18 @@ static void pcnet32_realloc_rx_ring(struct net_device *dev,
 		return;
 
 	new_dma_addr_list = kcalloc(entries, sizeof(dma_addr_t), GFP_ATOMIC);
+	{
+		dma_addr_t __uncontained_tmp85;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!new_dma_addr_list)
 		goto free_new_rx_ring;
 
 	new_skb_list = kcalloc(entries, sizeof(struct sk_buff *), GFP_ATOMIC);
+	{
+		struct sk_buff *__uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!new_skb_list)
 		goto free_new_lists;
 
@@ -2032,21 +2053,37 @@ static int pcnet32_alloc_ring(struct net_device *dev, const char *name)
 
 	lp->tx_dma_addr = kcalloc(lp->tx_ring_size, sizeof(dma_addr_t),
 				  GFP_KERNEL);
+	{
+		dma_addr_t __uncontained_tmp87;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (!lp->tx_dma_addr)
 		return -ENOMEM;
 
 	lp->rx_dma_addr = kcalloc(lp->rx_ring_size, sizeof(dma_addr_t),
 				  GFP_KERNEL);
+	{
+		dma_addr_t __uncontained_tmp88;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (!lp->rx_dma_addr)
 		return -ENOMEM;
 
 	lp->tx_skbuff = kcalloc(lp->tx_ring_size, sizeof(struct sk_buff *),
 				GFP_KERNEL);
+	{
+		struct sk_buff *__uncontained_tmp89;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp89;
+	}
 	if (!lp->tx_skbuff)
 		return -ENOMEM;
 
 	lp->rx_skbuff = kcalloc(lp->rx_ring_size, sizeof(struct sk_buff *),
 				GFP_KERNEL);
+	{
+		struct sk_buff *__uncontained_tmp90;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (!lp->rx_skbuff)
 		return -ENOMEM;
 

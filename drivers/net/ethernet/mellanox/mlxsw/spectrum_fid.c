@@ -10,6 +10,11 @@
 #include <linux/rtnetlink.h>
 #include <linux/refcount.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "spectrum.h"
 #include "reg.h"
 
@@ -1137,6 +1142,10 @@ int mlxsw_sp_fids_init(struct mlxsw_sp *mlxsw_sp)
 
 	fid_core->port_fid_mappings = kcalloc(max_ports, sizeof(unsigned int),
 					      GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!fid_core->port_fid_mappings) {
 		err = -ENOMEM;
 		goto err_alloc_port_fid_mappings;

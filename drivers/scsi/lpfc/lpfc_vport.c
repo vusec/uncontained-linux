@@ -37,6 +37,11 @@
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_transport_fc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "lpfc_hw4.h"
 #include "lpfc_hw.h"
 #include "lpfc_sli.h"
@@ -782,6 +787,10 @@ lpfc_create_vport_work_array(struct lpfc_hba *phba)
 	int index = 0;
 	vports = kcalloc(phba->max_vports + 1, sizeof(struct lpfc_vport *),
 			 GFP_KERNEL);
+	{
+		struct lpfc_vport *__uncontained_tmp102;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (vports == NULL)
 		return NULL;
 	spin_lock_irq(&phba->port_list_lock);
@@ -854,6 +863,10 @@ lpfc_alloc_bucket(struct lpfc_vport *vport)
 			ndlp->lat_data = kcalloc(LPFC_MAX_BUCKET_COUNT,
 					 sizeof(struct lpfc_scsicmd_bkt),
 					 GFP_ATOMIC);
+			{
+				struct lpfc_scsicmd_bkt __uncontained_tmp103;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+			}
 
 			if (!ndlp->lat_data)
 				lpfc_printf_vlog(vport, KERN_ERR,

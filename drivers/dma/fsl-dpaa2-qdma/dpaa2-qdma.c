@@ -10,6 +10,11 @@
 #include <linux/fsl/mc.h>
 #include <soc/fsl/dpaa2-io.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../virt-dma.h"
 #include "dpdmai.h"
 #include "dpaa2-qdma.h"
@@ -352,6 +357,10 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
 
 	priv->num_pairs = min(priv->dpdmai_attr.num_of_priorities, prio_def);
 	ppriv = kcalloc(priv->num_pairs, sizeof(*ppriv), GFP_KERNEL);
+	{
+		typeof((*ppriv)) __uncontained_tmp15;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!ppriv) {
 		err = -ENOMEM;
 		goto exit;

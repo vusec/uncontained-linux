@@ -62,6 +62,11 @@
 #include <asm/page.h>        /* To get host page size per arch */
 #include <linux/aer.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 #include "mpt3sas_base.h"
 
@@ -3426,6 +3431,10 @@ _base_enable_msix(struct MPT3SAS_ADAPTER *ioc)
 	if (iopoll_q_count) {
 		ioc->io_uring_poll_queues = kcalloc(iopoll_q_count,
 		    sizeof(struct io_uring_poll_queue), GFP_KERNEL);
+		{
+			struct io_uring_poll_queue __uncontained_tmp68;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp68;
+		}
 		if (!ioc->io_uring_poll_queues)
 			iopoll_q_count = 0;
 	}
@@ -3696,6 +3705,10 @@ mpt3sas_base_map_resources(struct MPT3SAS_ADAPTER *ioc)
 		ioc->replyPostRegisterIndex = kcalloc(
 		     ioc->combined_reply_index_count,
 		     sizeof(resource_size_t *), GFP_KERNEL);
+		{
+			resource_size_t *__uncontained_tmp69;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp69;
+		}
 		if (!ioc->replyPostRegisterIndex) {
 			ioc_err(ioc,
 			    "allocation for replyPostRegisterIndex failed!\n");
@@ -6032,6 +6045,10 @@ base_alloc_rdpq_dma_pool(struct MPT3SAS_ADAPTER *ioc, int sz)
 
 	ioc->reply_post = kcalloc(count, sizeof(struct reply_post_struct),
 			GFP_KERNEL);
+	{
+		struct reply_post_struct __uncontained_tmp70;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!ioc->reply_post)
 		return -ENOMEM;
 	/*
@@ -6376,6 +6393,10 @@ _base_allocate_memory_pools(struct MPT3SAS_ADAPTER *ioc)
 	/* initialize hi-priority queue smid's */
 	ioc->hpr_lookup = kcalloc(ioc->hi_priority_depth,
 	    sizeof(struct request_tracker), GFP_KERNEL);
+	{
+		struct request_tracker __uncontained_tmp71;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (!ioc->hpr_lookup) {
 		ioc_err(ioc, "hpr_lookup: kcalloc failed\n");
 		goto out;
@@ -6389,6 +6410,10 @@ _base_allocate_memory_pools(struct MPT3SAS_ADAPTER *ioc)
 	/* initialize internal queue smid's */
 	ioc->internal_lookup = kcalloc(ioc->internal_depth,
 	    sizeof(struct request_tracker), GFP_KERNEL);
+	{
+		struct request_tracker __uncontained_tmp72;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp72;
+	}
 	if (!ioc->internal_lookup) {
 		ioc_err(ioc, "internal_lookup: kcalloc failed\n");
 		goto out;
@@ -6401,6 +6426,10 @@ _base_allocate_memory_pools(struct MPT3SAS_ADAPTER *ioc)
 
 	ioc->io_queue_num = kcalloc(ioc->scsiio_depth,
 	    sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp73;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp73;
+	}
 	if (!ioc->io_queue_num)
 		goto out;
 	/*
@@ -8205,6 +8234,10 @@ mpt3sas_base_attach(struct MPT3SAS_ADAPTER *ioc)
 	if (ioc->is_warpdrive) {
 		ioc->reply_post_host_index = kcalloc(ioc->cpu_msix_table_sz,
 		    sizeof(resource_size_t *), GFP_KERNEL);
+		{
+			resource_size_t *__uncontained_tmp74;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp74;
+		}
 		if (!ioc->reply_post_host_index) {
 			ioc_info(ioc, "Allocation for reply_post_host_index failed!!!\n");
 			r = -ENOMEM;
@@ -8292,6 +8325,10 @@ mpt3sas_base_attach(struct MPT3SAS_ADAPTER *ioc)
 
 	ioc->pfacts = kcalloc(ioc->facts.NumberOfPorts,
 	    sizeof(struct mpt3sas_port_facts), GFP_KERNEL);
+	{
+		struct mpt3sas_port_facts __uncontained_tmp75;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (!ioc->pfacts) {
 		r = -ENOMEM;
 		goto out_free_resources;

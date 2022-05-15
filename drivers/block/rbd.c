@@ -47,6 +47,11 @@
 #include <linux/idr.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rbd_types.h"
 
 #define RBD_DEBUG	/* Activate rbd_assert() calls */
@@ -3064,6 +3069,10 @@ static int setup_copyup_bvecs(struct rbd_obj_request *obj_req, u64 obj_overlap)
 	obj_req->copyup_bvecs = kcalloc(obj_req->copyup_bvec_count,
 					sizeof(*obj_req->copyup_bvecs),
 					GFP_NOIO);
+	{
+		typeof((*obj_req->copyup_bvecs)) __uncontained_tmp9;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!obj_req->copyup_bvecs)
 		return -ENOMEM;
 

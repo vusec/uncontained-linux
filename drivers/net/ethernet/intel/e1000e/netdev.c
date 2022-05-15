@@ -27,6 +27,11 @@
 #include <linux/prefetch.h>
 #include <linux/suspend.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "e1000.h"
 
 char e1000e_driver_name[] = "e1000e";
@@ -2064,6 +2069,10 @@ void e1000e_set_interrupt_capability(struct e1000_adapter *adapter)
 							sizeof(struct
 							       msix_entry),
 							GFP_KERNEL);
+			{
+				struct msix_entry __uncontained_tmp79;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp79;
+			}
 			if (adapter->msix_entries) {
 				struct e1000_adapter *a = adapter;
 
@@ -2383,6 +2392,10 @@ int e1000e_setup_rx_resources(struct e1000_ring *rx_ring)
 		buffer_info->ps_pages = kcalloc(PS_PAGE_BUFFERS,
 						sizeof(struct e1000_ps_page),
 						GFP_KERNEL);
+		{
+			struct e1000_ps_page __uncontained_tmp80;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp80;
+		}
 		if (!buffer_info->ps_pages)
 			goto err_pages;
 	}

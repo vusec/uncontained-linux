@@ -41,6 +41,11 @@
 #include <sound/ac97_codec.h>
 #include <media/v4l2-common.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int debug;
 module_param(debug, int, 0644);
 MODULE_PARM_DESC(debug, "activates debug info");
@@ -757,10 +762,18 @@ static int em28xx_audio_urb_init(struct em28xx *dev)
 	dev->adev.transfer_buffer = kcalloc(num_urb,
 					    sizeof(*dev->adev.transfer_buffer),
 					    GFP_KERNEL);
+	{
+		typeof((*dev->adev.transfer_buffer)) __uncontained_tmp54;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!dev->adev.transfer_buffer)
 		return -ENOMEM;
 
 	dev->adev.urb = kcalloc(num_urb, sizeof(*dev->adev.urb), GFP_KERNEL);
+	{
+		typeof((*dev->adev.urb)) __uncontained_tmp55;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!dev->adev.urb) {
 		kfree(dev->adev.transfer_buffer);
 		return -ENOMEM;

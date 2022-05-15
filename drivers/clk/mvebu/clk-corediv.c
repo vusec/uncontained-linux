@@ -14,6 +14,11 @@
 #include <linux/of_address.h>
 #include <linux/slab.h>
 #include <linux/delay.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "common.h"
 
 #define CORE_CLK_DIV_RATIO_MASK		0xff
@@ -270,11 +275,19 @@ mvebu_corediv_clk_init(struct device_node *node,
 	/* clks holds the clock array */
 	clks = kcalloc(clk_data.clk_num, sizeof(struct clk *),
 				GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp7;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (WARN_ON(!clks))
 		goto err_unmap;
 	/* corediv holds the clock specific array */
 	corediv = kcalloc(clk_data.clk_num, sizeof(struct clk_corediv),
 				GFP_KERNEL);
+	{
+		struct clk_corediv __uncontained_tmp8;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp8;
+	}
 	if (WARN_ON(!corediv))
 		goto err_free_clks;
 

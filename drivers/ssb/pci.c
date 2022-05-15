@@ -23,6 +23,11 @@
 #include <linux/pci.h>
 #include <linux/delay.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 /* Define the following to 1 to enable a printk on each coreswitch. */
 #define SSB_VERBOSE_PCICORESWITCH_DEBUG		0
@@ -883,6 +888,10 @@ static int ssb_pci_sprom_get(struct ssb_bus *bus,
 	pr_debug("SPROM offset is 0x%x\n", bus->sprom_offset);
 
 	buf = kcalloc(SSB_SPROMSIZE_WORDS_R123, sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp117;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!buf)
 		return -ENOMEM;
 	bus->sprom_size = SSB_SPROMSIZE_WORDS_R123;
@@ -893,6 +902,10 @@ static int ssb_pci_sprom_get(struct ssb_bus *bus,
 		kfree(buf);
 		buf = kcalloc(SSB_SPROMSIZE_WORDS_R4, sizeof(u16),
 			      GFP_KERNEL);
+		{
+			u16 __uncontained_tmp118;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+		}
 		if (!buf)
 			return -ENOMEM;
 		bus->sprom_size = SSB_SPROMSIZE_WORDS_R4;

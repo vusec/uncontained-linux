@@ -15,6 +15,11 @@
 #include <linux/vfio.h>
 #include <asm/idals.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vfio_ccw_cp.h"
 
 struct pfn_array {
@@ -73,6 +78,14 @@ static int pfn_array_alloc(struct pfn_array *pa, u64 iova, unsigned int len)
 				  sizeof(*pa->pa_iova_pfn) +
 				  sizeof(*pa->pa_pfn),
 				  GFP_KERNEL);
+	{
+		typeof((*pa->pa_iova_pfn)) __uncontained_tmp123;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp123;
+	}
+	{
+		typeof((*pa->pa_pfn)) __uncontained_tmp124;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (unlikely(!pa->pa_iova_pfn)) {
 		pa->pa_nr = 0;
 		return -ENOMEM;
@@ -537,6 +550,10 @@ static int ccwchain_fetch_direct(struct ccwchain *chain,
 
 	/* Allocate an IDAL from host storage */
 	idaws = kcalloc(idaw_nr, sizeof(*idaws), GFP_DMA | GFP_KERNEL);
+	{
+		typeof((*idaws)) __uncontained_tmp125;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (!idaws) {
 		ret = -ENOMEM;
 		goto out_init;

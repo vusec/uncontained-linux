@@ -10,6 +10,11 @@
 #include <linux/ipv6.h>
 #include <linux/spinlock.h>
 #include <linux/tcp.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qed_cxt.h"
 #include "qed_hw.h"
 #include "qed_ll2.h"
@@ -2762,6 +2767,10 @@ qed_iwarp_ll2_start(struct qed_hwfn *p_hwfn,
 	iwarp_info->partial_fpdus = kcalloc((u16)p_hwfn->p_rdma_info->num_qps,
 					    sizeof(*iwarp_info->partial_fpdus),
 					    GFP_KERNEL);
+	{
+		typeof((*iwarp_info->partial_fpdus)) __uncontained_tmp91;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (!iwarp_info->partial_fpdus) {
 		rc = -ENOMEM;
 		goto err;
@@ -2783,6 +2792,10 @@ qed_iwarp_ll2_start(struct qed_hwfn *p_hwfn,
 	iwarp_info->mpa_bufs = kcalloc(data.input.rx_num_desc,
 				       sizeof(*iwarp_info->mpa_bufs),
 				       GFP_KERNEL);
+	{
+		typeof((*iwarp_info->mpa_bufs)) __uncontained_tmp92;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!iwarp_info->mpa_bufs) {
 		rc = -ENOMEM;
 		goto err;

@@ -29,6 +29,11 @@
 #include <linux/delay.h>
 #include <linux/usb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "xillybus_class.h"
 
 MODULE_DESCRIPTION("Driver for XillyUSB FPGA IP Core");
@@ -1924,6 +1929,10 @@ static int setup_channels(struct xillyusb_dev *xdev,
 	int i;
 
 	chan = kcalloc(num_channels, sizeof(*chan), GFP_KERNEL);
+	{
+		typeof((*chan)) __uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!chan)
 		return -ENOMEM;
 

@@ -29,6 +29,11 @@
 #include <target/target_core_backend.h>
 #include <target/target_core_fabric.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "target_core_internal.h"
 #include "target_core_alua.h"
 #include "target_core_pr.h"
@@ -867,6 +872,10 @@ target_fabric_setup_tpg_base_cit(struct target_fabric_configfs *tf)
 
 	/* + 1 for final NULL in the array */
 	attrs = kcalloc(nr_attrs + 1, sizeof(*attrs), GFP_KERNEL);
+	{
+		typeof((*attrs)) __uncontained_tmp164;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp164;
+	}
 	if (!attrs)
 		return -ENOMEM;
 

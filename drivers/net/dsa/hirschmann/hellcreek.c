@@ -24,6 +24,11 @@
 #include <linux/delay.h>
 #include <net/dsa.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hellcreek.h"
 #include "hellcreek_ptp.h"
 #include "hellcreek_hwtstamp.h"
@@ -1263,6 +1268,10 @@ static int hellcreek_devlink_region_vlan_snapshot(struct devlink *dl,
 	int i;
 
 	table = kcalloc(VLAN_N_VID, sizeof(*entry), GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp81;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!table)
 		return -ENOMEM;
 
@@ -1291,6 +1300,10 @@ static int hellcreek_devlink_region_fdb_snapshot(struct devlink *dl,
 	size_t i;
 
 	table = kcalloc(hellcreek->fdb_entries, sizeof(*entry), GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp82;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!table)
 		return -ENOMEM;
 

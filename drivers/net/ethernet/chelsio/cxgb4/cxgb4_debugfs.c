@@ -38,6 +38,11 @@
 #include <linux/sort.h>
 #include <linux/ctype.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cxgb4.h"
 #include "t4_regs.h"
 #include "t4_values.h"
@@ -3430,6 +3435,10 @@ static ssize_t blocked_fl_write(struct file *filp, const char __user *ubuf,
 	struct adapter *adap = filp->private_data;
 
 	t = kcalloc(BITS_TO_LONGS(adap->sge.egr_sz), sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp70;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!t)
 		return -ENOMEM;
 

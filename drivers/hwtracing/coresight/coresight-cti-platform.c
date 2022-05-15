@@ -11,6 +11,11 @@
 
 #include <dt-bindings/arm/coresight-cti-dt.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "coresight-cti.h"
 #include "coresight-priv.h"
 
@@ -248,6 +253,10 @@ static int cti_plat_read_trig_group(struct cti_trig_grp *tgrp,
 		return 0;
 
 	values = kcalloc(tgrp->nr_sigs, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!values)
 		return -ENOMEM;
 
@@ -284,6 +293,10 @@ static int cti_plat_read_trig_types(struct cti_trig_grp *tgrp,
 	/* need an array to store the values iff there are any */
 	if (items) {
 		values = kcalloc(items, sizeof(u32), GFP_KERNEL);
+		{
+			u32 __uncontained_tmp49;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+		}
 		if (!values)
 			return -ENOMEM;
 

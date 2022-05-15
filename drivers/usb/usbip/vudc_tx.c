@@ -9,6 +9,11 @@
 #include <linux/list.h>
 #include <linux/kthread.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "usbip_common.h"
 #include "vudc.h"
 
@@ -98,6 +103,10 @@ static int v_send_ret_submit(struct vudc *udc, struct urbp *urb_p)
 		iovnum = 2;
 
 	iov = kcalloc(iovnum, sizeof(*iov), GFP_KERNEL);
+	{
+		typeof((*iov)) __uncontained_tmp109;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp109;
+	}
 	if (!iov) {
 		usbip_event_add(&udc->ud, VUDC_EVENT_ERROR_MALLOC);
 		ret = -ENOMEM;

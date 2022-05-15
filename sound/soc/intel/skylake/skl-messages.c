@@ -14,6 +14,11 @@
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <uapi/sound/skl-tplg-interface.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "skl-sst-dsp.h"
 #include "cnl-sst-dsp.h"
 #include "skl-sst-ipc.h"
@@ -288,6 +293,10 @@ int skl_init_dsp(struct skl_dev *skl)
 	cores->count = ops->num_cores;
 
 	cores->state = kcalloc(cores->count, sizeof(*cores->state), GFP_KERNEL);
+	{
+		typeof((*cores->state)) __uncontained_tmp112;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (!cores->state) {
 		ret = -ENOMEM;
 		goto unmap_mmio;
@@ -295,6 +304,10 @@ int skl_init_dsp(struct skl_dev *skl)
 
 	cores->usage_count = kcalloc(cores->count, sizeof(*cores->usage_count),
 				     GFP_KERNEL);
+	{
+		typeof((*cores->usage_count)) __uncontained_tmp113;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!cores->usage_count) {
 		ret = -ENOMEM;
 		goto free_core_state;

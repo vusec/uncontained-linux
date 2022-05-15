@@ -361,6 +361,10 @@ static int mana_hwc_create_cq(struct hw_channel_context *hwc, u16 q_depth,
 	hwc_cq->gdma_cq = cq;
 
 	comp_buf = kcalloc(q_depth, sizeof(*comp_buf), GFP_KERNEL);
+	{
+		typeof((*comp_buf)) __uncontained_tmp74;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!comp_buf) {
 		err = -ENOMEM;
 		goto out;
@@ -575,6 +579,10 @@ static int mana_hwc_test_channel(struct hw_channel_context *hwc, u16 q_depth,
 	}
 
 	ctx = kcalloc(q_depth, sizeof(*ctx), GFP_KERNEL);
+	{
+		typeof((*ctx)) __uncontained_tmp75;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (!ctx)
 		return -ENOMEM;
 

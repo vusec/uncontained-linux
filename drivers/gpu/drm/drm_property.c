@@ -29,6 +29,11 @@
 #include <drm/drm_framebuffer.h>
 #include <drm/drm_property.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -120,6 +125,10 @@ struct drm_property *drm_property_create(struct drm_device *dev,
 	if (num_values) {
 		property->values = kcalloc(num_values, sizeof(uint64_t),
 					   GFP_KERNEL);
+		{
+			uint64_t __uncontained_tmp37;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp37;
+		}
 		if (!property->values)
 			goto fail;
 	}

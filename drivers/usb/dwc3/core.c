@@ -33,6 +33,11 @@
 #include <linux/usb/of.h>
 #include <linux/usb/otg.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "gadget.h"
 #include "io.h"
@@ -886,6 +891,10 @@ static void dwc3_set_incr_burst_type(struct dwc3 *dwc)
 		return;
 
 	vals = kcalloc(ntype, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp85;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!vals) {
 		dev_err(dev, "Error to get memory\n");
 		return;

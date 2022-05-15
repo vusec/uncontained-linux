@@ -686,6 +686,10 @@ efc_process_gidpt_payload(struct efc_node *node,
 
 	/* Allocate a buffer for all nodes */
 	active_nodes = kcalloc(port_count, sizeof(*active_nodes), GFP_ATOMIC);
+	{
+		typeof((*active_nodes)) __uncontained_tmp100;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (!active_nodes) {
 		node_printf(node, "efc_malloc failed\n");
 		return -EIO;

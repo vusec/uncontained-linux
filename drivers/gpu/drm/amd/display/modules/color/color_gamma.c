@@ -26,6 +26,11 @@
 #include <linux/mm.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dc.h"
 #include "opp.h"
 #include "color_gamma.h"
@@ -1827,12 +1832,20 @@ bool calculate_user_regamma_ramp(struct dc_transfer_func *output_tf,
 	rgb_user = kcalloc(GAMMA_RGB_256_ENTRIES + _EXTRA_POINTS,
 			   sizeof(*rgb_user),
 			   GFP_KERNEL);
+	{
+		typeof((*rgb_user)) __uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!rgb_user)
 		goto rgb_user_alloc_fail;
 
 	rgb_regamma = kcalloc(MAX_HW_POINTS + _EXTRA_POINTS,
 			      sizeof(*rgb_regamma),
 			      GFP_KERNEL);
+	{
+		typeof((*rgb_regamma)) __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!rgb_regamma)
 		goto rgb_regamma_alloc_fail;
 

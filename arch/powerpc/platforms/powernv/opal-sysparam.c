@@ -13,6 +13,11 @@
 #include <linux/stat.h>
 #include <asm/opal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MAX_PARAM_DATA_LEN	64
 
 static DEFINE_MUTEX(opal_sysparam_mutex);
@@ -186,6 +191,10 @@ void __init opal_sys_param_init(void)
 	}
 
 	id = kcalloc(count, sizeof(*id), GFP_KERNEL);
+	{
+		typeof((*id)) __uncontained_tmp9;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!id) {
 		pr_err("SYSPARAM: Failed to allocate memory to read parameter "
 				"id\n");
@@ -193,6 +202,10 @@ void __init opal_sys_param_init(void)
 	}
 
 	size = kcalloc(count, sizeof(*size), GFP_KERNEL);
+	{
+		typeof((*size)) __uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!size) {
 		pr_err("SYSPARAM: Failed to allocate memory to read parameter "
 				"size\n");
@@ -200,6 +213,10 @@ void __init opal_sys_param_init(void)
 	}
 
 	perm = kcalloc(count, sizeof(*perm), GFP_KERNEL);
+	{
+		typeof((*perm)) __uncontained_tmp11;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp11;
+	}
 	if (!perm) {
 		pr_err("SYSPARAM: Failed to allocate memory to read supported "
 				"action on the parameter");
@@ -223,6 +240,10 @@ void __init opal_sys_param_init(void)
 	}
 
 	attr = kcalloc(count, sizeof(*attr), GFP_KERNEL);
+	{
+		typeof((*attr)) __uncontained_tmp12;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!attr) {
 		pr_err("SYSPARAM: Failed to allocate memory for parameter "
 				"attributes\n");

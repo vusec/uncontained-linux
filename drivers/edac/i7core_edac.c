@@ -37,6 +37,11 @@
 #include <asm/processor.h>
 #include <asm/div64.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "edac_module.h"
 
 /* Static vars */
@@ -461,6 +466,10 @@ static struct i7core_dev *alloc_i7core_dev(u8 socket,
 
 	i7core_dev->pdev = kcalloc(table->n_devs, sizeof(*i7core_dev->pdev),
 				   GFP_KERNEL);
+	{
+		typeof((*i7core_dev->pdev)) __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!i7core_dev->pdev) {
 		kfree(i7core_dev);
 		return NULL;

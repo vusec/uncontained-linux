@@ -15,6 +15,11 @@
 #include <linux/auxiliary_bus.h>
 #include <linux/pm_runtime.h>
 #include <linux/soundwire/sdw_intel.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "cadence_master.h"
 #include "intel.h"
 
@@ -208,6 +213,10 @@ static struct sdw_intel_ctx
 	 * number of links is small, this is simpler than using a list to keep track of links.
 	 */
 	ctx->ldev = kcalloc(ctx->count, sizeof(*ctx->ldev), GFP_KERNEL);
+	{
+		typeof((*ctx->ldev)) __uncontained_tmp122;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp122;
+	}
 	if (!ctx->ldev) {
 		kfree(ctx);
 		return NULL;
@@ -263,6 +272,10 @@ static struct sdw_intel_ctx
 	}
 
 	ctx->ids = kcalloc(num_slaves, sizeof(*ctx->ids), GFP_KERNEL);
+	{
+		typeof((*ctx->ids)) __uncontained_tmp123;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (!ctx->ids)
 		goto err;
 

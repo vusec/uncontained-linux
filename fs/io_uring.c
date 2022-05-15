@@ -88,6 +88,11 @@
 
 #include <uapi/linux/io_uring.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1557,6 +1562,10 @@ static __cold struct io_ring_ctx *io_ring_ctx_alloc(struct io_uring_params *p)
 
 	ctx->io_buffers = kcalloc(1U << IO_BUFFERS_HASH_BITS,
 					sizeof(struct list_head), GFP_KERNEL);
+	{
+		struct list_head __uncontained_tmp111;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (!ctx->io_buffers)
 		goto err;
 	for (i = 0; i < (1U << IO_BUFFERS_HASH_BITS); i++)
@@ -8361,6 +8370,10 @@ static __cold void **io_alloc_page_table(size_t size)
 	void **table;
 
 	table = kcalloc(nr_tables, sizeof(*table), GFP_KERNEL_ACCOUNT);
+	{
+		typeof((*table)) __uncontained_tmp113;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!table)
 		return NULL;
 
@@ -9317,6 +9330,10 @@ static __cold int io_uring_alloc_task_context(struct task_struct *task,
 
 	tctx->registered_rings = kcalloc(IO_RINGFD_REG_MAX,
 					 sizeof(struct file *), GFP_KERNEL);
+	{
+		struct file *__uncontained_tmp112;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (unlikely(!tctx->registered_rings)) {
 		kfree(tctx);
 		return -ENOMEM;
@@ -9796,6 +9813,10 @@ done:
 static int io_buffers_map_alloc(struct io_ring_ctx *ctx, unsigned int nr_args)
 {
 	ctx->user_bufs = kcalloc(nr_args, sizeof(*ctx->user_bufs), GFP_KERNEL);
+	{
+		typeof((*ctx->user_bufs)) __uncontained_tmp114;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+	}
 	return ctx->user_bufs ? 0 : -ENOMEM;
 }
 

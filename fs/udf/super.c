@@ -65,6 +65,11 @@
 #include <linux/init.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 enum {
 	VDS_POS_PRIMARY_VOL_DESC,
 	VDS_POS_UNALLOC_SPACE_DESC,
@@ -250,6 +255,10 @@ static int udf_sb_alloc_partition_maps(struct super_block *sb, u32 count)
 	struct udf_sb_info *sbi = UDF_SB(sb);
 
 	sbi->s_partmaps = kcalloc(count, sizeof(*sbi->s_partmaps), GFP_KERNEL);
+	{
+		typeof((*sbi->s_partmaps)) __uncontained_tmp156;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp156;
+	}
 	if (!sbi->s_partmaps) {
 		sbi->s_partitions = 0;
 		return -ENOMEM;
@@ -1627,6 +1636,10 @@ static struct udf_vds_record *handle_partition_descriptor(
 		unsigned int new_size = ALIGN(partnum, PART_DESC_ALLOC_STEP);
 
 		new_loc = kcalloc(new_size, sizeof(*new_loc), GFP_KERNEL);
+		{
+			typeof((*new_loc)) __uncontained_tmp157;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp157;
+		}
 		if (!new_loc)
 			return ERR_PTR(-ENOMEM);
 		memcpy(new_loc, data->part_descs_loc,
@@ -1689,6 +1702,10 @@ static noinline int udf_process_sequence(
 	data.part_descs_loc = kcalloc(data.size_part_descs,
 				      sizeof(*data.part_descs_loc),
 				      GFP_KERNEL);
+	{
+		typeof((*data.part_descs_loc)) __uncontained_tmp158;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp158;
+	}
 	if (!data.part_descs_loc)
 		return -ENOMEM;
 

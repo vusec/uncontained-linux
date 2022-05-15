@@ -19,6 +19,11 @@
 #include <linux/module.h>
 #include <linux/fsnotify.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "idmap.h"
 #include "nfsd.h"
 #include "cache.h"
@@ -502,6 +507,10 @@ static ssize_t write_pool_threads(struct file *file, char *buf, size_t size)
 	}
 
 	nthreads = kcalloc(npools, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp144;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp144;
+	}
 	rv = -ENOMEM;
 	if (nthreads == NULL)
 		goto out_free;

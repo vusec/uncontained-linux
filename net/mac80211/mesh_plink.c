@@ -9,6 +9,11 @@
 #include <linux/random.h>
 #include <linux/rculist.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ieee80211_i.h"
 #include "rate.h"
 #include "mesh.h"
@@ -477,6 +482,10 @@ static int mesh_allocate_aid(struct ieee80211_sub_if_data *sdata)
 
 	aid_map = kcalloc(BITS_TO_LONGS(IEEE80211_MAX_AID + 1),
 			  sizeof(*aid_map), GFP_KERNEL);
+	{
+		typeof((*aid_map)) __uncontained_tmp140;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!aid_map)
 		return -ENOMEM;
 

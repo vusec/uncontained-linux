@@ -14,6 +14,11 @@
 
 #include <uapi/linux/magic.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * NAND flash on Netgear R6250 was verified to contain 15 partitions.
  * This will result in allocating too big array for some old devices, but the
@@ -108,6 +113,10 @@ static int bcm47xxpart_parse(struct mtd_info *master,
 	/* Alloc */
 	parts = kcalloc(BCM47XXPART_MAX_PARTS, sizeof(struct mtd_partition),
 			GFP_KERNEL);
+	{
+		struct mtd_partition __uncontained_tmp62;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!parts)
 		return -ENOMEM;
 

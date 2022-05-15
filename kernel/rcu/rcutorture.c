@@ -48,6 +48,11 @@
 #include <linux/rcupdate_trace.h>
 #include <linux/nmi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rcu.h"
 
 MODULE_LICENSE("GPL");
@@ -2579,7 +2584,15 @@ static int __init rcu_torture_fwd_prog_init(void)
 	if (fwd_progress_div <= 0)
 		fwd_progress_div = 4;
 	rfp = kcalloc(fwd_progress, sizeof(*rfp), GFP_KERNEL);
+	{
+		typeof((*rfp)) __uncontained_tmp136;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp136;
+	}
 	fwd_prog_tasks = kcalloc(fwd_progress, sizeof(*fwd_prog_tasks), GFP_KERNEL);
+	{
+		typeof((*fwd_prog_tasks)) __uncontained_tmp137;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp137;
+	}
 	if (!rfp || !fwd_prog_tasks) {
 		kfree(rfp);
 		kfree(fwd_prog_tasks);
@@ -2748,8 +2761,16 @@ static int rcu_torture_barrier_init(void)
 	barrier_cbs_tasks =
 		kcalloc(n_barrier_cbs, sizeof(barrier_cbs_tasks[0]),
 			GFP_KERNEL);
+	{
+		typeof((barrier_cbs_tasks[0])) __uncontained_tmp138;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp138;
+	}
 	barrier_cbs_wq =
 		kcalloc(n_barrier_cbs, sizeof(barrier_cbs_wq[0]), GFP_KERNEL);
+	{
+		typeof((barrier_cbs_wq[0])) __uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (barrier_cbs_tasks == NULL || !barrier_cbs_wq)
 		return -ENOMEM;
 	for (i = 0; i < n_barrier_cbs; i++) {
@@ -3189,6 +3210,10 @@ rcu_torture_init(void)
 		fakewriter_tasks = kcalloc(nfakewriters,
 					   sizeof(fakewriter_tasks[0]),
 					   GFP_KERNEL);
+		{
+			typeof((fakewriter_tasks[0])) __uncontained_tmp140;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+		}
 		if (fakewriter_tasks == NULL) {
 			TOROUT_ERRSTRING("out of memory");
 			firsterr = -ENOMEM;
@@ -3203,8 +3228,16 @@ rcu_torture_init(void)
 	}
 	reader_tasks = kcalloc(nrealreaders, sizeof(reader_tasks[0]),
 			       GFP_KERNEL);
+	{
+		typeof((reader_tasks[0])) __uncontained_tmp141;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp141;
+	}
 	rcu_torture_reader_mbchk = kcalloc(nrealreaders, sizeof(*rcu_torture_reader_mbchk),
 					   GFP_KERNEL);
+	{
+		typeof((*rcu_torture_reader_mbchk)) __uncontained_tmp142;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+	}
 	if (!reader_tasks || !rcu_torture_reader_mbchk) {
 		TOROUT_ERRSTRING("out of memory");
 		firsterr = -ENOMEM;
@@ -3224,6 +3257,10 @@ rcu_torture_init(void)
 		nocbs_toggle = HZ;
 	if (nrealnocbers > 0) {
 		nocb_tasks = kcalloc(nrealnocbers, sizeof(nocb_tasks[0]), GFP_KERNEL);
+		{
+			typeof((nocb_tasks[0])) __uncontained_tmp143;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp143;
+		}
 		if (nocb_tasks == NULL) {
 			TOROUT_ERRSTRING("out of memory");
 			firsterr = -ENOMEM;

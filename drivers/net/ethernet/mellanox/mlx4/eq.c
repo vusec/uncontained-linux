@@ -40,6 +40,11 @@
 #include <linux/mlx4/cmd.h>
 #include <linux/cpu_rmap.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mlx4.h"
 #include "fw.h"
 
@@ -1159,6 +1164,10 @@ int mlx4_alloc_eq_table(struct mlx4_dev *dev)
 
 	priv->eq_table.eq = kcalloc(dev->caps.num_eqs - dev->caps.reserved_eqs,
 				    sizeof(*priv->eq_table.eq), GFP_KERNEL);
+	{
+		typeof((*priv->eq_table.eq)) __uncontained_tmp104;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!priv->eq_table.eq)
 		return -ENOMEM;
 
@@ -1179,6 +1188,10 @@ int mlx4_init_eq_table(struct mlx4_dev *dev)
 	priv->eq_table.uar_map = kcalloc(mlx4_num_eq_uar(dev),
 					 sizeof(*priv->eq_table.uar_map),
 					 GFP_KERNEL);
+	{
+		typeof((*priv->eq_table.uar_map)) __uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!priv->eq_table.uar_map) {
 		err = -ENOMEM;
 		goto err_out_free;

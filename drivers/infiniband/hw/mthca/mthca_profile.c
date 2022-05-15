@@ -36,6 +36,11 @@
 #include <linux/string.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mthca_profile.h"
 
 enum {
@@ -80,6 +85,10 @@ s64 mthca_make_profile(struct mthca_dev *dev,
 	int i, j;
 
 	profile = kcalloc(MTHCA_RES_NUM, sizeof(*profile), GFP_KERNEL);
+	{
+		typeof((*profile)) __uncontained_tmp50;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!profile)
 		return -ENOMEM;
 

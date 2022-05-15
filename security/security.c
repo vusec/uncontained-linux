@@ -322,6 +322,10 @@ static void __init ordered_lsm_init(void)
 
 	ordered_lsms = kcalloc(LSM_COUNT + 1, sizeof(*ordered_lsms),
 				GFP_KERNEL);
+	{
+		typeof((*ordered_lsms)) __uncontained_tmp109;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp109;
+	}
 
 	if (chosen_lsm_order) {
 		if (chosen_major_lsm) {
@@ -711,6 +715,11 @@ static int lsm_superblock_alloc(struct super_block *sb)
 	DECLARE_LSM_RET_DEFAULT_##RET(DEFAULT, NAME)
 
 #include <linux/lsm_hook_defs.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #undef LSM_HOOK
 
 /*

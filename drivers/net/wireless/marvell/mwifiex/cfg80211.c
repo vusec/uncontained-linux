@@ -3432,6 +3432,10 @@ static int mwifiex_set_mef_filter(struct mwifiex_private *priv,
 		num_entries++;
 
 	mef_entry = kcalloc(num_entries, sizeof(*mef_entry), GFP_KERNEL);
+	{
+		typeof((*mef_entry)) __uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!mef_entry)
 		return -ENOMEM;
 

@@ -30,6 +30,11 @@
 
 #include <linux/amba/bus.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "arm-smmu-v3.h"
 #include "../../iommu-sva-lib.h"
 
@@ -2547,6 +2552,10 @@ static int arm_smmu_insert_master(struct arm_smmu_device *smmu,
 
 	master->streams = kcalloc(fwspec->num_ids, sizeof(*master->streams),
 				  GFP_KERNEL);
+	{
+		typeof((*master->streams)) __uncontained_tmp63;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!master->streams)
 		return -ENOMEM;
 	master->num_streams = fwspec->num_ids;

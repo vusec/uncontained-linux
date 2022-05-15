@@ -16,6 +16,11 @@
 #include <crypto/hash.h>
 #include <crypto/sha1.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -505,6 +510,10 @@ static int tee_ioctl_open_session(struct tee_context *ctx,
 	if (arg.num_params) {
 		params = kcalloc(arg.num_params, sizeof(struct tee_param),
 				 GFP_KERNEL);
+		{
+			struct tee_param __uncontained_tmp94;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+		}
 		if (!params)
 			return -ENOMEM;
 		uparams = uarg->params;
@@ -583,6 +592,10 @@ static int tee_ioctl_invoke(struct tee_context *ctx,
 	if (arg.num_params) {
 		params = kcalloc(arg.num_params, sizeof(struct tee_param),
 				 GFP_KERNEL);
+		{
+			struct tee_param __uncontained_tmp95;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+		}
 		if (!params)
 			return -ENOMEM;
 		uparams = uarg->params;
@@ -715,6 +728,10 @@ static int tee_ioctl_supp_recv(struct tee_context *ctx,
 		return -EINVAL;
 
 	params = kcalloc(num_params, sizeof(struct tee_param), GFP_KERNEL);
+	{
+		struct tee_param __uncontained_tmp96;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!params)
 		return -ENOMEM;
 
@@ -814,6 +831,10 @@ static int tee_ioctl_supp_send(struct tee_context *ctx,
 		return -EINVAL;
 
 	params = kcalloc(num_params, sizeof(struct tee_param), GFP_KERNEL);
+	{
+		struct tee_param __uncontained_tmp97;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!params)
 		return -ENOMEM;
 

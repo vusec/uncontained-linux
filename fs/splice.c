@@ -35,6 +35,11 @@
 #include <linux/socket.h>
 #include <linux/sched/signal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 /*
@@ -650,6 +655,10 @@ iter_file_splice_write(struct pipe_inode_info *pipe, struct file *out,
 			nbufs = pipe->max_usage;
 			array = kcalloc(nbufs, sizeof(struct bio_vec),
 					GFP_KERNEL);
+			{
+				struct bio_vec __uncontained_tmp157;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp157;
+			}
 			if (!array) {
 				ret = -ENOMEM;
 				break;

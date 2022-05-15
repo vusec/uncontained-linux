@@ -9,6 +9,11 @@
 #include <linux/hwmon.h>
 #include <linux/stat.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "net_driver.h"
 #include "mcdi.h"
 #include "mcdi_pcol.h"
@@ -351,12 +356,20 @@ int efx_mcdi_mon_probe(struct efx_nic *efx)
 	 */
 	n_attrs = 6 * n_sensors;
 	hwmon->attrs = kcalloc(n_attrs, sizeof(*hwmon->attrs), GFP_KERNEL);
+	{
+		typeof((*hwmon->attrs)) __uncontained_tmp89;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp89;
+	}
 	if (!hwmon->attrs) {
 		rc = -ENOMEM;
 		goto fail;
 	}
 	hwmon->group.attrs = kcalloc(n_attrs + 1, sizeof(struct attribute *),
 				     GFP_KERNEL);
+	{
+		struct attribute *__uncontained_tmp88;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (!hwmon->group.attrs) {
 		rc = -ENOMEM;
 		goto fail;

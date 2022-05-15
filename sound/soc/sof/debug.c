@@ -16,6 +16,11 @@
 #include <linux/pm_runtime.h>
 #include <sound/sof/ext_manifest.h>
 #include <sound/sof/debug.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "sof-priv.h"
 #include "ops.h"
 
@@ -41,6 +46,10 @@ strsplit_u32(char **buf, const char *delim, u32 **tkns, size_t *num_tkns)
 	*tkns = NULL;
 	*num_tkns = 0;
 	data = kcalloc(cap, sizeof(*data), GFP_KERNEL);
+	{
+		typeof((*data)) __uncontained_tmp170;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp170;
+	}
 	if (!data)
 		return -ENOMEM;
 

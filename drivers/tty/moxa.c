@@ -45,6 +45,11 @@
 #include <asm/io.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define	MOXA			0x400
 #define MOXA_GET_IQUEUE		(MOXA + 1)	/* get input buffered count */
 #define MOXA_GET_OQUEUE		(MOXA + 2)	/* get output buffered count */
@@ -1127,6 +1132,10 @@ static int moxa_init_board(struct moxa_board_conf *brd, struct device *dev)
 
 	brd->ports = kcalloc(MAX_PORTS_PER_BOARD, sizeof(*brd->ports),
 			GFP_KERNEL);
+	{
+		typeof((*brd->ports)) __uncontained_tmp100;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (brd->ports == NULL) {
 		printk(KERN_ERR "cannot allocate memory for ports\n");
 		ret = -ENOMEM;

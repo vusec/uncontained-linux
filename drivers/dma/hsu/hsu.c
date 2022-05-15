@@ -23,6 +23,11 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hsu.h"
 
 #define HSU_DMA_BUSWIDTHS				\
@@ -242,6 +247,10 @@ static struct hsu_dma_desc *hsu_dma_alloc_desc(unsigned int nents)
 		return NULL;
 
 	desc->sg = kcalloc(nents, sizeof(*desc->sg), GFP_NOWAIT);
+	{
+		typeof((*desc->sg)) __uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!desc->sg) {
 		kfree(desc);
 		return NULL;

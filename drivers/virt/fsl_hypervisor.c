@@ -45,6 +45,11 @@
 
 #include <linux/fsl_hypervisor.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -232,6 +237,10 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
 	 * get_user_pages_fast().
 	 */
 	pages = kcalloc(num_pages, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!pages) {
 		pr_debug("fsl-hv: could not allocate page list\n");
 		return -ENOMEM;

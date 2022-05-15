@@ -3,6 +3,11 @@
  */
 #include <net/tc_act/tc_gate.h>
 #include <linux/dsa/8021q.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "sja1105_vl.h"
 
 #define SJA1105_SIZE_VL_STATUS			8
@@ -624,6 +629,10 @@ int sja1105_vl_gate(struct sja1105_private *priv, int port,
 		rule->vl.entries = kcalloc(num_entries,
 					   sizeof(struct action_gate_entry),
 					   GFP_KERNEL);
+		{
+			struct action_gate_entry __uncontained_tmp70;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp70;
+		}
 		if (!rule->vl.entries) {
 			rc = -ENOMEM;
 			goto out;

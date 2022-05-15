@@ -26,6 +26,11 @@
 #include <linux/pm_qos.h>
 #include <linux/sort.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gem/i915_gem_pm.h"
 #include "gem/selftests/mock_context.h"
 
@@ -319,6 +324,10 @@ static int __igt_breadcrumbs_smoketest(void *arg)
 	 */
 
 	requests = kcalloc(total, sizeof(*requests), GFP_KERNEL);
+	{
+		typeof((*requests)) __uncontained_tmp30;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!requests)
 		return -ENOMEM;
 
@@ -460,10 +469,18 @@ static int mock_breadcrumbs_smoketest(void *arg)
 	 */
 
 	threads = kcalloc(ncpus, sizeof(*threads), GFP_KERNEL);
+	{
+		typeof((*threads)) __uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!threads)
 		return -ENOMEM;
 
 	t.contexts = kcalloc(t.ncontexts, sizeof(*t.contexts), GFP_KERNEL);
+	{
+		typeof((*t.contexts)) __uncontained_tmp32;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!t.contexts) {
 		ret = -ENOMEM;
 		goto out_threads;
@@ -1059,6 +1076,10 @@ static int live_all_engines(void *arg)
 	 */
 
 	request = kcalloc(nengines, sizeof(*request), GFP_KERNEL);
+	{
+		typeof((*request)) __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!request)
 		return -ENOMEM;
 
@@ -1175,6 +1196,10 @@ static int live_sequential_engines(void *arg)
 	 */
 
 	request = kcalloc(nengines, sizeof(*request), GFP_KERNEL);
+	{
+		typeof((*request)) __uncontained_tmp34;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!request)
 		return -ENOMEM;
 
@@ -1459,6 +1484,10 @@ static int live_parallel_engines(void *arg)
 	 */
 
 	tsk = kcalloc(nengines, sizeof(*tsk), GFP_KERNEL);
+	{
+		typeof((*tsk)) __uncontained_tmp35;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!tsk)
 		return -ENOMEM;
 
@@ -1579,12 +1608,20 @@ static int live_breadcrumbs_smoketest(void *arg)
 	}
 
 	smoke = kcalloc(nengines, sizeof(*smoke), GFP_KERNEL);
+	{
+		typeof((*smoke)) __uncontained_tmp36;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!smoke) {
 		ret = -ENOMEM;
 		goto out_file;
 	}
 
 	threads = kcalloc(ncpus * nengines, sizeof(*threads), GFP_KERNEL);
+	{
+		typeof((*threads)) __uncontained_tmp37;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!threads) {
 		ret = -ENOMEM;
 		goto out_smoke;
@@ -1595,6 +1632,10 @@ static int live_breadcrumbs_smoketest(void *arg)
 	smoke[0].contexts = kcalloc(smoke[0].ncontexts,
 				    sizeof(*smoke[0].contexts),
 				    GFP_KERNEL);
+	{
+		typeof((*smoke[0].contexts)) __uncontained_tmp38;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!smoke[0].contexts) {
 		ret = -ENOMEM;
 		goto out_threads;
@@ -2658,6 +2699,10 @@ static int perf_series_engines(void *arg)
 	int err = 0;
 
 	stats = kcalloc(nengines, sizeof(*stats), GFP_KERNEL);
+	{
+		typeof((*stats)) __uncontained_tmp39;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!stats)
 		return -ENOMEM;
 
@@ -2997,6 +3042,10 @@ static int perf_parallel_engines(void *arg)
 	int err = 0;
 
 	engines = kcalloc(nengines, sizeof(*engines), GFP_KERNEL);
+	{
+		typeof((*engines)) __uncontained_tmp40;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!engines)
 		return -ENOMEM;
 

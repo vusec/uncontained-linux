@@ -7,6 +7,11 @@
 #include <linux/uaccess.h>
 #include <linux/delay.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cxl.h"
 #include "hcalls.h"
 #include "trace.h"
@@ -90,6 +95,10 @@ static ssize_t guest_collect_vpd(struct cxl *adapter, struct cxl_afu *afu,
 	}
 
 	vpd_buf = kcalloc(entries, sizeof(unsigned long *), GFP_KERNEL);
+	{
+		unsigned long *__uncontained_tmp41;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!vpd_buf)
 		return -ENOMEM;
 

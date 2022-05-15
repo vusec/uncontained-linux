@@ -21,6 +21,11 @@
 #include "pcie-sh7786.h"
 #include <linux/sizes.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct sh7786_pcie_port {
 	struct pci_channel	*hose;
 	struct clk		*fclk, phy_clk;
@@ -561,6 +566,10 @@ static int __init sh7786_pcie_init(void)
 
 	sh7786_pcie_ports = kcalloc(nr_ports, sizeof(struct sh7786_pcie_port),
 				    GFP_KERNEL);
+	{
+		struct sh7786_pcie_port __uncontained_tmp3;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (unlikely(!sh7786_pcie_ports))
 		return -ENOMEM;
 

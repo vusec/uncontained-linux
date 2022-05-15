@@ -29,6 +29,11 @@
 #include <target/target_core_base.h>
 #include <target/target_core_backend.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "target_core_iblock.h"
 
 #define IBLOCK_MAX_BIO_PER_TASK	 32	/* max # of bios to submit at a time */
@@ -64,6 +69,10 @@ static struct se_device *iblock_alloc_device(struct se_hba *hba, const char *nam
 
 	ib_dev->ibd_plug = kcalloc(nr_cpu_ids, sizeof(*ib_dev->ibd_plug),
 				   GFP_KERNEL);
+	{
+		typeof((*ib_dev->ibd_plug)) __uncontained_tmp112;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (!ib_dev->ibd_plug)
 		goto free_dev;
 

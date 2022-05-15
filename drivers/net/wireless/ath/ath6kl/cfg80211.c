@@ -22,6 +22,11 @@
 #include <linux/export.h>
 #include <linux/sched/signal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "cfg80211.h"
 #include "debug.h"
@@ -1042,6 +1047,10 @@ static int ath6kl_cfg80211_scan(struct wiphy *wiphy,
 		n_channels = request->n_channels;
 
 		channels = kcalloc(n_channels, sizeof(u16), GFP_KERNEL);
+		{
+			u16 __uncontained_tmp99;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
+		}
 		if (channels == NULL) {
 			ath6kl_warn("failed to set scan channels, scan all channels");
 			n_channels = 0;

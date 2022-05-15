@@ -515,6 +515,10 @@ void ice_init_arfs(struct ice_vsi *vsi)
 
 	arfs_fltr_list = kcalloc(ICE_MAX_ARFS_LIST, sizeof(*arfs_fltr_list),
 				 GFP_KERNEL);
+	{
+		typeof((*arfs_fltr_list)) __uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!arfs_fltr_list)
 		return;
 

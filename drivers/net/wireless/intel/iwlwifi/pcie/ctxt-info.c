@@ -100,9 +100,17 @@ int iwl_pcie_init_fw_sec(struct iwl_trans *trans,
 	paging_cnt = iwl_pcie_get_num_sections(fw, lmac_cnt + umac_cnt + 2);
 
 	dram->fw = kcalloc(umac_cnt + lmac_cnt, sizeof(*dram->fw), GFP_KERNEL);
+	{
+		typeof((*dram->fw)) __uncontained_tmp53;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp53;
+	}
 	if (!dram->fw)
 		return -ENOMEM;
 	dram->paging = kcalloc(paging_cnt, sizeof(*dram->paging), GFP_KERNEL);
+	{
+		typeof((*dram->paging)) __uncontained_tmp54;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!dram->paging)
 		return -ENOMEM;
 

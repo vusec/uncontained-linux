@@ -46,6 +46,10 @@ sja1105_region_static_config_snapshot(struct devlink *dl,
 	max_len = sja1105_static_config_get_max_size(priv);
 
 	*data = kcalloc(max_len, sizeof(u8), GFP_KERNEL);
+	{
+		u8 __uncontained_tmp68;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!*data)
 		return -ENOMEM;
 
@@ -84,6 +88,10 @@ static int sja1105_setup_devlink_regions(struct dsa_switch *ds)
 
 	priv->regions = kcalloc(num_regions, sizeof(struct devlink_region *),
 				GFP_KERNEL);
+	{
+		struct devlink_region *__uncontained_tmp69;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!priv->regions)
 		return -ENOMEM;
 

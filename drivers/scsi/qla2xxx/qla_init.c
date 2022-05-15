@@ -10,6 +10,11 @@
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -3690,6 +3695,10 @@ qla2x00_alloc_outstanding_cmds(struct qla_hw_data *ha, struct req_que *req)
 	req->outstanding_cmds = kcalloc(req->num_outstanding_cmds,
 					sizeof(srb_t *),
 					GFP_KERNEL);
+	{
+		srb_t *__uncontained_tmp131;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp131;
+	}
 
 	if (!req->outstanding_cmds) {
 		/*
@@ -3700,6 +3709,10 @@ qla2x00_alloc_outstanding_cmds(struct qla_hw_data *ha, struct req_que *req)
 		req->outstanding_cmds = kcalloc(req->num_outstanding_cmds,
 						sizeof(srb_t *),
 						GFP_KERNEL);
+		{
+			srb_t *__uncontained_tmp132;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp132;
+		}
 
 		if (!req->outstanding_cmds) {
 			ql_log(ql_log_fatal, NULL, 0x0126,
@@ -6086,9 +6099,14 @@ qla2x00_find_all_fabric_devs(scsi_qla_host_t *vha)
 	rval = QLA_SUCCESS;
 
 	/* Try GID_PT to get device list, else GAN. */
-	if (!ha->swl)
+	if (!ha->swl) {
 		ha->swl = kcalloc(ha->max_fibre_devices, sizeof(sw_info_t),
 		    GFP_KERNEL);
+		{
+			sw_info_t __uncontained_tmp133;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+		}
+	}
 	swl = ha->swl;
 	if (!swl) {
 		/*EMPTY*/

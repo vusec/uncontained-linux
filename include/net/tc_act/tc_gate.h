@@ -7,6 +7,11 @@
 #include <net/act_api.h>
 #include <linux/tc_act/tc_gate.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct action_gate_entry {
 	u8			gate_state;
 	u32			interval;
@@ -124,6 +129,10 @@ static inline struct action_gate_entry
 		return NULL;
 
 	oe = kcalloc(num_entries, sizeof(*oe), GFP_ATOMIC);
+	{
+		typeof((*oe)) __uncontained_tmp138;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp138;
+	}
 	if (!oe)
 		return NULL;
 

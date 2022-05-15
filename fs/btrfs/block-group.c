@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-2.0
 
 #include <linux/list_sort.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "misc.h"
 #include "ctree.h"
 #include "block-group.h"
@@ -1775,6 +1780,10 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
 		io_stripe_size = map->stripe_len * nr_data_stripes(map);
 
 	buf = kcalloc(map->num_stripes, sizeof(u64), GFP_NOFS);
+	{
+		u64 __uncontained_tmp131;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp131;
+	}
 	if (!buf) {
 		ret = -ENOMEM;
 		goto out;

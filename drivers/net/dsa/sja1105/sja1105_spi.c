@@ -5,6 +5,11 @@
  */
 #include <linux/spi/spi.h>
 #include <linux/packing.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "sja1105.h"
 
 struct sja1105_chunk {
@@ -325,6 +330,10 @@ int sja1105_static_config_upload(struct sja1105_private *priv)
 
 	buf_len = sja1105_static_config_get_length(config);
 	config_buf = kcalloc(buf_len, sizeof(char), GFP_KERNEL);
+	{
+		char __uncontained_tmp81;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!config_buf)
 		return -ENOMEM;
 

@@ -20,6 +20,11 @@
 
 #include <prom.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 void prom_putchar(char c)
 {
 	if (alchemy_get_cputype() == ALCHEMY_CPU_AU1300)
@@ -88,6 +93,10 @@ int __init db1x_register_pcmcia_socket(phys_addr_t pcmcia_attr_start,
 		cnt++;
 
 	sr = kcalloc(cnt, sizeof(struct resource), GFP_KERNEL);
+	{
+		struct resource __uncontained_tmp3;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!sr)
 		return -ENOMEM;
 
@@ -163,6 +172,10 @@ int __init db1x_register_norflash(unsigned long size, int width,
 
 	ret = -ENOMEM;
 	parts = kcalloc(5, sizeof(struct mtd_partition), GFP_KERNEL);
+	{
+		struct mtd_partition __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!parts)
 		goto out;
 

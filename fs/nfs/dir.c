@@ -40,6 +40,11 @@
 #include <linux/kmemleak.h>
 #include <linux/xattr.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "delegation.h"
 #include "iostat.h"
 #include "internal.h"
@@ -1037,6 +1042,10 @@ static int uncached_readdir(struct nfs_readdir_descriptor *desc)
 			(unsigned long long)desc->dir_cookie);
 
 	arrays = kcalloc(sz, sizeof(*arrays), GFP_KERNEL);
+	{
+		typeof((*arrays)) __uncontained_tmp182;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp182;
+	}
 	if (!arrays)
 		goto out;
 	arrays[0] = nfs_readdir_page_array_alloc(desc->dir_cookie, GFP_KERNEL);

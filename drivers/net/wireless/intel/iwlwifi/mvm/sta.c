@@ -6,6 +6,11 @@
  */
 #include <net/mac80211.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1650,6 +1655,10 @@ int iwl_mvm_add_sta(struct iwl_mvm *mvm,
 
 		dup_data = kcalloc(mvm->trans->num_rx_queues,
 				   sizeof(*dup_data), GFP_KERNEL);
+		{
+			typeof((*dup_data)) __uncontained_tmp83;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+		}
 		if (!dup_data)
 			return -ENOMEM;
 		/*

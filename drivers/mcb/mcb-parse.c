@@ -6,6 +6,11 @@
 #include <linux/io.h>
 #include <linux/mcb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mcb-internal.h"
 
 struct mcb_parse_priv {
@@ -155,6 +160,10 @@ static int chameleon_get_bar(char __iomem **base, phys_addr_t mapbase,
 
 		c = kcalloc(bar_count, sizeof(struct chameleon_bar),
 			    GFP_KERNEL);
+		{
+			struct chameleon_bar __uncontained_tmp52;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp52;
+		}
 		if (!c)
 			return -ENOMEM;
 

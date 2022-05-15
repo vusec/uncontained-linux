@@ -8,6 +8,11 @@
 #include <linux/sched/mm.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dm-core.h"
 
 #define DM_MSG_PREFIX "zone"
@@ -188,6 +193,10 @@ static int dm_zone_revalidate_cb(struct blk_zone *zone, unsigned int idx,
 			q->conv_zones_bitmap =
 				kcalloc(BITS_TO_LONGS(q->nr_zones),
 					sizeof(unsigned long), GFP_NOIO);
+			{
+				unsigned long __uncontained_tmp53;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp53;
+			}
 			if (!q->conv_zones_bitmap)
 				return -ENOMEM;
 		}
@@ -199,6 +208,10 @@ static int dm_zone_revalidate_cb(struct blk_zone *zone, unsigned int idx,
 			q->seq_zones_wlock =
 				kcalloc(BITS_TO_LONGS(q->nr_zones),
 					sizeof(unsigned long), GFP_NOIO);
+			{
+				unsigned long __uncontained_tmp54;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp54;
+			}
 			if (!q->seq_zones_wlock)
 				return -ENOMEM;
 		}

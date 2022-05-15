@@ -17,6 +17,11 @@
 #include <linux/pci.h>
 #include <net/vxlan.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -688,6 +693,10 @@ int qlcnic_setup_tss_rss_intr(struct qlcnic_adapter *adapter)
 		adapter->msix_entries = kcalloc(num_msix,
 						sizeof(struct msix_entry),
 						GFP_KERNEL);
+		{
+			struct msix_entry __uncontained_tmp107;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp107;
+		}
 		if (!adapter->msix_entries)
 			return -ENOMEM;
 	}
@@ -743,6 +752,10 @@ int qlcnic_enable_msix(struct qlcnic_adapter *adapter, u32 num_msix)
 		adapter->msix_entries = kcalloc(num_msix,
 						sizeof(struct msix_entry),
 						GFP_KERNEL);
+		{
+			struct msix_entry __uncontained_tmp108;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp108;
+		}
 		if (!adapter->msix_entries)
 			return -ENOMEM;
 	}
@@ -963,6 +976,10 @@ static int qlcnic_get_act_pci_func(struct qlcnic_adapter *adapter)
 		return 0;
 
 	pci_info = kcalloc(ahw->max_vnic_func, sizeof(*pci_info), GFP_KERNEL);
+	{
+		typeof((*pci_info)) __uncontained_tmp114;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!pci_info)
 		return -ENOMEM;
 
@@ -997,6 +1014,10 @@ int qlcnic_init_pci_info(struct qlcnic_adapter *adapter)
 	u8 pfn;
 
 	pci_info = kcalloc(ahw->max_vnic_func, sizeof(*pci_info), GFP_KERNEL);
+	{
+		typeof((*pci_info)) __uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!pci_info)
 		return -ENOMEM;
 
@@ -1009,6 +1030,10 @@ int qlcnic_init_pci_info(struct qlcnic_adapter *adapter)
 	adapter->npars = kcalloc(act_pci_func,
 				 sizeof(struct qlcnic_npar_info),
 				 GFP_KERNEL);
+	{
+		struct qlcnic_npar_info __uncontained_tmp109;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp109;
+	}
 	if (!adapter->npars) {
 		ret = -ENOMEM;
 		goto err_pci_info;
@@ -1017,6 +1042,10 @@ int qlcnic_init_pci_info(struct qlcnic_adapter *adapter)
 	adapter->eswitch = kcalloc(QLCNIC_NIU_MAX_XG_PORTS,
 				   sizeof(struct qlcnic_eswitch),
 				   GFP_KERNEL);
+	{
+		struct qlcnic_eswitch __uncontained_tmp110;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (!adapter->eswitch) {
 		ret = -ENOMEM;
 		goto err_npars;
@@ -2368,6 +2397,10 @@ int qlcnic_alloc_tx_rings(struct qlcnic_adapter *adapter,
 
 	tx_ring = kcalloc(adapter->drv_tx_rings,
 			  sizeof(struct qlcnic_host_tx_ring), GFP_KERNEL);
+	{
+		struct qlcnic_host_tx_ring __uncontained_tmp111;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (tx_ring == NULL)
 		return -ENOMEM;
 
@@ -2860,6 +2893,10 @@ void qlcnic_alloc_lb_filters_mem(struct qlcnic_adapter *adapter)
 
 	head = kcalloc(adapter->fhash.fbucket_size,
 		       sizeof(struct hlist_head), GFP_ATOMIC);
+	{
+		struct hlist_head __uncontained_tmp112;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+	}
 
 	if (!head)
 		return;
@@ -2877,6 +2914,10 @@ void qlcnic_alloc_lb_filters_mem(struct qlcnic_adapter *adapter)
 
 	head = kcalloc(adapter->rx_fhash.fbucket_size,
 		       sizeof(struct hlist_head), GFP_ATOMIC);
+	{
+		struct hlist_head __uncontained_tmp113;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+	}
 
 	if (!head)
 		return;

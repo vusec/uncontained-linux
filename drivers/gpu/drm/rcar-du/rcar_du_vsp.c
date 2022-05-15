@@ -27,6 +27,11 @@
 
 #include <media/vsp1.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rcar_du_drv.h"
 #include "rcar_du_kms.h"
 #include "rcar_du_vsp.h"
@@ -422,6 +427,10 @@ int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
 	num_planes = rcdu->info->gen >= 3 ? 5 : 4;
 
 	vsp->planes = kcalloc(num_planes, sizeof(*vsp->planes), GFP_KERNEL);
+	{
+		typeof((*vsp->planes)) __uncontained_tmp28;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (!vsp->planes)
 		return -ENOMEM;
 

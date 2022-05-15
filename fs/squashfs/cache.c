@@ -40,6 +40,11 @@
 #include <linux/wait.h>
 #include <linux/pagemap.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "squashfs_fs.h"
 #include "squashfs_fs_sb.h"
 #include "squashfs.h"
@@ -232,6 +237,10 @@ struct squashfs_cache *squashfs_cache_init(char *name, int entries,
 	}
 
 	cache->entry = kcalloc(entries, sizeof(*(cache->entry)), GFP_KERNEL);
+	{
+		typeof((*(cache->entry))) __uncontained_tmp137;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp137;
+	}
 	if (cache->entry == NULL) {
 		ERROR("Failed to allocate %s cache\n", name);
 		goto cleanup;
@@ -256,6 +265,10 @@ struct squashfs_cache *squashfs_cache_init(char *name, int entries,
 		entry->cache = cache;
 		entry->block = SQUASHFS_INVALID_BLK;
 		entry->data = kcalloc(cache->pages, sizeof(void *), GFP_KERNEL);
+		{
+			void *__uncontained_tmp135;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp135;
+		}
 		if (entry->data == NULL) {
 			ERROR("Failed to allocate %s cache entry\n", name);
 			goto cleanup;
@@ -415,6 +428,10 @@ void *squashfs_read_table(struct super_block *sb, u64 block, int length)
 		return ERR_PTR(-ENOMEM);
 
 	data = kcalloc(pages, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp136;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp136;
+	}
 	if (data == NULL) {
 		res = -ENOMEM;
 		goto failed;

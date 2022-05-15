@@ -35,6 +35,11 @@
 #include <linux/module.h>
 #include <linux/spinlock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "usnic_log.h"
 #include "usnic_vnic.h"
 #include "usnic_fwd.h"
@@ -545,6 +550,10 @@ alloc_res_chunk_list(struct usnic_vnic *vnic,
 
 	res_chunk_list = kcalloc(res_lst_sz + 1, sizeof(*res_chunk_list),
 					GFP_ATOMIC);
+	{
+		typeof((*res_chunk_list)) __uncontained_tmp47;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!res_chunk_list)
 		return ERR_PTR(-ENOMEM);
 

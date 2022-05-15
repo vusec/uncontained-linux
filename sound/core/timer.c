@@ -21,6 +21,11 @@
 #include <sound/initval.h>
 #include <linux/kmod.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* internal flags */
 #define SNDRV_TIMER_IFLG_PAUSED		0x00010000
 #define SNDRV_TIMER_IFLG_DEAD		0x00020000
@@ -1464,10 +1469,18 @@ static int realloc_user_queue(struct snd_timer_user *tu, int size)
 
 	if (tu->tread) {
 		tqueue = kcalloc(size, sizeof(*tqueue), GFP_KERNEL);
+		{
+			typeof((*tqueue)) __uncontained_tmp153;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp153;
+		}
 		if (!tqueue)
 			return -ENOMEM;
 	} else {
 		queue = kcalloc(size, sizeof(*queue), GFP_KERNEL);
+		{
+			typeof((*queue)) __uncontained_tmp154;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp154;
+		}
 		if (!queue)
 			return -ENOMEM;
 	}

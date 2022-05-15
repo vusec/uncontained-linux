@@ -409,6 +409,10 @@ ice_eswitch_add_tc_fltr(struct ice_vsi *vsi, struct ice_tc_flower_fltr *fltr)
 
 	lkups_cnt = ice_tc_count_lkups(flags, headers, fltr);
 	list = kcalloc(lkups_cnt, sizeof(*list), GFP_ATOMIC);
+	{
+		typeof((*list)) __uncontained_tmp79;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!list)
 		return -ENOMEM;
 
@@ -518,6 +522,10 @@ ice_add_tc_flower_adv_fltr(struct ice_vsi *vsi,
 
 	lkups_cnt = ice_tc_count_lkups(flags, headers, tc_fltr);
 	list = kcalloc(lkups_cnt, sizeof(*list), GFP_ATOMIC);
+	{
+		typeof((*list)) __uncontained_tmp80;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!list)
 		return -ENOMEM;
 

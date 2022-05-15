@@ -45,6 +45,11 @@
 #include "qedr.h"
 #include "verbs.h"
 #include <rdma/qedr-abi.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qedr_iw_cm.h"
 
 MODULE_DESCRIPTION("QLogic 40G/100G ROCE Driver");
@@ -335,6 +340,10 @@ static int qedr_alloc_resources(struct qedr_dev *dev)
 
 	dev->sgid_tbl = kcalloc(QEDR_MAX_SGID, sizeof(union ib_gid),
 				GFP_KERNEL);
+	{
+		union ib_gid __uncontained_tmp44;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!dev->sgid_tbl)
 		return -ENOMEM;
 
@@ -349,6 +358,10 @@ static int qedr_alloc_resources(struct qedr_dev *dev)
 	/* Allocate Status blocks for CNQ */
 	dev->sb_array = kcalloc(dev->num_cnq, sizeof(*dev->sb_array),
 				GFP_KERNEL);
+	{
+		typeof((*dev->sb_array)) __uncontained_tmp45;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!dev->sb_array) {
 		rc = -ENOMEM;
 		goto err1;
@@ -356,6 +369,10 @@ static int qedr_alloc_resources(struct qedr_dev *dev)
 
 	dev->cnq_array = kcalloc(dev->num_cnq,
 				 sizeof(*dev->cnq_array), GFP_KERNEL);
+	{
+		typeof((*dev->cnq_array)) __uncontained_tmp46;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!dev->cnq_array) {
 		rc = -ENOMEM;
 		goto err2;

@@ -34,6 +34,11 @@
 #include <rdma/ib_sa.h>
 #include <rdma/iw_cm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core_priv.h"
 #include "cma_priv.h"
 #include "cma_trace.h"
@@ -5019,6 +5024,10 @@ static int cma_add_one(struct ib_device *device)
 	cma_dev->default_gid_type = kcalloc(device->phys_port_cnt,
 					    sizeof(*cma_dev->default_gid_type),
 					    GFP_KERNEL);
+	{
+		typeof((*cma_dev->default_gid_type)) __uncontained_tmp38;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!cma_dev->default_gid_type) {
 		ret = -ENOMEM;
 		goto free_cma_dev;
@@ -5027,6 +5036,10 @@ static int cma_add_one(struct ib_device *device)
 	cma_dev->default_roce_tos = kcalloc(device->phys_port_cnt,
 					    sizeof(*cma_dev->default_roce_tos),
 					    GFP_KERNEL);
+	{
+		typeof((*cma_dev->default_roce_tos)) __uncontained_tmp39;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!cma_dev->default_roce_tos) {
 		ret = -ENOMEM;
 		goto free_gid_type;

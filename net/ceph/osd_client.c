@@ -22,6 +22,11 @@
 #include <linux/ceph/pagelist.h>
 #include <linux/ceph/striper.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define OSD_OPREPLY_FRONT_LEN	512
 
 static struct kmem_cache	*ceph_osd_request_cache;
@@ -5046,6 +5051,10 @@ static int decode_watchers(void **p, void *end,
 
 	*num_watchers = ceph_decode_32(p);
 	*watchers = kcalloc(*num_watchers, sizeof(**watchers), GFP_NOIO);
+	{
+		typeof((**watchers)) __uncontained_tmp101;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!*watchers)
 		return -ENOMEM;
 

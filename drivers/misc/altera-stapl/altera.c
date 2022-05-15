@@ -16,6 +16,11 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <misc/altera.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "altera-exprt.h"
 #include "altera-jtag.h"
 
@@ -291,12 +296,20 @@ static int altera_execute(struct altera_state *astate,
 		goto exit_done;
 
 	vars = kcalloc(sym_count, sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp56;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp56;
+	}
 
 	if (vars == NULL)
 		status = -ENOMEM;
 
 	if (status == 0) {
 		var_size = kcalloc(sym_count, sizeof(s32), GFP_KERNEL);
+		{
+			s32 __uncontained_tmp57;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp57;
+		}
 
 		if (var_size == NULL)
 			status = -ENOMEM;
@@ -1124,6 +1137,10 @@ exit_done:
 				long_tmp = vars[variable_id];
 				longptr_tmp = kcalloc(count, sizeof(long),
 								GFP_KERNEL);
+				{
+					long __uncontained_tmp58;
+					__uncontained_kcalloc = (unsigned long)&__uncontained_tmp58;
+				}
 				vars[variable_id] = (long)longptr_tmp;
 
 				if (vars[variable_id] == 0) {

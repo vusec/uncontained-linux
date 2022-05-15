@@ -24,6 +24,11 @@
 #include <linux/slab.h>
 #include <linux/sysfs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "extcon.h"
 
 #define SUPPORTED_CABLE_MAX	32
@@ -1109,6 +1114,10 @@ int extcon_dev_register(struct extcon_dev *edev)
 		edev->cables = kcalloc(edev->max_supported,
 				       sizeof(struct extcon_cable),
 				       GFP_KERNEL);
+		{
+			struct extcon_cable __uncontained_tmp21;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp21;
+		}
 		if (!edev->cables) {
 			ret = -ENOMEM;
 			goto err_sysfs_alloc;
@@ -1157,6 +1166,10 @@ int extcon_dev_register(struct extcon_dev *edev)
 		edev->attrs_muex = kcalloc(index + 1,
 					   sizeof(struct attribute *),
 					   GFP_KERNEL);
+		{
+			struct attribute *__uncontained_tmp22;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+		}
 		if (!edev->attrs_muex) {
 			ret = -ENOMEM;
 			goto err_muex;
@@ -1165,6 +1178,10 @@ int extcon_dev_register(struct extcon_dev *edev)
 		edev->d_attrs_muex = kcalloc(index,
 					     sizeof(struct device_attribute),
 					     GFP_KERNEL);
+		{
+			struct device_attribute __uncontained_tmp23;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp23;
+		}
 		if (!edev->d_attrs_muex) {
 			ret = -ENOMEM;
 			kfree(edev->attrs_muex);
@@ -1200,6 +1217,10 @@ int extcon_dev_register(struct extcon_dev *edev)
 			kcalloc(edev->max_supported + 2,
 				sizeof(struct attribute_group *),
 				GFP_KERNEL);
+		{
+			struct attribute_group *__uncontained_tmp24;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+		}
 		if (!edev->extcon_dev_type.groups) {
 			ret = -ENOMEM;
 			goto err_alloc_groups;

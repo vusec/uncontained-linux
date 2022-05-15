@@ -13,6 +13,11 @@
 
 #include <asm/asid.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define reserved_asid(info, cpu) *per_cpu_ptr((info)->reserved, cpu)
 
 #define ASID_MASK(info)			(~GENMASK((info)->bits - 1, 0))
@@ -180,6 +185,10 @@ int asid_allocator_init(struct asid_info *info,
 	atomic64_set(&info->generation, ASID_FIRST_VERSION(info));
 	info->map = kcalloc(BITS_TO_LONGS(NUM_CTXT_ASIDS(info)),
 			    sizeof(*info->map), GFP_KERNEL);
+	{
+		typeof((*info->map)) __uncontained_tmp1;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!info->map)
 		return -ENOMEM;
 

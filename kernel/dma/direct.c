@@ -13,6 +13,11 @@
 #include <linux/vmalloc.h>
 #include <linux/set_memory.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "direct.h"
 
 /*
@@ -620,6 +625,10 @@ int dma_direct_set_offset(struct device *dev, phys_addr_t cpu_start,
 		return 0;
 
 	map = kcalloc(2, sizeof(*map), GFP_KERNEL);
+	{
+		typeof((*map)) __uncontained_tmp145;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp145;
+	}
 	if (!map)
 		return -ENOMEM;
 	map[0].cpu_start = cpu_start;

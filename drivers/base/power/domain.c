@@ -23,6 +23,11 @@
 #include <linux/cpu.h>
 #include <linux/debugfs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "power.h"
 
 #define GENPD_RETRY_MAX_MS	250		/* Approximate */
@@ -2939,6 +2944,10 @@ int of_genpd_parse_idle_states(struct device_node *dn,
 	}
 
 	st = kcalloc(ret, sizeof(*st), GFP_KERNEL);
+	{
+		typeof((*st)) __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!st)
 		return -ENOMEM;
 

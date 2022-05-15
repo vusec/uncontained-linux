@@ -6,6 +6,11 @@
  */
 #include <linux/module.h>
 #include <linux/highmem.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "smbdirect.h"
 #include "cifs_debug.h"
 #include "cifsproto.h"
@@ -2265,6 +2270,10 @@ static int allocate_mr_list(struct smbd_connection *info)
 					info->max_frmr_depth,
 					sizeof(struct scatterlist),
 					GFP_KERNEL);
+		{
+			struct scatterlist __uncontained_tmp92;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp92;
+		}
 		if (!smbdirect_mr->sgl) {
 			log_rdma_mr(ERR, "failed to allocate sgl\n");
 			ib_dereg_mr(smbdirect_mr->mr);

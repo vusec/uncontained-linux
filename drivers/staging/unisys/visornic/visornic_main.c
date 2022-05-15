@@ -18,6 +18,11 @@
 #include <linux/rtnetlink.h>
 #include <linux/visorbus.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "iochannel.h"
 
 #define VISORNIC_INFINITE_RSP_WAIT 0
@@ -1837,6 +1842,10 @@ static int visornic_probe(struct visor_device *dev)
 
 	devdata->rcvbuf = kcalloc(devdata->num_rcv_bufs,
 				  sizeof(struct sk_buff *), GFP_KERNEL);
+	{
+		struct sk_buff *__uncontained_tmp111;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (!devdata->rcvbuf) {
 		err = -ENOMEM;
 		goto cleanup_netdev;

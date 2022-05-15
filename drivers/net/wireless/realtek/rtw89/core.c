@@ -4,6 +4,11 @@
 #include <linux/ip.h>
 #include <linux/udp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "coex.h"
 #include "core.h"
 #include "efuse.h"
@@ -2040,6 +2045,10 @@ static void rtw89_init_he_cap(struct rtw89_dev *rtwdev,
 	int idx = 0;
 
 	iftype_data = kcalloc(RTW89_SBAND_IFTYPES_NR, sizeof(*iftype_data), GFP_KERNEL);
+	{
+		typeof((*iftype_data)) __uncontained_tmp92;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!iftype_data)
 		return;
 

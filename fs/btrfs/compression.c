@@ -19,6 +19,11 @@
 #include <linux/sched/mm.h>
 #include <linux/log2.h>
 #include <crypto/hash.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "misc.h"
 #include "ctree.h"
 #include "disk-io.h"
@@ -851,6 +856,10 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 	nr_pages = DIV_ROUND_UP(compressed_len, PAGE_SIZE);
 	cb->compressed_pages = kcalloc(nr_pages, sizeof(struct page *),
 				       GFP_NOFS);
+	{
+		struct page *__uncontained_tmp106;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!cb->compressed_pages)
 		goto fail1;
 
@@ -1048,10 +1057,18 @@ static struct list_head *alloc_heuristic_ws(unsigned int level)
 		goto fail;
 
 	ws->bucket = kcalloc(BUCKET_SIZE, sizeof(*ws->bucket), GFP_KERNEL);
+	{
+		typeof((*ws->bucket)) __uncontained_tmp107;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp107;
+	}
 	if (!ws->bucket)
 		goto fail;
 
 	ws->bucket_b = kcalloc(BUCKET_SIZE, sizeof(*ws->bucket_b), GFP_KERNEL);
+	{
+		typeof((*ws->bucket_b)) __uncontained_tmp108;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp108;
+	}
 	if (!ws->bucket_b)
 		goto fail;
 

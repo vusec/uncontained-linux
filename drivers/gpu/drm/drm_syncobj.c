@@ -198,6 +198,11 @@
 #include <drm/drm_syncobj.h>
 #include <drm/drm_utils.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "drm_internal.h"
 
 struct syncobj_wait_entry {
@@ -987,6 +992,10 @@ static signed long drm_syncobj_array_wait_timeout(struct drm_syncobj **syncobjs,
 	}
 
 	entries = kcalloc(count, sizeof(*entries), GFP_KERNEL);
+	{
+		typeof((*entries)) __uncontained_tmp56;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp56;
+	}
 	if (!entries) {
 		timeout = -ENOMEM;
 		goto err_free_points;

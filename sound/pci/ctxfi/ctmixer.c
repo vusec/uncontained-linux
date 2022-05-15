@@ -21,6 +21,11 @@
 #include <sound/pcm.h>
 #include <sound/tlv.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 enum CT_SUM_CTL {
 	SUM_IN_F,
 	SUM_IN_R,
@@ -908,12 +913,20 @@ static int ct_mixer_get_mem(struct ct_mixer **rmixer)
 
 	mixer->amixers = kcalloc(NUM_CT_AMIXERS * CHN_NUM, sizeof(void *),
 				 GFP_KERNEL);
+	{
+		void *__uncontained_tmp152;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp152;
+	}
 	if (!mixer->amixers) {
 		err = -ENOMEM;
 		goto error1;
 	}
 	mixer->sums = kcalloc(NUM_CT_SUMS * CHN_NUM, sizeof(void *),
 			      GFP_KERNEL);
+	{
+		void *__uncontained_tmp153;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp153;
+	}
 	if (!mixer->sums) {
 		err = -ENOMEM;
 		goto error2;

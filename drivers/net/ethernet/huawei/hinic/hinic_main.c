@@ -24,6 +24,11 @@
 #include <linux/delay.h>
 #include <linux/err.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hinic_debugfs.h"
 #include "hinic_hw_qp.h"
 #include "hinic_hw_dev.h"
@@ -321,6 +326,10 @@ static int hinic_rss_init(struct hinic_dev *nic_dev)
 	int err, i;
 
 	indir_tbl = kcalloc(HINIC_RSS_INDIR_SIZE, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp78;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!indir_tbl)
 		return -ENOMEM;
 

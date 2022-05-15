@@ -12,6 +12,11 @@
 #include <linux/videodev2.h>
 #include <media/v4l2-common.h>
 #include <media/tuner.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "pvrusb2.h"
 #include "pvrusb2-std.h"
 #include "pvrusb2-util.h"
@@ -2426,6 +2431,10 @@ struct pvr2_hdw *pvr2_hdw_create(struct usb_interface *intf,
 	hdw->control_cnt += MPEGDEF_COUNT;
 	hdw->controls = kcalloc(hdw->control_cnt, sizeof(struct pvr2_ctrl),
 				GFP_KERNEL);
+	{
+		struct pvr2_ctrl __uncontained_tmp60;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!hdw->controls) goto fail;
 	hdw->hdw_desc = hdw_desc;
 	hdw->ir_scheme_active = hdw->hdw_desc->ir_scheme;
@@ -2453,6 +2462,10 @@ struct pvr2_hdw *pvr2_hdw_create(struct usb_interface *intf,
 	hdw->mpeg_ctrl_info = kcalloc(MPEGDEF_COUNT,
 				      sizeof(*(hdw->mpeg_ctrl_info)),
 				      GFP_KERNEL);
+	{
+	typeof((*(hdw->mpeg_ctrl_info))) __uncontained_tmp61;
+	__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!hdw->mpeg_ctrl_info) goto fail;
 	for (idx = 0; idx < MPEGDEF_COUNT; idx++) {
 		cptr = hdw->controls + idx + CTRLDEF_COUNT;

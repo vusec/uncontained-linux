@@ -6,6 +6,11 @@
 #include <linux/regmap.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "pmc.h"
 
 #define MASTER_SOURCE_MAX	4
@@ -530,17 +535,29 @@ of_at91_clk_pll_get_characteristics(struct device_node *np)
 		return NULL;
 
 	output = kcalloc(num_output, sizeof(*output), GFP_KERNEL);
+	{
+		typeof((*output)) __uncontained_tmp20;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!output)
 		goto out_free_characteristics;
 
 	if (num_cells > 2) {
 		out = kcalloc(num_output, sizeof(*out), GFP_KERNEL);
+		{
+			typeof((*out)) __uncontained_tmp21;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp21;
+		}
 		if (!out)
 			goto out_free_output;
 	}
 
 	if (num_cells > 3) {
 		icpll = kcalloc(num_output, sizeof(*icpll), GFP_KERNEL);
+		{
+			typeof((*icpll)) __uncontained_tmp22;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+		}
 		if (!icpll)
 			goto out_free_output;
 	}

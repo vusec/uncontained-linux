@@ -21,6 +21,11 @@
 #include <linux/of_irq.h>
 #include <sound/tlv.h>
 #include <sound/info.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "wcd9335.h"
 #include "wcd-clsh-v2.h"
 
@@ -1728,6 +1733,10 @@ static int wcd9335_slim_set_hw_params(struct wcd9335_codec *wcd,
 	}
 
 	cfg->chs = kcalloc(cfg->ch_count, sizeof(unsigned int), GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp144;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp144;
+	}
 	if (!cfg->chs)
 		return -ENOMEM;
 

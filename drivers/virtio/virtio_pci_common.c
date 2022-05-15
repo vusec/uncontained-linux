@@ -150,6 +150,10 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
 	vp_dev->msix_affinity_masks
 		= kcalloc(nvectors, sizeof(*vp_dev->msix_affinity_masks),
 			  GFP_KERNEL);
+		{
+		typeof((*vp_dev->msix_affinity_masks)) __uncontained_tmp131;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp131;
+	}
 	if (!vp_dev->msix_affinity_masks)
 		goto error;
 	for (i = 0; i < nvectors; ++i)
@@ -321,6 +325,10 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned nvqs,
 	int i, err, nvectors, allocated_vectors, queue_idx = 0;
 
 	vp_dev->vqs = kcalloc(nvqs, sizeof(*vp_dev->vqs), GFP_KERNEL);
+	{
+		typeof((*vp_dev->vqs)) __uncontained_tmp132;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (!vp_dev->vqs)
 		return -ENOMEM;
 
@@ -392,6 +400,10 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned nvqs,
 	int i, err, queue_idx = 0;
 
 	vp_dev->vqs = kcalloc(nvqs, sizeof(*vp_dev->vqs), GFP_KERNEL);
+	{
+		typeof((*vp_dev->vqs)) __uncontained_tmp133;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+	}
 	if (!vp_dev->vqs)
 		return -ENOMEM;
 

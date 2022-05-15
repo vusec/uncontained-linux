@@ -11,6 +11,11 @@
 #include <linux/scatterlist.h>
 #include <linux/dma-direction.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gsi.h"
 #include "gsi_private.h"
 #include "gsi_trans.h"
@@ -737,6 +742,10 @@ int gsi_channel_trans_init(struct gsi *gsi, u32 channel_id)
 	trans_info = &channel->trans_info;
 	trans_info->map = kcalloc(channel->tre_count, sizeof(*trans_info->map),
 				  GFP_KERNEL);
+	{
+		typeof((*trans_info->map)) __uncontained_tmp122;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp122;
+	}
 	if (!trans_info->map)
 		return -ENOMEM;
 

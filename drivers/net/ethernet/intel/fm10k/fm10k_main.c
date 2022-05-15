@@ -9,6 +9,11 @@
 #include <linux/if_macvlan.h>
 #include <linux/prefetch.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "fm10k.h"
 
 #define DRV_SUMMARY	"Intel(R) Ethernet Switch Host Interface Driver"
@@ -1821,6 +1826,10 @@ static int fm10k_init_msix_capability(struct fm10k_intfc *interface)
 	/* A failure in MSI-X entry allocation is fatal. */
 	interface->msix_entries = kcalloc(v_budget, sizeof(struct msix_entry),
 					  GFP_KERNEL);
+	{
+		struct msix_entry __uncontained_tmp69;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!interface->msix_entries)
 		return -ENOMEM;
 

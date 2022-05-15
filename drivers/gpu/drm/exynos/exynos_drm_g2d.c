@@ -23,6 +23,11 @@
 #include <drm/drm_file.h>
 #include <drm/exynos_drm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "exynos_drm_drv.h"
 #include "exynos_drm_g2d.h"
 #include "exynos_drm_gem.h"
@@ -287,6 +292,10 @@ static int g2d_init_cmdlist(struct g2d_data *g2d)
 	}
 
 	node = kcalloc(G2D_CMDLIST_NUM, sizeof(*node), GFP_KERNEL);
+	{
+		typeof((*node)) __uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!node) {
 		ret = -ENOMEM;
 		goto err;

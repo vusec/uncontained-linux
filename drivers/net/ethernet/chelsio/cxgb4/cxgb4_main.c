@@ -67,6 +67,11 @@
 #include <net/udp_tunnel.h>
 #include <net/xfrm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1337,6 +1342,10 @@ static int cxgb4_port_mirror_alloc_queues(struct net_device *dev)
 		return 0;
 
 	mirror_rxq = kcalloc(pi->nmirrorqsets, sizeof(*mirror_rxq), GFP_KERNEL);
+	{
+		typeof((*mirror_rxq)) __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!mirror_rxq)
 		return -ENOMEM;
 
@@ -1395,6 +1404,10 @@ static int cxgb4_port_mirror_alloc_queues(struct net_device *dev)
 
 	/* Setup RSS for Mirror Rxqs */
 	rss = kcalloc(pi->rss_size, sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!rss) {
 		ret = -ENOMEM;
 		goto out_free_queues;
@@ -4112,6 +4125,10 @@ static int adap_config_hma(struct adapter *adapter)
 
 	adapter->hma.phy_addr = kcalloc(sgt->nents, sizeof(dma_addr_t),
 					GFP_KERNEL);
+	{
+		typeof((dma_addr_t)) __uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (unlikely(!adapter->hma.phy_addr))
 		goto free_hma;
 
@@ -5037,6 +5054,10 @@ static int adap_init0(struct adapter *adap, int vpd_skip)
 
 	adap->sge.egr_map = kcalloc(adap->sge.egr_sz,
 				    sizeof(*adap->sge.egr_map), GFP_KERNEL);
+	{
+		typeof((*adap->sge.egr_map)) __uncontained_tmp26;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!adap->sge.egr_map) {
 		ret = -ENOMEM;
 		goto bye;
@@ -5044,6 +5065,10 @@ static int adap_init0(struct adapter *adap, int vpd_skip)
 
 	adap->sge.ingr_map = kcalloc(adap->sge.ingr_sz,
 				     sizeof(*adap->sge.ingr_map), GFP_KERNEL);
+	{
+		typeof((*adap->sge.ingr_map)) __uncontained_tmp27;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!adap->sge.ingr_map) {
 		ret = -ENOMEM;
 		goto bye;
@@ -5054,6 +5079,10 @@ static int adap_init0(struct adapter *adap, int vpd_skip)
 	 */
 	adap->sge.starving_fl =	kcalloc(BITS_TO_LONGS(adap->sge.egr_sz),
 					sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!adap->sge.starving_fl) {
 		ret = -ENOMEM;
 		goto bye;
@@ -5061,6 +5090,10 @@ static int adap_init0(struct adapter *adap, int vpd_skip)
 
 	adap->sge.txq_maperr = kcalloc(BITS_TO_LONGS(adap->sge.egr_sz),
 				       sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!adap->sge.txq_maperr) {
 		ret = -ENOMEM;
 		goto bye;
@@ -5069,6 +5102,10 @@ static int adap_init0(struct adapter *adap, int vpd_skip)
 #ifdef CONFIG_DEBUG_FS
 	adap->sge.blocked_fl = kcalloc(BITS_TO_LONGS(adap->sge.egr_sz),
 				       sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp20;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!adap->sge.blocked_fl) {
 		ret = -ENOMEM;
 		goto bye;
@@ -5856,11 +5893,19 @@ static int alloc_msix_info(struct adapter *adap, u32 num_vec)
 	struct msix_info *msix_info;
 
 	msix_info = kcalloc(num_vec, sizeof(*msix_info), GFP_KERNEL);
+	{
+		typeof((*msix_info)) __uncontained_tmp28;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (!msix_info)
 		return -ENOMEM;
 
 	adap->msix_bmap.msix_bmap = kcalloc(BITS_TO_LONGS(num_vec),
 					    sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp21;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!adap->msix_bmap.msix_bmap) {
 		kfree(msix_info);
 		return -ENOMEM;
@@ -6119,6 +6164,10 @@ static int init_rss(struct adapter *adap)
 		struct port_info *pi = adap2pinfo(adap, i);
 
 		pi->rss = kcalloc(pi->rss_size, sizeof(u16), GFP_KERNEL);
+		{
+			u16 __uncontained_tmp22;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+		}
 		if (!pi->rss)
 			return -ENOMEM;
 	}
@@ -6372,6 +6421,10 @@ static int cxgb4_iov_configure(struct pci_dev *pdev, int num_vfs)
 		/* Allocate and set up VF Information. */
 		adap->vfinfo = kcalloc(pci_sriov_get_totalvfs(pdev),
 				       sizeof(struct vf_info), GFP_KERNEL);
+		{
+			struct vf_info __uncontained_tmp23;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp23;
+		}
 		if (!adap->vfinfo) {
 			unregister_netdev(adap->port[0]);
 			free_netdev(adap->port[0]);

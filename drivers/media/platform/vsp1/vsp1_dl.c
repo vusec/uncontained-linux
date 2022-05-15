@@ -14,6 +14,11 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vsp1.h"
 #include "vsp1_dl.h"
 
@@ -268,6 +273,10 @@ vsp1_dl_body_pool_create(struct vsp1_device *vsp1, unsigned int num_bodies,
 	pool->size = dlb_size * num_bodies;
 
 	pool->bodies = kcalloc(num_bodies, sizeof(*pool->bodies), GFP_KERNEL);
+	{
+		typeof((*pool->bodies)) __uncontained_tmp52;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!pool->bodies) {
 		kfree(pool);
 		return NULL;
@@ -437,6 +446,10 @@ vsp1_dl_cmd_pool_create(struct vsp1_device *vsp1, enum vsp1_extcmd_type type,
 	INIT_LIST_HEAD(&pool->free);
 
 	pool->cmds = kcalloc(num_cmds, sizeof(*pool->cmds), GFP_KERNEL);
+	{
+		typeof((*pool->cmds)) __uncontained_tmp53;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp53;
+	}
 	if (!pool->cmds) {
 		kfree(pool);
 		return NULL;

@@ -12,6 +12,11 @@
 #include <linux/module.h>
 #include <linux/firmware.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "aic94xx.h"
 #include "aic94xx_reg.h"
 #include "aic94xx_hwi.h"
@@ -205,6 +210,10 @@ static int asd_init_scbs(struct asd_ha_struct *asd_ha)
 	asd_ha->seq.tc_index_array = kcalloc(asd_ha->seq.tc_index_bitmap_bits,
 					     sizeof(void *),
 					     GFP_KERNEL);
+	{
+		void *__uncontained_tmp132;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (!asd_ha->seq.tc_index_array)
 		return -ENOMEM;
 

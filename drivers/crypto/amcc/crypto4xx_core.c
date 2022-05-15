@@ -37,6 +37,11 @@
 #include <crypto/internal/aead.h>
 #include <crypto/internal/rng.h>
 #include <crypto/internal/skcipher.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "crypto4xx_reg_def.h"
 #include "crypto4xx_core.h"
 #include "crypto4xx_sa.h"
@@ -175,6 +180,10 @@ static u32 crypto4xx_build_pdr(struct crypto4xx_device *dev)
 
 	dev->pdr_uinfo = kcalloc(PPC4XX_NUM_PD, sizeof(struct pd_uinfo),
 				 GFP_KERNEL);
+	{
+		struct pd_uinfo __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!dev->pdr_uinfo) {
 		dma_free_coherent(dev->core_dev->device,
 				  sizeof(struct ce_pd) * PPC4XX_NUM_PD,

@@ -8,6 +8,11 @@
 #include <linux/wait.h>
 #include <linux/gfp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "iwl-prph.h"
 #include "iwl-io.h"
 #include "internal.h"
@@ -757,13 +762,25 @@ static int iwl_pcie_rx_alloc(struct iwl_trans *trans)
 
 	trans_pcie->rxq = kcalloc(trans->num_rx_queues, sizeof(struct iwl_rxq),
 				  GFP_KERNEL);
+	{
+		struct iwl_rxq __uncontained_tmp96;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+	}
 	trans_pcie->rx_pool = kcalloc(RX_POOL_SIZE(trans_pcie->num_rx_bufs),
 				      sizeof(trans_pcie->rx_pool[0]),
 				      GFP_KERNEL);
+	{
+		typeof((trans_pcie->rx_pool[0])) __uncontained_tmp97;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp97;
+	}
 	trans_pcie->global_table =
 		kcalloc(RX_POOL_SIZE(trans_pcie->num_rx_bufs),
 			sizeof(trans_pcie->global_table[0]),
 			GFP_KERNEL);
+	{
+		typeof((trans_pcie->global_table[0])) __uncontained_tmp98;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp98;
+	}
 	if (!trans_pcie->rxq || !trans_pcie->rx_pool ||
 	    !trans_pcie->global_table) {
 		ret = -ENOMEM;

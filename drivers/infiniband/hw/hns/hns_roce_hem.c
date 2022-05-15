@@ -795,6 +795,10 @@ int hns_roce_init_hem_table(struct hns_roce_dev *hr_dev,
 		num_hem = DIV_ROUND_UP(nobj, obj_per_chunk);
 
 		table->hem = kcalloc(num_hem, sizeof(*table->hem), GFP_KERNEL);
+		{
+			typeof((*table->hem)) __uncontained_tmp37;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp37;
+		}
 		if (!table->hem)
 			return -ENOMEM;
 	} else {
@@ -822,6 +826,10 @@ int hns_roce_init_hem_table(struct hns_roce_dev *hr_dev,
 
 		table->hem = kcalloc(num_hem, sizeof(*table->hem),
 					 GFP_KERNEL);
+		{
+			typeof((*table->hem)) __uncontained_tmp38;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp38;
+		}
 		if (!table->hem)
 			goto err_kcalloc_hem_buf;
 
@@ -832,12 +840,20 @@ int hns_roce_init_hem_table(struct hns_roce_dev *hr_dev,
 			table->bt_l1 = kcalloc(num_bt_l1,
 					       sizeof(*table->bt_l1),
 					       GFP_KERNEL);
+			{
+				typeof((*table->bt_l1)) __uncontained_tmp39;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp39;
+			}
 			if (!table->bt_l1)
 				goto err_kcalloc_bt_l1;
 
 			table->bt_l1_dma_addr = kcalloc(num_bt_l1,
 						 sizeof(*table->bt_l1_dma_addr),
 						 GFP_KERNEL);
+			{
+				typeof((*table->bt_l1_dma_addr)) __uncontained_tmp40;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp40;
+			}
 
 			if (!table->bt_l1_dma_addr)
 				goto err_kcalloc_l1_dma;
@@ -847,12 +863,20 @@ int hns_roce_init_hem_table(struct hns_roce_dev *hr_dev,
 			check_whether_bt_num_3(type, hop_num)) {
 			table->bt_l0 = kcalloc(num_bt_l0, sizeof(*table->bt_l0),
 					       GFP_KERNEL);
+			{
+				typeof((*table->bt_l0)) __uncontained_tmp41;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp41;
+			}
 			if (!table->bt_l0)
 				goto err_kcalloc_bt_l0;
 
 			table->bt_l0_dma_addr = kcalloc(num_bt_l0,
 						 sizeof(*table->bt_l0_dma_addr),
 						 GFP_KERNEL);
+			{
+				typeof((*table->bt_l0_dma_addr)) __uncontained_tmp42;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp42;
+			}
 			if (!table->bt_l0_dma_addr)
 				goto err_kcalloc_l0_dma;
 		}

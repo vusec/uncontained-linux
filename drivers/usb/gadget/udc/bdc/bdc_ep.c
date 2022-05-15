@@ -34,6 +34,11 @@
 #include <linux/platform_device.h>
 #include <linux/usb/composite.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "bdc.h"
 #include "bdc_ep.h"
 #include "bdc_cmd.h"
@@ -141,6 +146,10 @@ static int ep_bd_list_alloc(struct bdc_ep *ep)
 	ep->bd_list.bd_table_array = kcalloc(num_tabs,
 					     sizeof(struct bd_table *),
 					     GFP_ATOMIC);
+	{
+		struct bd_table *__uncontained_tmp129;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp129;
+	}
 	if (!ep->bd_list.bd_table_array)
 		return -ENOMEM;
 

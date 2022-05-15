@@ -20,6 +20,11 @@
 
 #include <trace/events/sunrpc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define RPC_CREDCACHE_DEFAULT_HASHBITS	(4)
 struct rpc_cred_cache {
 	struct hlist_head	*hashtable;
@@ -299,6 +304,10 @@ rpcauth_init_credcache(struct rpc_auth *auth)
 	new->hashbits = auth_hashbits;
 	hashsize = 1U << new->hashbits;
 	new->hashtable = kcalloc(hashsize, sizeof(new->hashtable[0]), GFP_KERNEL);
+	{
+		typeof((new->hashtable[0])) __uncontained_tmp148;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (!new->hashtable)
 		goto out_nohashtbl;
 	spin_lock_init(&new->lock);

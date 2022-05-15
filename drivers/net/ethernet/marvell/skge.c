@@ -35,6 +35,11 @@
 #include <linux/prefetch.h>
 #include <asm/irq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -927,6 +932,10 @@ static int skge_ring_alloc(struct skge_ring *ring, void *vaddr, u32 base)
 	int i;
 
 	ring->start = kcalloc(ring->count, sizeof(*e), GFP_KERNEL);
+	{
+		typeof((*e)) __uncontained_tmp74;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!ring->start)
 		return -ENOMEM;
 

@@ -10,6 +10,11 @@
 #include <linux/sched.h>
 #include <linux/wait.h>
 #include <linux/spinlock.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ishtp-dev.h"
 #include "hbm.h"
 #include "client.h"
@@ -35,6 +40,10 @@ static void ishtp_hbm_fw_cl_allocate(struct ishtp_device *dev)
 	/* allocate storage for fw clients representation */
 	clients = kcalloc(dev->fw_clients_num, sizeof(struct ishtp_fw_client),
 			  GFP_KERNEL);
+	{
+		struct ishtp_fw_client __uncontained_tmp46;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!clients) {
 		dev->dev_state = ISHTP_DEV_RESETTING;
 		ish_hw_reset(dev);

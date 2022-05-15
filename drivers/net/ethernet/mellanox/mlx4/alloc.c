@@ -39,6 +39,11 @@
 #include <linux/dma-mapping.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mlx4.h"
 
 u32 mlx4_bitmap_alloc(struct mlx4_bitmap *bitmap)
@@ -618,6 +623,10 @@ int mlx4_buf_alloc(struct mlx4_dev *dev, int size, int max_direct,
 		buf->page_shift  = PAGE_SHIFT;
 		buf->page_list   = kcalloc(buf->nbufs, sizeof(*buf->page_list),
 					   GFP_KERNEL);
+		{
+			typeof((*buf->page_list)) __uncontained_tmp83;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+		}
 		if (!buf->page_list)
 			return -ENOMEM;
 

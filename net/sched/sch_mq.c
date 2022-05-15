@@ -17,6 +17,11 @@
 #include <net/pkt_sched.h>
 #include <net/sch_generic.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct mq_sched {
 	struct Qdisc		**qdiscs;
 };
@@ -82,6 +87,10 @@ static int mq_init(struct Qdisc *sch, struct nlattr *opt,
 	/* pre-allocate qdiscs, attachment can't fail */
 	priv->qdiscs = kcalloc(dev->num_tx_queues, sizeof(priv->qdiscs[0]),
 			       GFP_KERNEL);
+	{
+		typeof((priv->qdiscs[0])) __uncontained_tmp140;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!priv->qdiscs)
 		return -ENOMEM;
 

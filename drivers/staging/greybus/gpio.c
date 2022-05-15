@@ -15,6 +15,11 @@
 #include <linux/mutex.h>
 #include <linux/greybus.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gbphy.h"
 
 struct gb_gpio_line {
@@ -489,6 +494,10 @@ static int gb_gpio_controller_setup(struct gb_gpio_controller *ggc)
 
 	ggc->lines = kcalloc(ggc->line_max + 1, sizeof(*ggc->lines),
 			     GFP_KERNEL);
+	{
+		typeof((*ggc->lines)) __uncontained_tmp106;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!ggc->lines)
 		return -ENOMEM;
 

@@ -34,6 +34,11 @@
 #include <scsi/scsi_device.h>
 #include <scsi/scsi_host.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "aacraid.h"
 
 /* values for inqd_pdt: Peripheral device type in plain English */
@@ -494,6 +499,10 @@ int aac_get_containers(struct aac_dev *dev)
 
 		dev->fsa_dev = kcalloc(maximum_num_containers,
 					sizeof(*fsa_dev_ptr), GFP_KERNEL);
+		{
+			typeof((*fsa_dev_ptr)) __uncontained_tmp128;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp128;
+		}
 
 		kfree(fsa_dev_ptr);
 		fsa_dev_ptr = NULL;

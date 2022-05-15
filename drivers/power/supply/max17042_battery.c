@@ -22,6 +22,11 @@
 #include <linux/of.h>
 #include <linux/regmap.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Status register bits */
 #define STATUS_POR_BIT         (1 << 1)
 #define STATUS_BST_BIT         (1 << 3)
@@ -594,6 +599,10 @@ static int max17042_init_model(struct max17042_chip *chip)
 	u16 *temp_data;
 
 	temp_data = kcalloc(table_size, sizeof(*temp_data), GFP_KERNEL);
+	{
+		typeof((*temp_data)) __uncontained_tmp96;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!temp_data)
 		return -ENOMEM;
 
@@ -623,6 +632,10 @@ static int max17042_verify_model_lock(struct max17042_chip *chip)
 	int ret = 0;
 
 	temp_data = kcalloc(table_size, sizeof(*temp_data), GFP_KERNEL);
+	{
+		typeof((*temp_data)) __uncontained_tmp97;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!temp_data)
 		return -ENOMEM;
 

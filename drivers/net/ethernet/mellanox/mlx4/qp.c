@@ -39,6 +39,11 @@
 #include <linux/mlx4/cmd.h>
 #include <linux/mlx4/qp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mlx4.h"
 #include "icm.h"
 
@@ -851,6 +856,10 @@ int mlx4_init_qp_table(struct mlx4_dev *dev)
 		dev->caps.spec_qps = kcalloc(dev->caps.num_ports,
 					     sizeof(*dev->caps.spec_qps),
 					     GFP_KERNEL);
+		{
+			typeof((*dev->caps.spec_qps)) __uncontained_tmp42;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp42;
+		}
 		if (!dev->caps.spec_qps) {
 			err = -ENOMEM;
 			goto err_mem;

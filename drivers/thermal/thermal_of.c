@@ -17,6 +17,11 @@
 #include <linux/types.h>
 #include <linux/string.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "thermal_core.h"
 
 /***   Private data structures to represent thermal device tree data ***/
@@ -717,6 +722,10 @@ static int thermal_of_populate_bind_params(struct device_node *np,
 	}
 
 	__tcbp = kcalloc(count, sizeof(*__tcbp), GFP_KERNEL);
+	{
+		typeof((*__tcbp)) __uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!__tcbp) {
 		ret = -ENOMEM;
 		goto end;
@@ -909,6 +918,10 @@ __init *thermal_of_build_thermal_zone(struct device_node *np)
 		goto finish;
 
 	tz->trips = kcalloc(tz->ntrips, sizeof(*tz->trips), GFP_KERNEL);
+	{
+		typeof((*tz->trips)) __uncontained_tmp116;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (!tz->trips) {
 		ret = -ENOMEM;
 		goto free_tz;
@@ -935,6 +948,10 @@ __init *thermal_of_build_thermal_zone(struct device_node *np)
 		goto finish;
 
 	tz->tbps = kcalloc(tz->num_tbps, sizeof(*tz->tbps), GFP_KERNEL);
+	{
+		typeof((*tz->tbps)) __uncontained_tmp117;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!tz->tbps) {
 		ret = -ENOMEM;
 		goto free_trips;

@@ -29,6 +29,10 @@ ice_eswitch_add_vf_mac_rule(struct ice_pf *pf, struct ice_vf *vf, const u8 *mac)
 	int err;
 
 	list = kcalloc(lkups_cnt, sizeof(*list), GFP_ATOMIC);
+	{
+		typeof((*list)) __uncontained_tmp95;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (!list)
 		return -ENOMEM;
 

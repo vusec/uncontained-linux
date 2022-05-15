@@ -46,6 +46,11 @@
 #include <linux/slab.h>
 #include <linux/io.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Hans-Frieder Vogt <hfvogt@gmx.net>");
 MODULE_DESCRIPTION("nForce2/3/4/5xx SMBus driver");
@@ -374,6 +379,10 @@ static int nforce2_probe(struct pci_dev *dev, const struct pci_device_id *id)
 
 	/* we support 2 SMBus adapters */
 	smbuses = kcalloc(2, sizeof(struct nforce2_smbus), GFP_KERNEL);
+	{
+		struct nforce2_smbus __uncontained_tmp50;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!smbuses)
 		return -ENOMEM;
 	pci_set_drvdata(dev, smbuses);

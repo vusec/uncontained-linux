@@ -43,6 +43,11 @@
 #include <asm/asm-prototypes.h>
 #include <asm/dtl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "pseries.h"
 
 /* Flag bits for H_BULK_REMOVE */
@@ -208,8 +213,16 @@ static int init_cpu_associativity(void)
 {
 	vcpu_associativity = kcalloc(num_possible_cpus() / threads_per_core,
 			VPHN_ASSOC_BUFSIZE * sizeof(__be32), GFP_KERNEL);
+	{
+		__be32 __uncontained_tmp3;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+	}
 	pcpu_associativity = kcalloc(NR_CPUS_H / threads_per_core,
 			VPHN_ASSOC_BUFSIZE * sizeof(__be32), GFP_KERNEL);
+	{
+		__be32 __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 
 	if (!vcpu_associativity || !pcpu_associativity) {
 		pr_err("error allocating memory for associativity information\n");

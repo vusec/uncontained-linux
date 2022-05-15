@@ -13,6 +13,11 @@
 #include <linux/jhash.h>
 #include <net/pkt_cls.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "bnxt_hsi.h"
 #include "bnxt.h"
 #include "bnxt_hwrm.h"
@@ -493,6 +498,10 @@ static int bnxt_vf_reps_create(struct bnxt *bp)
 		return -ENODEV;
 
 	bp->vf_reps = kcalloc(num_vfs, sizeof(vf_rep), GFP_KERNEL);
+	{
+		typeof((vf_rep)) __uncontained_tmp61;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!bp->vf_reps)
 		return -ENOMEM;
 

@@ -243,6 +243,10 @@ struct bnx2fc_cmd_mgr *bnx2fc_cmd_mgr_alloc(struct bnx2fc_hba *hba)
 	cmgr->hba = hba;
 	cmgr->free_list = kcalloc(arr_sz, sizeof(*cmgr->free_list),
 				  GFP_KERNEL);
+	{
+		typeof((*cmgr->free_list)) __uncontained_tmp81;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!cmgr->free_list) {
 		printk(KERN_ERR PFX "failed to alloc free_list\n");
 		goto mem_err;
@@ -250,6 +254,10 @@ struct bnx2fc_cmd_mgr *bnx2fc_cmd_mgr_alloc(struct bnx2fc_hba *hba)
 
 	cmgr->free_list_lock = kcalloc(arr_sz, sizeof(*cmgr->free_list_lock),
 				       GFP_KERNEL);
+	{
+		typeof((*cmgr->free_list_lock)) __uncontained_tmp82;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!cmgr->free_list_lock) {
 		printk(KERN_ERR PFX "failed to alloc free_list_lock\n");
 		kfree(cmgr->free_list);

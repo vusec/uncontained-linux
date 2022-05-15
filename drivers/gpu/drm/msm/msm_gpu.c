@@ -16,6 +16,11 @@
 #include <linux/devcoredump.h>
 #include <linux/sched/task.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * Power Management:
  */
@@ -295,6 +300,10 @@ static void msm_gpu_crashstate_capture(struct msm_gpu *gpu,
 
 		state->bos = kcalloc(nr,
 			sizeof(struct msm_gpu_state_bo), GFP_KERNEL);
+		{
+			struct msm_gpu_state_bo __uncontained_tmp29;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp29;
+		}
 
 		for (i = 0; state->bos && i < submit->nr_bos; i++) {
 			if (should_dump(submit, i)) {

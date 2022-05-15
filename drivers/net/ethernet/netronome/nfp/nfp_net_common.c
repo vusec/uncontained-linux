@@ -39,6 +39,11 @@
 #include <net/tls.h>
 #include <net/vxlan.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "nfpcore/nfp_nsp.h"
 #include "ccm.h"
 #include "nfp_app.h"
@@ -2486,6 +2491,10 @@ static int nfp_net_tx_rings_prepare(struct nfp_net *nn, struct nfp_net_dp *dp)
 
 	dp->tx_rings = kcalloc(dp->num_tx_rings, sizeof(*dp->tx_rings),
 			       GFP_KERNEL);
+	{
+		typeof((*dp->tx_rings)) __uncontained_tmp44;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!dp->tx_rings)
 		return -ENOMEM;
 
@@ -2601,6 +2610,10 @@ static int nfp_net_rx_rings_prepare(struct nfp_net *nn, struct nfp_net_dp *dp)
 
 	dp->rx_rings = kcalloc(dp->num_rx_rings, sizeof(*dp->rx_rings),
 			       GFP_KERNEL);
+	{
+		typeof((*dp->rx_rings)) __uncontained_tmp45;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!dp->rx_rings)
 		return -ENOMEM;
 

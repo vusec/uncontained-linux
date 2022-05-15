@@ -17,6 +17,11 @@
 #include <linux/uaccess.h>
 #include <linux/vfio.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vfio_platform_private.h"
 
 #define DRIVER_VERSION  "0.10"
@@ -144,6 +149,10 @@ static int vfio_platform_regions_init(struct vfio_platform_device *vdev)
 
 	vdev->regions = kcalloc(cnt, sizeof(struct vfio_platform_region),
 				GFP_KERNEL);
+	{
+		struct vfio_platform_region __uncontained_tmp117;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!vdev->regions)
 		return -ENOMEM;
 

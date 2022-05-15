@@ -38,6 +38,11 @@
 #include <linux/uaccess.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cypress_m8.h"
 
 
@@ -305,6 +310,10 @@ static int cypress_serial_control(struct tty_struct *tty,
 		return -ENODEV;
 
 	feature_buffer = kcalloc(feature_len, sizeof(u8), GFP_KERNEL);
+	{
+		u8 __uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!feature_buffer)
 		return -ENOMEM;
 

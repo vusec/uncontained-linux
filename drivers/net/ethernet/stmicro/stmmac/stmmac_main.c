@@ -46,6 +46,11 @@
 #include "stmmac_xdp.h"
 #include <linux/reset.h>
 #include <linux/of_mdio.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "dwmac1000.h"
 #include "dwxgmac2.h"
 #include "hwif.h"
@@ -2023,6 +2028,10 @@ static int __alloc_dma_rx_desc_resources(struct stmmac_priv *priv, u32 queue)
 	rx_q->buf_pool = kcalloc(priv->dma_rx_size,
 				 sizeof(*rx_q->buf_pool),
 				 GFP_KERNEL);
+	{
+		typeof((*rx_q->buf_pool)) __uncontained_tmp100;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (!rx_q->buf_pool)
 		return -ENOMEM;
 
@@ -2104,12 +2113,20 @@ static int __alloc_dma_tx_desc_resources(struct stmmac_priv *priv, u32 queue)
 	tx_q->tx_skbuff_dma = kcalloc(priv->dma_tx_size,
 				      sizeof(*tx_q->tx_skbuff_dma),
 				      GFP_KERNEL);
+	{
+		typeof((*tx_q->tx_skbuff_dma)) __uncontained_tmp101;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!tx_q->tx_skbuff_dma)
 		return -ENOMEM;
 
 	tx_q->tx_skbuff = kcalloc(priv->dma_tx_size,
 				  sizeof(struct sk_buff *),
 				  GFP_KERNEL);
+	{
+		struct sk_buff *__uncontained_tmp99;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
+	}
 	if (!tx_q->tx_skbuff)
 		return -ENOMEM;
 

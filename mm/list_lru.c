@@ -12,6 +12,11 @@
 #include <linux/slab.h>
 #include <linux/mutex.h>
 #include <linux/memcontrol.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "slab.h"
 
 #ifdef CONFIG_MEMCG_KMEM
@@ -582,6 +587,10 @@ int __list_lru_init(struct list_lru *lru, bool memcg_aware,
 	memcg_get_cache_ids();
 
 	lru->node = kcalloc(nr_node_ids, sizeof(*lru->node), GFP_KERNEL);
+	{
+		typeof((*lru->node)) __uncontained_tmp146;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp146;
+	}
 	if (!lru->node)
 		goto out;
 

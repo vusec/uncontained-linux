@@ -11,6 +11,11 @@
 #include <linux/refcount.h>
 #include <linux/mutex.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 enum bpf_struct_ops_state {
 	BPF_STRUCT_OPS_STATE_INIT,
 	BPF_STRUCT_OPS_STATE_INUSE,
@@ -362,6 +367,10 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
 		return -EINVAL;
 
 	tprogs = kcalloc(BPF_TRAMP_MAX, sizeof(*tprogs), GFP_KERNEL);
+	{
+		typeof((*tprogs)) __uncontained_tmp147;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp147;
+	}
 	if (!tprogs)
 		return -ENOMEM;
 

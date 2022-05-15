@@ -31,6 +31,11 @@
 #include "amdgpu_amdkfd.h"
 #include "amdgpu_dma_buf.h"
 #include <uapi/linux/kfd_ioctl.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "amdgpu_xgmi.h"
 
 /* Userptr restore delay, just long enough to allow consecutive VM
@@ -935,6 +940,10 @@ static int reserve_bo_and_vm(struct kgd_mem *mem,
 	INIT_LIST_HEAD(&ctx->duplicates);
 
 	ctx->vm_pd = kcalloc(ctx->n_vms, sizeof(*ctx->vm_pd), GFP_KERNEL);
+	{
+		typeof((*ctx->vm_pd)) __uncontained_tmp36;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!ctx->vm_pd)
 		return -ENOMEM;
 
@@ -997,6 +1006,10 @@ static int reserve_bo_and_cond_vms(struct kgd_mem *mem,
 	if (ctx->n_vms != 0) {
 		ctx->vm_pd = kcalloc(ctx->n_vms, sizeof(*ctx->vm_pd),
 				     GFP_KERNEL);
+		{
+			typeof((*ctx->vm_pd)) __uncontained_tmp37;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp37;
+		}
 		if (!ctx->vm_pd)
 			return -ENOMEM;
 	}
@@ -2192,6 +2205,10 @@ static int validate_invalid_user_pages(struct amdkfd_process_info *process_info)
 	pd_bo_list_entries = kcalloc(process_info->n_vms,
 				     sizeof(struct amdgpu_bo_list_entry),
 				     GFP_KERNEL);
+	{
+		struct amdgpu_bo_list_entry __uncontained_tmp34;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!pd_bo_list_entries) {
 		pr_err("%s: Failed to allocate PD BO list entries\n", __func__);
 		ret = -ENOMEM;
@@ -2394,6 +2411,10 @@ int amdgpu_amdkfd_gpuvm_restore_process_bos(void *info, struct dma_fence **ef)
 	pd_bo_list = kcalloc(process_info->n_vms,
 			     sizeof(struct amdgpu_bo_list_entry),
 			     GFP_KERNEL);
+	{
+		struct amdgpu_bo_list_entry __uncontained_tmp35;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!pd_bo_list)
 		return -ENOMEM;
 

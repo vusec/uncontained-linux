@@ -17,6 +17,11 @@
 #include <linux/pci.h>
 #include <linux/platform_device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 static const struct acpi_device_id forbidden_id_list[] = {
@@ -118,6 +123,10 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
 	} else if (count > 0) {
 		resources = kcalloc(count, sizeof(struct resource),
 				    GFP_KERNEL);
+		{
+			struct resource __uncontained_tmp8;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp8;
+		}
 		if (!resources) {
 			dev_err(&adev->dev, "No memory for resources\n");
 			acpi_dev_free_resource_list(&resource_list);

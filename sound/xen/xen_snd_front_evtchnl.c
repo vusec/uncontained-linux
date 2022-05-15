@@ -13,6 +13,11 @@
 #include <xen/xen.h>
 #include <xen/xenbus.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "xen_snd_front.h"
 #include "xen_snd_front_alsa.h"
 #include "xen_snd_front_cfg.h"
@@ -297,6 +302,10 @@ int xen_snd_front_evtchnl_create_all(struct xen_snd_front_info *front_info,
 			kcalloc(num_streams,
 				sizeof(struct xen_snd_front_evtchnl_pair),
 				GFP_KERNEL);
+	{
+		struct xen_snd_front_evtchnl_pair __uncontained_tmp171;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp171;
+	}
 	if (!front_info->evt_pairs)
 		return -ENOMEM;
 

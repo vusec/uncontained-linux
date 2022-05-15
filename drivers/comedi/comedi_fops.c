@@ -30,6 +30,11 @@
 #include <linux/uaccess.h>
 #include <linux/compat.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "comedi_internal.h"
 
 /*
@@ -982,6 +987,10 @@ static int do_subdinfo_ioctl(struct comedi_device *dev,
 
 	lockdep_assert_held(&dev->mutex);
 	tmp = kcalloc(dev->n_subdevices, sizeof(*tmp), GFP_KERNEL);
+	{
+		typeof((*tmp)) __uncontained_tmp28;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (!tmp)
 		return -ENOMEM;
 
@@ -2235,6 +2244,10 @@ static long comedi_unlocked_ioctl(struct file *file, unsigned int cmd,
 			break;
 		}
 		insns = kcalloc(insnlist.n_insns, sizeof(*insns), GFP_KERNEL);
+		{
+			typeof((*insns)) __uncontained_tmp29;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp29;
+		}
 		if (!insns) {
 			rc = -ENOMEM;
 			break;
@@ -3074,6 +3087,10 @@ static int compat_insnlist(struct file *file, unsigned long arg)
 		return -EFAULT;
 
 	insns = kcalloc(insnlist32.n_insns, sizeof(*insns), GFP_KERNEL);
+	{
+		typeof((*insns)) __uncontained_tmp30;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!insns)
 		return -ENOMEM;
 

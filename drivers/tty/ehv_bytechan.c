@@ -37,6 +37,11 @@
 #include <linux/circ_buf.h>
 #include <asm/udbg.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* The size of the transmit circular buffer.  This must be a power of two. */
 #define BUF_SIZE	2048
 
@@ -771,6 +776,10 @@ static int __init ehv_bc_init(void)
 	 * tty index.
 	 */
 	bcs = kcalloc(count, sizeof(struct ehv_bc_data), GFP_KERNEL);
+	{
+		struct ehv_bc_data __uncontained_tmp118;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+	}
 	if (!bcs)
 		return -ENOMEM;
 

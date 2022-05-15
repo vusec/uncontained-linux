@@ -22,6 +22,11 @@
 #include <asm/ps3.h>
 #include <asm/ps3gpu.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 #define DEVICE_NAME		"ps3vram"
 
@@ -404,6 +409,10 @@ static int ps3vram_cache_init(struct ps3_system_bus_device *dev)
 	priv->cache.tags = kcalloc(CACHE_PAGE_COUNT,
 				   sizeof(struct ps3vram_tag),
 				   GFP_KERNEL);
+	{
+		struct ps3vram_tag __uncontained_tmp16;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!priv->cache.tags)
 		return -ENOMEM;
 

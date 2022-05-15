@@ -38,6 +38,11 @@
 
 #include <asm/irq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1608,6 +1613,10 @@ static int sky2_alloc_buffers(struct sky2_port *sky2)
 
 	sky2->tx_ring = kcalloc(sky2->tx_ring_size, sizeof(struct tx_ring_info),
 				GFP_KERNEL);
+	{
+		struct tx_ring_info __uncontained_tmp83;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!sky2->tx_ring)
 		goto nomem;
 
@@ -1618,6 +1627,10 @@ static int sky2_alloc_buffers(struct sky2_port *sky2)
 
 	sky2->rx_ring = kcalloc(sky2->rx_pending, sizeof(struct rx_ring_info),
 				GFP_KERNEL);
+	{
+		struct rx_ring_info __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!sky2->rx_ring)
 		goto nomem;
 

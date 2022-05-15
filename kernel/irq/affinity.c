@@ -9,6 +9,11 @@
 #include <linux/cpu.h>
 #include <linux/sort.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static void irq_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
 				unsigned int cpus_per_vec)
 {
@@ -46,6 +51,10 @@ static cpumask_var_t *alloc_node_to_cpumask(void)
 	int node;
 
 	masks = kcalloc(nr_node_ids, sizeof(cpumask_var_t), GFP_KERNEL);
+	{
+		cpumask_var_t __uncontained_tmp130;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp130;
+	}
 	if (!masks)
 		return NULL;
 
@@ -280,6 +289,10 @@ static int __irq_build_affinity_masks(unsigned int startvec,
 	node_vectors = kcalloc(nr_node_ids,
 			       sizeof(struct node_vectors),
 			       GFP_KERNEL);
+	{
+		struct node_vectors __uncontained_tmp131;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp131;
+	}
 	if (!node_vectors)
 		return -ENOMEM;
 
@@ -447,6 +460,10 @@ irq_create_affinity_masks(unsigned int nvecs, struct irq_affinity *affd)
 		return NULL;
 
 	masks = kcalloc(nvecs, sizeof(*masks), GFP_KERNEL);
+	{
+		typeof((*masks)) __uncontained_tmp132;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (!masks)
 		return NULL;
 

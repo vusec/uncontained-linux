@@ -11,6 +11,11 @@
 #include <linux/crc32.h>
 #include <linux/sched/mm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define	DM_MSG_PREFIX		"zoned metadata"
 
 /*
@@ -1694,6 +1699,10 @@ static int dmz_load_mapping(struct dmz_metadata *zmd)
 	/* Metadata block array for the chunk mapping table */
 	zmd->map_mblk = kcalloc(zmd->nr_map_blocks,
 				sizeof(struct dmz_mblk *), GFP_KERNEL);
+	{
+		struct dmz_mblk *__uncontained_tmp71;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (!zmd->map_mblk)
 		return -ENOMEM;
 

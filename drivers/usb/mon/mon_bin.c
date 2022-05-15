@@ -24,6 +24,11 @@
 
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "usb_mon.h"
 
 /*
@@ -1026,6 +1031,10 @@ static long mon_bin_ioctl(struct file *file, unsigned int cmd, unsigned long arg
 		size = CHUNK_ALIGN(arg);
 		vec = kcalloc(size / CHUNK_SIZE, sizeof(struct mon_pgmap),
 			      GFP_KERNEL);
+		{
+			struct mon_pgmap __uncontained_tmp116;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+		}
 		if (vec == NULL) {
 			ret = -ENOMEM;
 			break;

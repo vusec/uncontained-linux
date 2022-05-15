@@ -27,6 +27,11 @@
 #include <linux/slab.h>
 #include <linux/micrel_phy.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 /* DMA Registers */
 
@@ -4290,6 +4295,10 @@ static int ksz_alloc_soft_desc(struct ksz_desc_info *desc_info, int transmit)
 {
 	desc_info->ring = kcalloc(desc_info->alloc, sizeof(struct ksz_desc),
 				  GFP_KERNEL);
+	{
+		struct ksz_desc __uncontained_tmp82;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!desc_info->ring)
 		return 1;
 	hw_init_desc(desc_info, transmit);

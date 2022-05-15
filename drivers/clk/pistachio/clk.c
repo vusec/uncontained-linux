@@ -10,6 +10,11 @@
 #include <linux/of_address.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk.h"
 
 struct pistachio_clk_provider *
@@ -22,6 +27,10 @@ pistachio_clk_alloc_provider(struct device_node *node, unsigned int num_clks)
 		return p;
 
 	p->clk_data.clks = kcalloc(num_clks, sizeof(struct clk *), GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!p->clk_data.clks)
 		goto free_provider;
 	p->clk_data.clk_num = num_clks;

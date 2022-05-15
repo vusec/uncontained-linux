@@ -21,6 +21,11 @@
 #include <asm/opcodes.h>
 #include <asm/system_info.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "bpf_jit_32.h"
 
 /*
@@ -1925,6 +1930,10 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 	 * we must fall back to the interpreter
 	 */
 	ctx.offsets = kcalloc(prog->len, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (ctx.offsets == NULL) {
 		prog = orig_prog;
 		goto out;
@@ -1959,6 +1968,10 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 	ctx.idx += ctx.imm_count;
 	if (ctx.imm_count) {
 		ctx.imms = kcalloc(ctx.imm_count, sizeof(u32), GFP_KERNEL);
+		{
+			u32 __uncontained_tmp1;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+		}
 		if (ctx.imms == NULL) {
 			prog = orig_prog;
 			goto out_off;

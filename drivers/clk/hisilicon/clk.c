@@ -19,6 +19,11 @@
 #include <linux/of_device.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk.h"
 
 static DEFINE_SPINLOCK(hisi_clk_lock);
@@ -74,6 +79,10 @@ struct hisi_clock_data *hisi_clk_init(struct device_node *np,
 
 	clk_data->base = base;
 	clk_table = kcalloc(nr_clks, sizeof(*clk_table), GFP_KERNEL);
+	{
+		typeof((*clk_table)) __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!clk_table)
 		goto err_data;
 

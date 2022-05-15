@@ -32,6 +32,11 @@
 
 #include <cluster/masklog.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ocfs2.h"
 
 /* this should be the only file to include a version 1 header */
@@ -2126,6 +2131,10 @@ static int ocfs2_initialize_super(struct super_block *sb,
 	osb->slot_recovery_generations =
 		kcalloc(osb->max_slots, sizeof(*osb->slot_recovery_generations),
 			GFP_KERNEL);
+	{
+		typeof((*osb->slot_recovery_generations)) __uncontained_tmp154;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp154;
+	}
 	if (!osb->slot_recovery_generations) {
 		status = -ENOMEM;
 		mlog_errno(status);
@@ -2136,6 +2145,10 @@ static int ocfs2_initialize_super(struct super_block *sb,
 	osb->osb_orphan_wipes = kcalloc(osb->max_slots,
 					sizeof(*osb->osb_orphan_wipes),
 					GFP_KERNEL);
+	{
+		typeof((*osb->osb_orphan_wipes)) __uncontained_tmp155;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp155;
+	}
 	if (!osb->osb_orphan_wipes) {
 		status = -ENOMEM;
 		mlog_errno(status);

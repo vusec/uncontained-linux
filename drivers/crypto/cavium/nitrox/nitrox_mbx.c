@@ -2,6 +2,11 @@
 #include <linux/bitmap.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "nitrox_csr.h"
 #include "nitrox_hal.h"
 #include "nitrox_dev.h"
@@ -183,6 +188,10 @@ int nitrox_mbox_init(struct nitrox_device *ndev)
 
 	ndev->iov.vfdev = kcalloc(ndev->iov.num_vfs,
 				  sizeof(struct nitrox_vfdev), GFP_KERNEL);
+	{
+		struct nitrox_vfdev __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!ndev->iov.vfdev)
 		return -ENOMEM;
 

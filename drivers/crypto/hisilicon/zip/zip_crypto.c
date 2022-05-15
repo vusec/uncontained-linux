@@ -4,6 +4,11 @@
 #include <linux/bitfield.h>
 #include <linux/dma-mapping.h>
 #include <linux/scatterlist.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "zip.h"
 
 /* hisi_zip_sqe dw3 */
@@ -608,6 +613,10 @@ static int hisi_zip_create_req_q(struct hisi_zip_ctx *ctx)
 
 		req_q->req_bitmap = kcalloc(BITS_TO_LONGS(req_q->size),
 					    sizeof(long), GFP_KERNEL);
+		{
+			long __uncontained_tmp16;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+		}
 		if (!req_q->req_bitmap) {
 			ret = -ENOMEM;
 			if (i == 0)
@@ -619,6 +628,10 @@ static int hisi_zip_create_req_q(struct hisi_zip_ctx *ctx)
 
 		req_q->q = kcalloc(req_q->size, sizeof(struct hisi_zip_req),
 				   GFP_KERNEL);
+		{
+			struct hisi_zip_req __uncontained_tmp17;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+		}
 		if (!req_q->q) {
 			ret = -ENOMEM;
 			if (i == 0)

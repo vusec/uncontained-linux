@@ -17,6 +17,11 @@
 #include <linux/file.h>
 #include <linux/byteorder/generic.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "usbip_common.h"
 #include "vudc.h"
 
@@ -520,6 +525,10 @@ static int init_vudc_hw(struct vudc *udc)
 	struct vep *ep;
 
 	udc->ep = kcalloc(VIRTUAL_ENDPOINTS, sizeof(*udc->ep), GFP_KERNEL);
+	{
+		typeof((*udc->ep)) __uncontained_tmp132;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (!udc->ep)
 		goto nomem_ep;
 

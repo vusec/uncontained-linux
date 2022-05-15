@@ -13,6 +13,11 @@
 #include <media/tpg/v4l2-tpg.h>
 #include <media/v4l2-device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vimc-common.h"
 
 #define VIMC_MDEV_MODEL_NAME "VIMC MDEV"
@@ -216,6 +221,10 @@ static int vimc_register_devices(struct vimc_device *vimc)
 	/* allocate ent_devs */
 	vimc->ent_devs = kcalloc(vimc->pipe_cfg->num_ents,
 				 sizeof(*vimc->ent_devs), GFP_KERNEL);
+	{
+		typeof((*vimc->ent_devs)) __uncontained_tmp59;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!vimc->ent_devs) {
 		ret = -ENOMEM;
 		goto err_v4l2_unregister;

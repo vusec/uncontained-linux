@@ -63,10 +63,18 @@ int qlcnic_82xx_alloc_mbx_args(struct qlcnic_cmd_args *mbx,
 			mbx->rsp.num = mbx_tbl[i].out_args;
 			mbx->req.arg = kcalloc(mbx->req.num,
 					       sizeof(u32), GFP_ATOMIC);
+			{
+				u32 __uncontained_tmp110;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp110;
+			}
 			if (!mbx->req.arg)
 				return -ENOMEM;
 			mbx->rsp.arg = kcalloc(mbx->rsp.num,
 					       sizeof(u32), GFP_ATOMIC);
+			{
+				u32 __uncontained_tmp111;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp111;
+			}
 			if (!mbx->rsp.arg) {
 				kfree(mbx->req.arg);
 				mbx->req.arg = NULL;

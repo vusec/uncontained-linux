@@ -20,6 +20,11 @@
 #include <linux/of_address.h>
 #include <linux/delay.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk-iproc.h"
 
 #define PLL_VCO_HIGH_SHIFT 19
@@ -750,6 +755,10 @@ void iproc_pll_clk_setup(struct device_node *node,
 	clk_data->num = num_clks;
 
 	iclk_array = kcalloc(num_clks, sizeof(struct iproc_clk), GFP_KERNEL);
+	{
+		struct iproc_clk __uncontained_tmp13;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (WARN_ON(!iclk_array))
 		goto err_clks;
 

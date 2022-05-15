@@ -648,6 +648,10 @@ struct hpi_control_cache *hpi_alloc_control_cache(const u32 control_count,
 
 	p_cache->p_info =
 		kcalloc(control_count, sizeof(*p_cache->p_info), GFP_KERNEL);
+	{
+		typeof((*p_cache->p_info)) __uncontained_tmp160;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp160;
+	}
 	if (!p_cache->p_info) {
 		kfree(p_cache);
 		return NULL;

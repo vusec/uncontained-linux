@@ -11,6 +11,11 @@
 #include <soc/tegra/bpmp.h>
 #include <soc/tegra/bpmp-abi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct tegra_powergate_info {
 	unsigned int id;
 	char *name;
@@ -226,6 +231,10 @@ tegra_bpmp_probe_powergates(struct tegra_bpmp *bpmp,
 	dev_dbg(bpmp->dev, "maximum powergate ID: %u\n", max_id);
 
 	powergates = kcalloc(max_id + 1, sizeof(*powergates), GFP_KERNEL);
+	{
+		typeof((*powergates)) __uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!powergates)
 		return -ENOMEM;
 
@@ -260,6 +269,10 @@ static int tegra_bpmp_add_powergates(struct tegra_bpmp *bpmp,
 	int err;
 
 	domains = kcalloc(count, sizeof(*domains), GFP_KERNEL);
+	{
+		typeof((*domains)) __uncontained_tmp116;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (!domains)
 		return -ENOMEM;
 

@@ -13,6 +13,11 @@
 #include <linux/vfio.h>
 #include <linux/irq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vfio_platform_private.h"
 
 static void vfio_platform_mask(struct vfio_platform_irq *irq_ctx)
@@ -287,6 +292,10 @@ int vfio_platform_irq_init(struct vfio_platform_device *vdev)
 		cnt++;
 
 	vdev->irqs = kcalloc(cnt, sizeof(struct vfio_platform_irq), GFP_KERNEL);
+	{
+		struct vfio_platform_irq __uncontained_tmp131;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp131;
+	}
 	if (!vdev->irqs)
 		return -ENOMEM;
 

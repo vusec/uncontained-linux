@@ -24,6 +24,11 @@
 #include <linux/refcount.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../virt-dma.h"
 
 #define MTK_HSDMA_USEC_POLL		20
@@ -336,6 +341,10 @@ static int mtk_hsdma_alloc_pchan(struct mtk_hsdma_device *hsdma,
 	ring->cur_rptr = MTK_DMA_SIZE - 1;
 
 	ring->cb = kcalloc(MTK_DMA_SIZE, sizeof(*ring->cb), GFP_NOWAIT);
+	{
+		typeof((*ring->cb)) __uncontained_tmp27;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!ring->cb) {
 		err = -ENOMEM;
 		goto err_free_dma;

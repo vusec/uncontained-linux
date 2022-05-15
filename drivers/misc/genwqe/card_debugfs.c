@@ -22,6 +22,11 @@
 #include <linux/seq_file.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "card_base.h"
 #include "card_ddcb.h"
 
@@ -54,6 +59,10 @@ static int curr_dbg_uidn_show(struct seq_file *s, void *unused, int uid)
 		return 0;
 
 	regs = kcalloc(entries, sizeof(*regs), GFP_KERNEL);
+	{
+		typeof((*regs)) __uncontained_tmp63;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (regs == NULL)
 		return -ENOMEM;
 
@@ -123,6 +132,10 @@ static int curr_regs_show(struct seq_file *s, void *unused)
 	struct genwqe_reg *regs;
 
 	regs = kcalloc(GENWQE_FFDC_REGS, sizeof(*regs), GFP_KERNEL);
+	{
+		typeof((*regs)) __uncontained_tmp64;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (regs == NULL)
 		return -ENOMEM;
 

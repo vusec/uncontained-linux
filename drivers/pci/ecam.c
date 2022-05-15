@@ -11,6 +11,11 @@
 #include <linux/pci-ecam.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * On 64-bit systems, we do a single ioremap for the whole config space
  * since we have enough virtual address range available.  On 32-bit, we
@@ -76,6 +81,10 @@ struct pci_config_window *pci_ecam_create(struct device *dev,
 
 	if (per_bus_mapping) {
 		cfg->winp = kcalloc(bus_range, sizeof(*cfg->winp), GFP_KERNEL);
+		{
+			typeof((*cfg->winp)) __uncontained_tmp124;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp124;
+		}
 		if (!cfg->winp)
 			goto err_exit_malloc;
 	} else {

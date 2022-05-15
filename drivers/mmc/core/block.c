@@ -49,6 +49,11 @@
 
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "queue.h"
 #include "block.h"
 #include "core.h"
@@ -691,6 +696,10 @@ static int mmc_blk_ioctl_multi_cmd(struct mmc_blk_data *md,
 		return -EINVAL;
 
 	idata = kcalloc(num_of_cmds, sizeof(*idata), GFP_KERNEL);
+	{
+		typeof((*idata)) __uncontained_tmp68;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!idata)
 		return -ENOMEM;
 

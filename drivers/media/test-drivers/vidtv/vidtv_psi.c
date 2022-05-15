@@ -22,6 +22,11 @@
 #include <linux/time.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1504,6 +1509,10 @@ vidtv_psi_pmt_create_sec_for_each_pat_entry(struct vidtv_psi_table_pat *pat,
 	pmt_secs = kcalloc(num_pmt,
 			   sizeof(struct vidtv_psi_table_pmt *),
 			   GFP_KERNEL);
+	{
+		struct vidtv_psi_table_pmt *__uncontained_tmp78;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!pmt_secs)
 		return NULL;
 

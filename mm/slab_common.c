@@ -28,6 +28,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/kmem.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 #include "slab.h"
@@ -993,6 +998,10 @@ int cache_random_seq_create(struct kmem_cache *cachep, unsigned int count,
 		return 0;
 
 	cachep->random_seq = kcalloc(count, sizeof(unsigned int), gfp);
+	{
+		unsigned int __uncontained_tmp159;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp159;
+	}
 	if (!cachep->random_seq)
 		return -ENOMEM;
 

@@ -38,6 +38,11 @@
 #include <xen/xen-ops.h>
 #include <xen/balloon.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "privcmd.h"
 
 MODULE_LICENSE("GPL");
@@ -638,6 +643,10 @@ static long privcmd_ioctl_dm_op(struct file *file, void __user *udata)
 		return -E2BIG;
 
 	kbufs = kcalloc(kdata.num, sizeof(*kbufs), GFP_KERNEL);
+	{
+		typeof((*kbufs)) __uncontained_tmp148;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (!kbufs)
 		return -ENOMEM;
 
@@ -665,12 +674,20 @@ static long privcmd_ioctl_dm_op(struct file *file, void __user *udata)
 	}
 
 	pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
+	{
+		typeof((*pages)) __uncontained_tmp149;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp149;
+	}
 	if (!pages) {
 		rc = -ENOMEM;
 		goto out;
 	}
 
 	xbufs = kcalloc(kdata.num, sizeof(*xbufs), GFP_KERNEL);
+	{
+		typeof((*xbufs)) __uncontained_tmp150;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp150;
+	}
 	if (!xbufs) {
 		rc = -ENOMEM;
 		goto out;
@@ -760,6 +777,10 @@ static long privcmd_ioctl_mmap_resource(struct file *file,
 	}
 
 	pfns = kcalloc(kdata.num, sizeof(*pfns), GFP_KERNEL);
+	{
+		typeof((*pfns)) __uncontained_tmp151;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp151;
+	}
 	if (!pfns) {
 		rc = -ENOMEM;
 		goto out;

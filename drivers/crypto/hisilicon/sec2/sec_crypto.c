@@ -17,6 +17,11 @@
 #include <linux/dma-mapping.h>
 #include <linux/idr.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "sec.h"
 #include "sec_crypto.h"
 
@@ -562,6 +567,10 @@ static int sec_ctx_base_init(struct sec_ctx *ctx)
 	ctx->fake_req_limit = QM_Q_DEPTH >> 1;
 	ctx->qp_ctx = kcalloc(sec->ctx_q_num, sizeof(struct sec_qp_ctx),
 			      GFP_KERNEL);
+	{
+		struct sec_qp_ctx __uncontained_tmp14;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!ctx->qp_ctx) {
 		ret = -ENOMEM;
 		goto err_destroy_qps;

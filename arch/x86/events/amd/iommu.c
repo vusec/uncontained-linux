@@ -16,6 +16,11 @@
 #include <linux/slab.h>
 #include <linux/amd-iommu.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../perf_event.h"
 #include "iommu.h"
 
@@ -386,6 +391,10 @@ static __init int _init_events_attrs(void)
 		i++;
 
 	attrs = kcalloc(i + 1, sizeof(*attrs), GFP_KERNEL);
+	{
+		typeof((*attrs)) __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!attrs)
 		return -ENOMEM;
 

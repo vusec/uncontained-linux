@@ -20,6 +20,11 @@
 
 #include <asm/cpu_device_id.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "thermal_interrupt.h"
 
 /*
@@ -501,6 +506,10 @@ static int __init pkg_temp_thermal_init(void)
 	max_id = topology_max_packages() * topology_max_die_per_package();
 	zones = kcalloc(max_id, sizeof(struct zone_device *),
 			   GFP_KERNEL);
+	{
+		struct zone_device *__uncontained_tmp142;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+	}
 	if (!zones)
 		return -ENOMEM;
 

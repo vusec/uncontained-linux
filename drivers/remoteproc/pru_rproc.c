@@ -19,6 +19,11 @@
 #include <linux/pruss_driver.h>
 #include <linux/remoteproc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "remoteproc_internal.h"
 #include "remoteproc_elf_helpers.h"
 #include "pru_rproc.h"
@@ -312,6 +317,10 @@ static int pru_handle_intrmap(struct rproc *rproc)
 	pru->evt_count = rsc->num_evts;
 	pru->mapped_irq = kcalloc(pru->evt_count, sizeof(unsigned int),
 				  GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp77;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp77;
+	}
 	if (!pru->mapped_irq) {
 		pru->evt_count = 0;
 		return -ENOMEM;

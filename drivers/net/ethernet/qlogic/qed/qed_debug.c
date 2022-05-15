@@ -7,6 +7,11 @@
 #include <linux/module.h>
 #include <linux/vmalloc.h>
 #include <linux/crc32.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qed.h"
 #include "qed_cxt.h"
 #include "qed_hsi.h"
@@ -6780,6 +6785,10 @@ qed_mcp_trace_alloc_meta_data(struct qed_hwfn *p_hwfn,
 	meta->modules_num = qed_read_byte_from_buf(meta_buf_bytes, &offset);
 	meta->modules = kcalloc(meta->modules_num, sizeof(char *),
 				GFP_KERNEL);
+	{
+		char *__uncontained_tmp59;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!meta->modules)
 		return DBG_STATUS_VIRT_MEM_ALLOC_FAILED;
 
@@ -6810,6 +6819,10 @@ qed_mcp_trace_alloc_meta_data(struct qed_hwfn *p_hwfn,
 	meta->formats = kcalloc(meta->formats_num,
 				sizeof(struct mcp_trace_format),
 				GFP_KERNEL);
+	{
+		struct mcp_trace_format __uncontained_tmp60;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!meta->formats)
 		return DBG_STATUS_VIRT_MEM_ALLOC_FAILED;
 

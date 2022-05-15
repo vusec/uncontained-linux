@@ -1505,6 +1505,10 @@ static int ath10k_ce_alloc_shadow_base(struct ath10k *ar,
 	src_ring->shadow_base_unaligned = kcalloc(nentries,
 						  sizeof(struct ce_desc_64),
 						  GFP_KERNEL);
+	{
+		struct ce_desc_64 __uncontained_tmp98;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp98;
+	}
 	if (!src_ring->shadow_base_unaligned)
 		return -ENOMEM;
 

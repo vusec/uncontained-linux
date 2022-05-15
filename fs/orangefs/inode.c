@@ -12,6 +12,11 @@
 
 #include <linux/blkdev.h>
 #include <linux/fileattr.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "protocol.h"
 #include "orangefs-kernel.h"
 #include "orangefs-bufmap.h"
@@ -222,11 +227,19 @@ static int orangefs_writepages(struct address_space *mapping,
 		return -ENOMEM;
 	ow->maxpages = orangefs_bufmap_size_query()/PAGE_SIZE;
 	ow->pages = kcalloc(ow->maxpages, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp113;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!ow->pages) {
 		kfree(ow);
 		return -ENOMEM;
 	}
 	ow->bv = kcalloc(ow->maxpages, sizeof(struct bio_vec), GFP_KERNEL);
+	{
+		struct bio_vec __uncontained_tmp114;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!ow->bv) {
 		kfree(ow->pages);
 		kfree(ow);

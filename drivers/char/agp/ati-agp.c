@@ -11,6 +11,11 @@
 #include <linux/agp_backend.h>
 #include <asm/agp.h>
 #include <asm/set_memory.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "agp.h"
 
 #define ATI_GART_MMBASE_BAR	1
@@ -110,6 +115,10 @@ static int ati_create_gatt_pages(int nr_tables)
 
 	tables = kcalloc(nr_tables + 1, sizeof(struct ati_page_map *),
 			 GFP_KERNEL);
+	{
+		struct ati_page_map *__uncontained_tmp11;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp11;
+	}
 	if (tables == NULL)
 		return -ENOMEM;
 

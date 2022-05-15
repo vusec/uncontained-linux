@@ -21,6 +21,11 @@
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * struct ti_opp_supply_optimum_voltage_table - optimized voltage table
  * @reference_uv:	reference voltage (usually Nominal voltage)
@@ -124,6 +129,10 @@ static int _store_optimized_voltages(struct device *dev,
 
 	table = kcalloc(data->num_vdd_table, sizeof(*data->vdd_table),
 			GFP_KERNEL);
+	{
+		typeof((*data->vdd_table)) __uncontained_tmp110;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (!table) {
 		ret = -ENOMEM;
 		goto out;

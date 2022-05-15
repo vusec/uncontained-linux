@@ -21,6 +21,11 @@
 #include <linux/slab.h>
 #include <linux/wait.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static unsigned int test_buf_size = 16384;
 module_param(test_buf_size, uint, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(test_buf_size, "Size of the memcpy test buffer");
@@ -526,10 +531,18 @@ static int dmatest_alloc_test_data(struct dmatest_data *d,
 	unsigned int i = 0;
 
 	d->raw = kcalloc(d->cnt + 1, sizeof(u8 *), GFP_KERNEL);
+	{
+		u8 *__uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!d->raw)
 		return -ENOMEM;
 
 	d->aligned = kcalloc(d->cnt + 1, sizeof(u8 *), GFP_KERNEL);
+	{
+		u8 *__uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!d->aligned)
 		goto err;
 
@@ -665,10 +678,18 @@ static int dmatest_func(void *data)
 	set_user_nice(current, 10);
 
 	srcs = kcalloc(src->cnt, sizeof(dma_addr_t), GFP_KERNEL);
+	{
+		dma_addr_t __uncontained_tmp26;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!srcs)
 		goto err_dst;
 
 	dma_pq = kcalloc(dst->cnt, sizeof(dma_addr_t), GFP_KERNEL);
+	{
+		dma_addr_t __uncontained_tmp27;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!dma_pq)
 		goto err_srcs_array;
 

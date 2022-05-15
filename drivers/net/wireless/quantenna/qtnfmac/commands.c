@@ -4,6 +4,11 @@
 #include <linux/types.h>
 #include <linux/skbuff.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cfg80211.h"
 #include "core.h"
 #include "qlink.h"
@@ -1084,6 +1089,10 @@ qtnf_parse_variable_mac_info(struct qtnf_wmac *mac,
 
 			limits = kcalloc(rec->n_limits, sizeof(*limits),
 					 GFP_KERNEL);
+			{
+				typeof((*limits)) __uncontained_tmp118;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+			}
 			if (!limits)
 				return -ENOMEM;
 
@@ -1255,6 +1264,10 @@ qtnf_cmd_resp_proc_mac_info(struct qtnf_wmac *mac,
 	mac_info->if_comb = kcalloc(mac->macinfo.n_if_comb,
 				    sizeof(*mac->macinfo.if_comb),
 				    GFP_KERNEL);
+	{
+		typeof((*mac->macinfo.if_comb)) __uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 
 	if (!mac->macinfo.if_comb)
 		return -ENOMEM;
@@ -1340,6 +1353,10 @@ static int qtnf_cmd_band_fill_iftype(const u8 *data,
 
 	iftype_data = kcalloc(band->n_iftype_data, sizeof(*iftype_data),
 			      GFP_KERNEL);
+	{
+		typeof((*iftype_data)) __uncontained_tmp120;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (!iftype_data) {
 		band->n_iftype_data = 0;
 		return -ENOMEM;
@@ -1384,9 +1401,14 @@ qtnf_cmd_resp_fill_band_info(struct ieee80211_supported_band *band,
 	if (band->n_channels == 0)
 		return 0;
 
-	if (!band->channels)
+	if (!band->channels) {
 		band->channels = kcalloc(band->n_channels, sizeof(*chan),
 					 GFP_KERNEL);
+		{
+			typeof((*chan)) __uncontained_tmp121;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+		}
+	}
 	if (!band->channels) {
 		band->n_channels = 0;
 		return -ENOMEM;

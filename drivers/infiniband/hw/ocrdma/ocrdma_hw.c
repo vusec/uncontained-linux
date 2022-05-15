@@ -50,6 +50,11 @@
 #include <rdma/ib_user_verbs.h>
 #include <rdma/ib_cache.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ocrdma.h"
 #include "ocrdma_hw.h"
 #include "ocrdma_verbs.h"
@@ -3083,6 +3088,10 @@ static int ocrdma_create_eqs(struct ocrdma_dev *dev)
 		return -EINVAL;
 
 	dev->eq_tbl = kcalloc(num_eq, sizeof(struct ocrdma_eq), GFP_KERNEL);
+	{
+		struct ocrdma_eq __uncontained_tmp67;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!dev->eq_tbl)
 		return -ENOMEM;
 

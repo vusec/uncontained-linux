@@ -32,6 +32,11 @@
 #include <linux/atomic.h>
 #include <net/xfrm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ixgbevf.h"
 
 const char ixgbevf_driver_name[] = "ixgbevf";
@@ -2673,6 +2678,10 @@ static int ixgbevf_set_interrupt_capability(struct ixgbevf_adapter *adapter)
 
 	adapter->msix_entries = kcalloc(v_budget,
 					sizeof(struct msix_entry), GFP_KERNEL);
+	{
+		struct msix_entry __uncontained_tmp95;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (!adapter->msix_entries)
 		return -ENOMEM;
 

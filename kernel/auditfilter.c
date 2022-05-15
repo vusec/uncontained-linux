@@ -20,6 +20,11 @@
 #include <linux/security.h>
 #include <net/net_namespace.h>
 #include <net/sock.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "audit.h"
 
 /*
@@ -113,6 +118,10 @@ static inline struct audit_entry *audit_init_entry(u32 field_count)
 		return NULL;
 
 	fields = kcalloc(field_count, sizeof(*fields), GFP_KERNEL);
+	{
+		typeof((*fields)) __uncontained_tmp167;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp167;
+	}
 	if (unlikely(!fields)) {
 		kfree(entry);
 		return NULL;

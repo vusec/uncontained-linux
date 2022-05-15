@@ -34,6 +34,11 @@
 #include <linux/usb/audio.h>
 #include <linux/usb/midi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "u_f.h"
 #include "u_midi.h"
 
@@ -918,6 +923,10 @@ static int f_midi_bind(struct usb_configuration *c, struct usb_function *f)
 	/* allocate temporary function list */
 	midi_function = kcalloc((MAX_PORTS * 4) + 11, sizeof(*midi_function),
 				GFP_KERNEL);
+	{
+		typeof((*midi_function)) __uncontained_tmp114;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!midi_function) {
 		status = -ENOMEM;
 		goto fail;

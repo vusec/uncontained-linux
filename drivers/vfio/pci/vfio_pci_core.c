@@ -29,6 +29,11 @@
 
 #include <linux/vfio_pci_core.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRIVER_AUTHOR   "Alex Williamson <alex.williamson@redhat.com>"
 #define DRIVER_DESC "core driver for VFIO based PCI devices"
 
@@ -969,6 +974,10 @@ long vfio_pci_core_ioctl(struct vfio_device *core_vdev, unsigned int cmd,
 		}
 
 		devices = kcalloc(fill.max, sizeof(*devices), GFP_KERNEL);
+		{
+			typeof((*devices)) __uncontained_tmp145;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp145;
+		}
 		if (!devices)
 			return -ENOMEM;
 
@@ -1038,7 +1047,15 @@ reset_info_exit:
 			return -EINVAL;
 
 		group_fds = kcalloc(hdr.count, sizeof(*group_fds), GFP_KERNEL);
+		{
+			typeof((*group_fds)) __uncontained_tmp146;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp146;
+		}
 		groups = kcalloc(hdr.count, sizeof(*groups), GFP_KERNEL);
+		{
+			typeof((*groups)) __uncontained_tmp147;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp147;
+		}
 		if (!group_fds || !groups) {
 			kfree(group_fds);
 			kfree(groups);
