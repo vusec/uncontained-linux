@@ -114,6 +114,11 @@
 #include <net/addrconf.h>
 #include <net/udp_tunnel.h>
 
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -3234,6 +3239,10 @@ void __init udp_table_init(struct udp_table *table, const char *name)
 					      &table->mask,
 					      UDP_HTABLE_SIZE_MIN,
 					      64 * 1024);
+	{
+		struct udp_hslot __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
 
 	table->hash2 = table->hash + (table->mask + 1);
 	for (i = 0; i <= table->mask; i++) {
