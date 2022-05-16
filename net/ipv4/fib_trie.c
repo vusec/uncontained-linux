@@ -321,6 +321,9 @@ static void __node_free_rcu(struct rcu_head *head)
 
 #define node_free(n) call_rcu(&tn_info(n)->rcu, __node_free_rcu)
 
+// avoid sanitizing `struct tnode` as is variable size, but undetected due variable
+// size being in the union in the `struct key_vector`
+static struct tnode* __uncontained_nosanitize_dst_tnode __attribute__((used));
 static struct tnode *tnode_alloc(int bits)
 {
 	size_t size;
