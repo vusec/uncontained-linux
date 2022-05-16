@@ -21,6 +21,11 @@
 #include <linux/list_lru.h>
 #include <linux/iversion.h>
 #include <trace/events/writeback.h>
+
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
 #include "internal.h"
 
 /*
@@ -2175,6 +2180,10 @@ void __init inode_init_early(void)
 					&i_hash_mask,
 					0,
 					0);
+	{
+		struct hlist_head __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
 }
 
 void __init inode_init(void)
@@ -2201,6 +2210,10 @@ void __init inode_init(void)
 					&i_hash_mask,
 					0,
 					0);
+	{
+		struct hlist_head __uncontained_tmp1;
+		__uncontained_array = (unsigned long)&__uncontained_tmp1;
+	}
 }
 
 void init_special_inode(struct inode *inode, umode_t mode, dev_t rdev)

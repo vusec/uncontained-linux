@@ -7,6 +7,11 @@
 #include <linux/memblock.h>
 #include <linux/debug_locks.h>
 
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
+
 /*
  * Implement paravirt qspinlocks; the general idea is to halt the vcpus instead
  * of spinning them.
@@ -202,6 +207,10 @@ void __init __pv_init_lock_hash(void)
 					       HASH_EARLY | HASH_ZERO,
 					       &pv_lock_hash_bits, NULL,
 					       pv_hash_size, pv_hash_size);
+	{
+		struct pv_hash_entry __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
 }
 
 #define for_each_hash_entry(he, offset, hash)						\

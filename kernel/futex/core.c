@@ -38,6 +38,11 @@
 #include <linux/fault-inject.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
+
 #include "futex.h"
 #include "../locking/rtmutex_common.h"
 
@@ -1128,6 +1133,10 @@ static int __init futex_init(void)
 					       futex_hashsize < 256 ? HASH_SMALL : 0,
 					       &futex_shift, NULL,
 					       futex_hashsize, futex_hashsize);
+	{
+		typeof((*futex_queues)) __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
 	futex_hashsize = 1UL << futex_shift;
 
 	for (i = 0; i < futex_hashsize; i++) {
