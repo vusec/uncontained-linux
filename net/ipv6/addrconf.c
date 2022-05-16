@@ -1654,9 +1654,15 @@ static int __ipv6_dev_get_saddr(struct net *net,
 				int hiscore_idx)
 {
 	struct ipv6_saddr_score *score = &scores[1 - hiscore_idx], *hiscore = &scores[hiscore_idx];
+	struct inet6_ifaddr	*pos;
 
-	list_for_each_entry_rcu(score->ifa, &idev->addr_list, if_list) {
+	// BUG? score->ifa would be assigned the head pointer which is not a valid
+	// `struct inet6_ifaddr` in the last iteration, and escapes the funciton.
+	// Also the condition `else if (minihiscore < miniscore)` may change hiscore
+	// and make `score->ifa` used after the function call.
+	list_for_each_entry_rcu(pos, &idev->addr_list, if_list) {
 		int i;
+		score->ifa = pos;
 
 		/*
 		 * - Tentative Address (RFC2462 section 5.4)
