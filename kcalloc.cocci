@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
-/// Detect allocation that array of structs
+/// Detect allocation of array of structs
 /// and mark the types with stores to __uncontained_kcalloc easily parsable
 /// by llvm
 ///
