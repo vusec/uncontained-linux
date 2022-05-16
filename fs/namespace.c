@@ -33,6 +33,11 @@
 #include <linux/shmem_fs.h>
 #include <linux/mnt_idmapping.h>
 
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
+
 #include "pnode.h"
 #include "internal.h"
 
@@ -4368,11 +4373,19 @@ void __init mnt_init(void)
 				mhash_entries, 19,
 				HASH_ZERO,
 				&m_hash_shift, &m_hash_mask, 0, 0);
+	{
+		struct hlist_head __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
 	mountpoint_hashtable = alloc_large_system_hash("Mountpoint-cache",
 				sizeof(struct hlist_head),
 				mphash_entries, 19,
 				HASH_ZERO,
 				&mp_hash_shift, &mp_hash_mask, 0, 0);
+	{
+		struct hlist_head __uncontained_tmp1;
+		__uncontained_array = (unsigned long)&__uncontained_tmp1;
+	}
 
 	if (!mount_hashtable || !mountpoint_hashtable)
 		panic("Failed to allocate mount hash table\n");

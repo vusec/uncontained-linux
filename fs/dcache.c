@@ -32,6 +32,11 @@
 #include <linux/bit_spinlock.h>
 #include <linux/rculist_bl.h>
 #include <linux/list_lru.h>
+
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
 #include "internal.h"
 #include "mount.h"
 
@@ -3236,6 +3241,10 @@ static void __init dcache_init_early(void)
 					NULL,
 					0,
 					0);
+	{
+		struct hlist_bl_head __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
 	d_hash_shift = 32 - d_hash_shift;
 }
 
@@ -3264,6 +3273,10 @@ static void __init dcache_init(void)
 					NULL,
 					0,
 					0);
+	{
+		struct hlist_bl_head __uncontained_tmp1;
+		__uncontained_array = (unsigned long)&__uncontained_tmp1;
+	}
 	d_hash_shift = 32 - d_hash_shift;
 }
 
