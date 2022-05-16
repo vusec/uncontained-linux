@@ -10114,6 +10114,7 @@ void netdev_freemem(struct net_device *dev)
 {
 	char *addr = (char *)dev - dev->padded;
 
+	kvfree(dev->priv_data);
 	kvfree(addr);
 }
 
@@ -10152,19 +10153,25 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
 	}
 
 	alloc_size = sizeof(struct net_device);
-	if (sizeof_priv) {
-		/* ensure 32-byte alignment of private area */
-		alloc_size = ALIGN(alloc_size, NETDEV_ALIGN);
-		alloc_size += sizeof_priv;
-	}
-	/* ensure 32-byte alignment of whole construct */
-	alloc_size += NETDEV_ALIGN - 1;
+	// allocate private area separatedly
+	// if (sizeof_priv) {
+	// 	/* ensure 32-byte alignment of private area */
+	// 	alloc_size = ALIGN(alloc_size, NETDEV_ALIGN);
+	// 	alloc_size += sizeof_priv;
+	// }
+	// /* ensure 32-byte alignment of whole construct */
+	// alloc_size += NETDEV_ALIGN - 1;
 
 	p = kvzalloc(alloc_size, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
 	if (!p)
 		return NULL;
 
-	dev = PTR_ALIGN(p, NETDEV_ALIGN);
+	// allocate private area
+	p->priv_data = kvzalloc(sizeof_priv, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
+	if (!p->priv_data)
+		return NULL;
+
+	dev = p; // PTR_ALIGN(p, NETDEV_ALIGN);
 	dev->padded = (char *)dev - (char *)p;
 
 	ref_tracker_dir_init(&dev->refcnt_tracker, 128);
