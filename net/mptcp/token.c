@@ -31,6 +31,11 @@
 #include <net/inet_common.h>
 #include <net/protocol.h>
 #include <net/mptcp.h>
+
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
 #include "protocol.h"
 
 #define TOKEN_MAX_CHAIN_LEN	4
@@ -400,6 +405,10 @@ void __init mptcp_token_init(void)
 					     &token_mask,
 					     0,
 					     64 * 1024);
+	{
+		struct token_bucket __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
 	for (i = 0; i < token_mask + 1; ++i) {
 		INIT_HLIST_NULLS_HEAD(&token_hash[i].req_chain, i);
 		INIT_HLIST_NULLS_HEAD(&token_hash[i].msk_chain, i);

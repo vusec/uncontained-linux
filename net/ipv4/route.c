@@ -103,6 +103,11 @@
 #include <net/secure_seq.h>
 #include <net/ip_tunnels.h>
 
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -3707,6 +3712,14 @@ int __init ip_rt_init(void)
 					      &ip_idents_mask,
 					      2048,
 					      256*1024);
+	{
+		typeof((*ip_idents)) __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
+	{
+		typeof((*ip_tstamps)) __uncontained_tmp1;
+		__uncontained_array = (unsigned long)&__uncontained_tmp1;
+	}
 
 	ip_idents = idents_hash;
 

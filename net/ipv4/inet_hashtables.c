@@ -28,6 +28,11 @@
 #include <net/tcp.h>
 #include <net/sock_reuseport.h>
 
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
+
 static u32 inet_ehashfn(const struct net *net, const __be32 laddr,
 			const __u16 lport, const __be32 faddr,
 			const __be16 fport)
@@ -897,6 +902,10 @@ void __init inet_hashinfo2_init(struct inet_hashinfo *h, const char *name,
 					    &h->lhash2_mask,
 					    low_limit,
 					    high_limit);
+	{
+		typeof((*h->lhash2)) __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
 	init_hashinfo_lhash2(h);
 }
 
