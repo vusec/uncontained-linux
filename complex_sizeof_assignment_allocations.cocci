@@ -22,71 +22,81 @@ identifier func =~ "^(kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|
 
 c = func(...);
 
-@simple_sizeof@
+@simple_sizeof_assignment@
 type t;
 expression E, c;
 position p;
-identifier alloc_function.func;
 @@
 (
-c = func(sizeof(t), ...)@p;
+c = sizeof(t);@p
 |
-c = func(sizeof E, ...)@p;
+c = sizeof E;@p
 )
 
-@complex_sizeof_type@
+@alloc_call_type@
 type t;
-expression c;
+type T =~ "^(unsigned char|char|unsigned short|short|unsigned int|int|unsigned long|long|size_t|ssize_t)$";
+T c;
+expression res;
 fresh identifier i = "__uncontained_tmp";
-position p1 != simple_sizeof.p;
 identifier alloc_function.func;
+position p1 != simple_sizeof_assignment.p;
+position p2;
 @@
-c = func(<+... sizeof(t) ...+>, ...)@p1;
+c = <+... sizeof(t) ...+>;@p1
+...
+res = func(<+... c ...+>, ...);@p2
 ++ {
 ++ t i;
 ++ __uncontained_complex_alloc = (unsigned long)&i;
 ++ }
 
-@complex_sizeof_var@
-expression E, c;
+@alloc_call_var@
+expression E;
+type T =~ "^(unsigned char|char|unsigned short|short|unsigned int|int|unsigned long|long|size_t|ssize_t)$";
+T c;
+expression res;
 fresh identifier i = "__uncontained_tmp";
-position p1 != simple_sizeof.p;
 identifier alloc_function.func;
+position p1 != simple_sizeof_assignment.p;
+position p2;
 @@
-c = func(<+... sizeof E ...+>, ...)@p1;
+c = <+... sizeof E ...+>;@p1
+...
+res = func(<+... c ...+>, ...);@p2
 ++ {
 ++ typeof (E) i;
 ++ __uncontained_complex_alloc = (unsigned long)&i;
 ++ }
 
-@add_glob_declaration depends on complex_sizeof_type || complex_sizeof_var@
+@add_glob_declaration depends on alloc_call_var || alloc_call_type@
 @@
-(
 #include <...>
 + 
 + #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 + #define _UNCONTAINED_COMPLEX_ALLOC_H
 + static volatile unsigned long __uncontained_complex_alloc;
 + #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
-|
+
+@add_glob_declaration2 depends on (alloc_call_var || alloc_call_type) && !add_glob_declaration@
+@@
 #include "..."
 + 
 + #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 + #define _UNCONTAINED_COMPLEX_ALLOC_H
 + static volatile unsigned long __uncontained_complex_alloc;
 + #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
-)
 
 @script:python depends on report@
-p1 << complex_sizeof_type.p1;
+p2 << alloc_call_var.p2;
 @@
 
 msg = "Detected custom type allocation"
-coccilib.report.print_report(p1[0], msg)
+coccilib.report.print_report(p2[0], msg)
 
 @script:python depends on report@
-p1 << complex_sizeof_var.p1;
+p2 << alloc_call_type.p2;
 @@
 
 msg = "Detected custom type allocation"
-coccilib.report.print_report(p1[0], msg)
+coccilib.report.print_report(p2[0], msg)
