@@ -28,6 +28,11 @@
 #include <linux/fs.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "internal.h"
 
 #ifdef DEBUG
@@ -288,6 +293,10 @@ static Node *create_entry(const char __user *buffer, size_t count)
 	err = -ENOMEM;
 	memsize = sizeof(Node) + count + 8;
 	e = kmalloc(memsize, GFP_KERNEL);
+	{
+		Node __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!e)
 		goto out;
 

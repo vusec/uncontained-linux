@@ -67,6 +67,11 @@
 #include <net/sctp/sm.h>
 #include <net/sctp/stream_sched.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* Forward declarations for internal helper functions. */
 static bool sctp_writeable(struct sock *sk);
 static void sctp_wfree(struct sk_buff *skb);
@@ -7121,6 +7126,14 @@ static int sctp_getsockopt_assoc_ids(struct sock *sk, int len,
 	len = sizeof(struct sctp_assoc_ids) + sizeof(sctp_assoc_t) * num;
 
 	ids = kmalloc(len, GFP_USER | __GFP_NOWARN);
+	{
+		struct sctp_assoc_ids __uncontained_tmp88;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp88;
+	}
+	{
+		sctp_assoc_t __uncontained_tmp89;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp89;
+	}
 	if (unlikely(!ids))
 		return -ENOMEM;
 

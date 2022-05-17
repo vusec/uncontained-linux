@@ -12,6 +12,11 @@
 #include <linux/arm-smccc.h>
 #include <linux/dma-mapping.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "qcom_scm.h"
 
 /**
@@ -106,6 +111,10 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
 	if (unlikely(arglen > SCM_SMC_N_REG_ARGS)) {
 		alloc_len = SCM_SMC_N_EXT_ARGS * sizeof(u64);
 		args_virt = kzalloc(PAGE_ALIGN(alloc_len), flag);
+		{
+			typeof((u64)) __uncontained_tmp18;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+		}
 
 		if (!args_virt)
 			return -ENOMEM;

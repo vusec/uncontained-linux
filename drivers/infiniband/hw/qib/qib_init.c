@@ -43,6 +43,11 @@
 #endif
 #include <rdma/rdma_vt.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -272,11 +277,19 @@ int qib_init_pportdata(struct qib_pportdata *ppd, struct qib_devdata *dd,
 	size = IB_CC_TABLE_CAP_DEFAULT * sizeof(struct ib_cc_table_entry)
 		* IB_CCT_ENTRIES;
 	ppd->ccti_entries = kzalloc(size, GFP_KERNEL);
+	{
+		struct ib_cc_table_entry __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!ppd->ccti_entries)
 		goto bail;
 
 	size = IB_CC_CCS_ENTRIES * sizeof(struct ib_cc_congestion_entry);
 	ppd->congestion_entries = kzalloc(size, GFP_KERNEL);
+	{
+		struct ib_cc_congestion_entry __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!ppd->congestion_entries)
 		goto bail_1;
 

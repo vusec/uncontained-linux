@@ -4,6 +4,11 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/prefetch.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ixgb.h"
 
 char ixgb_driver_name[] = "ixgb";
@@ -670,6 +675,10 @@ ixgb_setup_tx_resources(struct ixgb_adapter *adapter)
 
 	size = sizeof(struct ixgb_buffer) * txdr->count;
 	txdr->buffer_info = vzalloc(size);
+	{
+		struct ixgb_buffer __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!txdr->buffer_info)
 		return -ENOMEM;
 
@@ -753,6 +762,10 @@ ixgb_setup_rx_resources(struct ixgb_adapter *adapter)
 
 	size = sizeof(struct ixgb_buffer) * rxdr->count;
 	rxdr->buffer_info = vzalloc(size);
+	{
+		struct ixgb_buffer __uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!rxdr->buffer_info)
 		return -ENOMEM;
 

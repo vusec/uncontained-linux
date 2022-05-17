@@ -14,6 +14,11 @@
 #include <linux/of.h>
 #include <linux/bitfield.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -3388,6 +3393,10 @@ static int ath10k_update_channel_list(struct ath10k *ar)
 
 	len = sizeof(struct wmi_channel_arg) * arg.n_channels;
 	arg.channels = kzalloc(len, GFP_KERNEL);
+	{
+		struct wmi_channel_arg __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!arg.channels)
 		return -ENOMEM;
 

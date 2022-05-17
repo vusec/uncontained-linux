@@ -15,6 +15,11 @@
 #include <linux/regulator/consumer.h>
 #include <linux/pinctrl/consumer.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "../host/ehci.h"
 
 #include "ci.h"
@@ -413,6 +418,10 @@ static int ci_hdrc_alloc_dma_aligned_buffer(struct urb *urb, gfp_t mem_flags)
 		       ci_hdrc_usb_dma_align - 1;
 
 	kmalloc_ptr = kmalloc(kmalloc_size, mem_flags);
+	{
+		struct ci_hdrc_dma_aligned_buffer __uncontained_tmp58;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!kmalloc_ptr)
 		return -ENOMEM;
 

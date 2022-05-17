@@ -10,6 +10,11 @@
 #include <linux/slab.h>
 #include <linux/nfc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "mei_phy.h"
 
 struct mei_nfc_hdr {
@@ -115,6 +120,14 @@ static int mei_nfc_if_version(struct nfc_mei_phy *phy)
 		sizeof(struct mei_nfc_if_version);
 
 	reply = kzalloc(if_version_length, GFP_KERNEL);
+	{
+		struct mei_nfc_if_version __uncontained_tmp77;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp77;
+	}
+	{
+		struct mei_nfc_reply __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!reply)
 		return -ENOMEM;
 
@@ -151,11 +164,27 @@ static int mei_nfc_connect(struct nfc_mei_phy *phy)
 			sizeof(struct mei_nfc_connect_resp);
 
 	cmd = kzalloc(connect_length, GFP_KERNEL);
+	{
+		struct mei_nfc_cmd __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
+	{
+		struct mei_nfc_connect __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!cmd)
 		return -ENOMEM;
 	connect = (struct mei_nfc_connect *)cmd->data;
 
 	reply = kzalloc(connect_resp_length, GFP_KERNEL);
+	{
+		struct mei_nfc_cmd __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
+	{
+		struct mei_nfc_connect_resp __uncontained_tmp82;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!reply) {
 		kfree(cmd);
 		return -ENOMEM;

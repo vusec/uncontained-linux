@@ -44,6 +44,11 @@
 #include <net/strparser.h>
 #include <net/tls.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 noinline void tls_err_abort(struct sock *sk, int err)
 {
 	WARN_ON_ONCE(err >= 0);
@@ -335,6 +340,10 @@ static struct tls_rec *tls_get_rec(struct sock *sk)
 	mem_size = sizeof(struct tls_rec) + crypto_aead_reqsize(ctx->aead_send);
 
 	rec = kzalloc(mem_size, sk->sk_allocation);
+	{
+		struct tls_rec __uncontained_tmp125;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (!rec)
 		return NULL;
 
@@ -1462,6 +1471,10 @@ static int decrypt_internal(struct sock *sk, struct sk_buff *skb,
 	 * This order achieves correct alignment for aead_req, sgin, sgout.
 	 */
 	mem = kmalloc(mem_size, sk->sk_allocation);
+	{
+		struct scatterlist __uncontained_tmp124;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (!mem)
 		return -ENOMEM;
 

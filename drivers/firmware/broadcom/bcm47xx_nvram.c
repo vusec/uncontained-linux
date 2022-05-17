@@ -15,6 +15,11 @@
 #include <linux/mtd/mtd.h>
 #include <linux/bcm47xx_nvram.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define NVRAM_MAGIC			0x48534C46	/* 'FLSH' */
 #define NVRAM_SPACE			0x10000
 #define NVRAM_MAX_GPIO_ENTRIES		32
@@ -229,6 +234,10 @@ char *bcm47xx_nvram_get_contents(size_t *nvram_size)
 
 	*nvram_size = nvram_len - sizeof(struct nvram_header);
 	nvram = vmalloc(*nvram_size);
+	{
+		struct nvram_header __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!nvram)
 		return NULL;
 	memcpy(nvram, &nvram_buf[sizeof(struct nvram_header)], *nvram_size);

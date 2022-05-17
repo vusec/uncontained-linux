@@ -32,6 +32,11 @@
 #include <linux/mtd/inftl.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* Where to look for the devices? */
 #ifndef CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADDRESS
 #define CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADDRESS 0
@@ -1434,6 +1439,18 @@ static int __init doc_probe(unsigned long physadr)
 	len = sizeof(struct nand_chip) + sizeof(struct doc_priv) +
 	      (2 * sizeof(struct nand_bbt_descr));
 	nand = kzalloc(len, GFP_KERNEL);
+	{
+		struct doc_priv __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
+	{
+		struct nand_bbt_descr __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
+	{
+		struct nand_chip __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!nand) {
 		ret = -ENOMEM;
 		goto fail;

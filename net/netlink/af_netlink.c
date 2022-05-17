@@ -72,6 +72,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/netlink.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1202,6 +1207,10 @@ static struct sk_buff *netlink_alloc_large_skb(unsigned int size,
 	       SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
 
 	data = vmalloc(size);
+	{
+		struct skb_shared_info __uncontained_tmp87;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (data == NULL)
 		return NULL;
 

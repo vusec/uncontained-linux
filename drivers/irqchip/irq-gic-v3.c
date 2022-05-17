@@ -29,6 +29,11 @@
 #include <asm/smp_plat.h>
 #include <asm/virt.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -2329,6 +2334,10 @@ gic_acpi_init(union acpi_subtable_headers *header, const unsigned long end)
 
 	size = sizeof(*acpi_data.redist_regs) * acpi_data.nr_redist_regions;
 	acpi_data.redist_regs = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*acpi_data.redist_regs)) __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!acpi_data.redist_regs) {
 		err = -ENOMEM;
 		goto out_dist_unmap;

@@ -32,6 +32,11 @@
 #include <asm/irq_regs.h>
 #include <asm/ptrace.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct profile_hit {
 	u32 pc, hits;
 };
@@ -117,6 +122,10 @@ int __ref profile_init(void)
 	cpumask_copy(prof_cpu_mask, cpu_possible_mask);
 
 	prof_buffer = kzalloc(buffer_bytes, GFP_KERNEL|__GFP_NOWARN);
+	{
+		atomic_t __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
 	if (prof_buffer)
 		return 0;
 
@@ -126,6 +135,10 @@ int __ref profile_init(void)
 		return 0;
 
 	prof_buffer = vzalloc(buffer_bytes);
+	{
+		atomic_t __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (prof_buffer)
 		return 0;
 

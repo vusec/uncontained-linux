@@ -24,6 +24,11 @@
 #include <asm/sync_bitops.h>
 #include <asm/mshyperv.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -340,8 +345,17 @@ int netvsc_alloc_recv_comp_ring(struct netvsc_device *net_device, u32 q_idx)
 
 	size = net_device->recv_completion_cnt * sizeof(struct recv_comp_data);
 	nvchan->mrc.slots = vzalloc_node(size, node);
-	if (!nvchan->mrc.slots)
+	{
+		struct recv_comp_data __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
+	if (!nvchan->mrc.slots) {
 		nvchan->mrc.slots = vzalloc(size);
+		{
+			struct recv_comp_data __uncontained_tmp80;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+		}
+	}
 
 	return nvchan->mrc.slots ? 0 : -ENOMEM;
 }

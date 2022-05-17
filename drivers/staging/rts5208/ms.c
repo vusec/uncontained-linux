@@ -14,6 +14,11 @@
 #include <linux/sched.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "rtsx.h"
 #include "ms.h"
 
@@ -2106,6 +2111,10 @@ static int ms_init_l2p_tbl(struct rtsx_chip *chip)
 
 	size = ms_card->segment_cnt * sizeof(struct zone_entry);
 	ms_card->segment = vzalloc(size);
+	{
+		struct zone_entry __uncontained_tmp99;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp99;
+	}
 	if (!ms_card->segment)
 		return STATUS_FAIL;
 

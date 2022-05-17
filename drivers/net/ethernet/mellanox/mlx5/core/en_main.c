@@ -41,6 +41,11 @@
 #include <net/page_pool.h>
 #include <net/xdp_sock_drv.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -305,6 +310,10 @@ static int mlx5e_create_umr_mtt_mkey(struct mlx5_core_dev *mdev,
 	inlen = MLX5_ST_SZ_BYTES(create_mkey_in) + sizeof(*mtt) * npages;
 
 	in = kvzalloc(inlen, GFP_KERNEL);
+	{
+		typeof((*mtt)) __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!in)
 		return -ENOMEM;
 
@@ -825,6 +834,10 @@ int mlx5e_create_rq(struct mlx5e_rq *rq, struct mlx5e_rq_param *param)
 	inlen = MLX5_ST_SZ_BYTES(create_rq_in) +
 		sizeof(u64) * rq->wq_ctrl.buf.npages;
 	in = kvzalloc(inlen, GFP_KERNEL);
+	{
+		u64 __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!in)
 		return -ENOMEM;
 
@@ -1135,6 +1148,10 @@ static int mlx5e_alloc_xdpsq_fifo(struct mlx5e_xdpsq *sq, int numa)
 
 	size = array_size(sizeof(*xdpi_fifo->xi), dsegs_per_wq);
 	xdpi_fifo->xi = kvzalloc_node(size, GFP_KERNEL, numa);
+	{
+		typeof((*xdpi_fifo->xi)) __uncontained_tmp36;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!xdpi_fifo->xi)
 		return -ENOMEM;
 
@@ -1153,6 +1170,10 @@ static int mlx5e_alloc_xdpsq_db(struct mlx5e_xdpsq *sq, int numa)
 
 	size = array_size(sizeof(*sq->db.wqe_info), wq_sz);
 	sq->db.wqe_info = kvzalloc_node(size, GFP_KERNEL, numa);
+	{
+		typeof((*sq->db.wqe_info)) __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!sq->db.wqe_info)
 		return -ENOMEM;
 
@@ -1227,6 +1248,10 @@ static int mlx5e_alloc_icosq_db(struct mlx5e_icosq *sq, int numa)
 
 	size = array_size(wq_sz, sizeof(*sq->db.wqe_info));
 	sq->db.wqe_info = kvzalloc_node(size, GFP_KERNEL, numa);
+	{
+		typeof((*sq->db.wqe_info)) __uncontained_tmp38;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!sq->db.wqe_info)
 		return -ENOMEM;
 
@@ -1414,6 +1439,10 @@ static int mlx5e_create_sq(struct mlx5_core_dev *mdev,
 	inlen = MLX5_ST_SZ_BYTES(create_sq_in) +
 		sizeof(u64) * csp->wq_ctrl->buf.npages;
 	in = kvzalloc(inlen, GFP_KERNEL);
+	{
+		u64 __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!in)
 		return -ENOMEM;
 
@@ -1833,6 +1862,10 @@ static int mlx5e_create_cq(struct mlx5e_cq *cq, struct mlx5e_cq_param *param)
 	inlen = MLX5_ST_SZ_BYTES(create_cq_in) +
 		sizeof(u64) * cq->wq_ctrl.buf.npages;
 	in = kvzalloc(inlen, GFP_KERNEL);
+	{
+		u64 __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!in)
 		return -ENOMEM;
 

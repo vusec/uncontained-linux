@@ -18,6 +18,7 @@ virtual patch
 @alloc_function@
 expression c;
 identifier func =~ "^(kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc|kvmalloc_node|kvzalloc_node|kmem_alloc|kmem_zalloc|vmalloc_node|vzalloc_node)$";
+identifier func2 =~ "^(kmem_cache_alloc)$";
 @@
 
 c = func(...);
@@ -62,7 +63,7 @@ c = func(<+... sizeof E ...+>, ...)@p1;
 @add_glob_declaration depends on complex_sizeof_type || complex_sizeof_var@
 @@
 #include <...>
-+ 
++
 + #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 + #define _UNCONTAINED_COMPLEX_ALLOC_H
 + static volatile unsigned long __uncontained_complex_alloc;
@@ -71,7 +72,7 @@ c = func(<+... sizeof E ...+>, ...)@p1;
 @add_glob_declaration2 depends on (complex_sizeof_type || complex_sizeof_var) && !add_glob_declaration@
 @@
 #include "..."
-+ 
++
 + #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 + #define _UNCONTAINED_COMPLEX_ALLOC_H
 + static volatile unsigned long __uncontained_complex_alloc;

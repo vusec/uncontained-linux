@@ -66,6 +66,11 @@
 #include <asm/hw_irq.h>
 #include <asm/apic.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define	for_each_ioapic(idx)		\
 	for ((idx) = 0; (idx) < nr_ioapics; (idx)++)
 #define	for_each_ioapic_reverse(idx)	\
@@ -227,6 +232,10 @@ static void alloc_ioapic_saved_registers(int idx)
 
 	size = sizeof(struct IO_APIC_route_entry) * ioapics[idx].nr_registers;
 	ioapics[idx].saved_registers = kzalloc(size, GFP_KERNEL);
+	{
+		struct IO_APIC_route_entry __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!ioapics[idx].saved_registers)
 		pr_err("IOAPIC %d: suspend/resume impossible!\n", idx);
 }

@@ -23,6 +23,11 @@
 #include <linux/scatterlist.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "../dmaengine.h"
 #include "../virt-dma.h"
 
@@ -414,6 +419,18 @@ static struct dma_async_tx_descriptor *adm_prep_slave_sg(struct dma_chan *chan,
 				sizeof(*cple) + 2 * ADM_DESC_ALIGN;
 
 	async_desc->cpl = kzalloc(async_desc->dma_len, GFP_NOWAIT);
+	{
+		typeof((*cple)) __uncontained_tmp12;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+	}
+	{
+		struct adm_desc_hw_box __uncontained_tmp10;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp10;
+	}
+	{
+		struct adm_desc_hw_single __uncontained_tmp11;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp11;
+	}
 	if (!async_desc->cpl)
 		goto free;
 

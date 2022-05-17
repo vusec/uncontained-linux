@@ -17,6 +17,11 @@
 #include <linux/platform_device.h>
 #include <linux/skbuff.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1628,6 +1633,10 @@ static int hns_nic_clear_all_rx_fetch(struct net_device *ndev)
 	/* alloc indir memory */
 	indir_size = ops->get_rss_indir_size(h) * sizeof(*org_indir);
 	org_indir = kzalloc(indir_size, GFP_KERNEL);
+	{
+		typeof((*org_indir)) __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!org_indir)
 		return -ENOMEM;
 

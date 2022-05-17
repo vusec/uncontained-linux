@@ -13,6 +13,11 @@
 
 #include <linux/mei_cl_bus.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "mei_dev.h"
 #include "client.h"
 
@@ -345,6 +350,14 @@ static int mei_nfc_if_version(struct mei_cl *cl,
 	if_version_length = sizeof(*reply) + sizeof(*ver);
 
 	reply = kzalloc(if_version_length, GFP_KERNEL);
+	{
+		typeof((*reply)) __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
+	{
+		typeof((*ver)) __uncontained_tmp27;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!reply)
 		return -ENOMEM;
 

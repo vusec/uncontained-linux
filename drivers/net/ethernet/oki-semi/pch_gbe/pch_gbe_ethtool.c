@@ -8,6 +8,11 @@
 #include "pch_gbe.h"
 #include "pch_gbe_phy.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static const char pch_driver_version[] = "1.01";
 
 /*
@@ -320,11 +325,19 @@ static int pch_gbe_set_ringparam(struct net_device *netdev,
 	rx_old = adapter->rx_ring;
 
 	txdr = kzalloc(tx_ring_size, GFP_KERNEL);
+	{
+		struct pch_gbe_tx_ring __uncontained_tmp48;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!txdr) {
 		err = -ENOMEM;
 		goto err_alloc_tx;
 	}
 	rxdr = kzalloc(rx_ring_size, GFP_KERNEL);
+	{
+		struct pch_gbe_rx_ring __uncontained_tmp49;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (!rxdr) {
 		err = -ENOMEM;
 		goto err_alloc_rx;

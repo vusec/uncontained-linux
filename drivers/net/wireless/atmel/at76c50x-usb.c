@@ -40,6 +40,11 @@
 #include <linux/leds.h>
 #include <net/mac80211.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "at76c50x-usb.h"
 
 /* Version information */
@@ -2271,6 +2276,10 @@ static int at76_alloc_urbs(struct at76_priv *priv,
 
 	buffer_size = sizeof(struct at76_tx_buffer) + MAX_PADDING_SIZE;
 	priv->bulk_out_buffer = kmalloc(buffer_size, GFP_KERNEL);
+	{
+		struct at76_tx_buffer __uncontained_tmp85;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!priv->bulk_out_buffer)
 		return -ENOMEM;
 

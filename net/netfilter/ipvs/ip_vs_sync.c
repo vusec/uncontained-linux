@@ -58,6 +58,11 @@
 
 #include <net/ip_vs.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -341,6 +346,10 @@ ip_vs_sync_buff_create(struct netns_ipvs *ipvs, unsigned int len)
 	len = max_t(unsigned int, len + sizeof(struct ip_vs_sync_mesg),
 		    ipvs->mcfg.sync_maxlen);
 	sb->mesg = kmalloc(len, GFP_ATOMIC);
+	{
+		struct ip_vs_sync_mesg __uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!sb->mesg) {
 		kfree(sb);
 		return NULL;
@@ -429,6 +438,10 @@ ip_vs_sync_buff_create_v0(struct netns_ipvs *ipvs, unsigned int len)
 	len = max_t(unsigned int, len + sizeof(struct ip_vs_sync_mesg_v0),
 		    ipvs->mcfg.sync_maxlen);
 	sb->mesg = kmalloc(len, GFP_ATOMIC);
+	{
+		struct ip_vs_sync_mesg_v0 __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!sb->mesg) {
 		kfree(sb);
 		return NULL;

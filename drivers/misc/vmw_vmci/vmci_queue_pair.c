@@ -21,6 +21,11 @@
 #include <linux/vmalloc.h>
 #include <linux/skbuff.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "vmci_handle_array.h"
 #include "vmci_queue_pair.h"
 #include "vmci_datagram.h"
@@ -543,6 +548,10 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
 		return NULL;
 
 	queue = kzalloc(queue_size + queue_page_size, GFP_KERNEL);
+	{
+		typeof((*queue->kernel_if->u.h.page)) __uncontained_tmp19;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (queue) {
 		queue->q_header = NULL;
 		queue->saved_header = NULL;
@@ -955,6 +964,10 @@ static int qp_alloc_hypercall(const struct qp_guest_endpoint *entry)
 	msg_size = sizeof(*alloc_msg) +
 	    (size_t) entry->num_ppns * ppn_size;
 	alloc_msg = kmalloc(msg_size, GFP_KERNEL);
+	{
+		typeof((*alloc_msg)) __uncontained_tmp18;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!alloc_msg)
 		return VMCI_ERROR_NO_MEM;
 

@@ -17,6 +17,11 @@
 #include <linux/uaccess.h>
 #include <uapi/linux/sched/types.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ptp_private.h"
 
 #define PTP_MAX_ALARMS 4
@@ -245,6 +250,10 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
 
 		size = sizeof(int) * ptp->max_vclocks;
 		ptp->vclock_index = kzalloc(size, GFP_KERNEL);
+		{
+			int __uncontained_tmp43;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+		}
 		if (!ptp->vclock_index) {
 			err = -ENOMEM;
 			goto no_mem_for_vclocks;

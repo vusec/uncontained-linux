@@ -8,6 +8,11 @@
 
 #include "atl1c.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 char atl1c_driver_name[] = "atl1c";
 
 /*
@@ -1027,6 +1032,10 @@ static int atl1c_setup_ring_resources(struct atl1c_adapter *adapter)
 	size = sizeof(struct atl1c_buffer) * (tpd_ring->count * tqc +
 					      rfd_ring->count * rqc);
 	tpd_ring->buffer_info = kzalloc(size, GFP_KERNEL);
+	{
+		struct atl1c_buffer __uncontained_tmp28;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (unlikely(!tpd_ring->buffer_info))
 		goto err_nomem;
 

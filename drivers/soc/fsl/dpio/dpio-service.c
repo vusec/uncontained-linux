@@ -15,6 +15,11 @@
 #include <linux/dim.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "dpio.h"
 #include "qbman-portal.h"
 
@@ -665,6 +670,10 @@ struct dpaa2_io_store *dpaa2_io_store_create(unsigned int max_frames,
 	ret->max = max_frames;
 	size = max_frames * sizeof(struct dpaa2_dq) + 64;
 	ret->alloced_addr = kzalloc(size, GFP_KERNEL);
+	{
+		struct dpaa2_dq __uncontained_tmp88;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (!ret->alloced_addr) {
 		kfree(ret);
 		return NULL;

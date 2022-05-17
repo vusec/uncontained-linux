@@ -48,6 +48,11 @@
 #include <asm/sections.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define VERSION "0.7"
 #define AUTHOR  "(c) 2005 Benjamin Herrenschmidt, IBM Corp."
 
@@ -979,6 +984,10 @@ static struct smu_sdbp_header *smu_create_sdb_partition(int id)
 	tlen = sizeof(struct property) + len + 18;
 
 	prop = kzalloc(tlen, GFP_KERNEL);
+	{
+		struct property __uncontained_tmp36;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (prop == NULL)
 		return NULL;
 	hdr = (struct smu_sdbp_header *)(prop + 1);

@@ -25,6 +25,11 @@
 #include "xfs_log_priv.h"
 #include "xfs_log_recover.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct kmem_cache	*xfs_efi_cache;
 struct kmem_cache	*xfs_efd_cache;
 
@@ -160,6 +165,14 @@ xfs_efi_init(
 		size = (uint)(sizeof(struct xfs_efi_log_item) +
 			((nextents - 1) * sizeof(xfs_extent_t)));
 		efip = kmem_zalloc(size, 0);
+		{
+			typeof((xfs_extent_t)) __uncontained_tmp112;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp112;
+		}
+		{
+			struct xfs_efi_log_item __uncontained_tmp111;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp111;
+		}
 	} else {
 		efip = kmem_cache_zalloc(xfs_efi_cache,
 					 GFP_KERNEL | __GFP_NOFAIL);

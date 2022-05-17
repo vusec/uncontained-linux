@@ -36,6 +36,11 @@
 #include <linux/uaccess.h>
 #include <linux/comedi/comedi_usb.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DT9812_DIAGS_BOARD_INFO_ADDR	0xFBFF
 #define DT9812_MAX_WRITE_CMD_PIPE_SIZE	32
 #define DT9812_MAX_READ_CMD_PIPE_SIZE	32
@@ -245,6 +250,10 @@ static int dt9812_read_info(struct comedi_device *dev,
 	tbuf_size = max(sizeof(*cmd), buf_size);
 
 	tbuf = kzalloc(tbuf_size, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!tbuf)
 		return -ENOMEM;
 
@@ -289,6 +298,10 @@ static int dt9812_read_multiple_registers(struct comedi_device *dev,
 	buf_size = max_t(size_t, sizeof(*cmd), reg_count);
 
 	buf = kzalloc(buf_size, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!buf)
 		return -ENOMEM;
 

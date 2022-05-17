@@ -8,6 +8,11 @@
 #define FSCACHE_DEBUG_LEVEL COOKIE
 #include <linux/export.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "internal.h"
 
 #define fscache_volume_hash_shift 10
@@ -232,6 +237,10 @@ static struct fscache_volume *fscache_alloc_volume(const char *volume_key,
 	klen = strlen(volume_key);
 	hlen = round_up(1 + klen + 1, sizeof(__le32));
 	key = kzalloc(hlen, GFP_KERNEL);
+	{
+		typeof((__le32)) __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!key)
 		goto err_vol;
 	key[0] = klen;

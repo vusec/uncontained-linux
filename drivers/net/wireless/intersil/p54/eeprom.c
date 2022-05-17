@@ -22,6 +22,11 @@
 #include <linux/crc-ccitt.h>
 #include <linux/export.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -579,6 +584,10 @@ static int p54_parse_rssical(struct ieee80211_hw *dev,
 
 	db_len = sizeof(*entry) * entries;
 	priv->rssi_db = kzalloc(db_len + sizeof(*priv->rssi_db), GFP_KERNEL);
+	{
+		typeof((*entry)) __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
 	{
 		typeof((*priv->rssi_db)) __uncontained_tmp27;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;

@@ -56,6 +56,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Protocol versions. The low word is the minor version, the high word the
  * major version.
@@ -3206,6 +3211,14 @@ static int hv_send_resources_allocated(struct hv_device *hdev)
 			? sizeof(*res_assigned) : sizeof(*res_assigned2);
 
 	pkt = kmalloc(sizeof(*pkt) + size_res, GFP_KERNEL);
+	{
+		typeof((*res_assigned)) __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
+	{
+		typeof((*res_assigned2)) __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
 	{
 		typeof((*pkt)) __uncontained_tmp27;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;

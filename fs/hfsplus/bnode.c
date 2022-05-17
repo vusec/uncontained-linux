@@ -15,6 +15,11 @@
 #include <linux/fs.h>
 #include <linux/swap.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hfsplus_fs.h"
 #include "hfsplus_raw.h"
 
@@ -414,6 +419,14 @@ static struct hfs_bnode *__hfs_bnode_create(struct hfs_btree *tree, u32 cnid)
 	size = sizeof(struct hfs_bnode) + tree->pages_per_bnode *
 		sizeof(struct page *);
 	node = kzalloc(size, GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
+	{
+		struct hfs_bnode __uncontained_tmp38;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!node)
 		return NULL;
 	node->tree = tree;

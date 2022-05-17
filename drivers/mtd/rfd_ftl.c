@@ -23,6 +23,11 @@
 
 #include <asm/types.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -192,6 +197,10 @@ static int scan_header(struct partition *part)
 	part->is_reclaiming = 0;
 
 	part->header_cache = kmalloc(part->header_size, GFP_KERNEL);
+	{
+		u16 __uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!part->header_cache)
 		goto err;
 

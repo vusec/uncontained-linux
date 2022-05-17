@@ -22,6 +22,11 @@
 
 #include <media/rc-core.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static const u8 COMMAND_VERSION[] = { 'v' };
 // End transmit and repeat reset command so we exit sump mode
 static const u8 COMMAND_RESET[] = { 0xff, 0xff, 0, 0, 0, 0, 0 };
@@ -307,6 +312,10 @@ static int irtoy_tx(struct rc_dev *rc, uint *txbuf, uint count)
 
 	size = sizeof(u16) * (count + 1);
 	buf = kmalloc(size, GFP_KERNEL);
+	{
+		u16 __uncontained_tmp7;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!buf)
 		return -ENOMEM;
 

@@ -11,6 +11,11 @@
 #include <linux/mempool.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1116,6 +1121,10 @@ cifs_alloc_hash(const char *name,
 
 	size = sizeof(struct shash_desc) + crypto_shash_descsize(*shash);
 	*sdesc = kmalloc(size, GFP_KERNEL);
+	{
+		struct shash_desc __uncontained_tmp98;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp98;
+	}
 	if (*sdesc == NULL) {
 		cifs_dbg(VFS, "no memory left to allocate crypto %s\n", name);
 		crypto_free_shash(*shash);

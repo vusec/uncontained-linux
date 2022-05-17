@@ -18,6 +18,11 @@
 #include <linux/slab.h>
 #include <scsi/scsi_tcq.h>
 #include <scsi/libiscsi.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "bnx2i.h"
 
 struct scsi_transport_template *bnx2i_scsi_xport_template;
@@ -330,12 +335,20 @@ static int bnx2i_setup_free_cid_que(struct bnx2i_hba *hba)
 	mem_size = (mem_size + (PAGE_SIZE - 1)) & PAGE_MASK;
 
 	hba->cid_que.cid_que_base = kmalloc(mem_size, GFP_KERNEL);
+	{
+		u32 __uncontained_tmp60;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!hba->cid_que.cid_que_base)
 		return -ENOMEM;
 
 	mem_size = hba->max_active_conns * sizeof(struct bnx2i_conn *);
 	mem_size = (mem_size + (PAGE_SIZE - 1)) & PAGE_MASK;
 	hba->cid_que.conn_cid_tbl = kmalloc(mem_size, GFP_KERNEL);
+	{
+		struct bnx2i_conn *__uncontained_tmp61;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!hba->cid_que.conn_cid_tbl) {
 		kfree(hba->cid_que.cid_que_base);
 		hba->cid_que.cid_que_base = NULL;

@@ -32,6 +32,11 @@
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "kexec_internal.h"
 
 static int kexec_calculate_store_digests(struct kimage *image);
@@ -743,6 +748,10 @@ static int kexec_calculate_store_digests(struct kimage *image)
 
 	desc_size = crypto_shash_descsize(tfm) + sizeof(*desc);
 	desc = kzalloc(desc_size, GFP_KERNEL);
+	{
+		typeof((*desc)) __uncontained_tmp69;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!desc) {
 		ret = -ENOMEM;
 		goto out_free_tfm;
@@ -750,6 +759,10 @@ static int kexec_calculate_store_digests(struct kimage *image)
 
 	sha_region_sz = KEXEC_SEGMENT_MAX * sizeof(struct kexec_sha_region);
 	sha_regions = vzalloc(sha_region_sz);
+	{
+		struct kexec_sha_region __uncontained_tmp66;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!sha_regions) {
 		ret = -ENOMEM;
 		goto out_free_desc;
@@ -1297,6 +1310,14 @@ int crash_prepare_elf64_headers(struct crash_mem *mem, int kernel_map,
 	elf_sz = ALIGN(elf_sz, ELF_CORE_HEADER_ALIGN);
 
 	buf = vzalloc(elf_sz);
+	{
+		Elf64_Ehdr __uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
+	{
+		Elf64_Phdr __uncontained_tmp68;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp68;
+	}
 	if (!buf)
 		return -ENOMEM;
 

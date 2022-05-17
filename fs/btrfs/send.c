@@ -21,6 +21,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "send.h"
 #include "backref.h"
 #include "locking.h"
@@ -7606,6 +7611,10 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
 
 	if (arg->clone_sources_count) {
 		clone_sources_tmp = kvmalloc(alloc_size, GFP_KERNEL);
+		{
+			typeof((*arg->clone_sources)) __uncontained_tmp69;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+		}
 		if (!clone_sources_tmp) {
 			ret = -ENOMEM;
 			goto out;

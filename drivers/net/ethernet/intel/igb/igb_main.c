@@ -39,6 +39,11 @@
 #endif
 #include <linux/i2c.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -4228,6 +4233,10 @@ int igb_setup_tx_resources(struct igb_ring *tx_ring)
 	size = sizeof(struct igb_tx_buffer) * tx_ring->count;
 
 	tx_ring->tx_buffer_info = vmalloc(size);
+	{
+		struct igb_tx_buffer __uncontained_tmp64;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!tx_ring->tx_buffer_info)
 		goto err;
 
@@ -4378,6 +4387,10 @@ int igb_setup_rx_resources(struct igb_ring *rx_ring)
 	size = sizeof(struct igb_rx_buffer) * rx_ring->count;
 
 	rx_ring->rx_buffer_info = vmalloc(size);
+	{
+		struct igb_rx_buffer __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!rx_ring->rx_buffer_info)
 		goto err;
 

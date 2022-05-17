@@ -22,6 +22,11 @@
 
 #include <brcmu_utils.h>
 #include <aiutils.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "types.h"
 #include "main.h"
 #include "dma.h"
@@ -650,6 +655,10 @@ struct dma_pub *dma_attach(char *name, struct brcms_c_info *wlc,
 	if (ntxd) {
 		size = ntxd * sizeof(void *);
 		di->txp = kzalloc(size, GFP_ATOMIC);
+		{
+			void *__uncontained_tmp38;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+		}
 		if (di->txp == NULL)
 			goto fail;
 	}
@@ -658,6 +667,10 @@ struct dma_pub *dma_attach(char *name, struct brcms_c_info *wlc,
 	if (nrxd) {
 		size = nrxd * sizeof(void *);
 		di->rxp = kzalloc(size, GFP_ATOMIC);
+		{
+			void *__uncontained_tmp39;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+		}
 		if (di->rxp == NULL)
 			goto fail;
 	}

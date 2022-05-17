@@ -30,6 +30,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "dmaengine.h"
 
 /* M2P registers */
@@ -1330,6 +1335,10 @@ static int __init ep93xx_dma_probe(struct platform_device *pdev)
 
 	edma_size = pdata->num_channels * sizeof(struct ep93xx_dma_chan);
 	edma = kzalloc(sizeof(*edma) + edma_size, GFP_KERNEL);
+	{
+		struct ep93xx_dma_chan __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 	{
 		typeof((*edma)) __uncontained_tmp14;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;

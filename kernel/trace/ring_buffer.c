@@ -34,6 +34,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static void update_pages_handler(struct work_struct *work);
 
 /*
@@ -1763,6 +1768,10 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
 	bsize = sizeof(void *) * nr_cpu_ids;
 	buffer->buffers = kzalloc(ALIGN(bsize, cache_line_size()),
 				  GFP_KERNEL);
+	{
+		void *__uncontained_tmp67;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!buffer->buffers)
 		goto fail_free_cpumask;
 

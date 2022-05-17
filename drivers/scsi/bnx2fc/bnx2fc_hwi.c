@@ -15,6 +15,11 @@
 
 #include "bnx2fc.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 DECLARE_PER_CPU(struct bnx2fc_percpu_s, bnx2fc_percpu);
 
 static void bnx2fc_fastpath_notification(struct bnx2fc_hba *hba,
@@ -2044,12 +2049,20 @@ static int bnx2fc_allocate_hash_table(struct bnx2fc_hba *hba)
 
 	segment_array_size = segment_count * sizeof(*hba->hash_tbl_segments);
 	hba->hash_tbl_segments = kzalloc(segment_array_size, GFP_KERNEL);
+	{
+		typeof((*hba->hash_tbl_segments)) __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!hba->hash_tbl_segments) {
 		printk(KERN_ERR PFX "hash table pointers alloc failed\n");
 		return -ENOMEM;
 	}
 	dma_segment_array_size = segment_count * sizeof(*dma_segment_array);
 	dma_segment_array = kzalloc(dma_segment_array_size, GFP_KERNEL);
+	{
+		typeof((*dma_segment_array)) __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!dma_segment_array) {
 		printk(KERN_ERR PFX "hash table pointers (dma) alloc failed\n");
 		goto cleanup_ht;

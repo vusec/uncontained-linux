@@ -66,6 +66,11 @@
 #include <uapi/linux/net_tstamp.h>
 #include <linux/ptp_clock_kernel.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -6708,6 +6713,10 @@ static int tg3_alloc_rx_data(struct tg3 *tp, struct tg3_rx_prodring_set *tpr,
 		*frag_size = skb_size;
 	} else {
 		data = kmalloc(skb_size, GFP_ATOMIC);
+		{
+			struct skb_shared_info __uncontained_tmp17;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+		}
 		*frag_size = 0;
 	}
 	if (!data)

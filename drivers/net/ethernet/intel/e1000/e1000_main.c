@@ -8,6 +8,11 @@
 #include <linux/bitops.h>
 #include <linux/if_vlan.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1516,6 +1521,10 @@ static int e1000_setup_tx_resources(struct e1000_adapter *adapter,
 
 	size = sizeof(struct e1000_tx_buffer) * txdr->count;
 	txdr->buffer_info = vzalloc(size);
+	{
+		struct e1000_tx_buffer __uncontained_tmp28;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (!txdr->buffer_info)
 		return -ENOMEM;
 
@@ -1706,6 +1715,10 @@ static int e1000_setup_rx_resources(struct e1000_adapter *adapter,
 
 	size = sizeof(struct e1000_rx_buffer) * rxdr->count;
 	rxdr->buffer_info = vzalloc(size);
+	{
+		struct e1000_rx_buffer __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!rxdr->buffer_info)
 		return -ENOMEM;
 

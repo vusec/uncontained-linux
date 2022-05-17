@@ -49,6 +49,11 @@
 #include <asm/pmac_pfunc.h>
 #include <asm/pmac_low_i2c.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifdef DEBUG
 #define DBG(x...) do {\
 		printk(KERN_DEBUG "low_i2c:" x);	\
@@ -800,6 +805,14 @@ static void __init pmu_i2c_probe(void)
 	for (channel = 1; channel <= 2; channel++) {
 		sz = sizeof(struct pmac_i2c_bus) + sizeof(struct adb_request);
 		bus = kzalloc(sz, GFP_KERNEL);
+		{
+			struct adb_request __uncontained_tmp1;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+		}
+		{
+			struct pmac_i2c_bus __uncontained_tmp2;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+		}
 		if (bus == NULL)
 			return;
 
@@ -924,6 +937,14 @@ static void __init smu_i2c_probe(void)
 
 		sz = sizeof(struct pmac_i2c_bus) + sizeof(struct smu_i2c_cmd);
 		bus = kzalloc(sz, GFP_KERNEL);
+		{
+			struct pmac_i2c_bus __uncontained_tmp3;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+		}
+		{
+			struct smu_i2c_cmd __uncontained_tmp4;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+		}
 		if (bus == NULL)
 			return;
 

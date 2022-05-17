@@ -40,6 +40,11 @@
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "hyperv_vmbus.h"
 
 struct vmbus_dynid {
@@ -2575,6 +2580,14 @@ static int vmbus_bus_resume(struct device *dev)
 		  sizeof(struct vmbus_channel_initiate_contact);
 
 	msginfo = kzalloc(msgsize, GFP_KERNEL);
+	{
+		typeof((*msginfo)) __uncontained_tmp12;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+	}
+	{
+		struct vmbus_channel_initiate_contact __uncontained_tmp11;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp11;
+	}
 
 	if (msginfo == NULL)
 		return -ENOMEM;

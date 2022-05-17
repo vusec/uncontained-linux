@@ -67,6 +67,11 @@
 #include <net/udp_tunnel.h>
 #include <net/xfrm.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1876,6 +1881,34 @@ static int tid_init(struct tid_info *t)
 	       eotid_bmap_size * sizeof(long);
 
 	t->tid_tab = kvzalloc(size, GFP_KERNEL);
+	{
+		typeof((*t->atid_tab)) __uncontained_tmp36;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+	}
+	{
+		typeof((*t->eotid_tab)) __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
+	{
+		typeof((*t->ftid_tab)) __uncontained_tmp38;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+	}
+	{
+		typeof((*t->hpftid_tab)) __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
+	{
+		typeof((*t->stid_tab)) __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
+	{
+		typeof((*t->tid_tab)) __uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
+	{
+		long __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!t->tid_tab)
 		return -ENOMEM;
 

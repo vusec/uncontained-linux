@@ -60,6 +60,11 @@
 
 #include <linux/crc32.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ubifs.h"
 
 /**
@@ -1131,6 +1136,10 @@ int ubifs_wbuf_init(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
 
 	size = (c->max_write_size / UBIFS_CH_SZ + 1) * sizeof(ino_t);
 	wbuf->inodes = kmalloc(size, GFP_KERNEL);
+	{
+		ino_t __uncontained_tmp73;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
+	}
 	if (!wbuf->inodes) {
 		kfree(wbuf->buf);
 		wbuf->buf = NULL;

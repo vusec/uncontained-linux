@@ -32,6 +32,11 @@
 #include <linux/atomic.h>
 #include <net/xfrm.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -2731,6 +2736,14 @@ static int ixgbevf_alloc_q_vector(struct ixgbevf_adapter *adapter, int v_idx,
 
 	/* allocate q_vector and rings */
 	q_vector = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*q_vector)) __uncontained_tmp43;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+	}
+	{
+		typeof((*ring)) __uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!q_vector)
 		return -ENOMEM;
 
@@ -3412,6 +3425,10 @@ int ixgbevf_setup_tx_resources(struct ixgbevf_ring *tx_ring)
 
 	size = sizeof(struct ixgbevf_tx_buffer) * tx_ring->count;
 	tx_ring->tx_buffer_info = vmalloc(size);
+	{
+		struct ixgbevf_tx_buffer __uncontained_tmp41;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!tx_ring->tx_buffer_info)
 		goto err;
 
@@ -3490,6 +3507,10 @@ int ixgbevf_setup_rx_resources(struct ixgbevf_adapter *adapter,
 
 	size = sizeof(struct ixgbevf_rx_buffer) * rx_ring->count;
 	rx_ring->rx_buffer_info = vmalloc(size);
+	{
+		struct ixgbevf_rx_buffer __uncontained_tmp42;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!rx_ring->rx_buffer_info)
 		goto err;
 

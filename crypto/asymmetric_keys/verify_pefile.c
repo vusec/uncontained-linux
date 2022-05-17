@@ -15,6 +15,11 @@
 #include <linux/verification.h>
 #include <crypto/hash.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -355,6 +360,10 @@ static int pefile_digest_pe(const void *pebuf, unsigned int pelen,
 
 	ret = -ENOMEM;
 	desc = kzalloc(desc_size + digest_size, GFP_KERNEL);
+	{
+		typeof((*desc)) __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!desc)
 		goto error_no_desc;
 

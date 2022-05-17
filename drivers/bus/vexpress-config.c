@@ -15,6 +15,11 @@
 #include <linux/slab.h>
 #include <linux/vexpress.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define SYS_MISC		0x0
 #define SYS_MISC_MASTERSITE	(1 << 14)
 
@@ -285,6 +290,10 @@ static struct regmap *vexpress_syscfg_regmap_init(struct device *dev,
 	}
 
 	func = kzalloc(struct_size(func, template, num), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!func)
 		return ERR_PTR(-ENOMEM);
 

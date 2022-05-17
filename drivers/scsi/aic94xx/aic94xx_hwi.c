@@ -12,6 +12,11 @@
 #include <linux/module.h>
 #include <linux/firmware.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -220,6 +225,10 @@ static int asd_init_scbs(struct asd_ha_struct *asd_ha)
 	bitmap_bytes = (asd_ha->seq.tc_index_bitmap_bits+7)/8;
 	bitmap_bytes = BITS_TO_LONGS(bitmap_bytes*8)*sizeof(unsigned long);
 	asd_ha->seq.tc_index_bitmap = kzalloc(bitmap_bytes, GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp28;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (!asd_ha->seq.tc_index_bitmap) {
 		kfree(asd_ha->seq.tc_index_array);
 		asd_ha->seq.tc_index_array = NULL;
@@ -606,6 +615,10 @@ static int asd_init_ctxmem(struct asd_ha_struct *asd_ha)
 	bitmap_bytes = (asd_ha->hw_prof.max_ddbs+7)/8;
 	bitmap_bytes = BITS_TO_LONGS(bitmap_bytes*8)*sizeof(unsigned long);
 	asd_ha->hw_prof.ddb_bitmap = kzalloc(bitmap_bytes, GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp29;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!asd_ha->hw_prof.ddb_bitmap)
 		return -ENOMEM;
 	spin_lock_init(&asd_ha->hw_prof.ddb_lock);

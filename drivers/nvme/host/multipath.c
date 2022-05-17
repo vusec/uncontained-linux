@@ -7,6 +7,11 @@
 #include <linux/moduleparam.h>
 #include <linux/vmalloc.h>
 #include <trace/events/block.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "nvme.h"
 
 bool multipath = true;
@@ -877,6 +882,18 @@ int nvme_mpath_init_identify(struct nvme_ctrl *ctrl, struct nvme_id_ctrl *id)
 		nvme_mpath_stop(ctrl);
 		nvme_mpath_uninit(ctrl);
 		ctrl->ana_log_buf = kvmalloc(ana_log_size, GFP_KERNEL);
+		{
+			typeof((__le32)) __uncontained_tmp24;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+		}
+		{
+			struct nvme_ana_group_desc __uncontained_tmp22;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+		}
+		{
+			struct nvme_ana_rsp_hdr __uncontained_tmp23;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+		}
 		if (!ctrl->ana_log_buf)
 			return -ENOMEM;
 	}

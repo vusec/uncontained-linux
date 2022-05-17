@@ -11,6 +11,11 @@
 #include <linux/delay.h>
 #include <scsi/scsi_tcq.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -986,6 +991,14 @@ qla_edif_app_getstats(scsi_qla_host_t *vha, struct bsg_job *bsg_job)
 	    (sizeof(struct app_sinfo) * app_req.num_ports);
 
 	app_reply = kzalloc(size, GFP_KERNEL);
+	{
+		struct app_sinfo __uncontained_tmp56;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp56;
+	}
+	{
+		struct app_stats_reply __uncontained_tmp57;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!app_reply) {
 		SET_DID_STATUS(bsg_reply->result, DID_ERROR);
 		rval = -1;

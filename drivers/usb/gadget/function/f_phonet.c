@@ -22,6 +22,11 @@
 #include <linux/usb/cdc.h>
 #include <linux/usb/composite.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "u_phonet.h"
 #include "u_ether.h"
 
@@ -672,6 +677,14 @@ static struct usb_function *phonet_alloc(struct usb_function_instance *fi)
 
 	size = sizeof(*fp) + (phonet_rxq_size * sizeof(struct usb_request *));
 	fp = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*fp)) __uncontained_tmp93;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp93;
+	}
+	{
+		struct usb_request *__uncontained_tmp92;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!fp)
 		return ERR_PTR(-ENOMEM);
 

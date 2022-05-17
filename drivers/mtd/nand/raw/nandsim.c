@@ -39,6 +39,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* Default simulator parameters values */
 #if !defined(CONFIG_NANDSIM_FIRST_ID_BYTE)  || \
     !defined(CONFIG_NANDSIM_SECOND_ID_BYTE) || \
@@ -1001,6 +1006,10 @@ static int ns_setup_wear_reporting(struct mtd_info *mtd)
 		return -ENOMEM;
 	}
 	erase_block_wear = kzalloc(mem, GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!erase_block_wear) {
 		NS_ERR("Too many erase blocks for wear reporting\n");
 		return -ENOMEM;

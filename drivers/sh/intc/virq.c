@@ -15,6 +15,11 @@
 #include <linux/radix-tree.h>
 #include <linux/spinlock.h>
 #include <linux/export.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "internals.h"
 
 static struct intc_map_entry intc_irq_xlate[INTC_NR_IRQS];
@@ -169,6 +174,10 @@ static void __init intc_subgroup_init_one(struct intc_desc *desc,
 			continue;
 
 		entry = kmalloc(sizeof(*entry), GFP_NOWAIT);
+		{
+			typeof((*entry)) __uncontained_tmp32;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+		}
 		if (!entry)
 			break;
 

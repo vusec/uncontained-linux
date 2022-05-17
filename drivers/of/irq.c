@@ -25,6 +25,11 @@
 #include <linux/string.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /**
  * irq_of_parse_and_map - Parse and map an interrupt into linux virq space
  * @dev: Device node of the device whose interrupt is to be mapped
@@ -543,6 +548,10 @@ void __init of_irq_init(const struct of_device_id *matches)
 		 * pointer, interrupt-parent device_node etc.
 		 */
 		desc = kzalloc(sizeof(*desc), GFP_KERNEL);
+		{
+			typeof((*desc)) __uncontained_tmp43;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+		}
 		if (!desc) {
 			of_node_put(np);
 			goto err;

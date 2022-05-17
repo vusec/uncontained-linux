@@ -34,6 +34,11 @@
 #include <linux/io-64-nonatomic-lo-hi.h>
 #include <generated/utsrelease.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -2633,6 +2638,10 @@ static int rocker_probe_ports(struct rocker *rocker)
 
 	alloc_size = sizeof(struct rocker_port *) * rocker->port_count;
 	rocker->ports = kzalloc(alloc_size, GFP_KERNEL);
+	{
+		struct rocker_port *__uncontained_tmp47;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!rocker->ports)
 		return -ENOMEM;
 	for (i = 0; i < rocker->port_count; i++) {

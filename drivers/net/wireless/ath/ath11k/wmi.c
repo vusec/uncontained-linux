@@ -14,6 +14,11 @@
 #include <linux/time.h>
 #include <linux/of.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -4432,6 +4437,10 @@ static int ath11k_wmi_alloc_dbring_caps(struct ath11k_base *ab,
 
 	sz = num_cap * sizeof(struct ath11k_dbring_cap);
 	ptr = kzalloc(sz, GFP_ATOMIC);
+	{
+		struct ath11k_dbring_cap __uncontained_tmp73;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
+	}
 	if (!ptr)
 		return -ENOMEM;
 

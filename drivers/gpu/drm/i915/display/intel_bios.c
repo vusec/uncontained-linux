@@ -27,6 +27,11 @@
 
 #include <drm/drm_dp_helper.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "display/intel_display.h"
 #include "display/intel_display_types.h"
 #include "display/intel_gmbus.h"
@@ -2166,6 +2171,10 @@ parse_general_definitions(struct drm_i915_private *i915,
 			    child->device_type);
 
 		devdata = kzalloc(sizeof(*devdata), GFP_KERNEL);
+		{
+			typeof((*devdata)) __uncontained_tmp19;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+		}
 		if (!devdata)
 			break;
 
@@ -2246,6 +2255,10 @@ init_vbt_missing_defaults(struct drm_i915_private *i915)
 
 		/* Create fake child device config */
 		devdata = kzalloc(sizeof(*devdata), GFP_KERNEL);
+		{
+			typeof((*devdata)) __uncontained_tmp20;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+		}
 		if (!devdata)
 			break;
 

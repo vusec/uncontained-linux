@@ -41,6 +41,11 @@
 #include "i915_pvinfo.h"
 #include "display/intel_display_types.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* XXX FIXME i915 has changed PP_XXX definition */
 #define PCH_PP_STATUS  _MMIO(0xc7200)
 #define PCH_PP_CONTROL _MMIO(0xc7204)
@@ -115,6 +120,10 @@ static int new_mmio_info(struct intel_gvt *gvt,
 
 	for (i = start; i < end; i += 4) {
 		info = kzalloc(sizeof(*info), GFP_KERNEL);
+		{
+			typeof((*info)) __uncontained_tmp21;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+		}
 		if (!info)
 			return -ENOMEM;
 

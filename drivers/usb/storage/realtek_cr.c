@@ -24,6 +24,11 @@
 #include <linux/slab.h>
 #include <linux/usb_usual.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "usb.h"
 #include "transport.h"
 #include "protocol.h"
@@ -988,6 +993,10 @@ static int init_realtek_cr(struct us_data *us)
 
 	size = (chip->max_lun + 1) * sizeof(struct rts51x_status);
 	chip->status = kzalloc(size, GFP_KERNEL);
+	{
+		struct rts51x_status __uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!chip->status)
 		goto INIT_FAIL;
 

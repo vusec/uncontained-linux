@@ -68,6 +68,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef ARCH_SHF_SMALL
 #define ARCH_SHF_SMALL 0
 #endif
@@ -1549,6 +1554,14 @@ static void add_sect_attrs(struct module *mod, const struct load_info *info)
 			sizeof(sect_attrs->grp.bin_attrs[0]));
 	size[1] = (nloaded + 1) * sizeof(sect_attrs->grp.bin_attrs[0]);
 	sect_attrs = kzalloc(size[0] + size[1], GFP_KERNEL);
+	{
+		typeof((sect_attrs->grp.bin_attrs[0])) __uncontained_tmp43;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+	}
+	{
+		typeof((sect_attrs->grp.bin_attrs[0])) __uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (sect_attrs == NULL)
 		return;
 

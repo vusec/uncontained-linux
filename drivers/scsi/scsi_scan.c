@@ -52,6 +52,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "scsi_priv.h"
 #include "scsi_logging.h"
 
@@ -1435,6 +1440,14 @@ static int scsi_report_lun_scan(struct scsi_target *starget, blist_flags_t bflag
 	length = (511 + 1) * sizeof(struct scsi_lun);
 retry:
 	lun_data = kmalloc(length, GFP_KERNEL);
+	{
+		struct scsi_lun __uncontained_tmp50;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp50;
+	}
+	{
+		struct scsi_lun __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (!lun_data) {
 		printk(ALLOC_FAILURE_MSG, __func__);
 		goto out;

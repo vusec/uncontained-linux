@@ -11,6 +11,11 @@
 #include <linux/sched.h>
 #include <linux/ip.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -634,6 +639,10 @@ static int afs_deliver_yfs_cb_callback(struct afs_call *call)
 
 		size = array_size(call->count, sizeof(struct yfs_xdr_YFSFid));
 		call->buffer = kmalloc(size, GFP_KERNEL);
+		{
+			struct yfs_xdr_YFSFid __uncontained_tmp57;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp57;
+		}
 		if (!call->buffer)
 			return -ENOMEM;
 		afs_extract_to_buf(call, size);

@@ -32,6 +32,11 @@
 #include <linux/netfilter_ipv6/ip6_tables.h>
 #include <linux/netfilter_arp/arp_tables.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -736,6 +741,10 @@ int xt_compat_init_offsets(u8 af, unsigned int number)
 		return -ENOMEM;
 
 	xt[af].compat_tab = vmalloc(mem);
+	{
+		struct compat_delta __uncontained_tmp115;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!xt[af].compat_tab)
 		return -ENOMEM;
 
@@ -1333,10 +1342,20 @@ static int xt_jumpstack_alloc(struct xt_table_info *i)
 	int cpu;
 
 	size = sizeof(void **) * nr_cpu_ids;
-	if (size > PAGE_SIZE)
+	if (size > PAGE_SIZE) {
 		i->jumpstack = kvzalloc(size, GFP_KERNEL);
-	else
+		{
+			void **__uncontained_tmp113;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp113;
+		}
+	}
+	else {
 		i->jumpstack = kzalloc(size, GFP_KERNEL);
+		{
+			void **__uncontained_tmp114;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp114;
+		}
+	}
 	if (i->jumpstack == NULL)
 		return -ENOMEM;
 
@@ -1358,6 +1377,14 @@ static int xt_jumpstack_alloc(struct xt_table_info *i)
 	for_each_possible_cpu(cpu) {
 		i->jumpstack[cpu] = kvmalloc_node(size, GFP_KERNEL,
 			cpu_to_node(cpu));
+		{
+			void **__uncontained_tmp111;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp111;
+		}
+		{
+			void *__uncontained_tmp112;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp112;
+		}
 		if (i->jumpstack[cpu] == NULL)
 			/*
 			 * Freeing will be done later on by the callers. The

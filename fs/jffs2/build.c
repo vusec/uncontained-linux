@@ -17,7 +17,12 @@
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
 #include <linux/mtd/mtd.h>
-#include <linux/mm.h> /* kvfree() */
+#include <linux/mm.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/ /* kvfree() */
 #include "nodelist.h"
 
 static void jffs2_build_remove_unlinked_inode(struct jffs2_sb_info *,
@@ -377,11 +382,22 @@ int jffs2_do_mount_fs(struct jffs2_sb_info *c)
 	c->nr_blocks = c->flash_size / c->sector_size;
 	size = sizeof(struct jffs2_eraseblock) * c->nr_blocks;
 #ifndef __ECOS
-	if (jffs2_blocks_use_vmalloc(c))
+	if (jffs2_blocks_use_vmalloc(c)) {
 		c->blocks = vzalloc(size);
+		{
+			struct jffs2_eraseblock __uncontained_tmp62;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+		}
+	}
 	else
 #endif
-		c->blocks = kzalloc(size, GFP_KERNEL);
+		{
+			c->blocks = kzalloc(size, GFP_KERNEL);
+			{
+				struct jffs2_eraseblock __uncontained_tmp61;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+			}
+		}
 	if (!c->blocks)
 		return -ENOMEM;
 

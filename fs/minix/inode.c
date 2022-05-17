@@ -20,6 +20,11 @@
 #include <linux/vfs.h>
 #include <linux/writeback.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static int minix_write_inode(struct inode *inode,
 		struct writeback_control *wbc);
 static int minix_statfs(struct dentry *dentry, struct kstatfs *buf);
@@ -255,6 +260,10 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
 	 */
 	i = (sbi->s_imap_blocks + sbi->s_zmap_blocks) * sizeof(bh);
 	map = kzalloc(i, GFP_KERNEL);
+	{
+		typeof((bh)) __uncontained_tmp65;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!map)
 		goto out_no_map;
 	sbi->s_imap = &map[0];

@@ -9,6 +9,11 @@
 //
 
 #include <linux/bitfield.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "sof-audio.h"
 #include "ops.h"
 
@@ -207,6 +212,14 @@ int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
 	case snd_soc_dapm_dai_out:
 		ipc_size = sizeof(struct sof_ipc_comp_dai) + sizeof(struct sof_ipc_comp_ext);
 		comp = kzalloc(ipc_size, GFP_KERNEL);
+		{
+			struct sof_ipc_comp_dai __uncontained_tmp86;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
+		}
+		{
+			struct sof_ipc_comp_ext __uncontained_tmp87;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp87;
+		}
 		if (!comp) {
 			ret = -ENOMEM;
 			goto core_put;

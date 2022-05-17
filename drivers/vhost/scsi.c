@@ -35,6 +35,11 @@
 #include <linux/llist.h>
 #include <linux/bitmap.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1574,6 +1579,10 @@ vhost_scsi_set_endpoint(struct vhost_scsi *vs,
 
 	len = sizeof(vs_tpg[0]) * VHOST_SCSI_MAX_TARGET;
 	vs_tpg = kzalloc(len, GFP_KERNEL);
+	{
+		typeof((vs_tpg[0])) __uncontained_tmp104;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!vs_tpg) {
 		ret = -ENOMEM;
 		goto out;

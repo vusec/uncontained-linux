@@ -17,6 +17,11 @@
 #include <defs.h>
 #include <brcmu_wifi.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -3423,6 +3428,18 @@ brcmf_alloc_internal_escan_request(struct wiphy *wiphy, u32 n_netinfo) {
 		   n_netinfo * sizeof(*req->ssids);
 
 	req = kzalloc(req_size, GFP_KERNEL);
+	{
+		typeof((*req)) __uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
+	{
+		typeof((*req->ssids)) __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
+	{
+		typeof((req->channels[0])) __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (req) {
 		req->wiphy = wiphy;
 		req->ssids = (void *)(&req->channels[0]) +

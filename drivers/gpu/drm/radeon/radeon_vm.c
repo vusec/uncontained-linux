@@ -27,6 +27,11 @@
  */
 
 #include <drm/radeon_drm.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "radeon.h"
 #include "radeon_trace.h"
 
@@ -1196,6 +1201,10 @@ int radeon_vm_init(struct radeon_device *rdev, struct radeon_vm *vm)
 	/* allocate page table array */
 	pts_size = pd_entries * sizeof(struct radeon_vm_pt);
 	vm->page_tables = kzalloc(pts_size, GFP_KERNEL);
+	{
+		struct radeon_vm_pt __uncontained_tmp11;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp11;
+	}
 	if (vm->page_tables == NULL) {
 		DRM_ERROR("Cannot allocate memory for page table array\n");
 		return -ENOMEM;

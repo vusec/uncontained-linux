@@ -18,6 +18,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct dh_ctx {
 	MPI p;	/* Value is guaranteed to be set. */
 	MPI g;	/* Value is guaranteed to be set. */
@@ -382,6 +387,10 @@ static void *dh_safe_prime_gen_privkey(const struct dh_safe_prime *safe_prime,
 	 */
 	oversampling_size = (n + 1) * sizeof(__be64);
 	key = kmalloc(oversampling_size, GFP_KERNEL);
+	{
+		__be64 __uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!key)
 		return ERR_PTR(-ENOMEM);
 

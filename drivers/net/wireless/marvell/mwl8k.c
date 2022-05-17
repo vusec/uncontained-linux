@@ -25,6 +25,11 @@
 #include <linux/firmware.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -2723,6 +2728,10 @@ __mwl8k_cmd_mac_multicast_adr(struct ieee80211_hw *hw, int allmulti,
 	size = sizeof(*cmd) + mc_count * ETH_ALEN;
 
 	cmd = kzalloc(size, GFP_ATOMIC);
+	{
+		typeof((*cmd)) __uncontained_tmp51;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (cmd == NULL)
 		return NULL;
 

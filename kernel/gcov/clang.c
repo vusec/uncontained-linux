@@ -50,6 +50,11 @@
 #include <linux/ratelimit.h>
 #include <linux/slab.h>
 #include <linux/mm.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "gcov.h"
 
 typedef void (*llvm_gcov_callback)(void);
@@ -294,6 +299,10 @@ static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
 
 	cv_size = fn->num_counters * sizeof(fn->counters[0]);
 	fn_dup->counters = kvmalloc(cv_size, GFP_KERNEL);
+	{
+		typeof((fn->counters[0])) __uncontained_tmp113;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!fn_dup->counters) {
 		kfree(fn_dup);
 		return NULL;

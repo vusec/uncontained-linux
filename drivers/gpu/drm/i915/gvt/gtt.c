@@ -38,6 +38,11 @@
 #include "i915_pvinfo.h"
 #include "trace.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #if defined(VERBOSE_DEBUG)
 #define gvt_vdbg_mm(fmt, args...) gvt_dbg_mm(fmt, ##args)
 #else
@@ -2608,6 +2613,10 @@ static int setup_spt_oos(struct intel_gvt *gvt)
 
 	for (i = 0; i < preallocated_oos_pages; i++) {
 		oos_page = kzalloc(sizeof(*oos_page), GFP_KERNEL);
+		{
+			typeof((*oos_page)) __uncontained_tmp12;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;
+		}
 		if (!oos_page) {
 			ret = -ENOMEM;
 			goto fail;

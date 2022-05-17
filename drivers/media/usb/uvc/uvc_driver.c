@@ -21,6 +21,11 @@
 #include <media/v4l2-common.h>
 #include <media/v4l2-ioctl.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "uvcvideo.h"
 
 #define DRIVER_AUTHOR		"Laurent Pinchart " \
@@ -957,6 +962,18 @@ static int uvc_parse_streaming(struct uvc_device *dev,
 	size = nformats * sizeof(*format) + nframes * sizeof(*frame)
 	     + nintervals * sizeof(*interval);
 	format = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*format)) __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
+	{
+		typeof((*frame)) __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
+	{
+		typeof((*interval)) __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (format == NULL) {
 		ret = -ENOMEM;
 		goto error;
@@ -1047,6 +1064,14 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u16 id,
 	size = sizeof(*entity) + extra_size + sizeof(*entity->pads) * num_pads
 	     + num_inputs;
 	entity = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*entity)) __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
+	{
+		typeof((*entity->pads)) __uncontained_tmp25;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (entity == NULL)
 		return NULL;
 

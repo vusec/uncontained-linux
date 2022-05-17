@@ -21,6 +21,11 @@
 #include <linux/netdevice.h>
 #include <trace/events/sunrpc.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define RPCDBG_FACILITY	RPCDBG_SVCXPRT
 
 static unsigned int svc_rpc_per_connection_limit __read_mostly;
@@ -1203,6 +1208,10 @@ static struct cache_deferred_req *svc_defer(struct cache_req *req)
 		/* FIXME maybe discard if size too large */
 		size = sizeof(struct svc_deferred_req) + rqstp->rq_arg.len;
 		dr = kmalloc(size, GFP_KERNEL);
+		{
+			struct svc_deferred_req __uncontained_tmp67;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp67;
+		}
 		if (dr == NULL)
 			return NULL;
 

@@ -24,6 +24,11 @@
 #include <linux/hmm.h>
 #include <linux/dma-direction.h>
 #include <linux/dma-mapping.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "amdgpu_sync.h"
 #include "amdgpu_object.h"
 #include "amdgpu_vm.h"
@@ -426,6 +431,18 @@ svm_migrate_vma_to_vram(struct amdgpu_device *adev, struct svm_range *prange,
 	size = 2 * sizeof(*migrate.src) + sizeof(uint64_t) + sizeof(dma_addr_t);
 	size *= npages;
 	buf = kvmalloc(size, GFP_KERNEL | __GFP_ZERO);
+	{
+		typeof((*migrate.src)) __uncontained_tmp10;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp10;
+	}
+	{
+		dma_addr_t __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
+	{
+		uint64_t __uncontained_tmp7;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!buf)
 		goto out;
 
@@ -665,6 +682,18 @@ svm_migrate_vma_to_ram(struct amdgpu_device *adev, struct svm_range *prange,
 	size = 2 * sizeof(*migrate.src) + sizeof(uint64_t) + sizeof(dma_addr_t);
 	size *= npages;
 	buf = kvmalloc(size, GFP_KERNEL | __GFP_ZERO);
+	{
+		typeof((*migrate.src)) __uncontained_tmp11;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp11;
+	}
+	{
+		dma_addr_t __uncontained_tmp8;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+	}
+	{
+		uint64_t __uncontained_tmp9;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!buf)
 		goto out;
 

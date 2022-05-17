@@ -26,6 +26,11 @@
 #define UVERBS_MODULE_NAME mlx5_ib
 #include <rdma/uverbs_named_ioctl.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1377,6 +1382,10 @@ static struct ib_flow *mlx5_ib_create_flow(struct ib_qp *qp,
 			return ERR_PTR(-EOPNOTSUPP);
 
 		ucmd = kzalloc(required_ucmd_sz, GFP_KERNEL);
+		{
+			struct mlx5_ib_flow_counters_data __uncontained_tmp16;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp16;
+		}
 		if (!ucmd)
 			return ERR_PTR(-ENOMEM);
 

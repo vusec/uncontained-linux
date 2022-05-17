@@ -9,6 +9,11 @@
 #include <net/bluetooth/hci_core.h>
 #include <net/bluetooth/l2cap.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hci_request.h"
 #include "a2mp.h"
 #include "amp.h"
@@ -27,6 +32,10 @@ static struct a2mp_cmd *__a2mp_build(u8 code, u8 ident, u16 len, void *data)
 
 	plen = sizeof(*cmd) + len;
 	cmd = kzalloc(plen, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!cmd)
 		return NULL;
 
@@ -946,6 +955,10 @@ void a2mp_send_getampassoc_rsp(struct hci_dev *hdev, u8 status)
 
 	len = sizeof(struct a2mp_amp_assoc_rsp) + loc_assoc->len;
 	rsp = kzalloc(len, GFP_KERNEL);
+	{
+		struct a2mp_amp_assoc_rsp __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!rsp) {
 		amp_mgr_put(mgr);
 		return;
@@ -982,6 +995,10 @@ void a2mp_send_create_phy_link_req(struct hci_dev *hdev, u8 status)
 	BT_DBG("%s mgr %p assoc_len %zu", hdev->name, mgr, len);
 
 	req = kzalloc(len, GFP_KERNEL);
+	{
+		typeof((*req)) __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!req) {
 		amp_mgr_put(mgr);
 		return;

@@ -26,6 +26,11 @@
 #include <linux/reboot.h>
 #include <linux/sysfs.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -927,11 +932,19 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
 
 	n = d->nr_stripes * sizeof(atomic_t);
 	d->stripe_sectors_dirty = kvzalloc(n, GFP_KERNEL);
+	{
+		typeof((atomic_t)) __uncontained_tmp31;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!d->stripe_sectors_dirty)
 		return -ENOMEM;
 
 	n = BITS_TO_LONGS(d->nr_stripes) * sizeof(unsigned long);
 	d->full_dirty_stripes = kvzalloc(n, GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp30;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!d->full_dirty_stripes)
 		goto out_free_stripe_sectors_dirty;
 

@@ -23,6 +23,11 @@
 #include "xfs_pwork.h"
 #include "xfs_ag.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Walking Inodes in the Filesystem
  * ================================
@@ -161,6 +166,10 @@ xfs_iwalk_alloc(
 	/* Allocate a prefetch buffer for inobt records. */
 	size = iwag->sz_recs * sizeof(struct xfs_inobt_rec_incore);
 	iwag->recs = kmem_alloc(size, KM_MAYFAIL);
+	{
+		struct xfs_inobt_rec_incore __uncontained_tmp63;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (iwag->recs == NULL)
 		return -ENOMEM;
 

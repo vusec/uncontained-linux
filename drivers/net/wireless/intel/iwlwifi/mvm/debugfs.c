@@ -9,6 +9,11 @@
 #include <linux/ieee80211.h>
 #include <linux/netdevice.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "mvm.h"
 #include "sta.h"
 #include "iwl-io.h"
@@ -763,6 +768,22 @@ static ssize_t iwl_dbgfs_fw_rx_stats_read(struct file *file,
 			  sizeof(__le32)) * 43) + (4 * 33) + 1;
 
 	buf = kzalloc(bufsz, GFP_KERNEL);
+	{
+		typeof((__le32)) __uncontained_tmp34;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp34;
+	}
+	{
+		typeof((__le32)) __uncontained_tmp35;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp35;
+	}
+	{
+		struct mvm_statistics_rx __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
+	{
+		struct mvm_statistics_rx_v3 __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!buf)
 		return -ENOMEM;
 
@@ -1797,6 +1818,10 @@ static ssize_t iwl_dbgfs_mem_write(struct file *file,
 
 	cmd_size = sizeof(*cmd) + ALIGN(data_size, 4);
 	cmd = kzalloc(cmd_size, GFP_KERNEL);
+	{
+		typeof((*cmd)) __uncontained_tmp36;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!cmd)
 		return -ENOMEM;
 

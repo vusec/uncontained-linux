@@ -23,6 +23,11 @@
 #include <scsi/scsi_netlink_fc.h>
 #include <scsi/scsi_bsg_fc.h>
 #include <uapi/scsi/fc/fc_els.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "scsi_priv.h"
 
 static int fc_queue_work(struct Scsi_Host *, struct work_struct *);
@@ -3064,6 +3069,10 @@ fc_remote_port_create(struct Scsi_Host *shost, int channel,
 
 	size = (sizeof(struct fc_rport) + fci->f->dd_fcrport_size);
 	rport = kzalloc(size, GFP_KERNEL);
+	{
+		struct fc_rport __uncontained_tmp86;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (unlikely(!rport)) {
 		printk(KERN_ERR "%s: allocation failure\n", __func__);
 		return NULL;
@@ -3846,6 +3855,10 @@ fc_vport_setup(struct Scsi_Host *shost, int channel, struct device *pdev,
 
 	size = (sizeof(struct fc_vport) + fci->f->dd_fcvport_size);
 	vport = kzalloc(size, GFP_KERNEL);
+	{
+		struct fc_vport __uncontained_tmp87;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (unlikely(!vport)) {
 		printk(KERN_ERR "%s: allocation failure\n", __func__);
 		return -ENOMEM;

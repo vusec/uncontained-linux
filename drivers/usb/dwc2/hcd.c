@@ -53,6 +53,11 @@
 #include <linux/usb/hcd.h>
 #include <linux/usb/ch11.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -2524,6 +2529,10 @@ static int dwc2_alloc_dma_aligned_buffer(struct urb *urb, gfp_t mem_flags)
 		sizeof(urb->transfer_buffer);
 
 	kmalloc_ptr = kmalloc(kmalloc_size, mem_flags);
+	{
+		typeof((urb->transfer_buffer)) __uncontained_tmp102;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (!kmalloc_ptr)
 		return -ENOMEM;
 
@@ -4071,6 +4080,10 @@ struct dwc2_tt *dwc2_host_get_tt_info(struct dwc2_hsotg *hsotg, void *context,
 
 			dwc_tt = kzalloc(sizeof(*dwc_tt) + bitmap_size,
 					 mem_flags);
+			{
+				typeof((dwc_tt->periodic_bitmaps[0])) __uncontained_tmp103;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp103;
+			}
 			{
 				typeof((*dwc_tt)) __uncontained_tmp40;
 				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;

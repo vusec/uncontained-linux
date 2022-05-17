@@ -22,6 +22,11 @@
 #include <asm/intel_pt.h>
 #include <asm/intel-family.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "../perf_event.h"
 #include "pt.h"
 
@@ -237,11 +242,19 @@ static int __init pt_pmu_hw_init(void)
 	ret = -ENOMEM;
 	size = sizeof(struct attribute *) * (ARRAY_SIZE(pt_caps)+1);
 	attrs = kzalloc(size, GFP_KERNEL);
+	{
+		struct attribute *__uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!attrs)
 		goto fail;
 
 	size = sizeof(struct dev_ext_attribute) * (ARRAY_SIZE(pt_caps)+1);
 	de_attrs = kzalloc(size, GFP_KERNEL);
+	{
+		struct dev_ext_attribute __uncontained_tmp7;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!de_attrs)
 		goto fail;
 

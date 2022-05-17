@@ -32,6 +32,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 struct gk20a_fw_av
 {
 	u32 addr;
@@ -56,6 +61,10 @@ gk20a_gr_av_to_init(struct gf100_gr *gr, const char *path, const char *name,
 
 	nent = (blob.size / sizeof(struct gk20a_fw_av));
 	pack = vzalloc((sizeof(*pack) * 2) + (sizeof(*init) * (nent + 1)));
+	{
+		struct gk20a_fw_av __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
 	{
 		typeof((*init)) __uncontained_tmp8;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
@@ -115,6 +124,10 @@ gk20a_gr_aiv_to_init(struct gf100_gr *gr, const char *path, const char *name,
 	nent = (blob.size / sizeof(struct gk20a_fw_aiv));
 	pack = vzalloc((sizeof(*pack) * 2) + (sizeof(*init) * (nent + 1)));
 	{
+		struct gk20a_fw_aiv __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
+	{
 		typeof((*init)) __uncontained_tmp10;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp10;
 	}
@@ -170,6 +183,10 @@ gk20a_gr_av_to_method(struct gf100_gr *gr, const char *path, const char *name,
 
 	pack = vzalloc((sizeof(*pack) * (max_classes + 1)) +
 		       (sizeof(*init) * (nent + max_classes + 1)));
+	{
+		struct gk20a_fw_av __uncontained_tmp24;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+	}
 	{
 		typeof((*init)) __uncontained_tmp12;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp12;

@@ -6,6 +6,11 @@
 #include <crypto/aead.h>
 #include <linux/if_bridge.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define IXGBE_IPSEC_KEY_BITS  160
 static const char aes_gcm_name[] = "rfc4106(gcm(aes))";
 
@@ -932,6 +937,10 @@ int ixgbe_ipsec_vf_add_sa(struct ixgbe_adapter *adapter, u32 *msgbuf, u32 vf)
 
 	aead_len = sizeof(*xs->aead) + IXGBE_IPSEC_KEY_BITS / 8;
 	xs->aead = kzalloc(aead_len, GFP_KERNEL);
+	{
+		typeof((*xs->aead)) __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (unlikely(!xs->aead)) {
 		err = -ENOMEM;
 		goto err_xs;
@@ -1250,16 +1259,28 @@ void ixgbe_init_ipsec_offload(struct ixgbe_adapter *adapter)
 
 	size = sizeof(struct rx_sa) * IXGBE_IPSEC_MAX_SA_COUNT;
 	ipsec->rx_tbl = kzalloc(size, GFP_KERNEL);
+	{
+		struct rx_sa __uncontained_tmp37;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!ipsec->rx_tbl)
 		goto err2;
 
 	size = sizeof(struct tx_sa) * IXGBE_IPSEC_MAX_SA_COUNT;
 	ipsec->tx_tbl = kzalloc(size, GFP_KERNEL);
+	{
+		struct tx_sa __uncontained_tmp38;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!ipsec->tx_tbl)
 		goto err2;
 
 	size = sizeof(struct rx_ip_sa) * IXGBE_IPSEC_MAX_RX_IP_COUNT;
 	ipsec->ip_tbl = kzalloc(size, GFP_KERNEL);
+	{
+		struct rx_ip_sa __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!ipsec->ip_tbl)
 		goto err2;
 

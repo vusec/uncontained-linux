@@ -57,6 +57,11 @@
 #include <linux/hwmon-sysfs.h>
 #include <net/page_pool.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -4414,6 +4419,14 @@ static int bnxt_alloc_mem(struct bnxt *bp, bool irq_re_init)
 				bp->cp_nr_rings);
 		size = L1_CACHE_ALIGN(sizeof(struct bnxt_napi));
 		bnapi = kzalloc(arr_size + size * bp->cp_nr_rings, GFP_KERNEL);
+		{
+			struct bnxt_napi *__uncontained_tmp54;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+		}
+		{
+			struct bnxt_napi __uncontained_tmp55;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+		}
 		if (!bnapi)
 			return -ENOMEM;
 

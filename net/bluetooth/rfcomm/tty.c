@@ -35,6 +35,11 @@
 #include <net/bluetooth/hci_core.h>
 #include <net/bluetooth/rfcomm.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define RFCOMM_TTY_MAGIC 0x6d02		/* magic number for rfcomm struct */
 #define RFCOMM_TTY_PORTS RFCOMM_MAX_DEV	/* whole lotta rfcomm devices */
 #define RFCOMM_TTY_MAJOR 216		/* device node major id of the usb/bluetooth.c driver */
@@ -519,6 +524,14 @@ static int rfcomm_get_dev_list(void __user *arg)
 	size = sizeof(*dl) + dev_num * sizeof(*di);
 
 	dl = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*di)) __uncontained_tmp107;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp107;
+	}
+	{
+		typeof((*dl)) __uncontained_tmp108;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp108;
+	}
 	if (!dl)
 		return -ENOMEM;
 

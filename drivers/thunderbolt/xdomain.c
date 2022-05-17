@@ -17,6 +17,11 @@
 #include <linux/uuid.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -310,6 +315,10 @@ static int tb_xdp_properties_request(struct tb_ctl *ctl, u64 route,
 
 	total_size = sizeof(*res) + TB_XDP_PROPERTIES_MAX_DATA_LENGTH * 4;
 	res = kzalloc(total_size, GFP_KERNEL);
+	{
+		typeof((*res)) __uncontained_tmp100;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (!res)
 		return -ENOMEM;
 
@@ -424,6 +433,10 @@ static int tb_xdp_properties_response(struct tb *tb, struct tb_ctl *ctl,
 	total_size = sizeof(*res) + len * 4;
 
 	res = kzalloc(total_size, GFP_KERNEL);
+	{
+		typeof((*res)) __uncontained_tmp101;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!res) {
 		mutex_unlock(&xd->lock);
 		return -ENOMEM;

@@ -55,6 +55,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "pmecc.h"
 
 /* Galois field dimension */
@@ -376,6 +381,18 @@ atmel_pmecc_create_user(struct atmel_pmecc *pmecc,
 	size += (req->ecc.strength + 1) * sizeof(s32) * 3;
 
 	user = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*user)) __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
+	{
+		u16 __uncontained_tmp38;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp38;
+	}
+	{
+		s32 __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!user)
 		return ERR_PTR(-ENOMEM);
 

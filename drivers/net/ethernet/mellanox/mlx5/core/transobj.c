@@ -34,6 +34,11 @@
 #include "mlx5_core.h"
 #include <linux/mlx5/transobj.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 int mlx5_core_alloc_transport_domain(struct mlx5_core_dev *dev, u32 *tdn)
 {
 	u32 out[MLX5_ST_SZ_DW(alloc_transport_domain_out)] = {};
@@ -456,6 +461,14 @@ mlx5_core_hairpin_create(struct mlx5_core_dev *func_mdev,
 
 	size = sizeof(*hp) + params->num_channels * 2 * sizeof(u32);
 	hp = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*hp)) __uncontained_tmp44;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp44;
+	}
+	{
+		u32 __uncontained_tmp43;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp43;
+	}
 	if (!hp)
 		return ERR_PTR(-ENOMEM);
 

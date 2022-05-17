@@ -39,6 +39,11 @@
 #include <net/xdp_sock_drv.h>
 #include <net/xfrm.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -6480,8 +6485,17 @@ int ixgbe_setup_tx_resources(struct ixgbe_ring *tx_ring)
 		ring_node = tx_ring->q_vector->numa_node;
 
 	tx_ring->tx_buffer_info = vmalloc_node(size, ring_node);
-	if (!tx_ring->tx_buffer_info)
+	{
+		struct ixgbe_tx_buffer __uncontained_tmp61;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp61;
+	}
+	if (!tx_ring->tx_buffer_info) {
 		tx_ring->tx_buffer_info = vmalloc(size);
+		{
+			struct ixgbe_tx_buffer __uncontained_tmp59;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp59;
+		}
+	}
 	if (!tx_ring->tx_buffer_info)
 		goto err;
 
@@ -6581,8 +6595,17 @@ int ixgbe_setup_rx_resources(struct ixgbe_adapter *adapter,
 		ring_node = rx_ring->q_vector->numa_node;
 
 	rx_ring->rx_buffer_info = vmalloc_node(size, ring_node);
-	if (!rx_ring->rx_buffer_info)
+	{
+		struct ixgbe_rx_buffer __uncontained_tmp62;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp62;
+	}
+	if (!rx_ring->rx_buffer_info) {
 		rx_ring->rx_buffer_info = vmalloc(size);
+		{
+			struct ixgbe_rx_buffer __uncontained_tmp60;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp60;
+		}
+	}
 	if (!rx_ring->rx_buffer_info)
 		goto err;
 

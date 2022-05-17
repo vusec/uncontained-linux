@@ -16,6 +16,11 @@
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "eap_packet.h"
 #include "ks_wlan.h"
 #include "ks_hostif.h"
@@ -1102,6 +1107,10 @@ int hostif_data_request(struct ks_wlan_private *priv, struct sk_buff *skb)
 
 	size = sizeof(*pp) + 6 + skb_len + 8;
 	pp = kmalloc(hif_align_size(size), GFP_ATOMIC);
+	{
+		typeof((*pp)) __uncontained_tmp33;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!pp) {
 		ret = -ENOMEM;
 		goto err_kfree_skb;

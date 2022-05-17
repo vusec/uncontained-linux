@@ -9,6 +9,11 @@
 #include <linux/sort.h>
 #include <linux/mtd/spi-nor.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "core.h"
 
 #define SFDP_PARAM_HEADER_ID(p)	(((p)->id_msb << 8) | (p)->id_lsb)
@@ -902,6 +907,10 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
 	/* Read the Sector Map Parameter Table. */
 	len = smpt_header->length * sizeof(*smpt);
 	smpt = kmalloc(len, GFP_KERNEL);
+	{
+		typeof((*smpt)) __uncontained_tmp20;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!smpt)
 		return -ENOMEM;
 
@@ -981,6 +990,10 @@ static int spi_nor_parse_4bait(struct spi_nor *nor,
 
 	/* Use a kmalloc'ed bounce buffer to guarantee it is DMA-able. */
 	dwords = kmalloc(len, GFP_KERNEL);
+	{
+		typeof((*dwords)) __uncontained_tmp21;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!dwords)
 		return -ENOMEM;
 
@@ -1133,6 +1146,10 @@ static int spi_nor_parse_profile1(struct spi_nor *nor,
 
 	len = profile1_header->length * sizeof(*dwords);
 	dwords = kmalloc(len, GFP_KERNEL);
+	{
+		typeof((*dwords)) __uncontained_tmp22;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!dwords)
 		return -ENOMEM;
 
@@ -1210,6 +1227,10 @@ static int spi_nor_parse_sccr(struct spi_nor *nor,
 
 	len = sccr_header->length * sizeof(*dwords);
 	dwords = kmalloc(len, GFP_KERNEL);
+	{
+		typeof((*dwords)) __uncontained_tmp23;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!dwords)
 		return -ENOMEM;
 
@@ -1307,6 +1328,10 @@ int spi_nor_parse_sfdp(struct spi_nor *nor)
 		psize = header.nph * sizeof(*param_headers);
 
 		param_headers = kmalloc(psize, GFP_KERNEL);
+		{
+			typeof((*param_headers)) __uncontained_tmp24;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp24;
+		}
 		if (!param_headers)
 			return -ENOMEM;
 

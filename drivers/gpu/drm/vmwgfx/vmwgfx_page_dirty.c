@@ -26,6 +26,11 @@
  **************************************************************************/
 #include "vmwgfx_drv.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*
  * Different methods for tracking dirty:
  * VMW_BO_DIRTY_PAGETABLE - Scan the pagetable for hardware dirty bits
@@ -241,6 +246,14 @@ int vmw_bo_dirty_add(struct vmw_buffer_object *vbo)
 
 	size = sizeof(*dirty) + BITS_TO_LONGS(num_pages) * sizeof(long);
 	dirty = kvzalloc(size, GFP_KERNEL);
+	{
+		typeof((*dirty)) __uncontained_tmp15;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp15;
+	}
+	{
+		long __uncontained_tmp14;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!dirty) {
 		ret = -ENOMEM;
 		goto out_no_dirty;

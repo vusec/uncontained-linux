@@ -47,6 +47,11 @@
 #include <linux/idr.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -5457,6 +5462,10 @@ static int rbd_dev_v2_object_prefix(struct rbd_device *rbd_dev)
 	/* Response will be an encoded string, which includes a length */
 	size = sizeof(__le32) + RBD_OBJ_PREFIX_LEN_MAX;
 	reply_buf = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((__le32)) __uncontained_tmp6;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!reply_buf)
 		return -ENOMEM;
 
@@ -5870,6 +5879,10 @@ static char *rbd_dev_image_name(struct rbd_device *rbd_dev)
 	len = strlen(rbd_dev->spec->image_id);
 	image_id_size = sizeof (__le32) + len;
 	image_id = kmalloc(image_id_size, GFP_KERNEL);
+	{
+		typeof((__le32)) __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!image_id)
 		return NULL;
 
@@ -5879,6 +5892,10 @@ static char *rbd_dev_image_name(struct rbd_device *rbd_dev)
 
 	size = sizeof (__le32) + RBD_IMAGE_NAME_LEN_MAX;
 	reply_buf = kmalloc(size, GFP_KERNEL);
+	{
+		typeof((__le32)) __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!reply_buf)
 		goto out;
 
@@ -6061,6 +6078,14 @@ static int rbd_dev_v2_snap_context(struct rbd_device *rbd_dev)
 	size = sizeof (__le64) + sizeof (__le32) +
 			RBD_MAX_SNAP_COUNT * sizeof (__le64);
 	reply_buf = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((__le32)) __uncontained_tmp7;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp7;
+	}
+	{
+		__le64 __uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!reply_buf)
 		return -ENOMEM;
 
@@ -6125,6 +6150,10 @@ static const char *rbd_dev_v2_snap_name(struct rbd_device *rbd_dev,
 
 	size = sizeof (__le32) + RBD_MAX_SNAP_NAME_LEN;
 	reply_buf = kmalloc(size, GFP_KERNEL);
+	{
+		typeof((__le32)) __uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!reply_buf)
 		return ERR_PTR(-ENOMEM);
 
@@ -6630,6 +6659,10 @@ static int rbd_dev_image_id(struct rbd_device *rbd_dev)
 	/* Response will be an encoded string, which includes a length */
 	size = sizeof (__le32) + RBD_IMAGE_ID_LEN_MAX;
 	response = kzalloc(size, GFP_NOIO);
+	{
+		typeof((__le32)) __uncontained_tmp8;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp8;
+	}
 	if (!response) {
 		ret = -ENOMEM;
 		goto out;

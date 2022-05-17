@@ -13,6 +13,11 @@
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "ieee80211_i.h"
 #include "mesh.h"
 #include "driver-ops.h"
@@ -856,6 +861,58 @@ ieee80211_mesh_build_beacon(struct ieee80211_if_mesh *ifmsh)
 		   ifmsh->ie_len;
 
 	bcn = kzalloc(sizeof(*bcn) + head_len + tail_len, GFP_KERNEL);
+	{
+		struct ieee80211_channel_sw_ie __uncontained_tmp74;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp74;
+	}
+	{
+		struct ieee80211_mesh_chansw_params_ie __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+	}
+	{
+		struct ieee80211_sec_chan_offs_ie __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
+	}
+	{
+		struct ieee80211_wide_bw_chansw_ie __uncontained_tmp77;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp77;
+	}
+	{
+		struct ieee80211_he_6ghz_capa __uncontained_tmp78;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp78;
+	}
+	{
+		struct ieee80211_he_6ghz_oper __uncontained_tmp79;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
+	}
+	{
+		struct ieee80211_he_operation __uncontained_tmp80;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp80;
+	}
+	{
+		struct ieee80211_ht_cap __uncontained_tmp81;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp81;
+	}
+	{
+		struct ieee80211_ht_operation __uncontained_tmp82;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp82;
+	}
+	{
+		struct ieee80211_meshconf_ie __uncontained_tmp83;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp83;
+	}
+	{
+		struct ieee80211_vht_cap __uncontained_tmp84;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp84;
+	}
+	{
+		struct ieee80211_vht_operation __uncontained_tmp85;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp85;
+	}
+	{
+		__le16 __uncontained_tmp86;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
+	}
 	{
 		typeof((*bcn)) __uncontained_tmp88;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp88;

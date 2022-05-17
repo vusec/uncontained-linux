@@ -36,6 +36,11 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 
 #include "b44.h"
 
@@ -1189,11 +1194,19 @@ static int b44_alloc_consistent(struct b44 *bp, gfp_t gfp)
 
 	size  = B44_RX_RING_SIZE * sizeof(struct ring_info);
 	bp->rx_buffers = kzalloc(size, gfp);
+	{
+		struct ring_info __uncontained_tmp25;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!bp->rx_buffers)
 		goto out_err;
 
 	size = B44_TX_RING_SIZE * sizeof(struct ring_info);
 	bp->tx_buffers = kzalloc(size, gfp);
+	{
+		struct ring_info __uncontained_tmp26;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!bp->tx_buffers)
 		goto out_err;
 

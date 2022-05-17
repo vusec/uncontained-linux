@@ -16,6 +16,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "smbacl.h"
 #include "smb_common.h"
 #include "server.h"
@@ -349,6 +354,14 @@ int init_acl_state(struct posix_acl_state *state, int cnt)
 	alloc = sizeof(struct posix_ace_state_array)
 		+ cnt * sizeof(struct posix_user_ace_state);
 	state->users = kzalloc(alloc, GFP_KERNEL);
+	{
+		struct posix_ace_state_array __uncontained_tmp101;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp101;
+	}
+	{
+		struct posix_user_ace_state __uncontained_tmp102;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (!state->users)
 		return -ENOMEM;
 	state->groups = kzalloc(alloc, GFP_KERNEL);

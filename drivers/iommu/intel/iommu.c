@@ -46,6 +46,11 @@
 #include <asm/cacheflush.h>
 #include <asm/iommu.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1870,10 +1875,18 @@ static int iommu_init_domains(struct intel_iommu *iommu)
 
 	size = (ALIGN(ndomains, 256) >> 8) * sizeof(struct dmar_domain **);
 	iommu->domains = kzalloc(size, GFP_KERNEL);
+	{
+		struct dmar_domain **__uncontained_tmp17;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp17;
+	}
 
 	if (iommu->domains) {
 		size = 256 * sizeof(struct dmar_domain *);
 		iommu->domains[0] = kzalloc(size, GFP_KERNEL);
+		{
+			struct dmar_domain *__uncontained_tmp18;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+		}
 	}
 
 	if (!iommu->domains || !iommu->domains[0]) {

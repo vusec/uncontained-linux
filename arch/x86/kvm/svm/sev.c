@@ -22,6 +22,11 @@
 #include <asm/trapnr.h>
 #include <asm/fpu/xcr.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -419,8 +424,13 @@ static struct page **sev_pin_memory(struct kvm *kvm, unsigned long uaddr,
 	size = npages * sizeof(struct page *);
 	if (size > PAGE_SIZE)
 		pages = __vmalloc(size, GFP_KERNEL_ACCOUNT | __GFP_ZERO);
-	else
+	else {
 		pages = kmalloc(size, GFP_KERNEL_ACCOUNT);
+		{
+			struct page *__uncontained_tmp13;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp13;
+		}
+	}
 
 	if (!pages)
 		return ERR_PTR(-ENOMEM);

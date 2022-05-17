@@ -27,6 +27,11 @@
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -640,6 +645,10 @@ int s3c_plltab_register(struct cpufreq_frequency_table *plls,
 	size = sizeof(*vals) * (plls_no + 1);
 
 	vals = kzalloc(size, GFP_KERNEL);
+	{
+		typeof((*vals)) __uncontained_tmp10;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (vals) {
 		memcpy(vals, plls, size);
 		pll_reg = vals;

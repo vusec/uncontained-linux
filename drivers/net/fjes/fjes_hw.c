@@ -8,6 +8,11 @@
 #include "fjes.h"
 #include "fjes_trace.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static void fjes_hw_update_zone_task(struct work_struct *);
 static void fjes_hw_epstop_task(struct work_struct *);
 
@@ -96,6 +101,14 @@ static int fjes_hw_alloc_shared_status_region(struct fjes_hw *hw)
 	size = sizeof(struct fjes_device_shared_info) +
 	    (sizeof(u8) * hw->max_epid);
 	hw->hw_info.share = kzalloc(size, GFP_KERNEL);
+	{
+		struct fjes_device_shared_info __uncontained_tmp39;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp39;
+	}
+	{
+		u8 __uncontained_tmp40;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!hw->hw_info.share)
 		return -ENOMEM;
 

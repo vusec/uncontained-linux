@@ -10,6 +10,11 @@
 #include <linux/workqueue.h>
 #include <linux/greybus.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -782,6 +787,10 @@ static void gb_svc_pwrmon_debugfs_init(struct gb_svc *svc)
 		GB_SVC_PWRMON_RAIL_NAME_BUFSIZE * rail_count;
 
 	rail_names = kzalloc(bufsize, GFP_KERNEL);
+	{
+		typeof((*rail_names)) __uncontained_tmp32;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!rail_names)
 		goto err_pwrmon_debugfs;
 

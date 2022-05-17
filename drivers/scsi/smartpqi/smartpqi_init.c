@@ -27,6 +27,11 @@
 #include <scsi/scsi_transport_sas.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1108,6 +1113,10 @@ again:
 	lun_data_length = sizeof(struct report_lun_header) + lun_list_length;
 
 	lun_data = kmalloc(lun_data_length, GFP_KERNEL);
+	{
+		struct report_lun_header __uncontained_tmp52;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!lun_data) {
 		rc = -ENOMEM;
 		goto out;
@@ -1182,6 +1191,14 @@ static inline int pqi_report_phys_luns(struct pqi_ctrl_info *ctrl_info, void **b
 	rpl_16byte_wwid_list_length = sizeof(struct report_lun_header) + (num_physicals * sizeof(struct report_phys_lun_16byte_wwid));
 
 	rpl_16byte_wwid_list = kmalloc(rpl_16byte_wwid_list_length, GFP_KERNEL);
+	{
+		struct report_lun_header __uncontained_tmp53;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp53;
+	}
+	{
+		struct report_phys_lun_16byte_wwid __uncontained_tmp54;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!rpl_16byte_wwid_list)
 		return -ENOMEM;
 
@@ -1253,6 +1270,10 @@ static int pqi_get_device_lists(struct pqi_ctrl_info *ctrl_info,
 
 	internal_logdev_list = kmalloc(logdev_data_length +
 		sizeof(struct report_log_lun), GFP_KERNEL);
+	{
+		struct report_lun_header __uncontained_tmp55;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp55;
+	}
 	{
 		struct report_log_lun __uncontained_tmp48;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp48;

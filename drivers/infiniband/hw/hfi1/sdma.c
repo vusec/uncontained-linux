@@ -17,6 +17,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "hfi.h"
 #include "common.h"
 #include "qp.h"
@@ -948,6 +953,14 @@ ssize_t sdma_set_cpu_to_sde_map(struct sdma_engine *sde, const char *buf,
 			}
 
 			rht_node->map[vl] = kzalloc(sz, GFP_KERNEL);
+			{
+				struct sdma_engine *__uncontained_tmp18;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp18;
+			}
+			{
+				struct sdma_rht_map_elem __uncontained_tmp20;
+				__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp20;
+			}
 			if (!rht_node->map[vl]) {
 				kfree(rht_node);
 				ret = -ENOMEM;
@@ -975,6 +988,14 @@ ssize_t sdma_set_cpu_to_sde_map(struct sdma_engine *sde, const char *buf,
 			/* Add new user mappings */
 			if (!rht_node->map[vl]) {
 				rht_node->map[vl] = kzalloc(sz, GFP_KERNEL);
+				{
+					struct sdma_engine *__uncontained_tmp19;
+					__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp19;
+				}
+				{
+					struct sdma_rht_map_elem __uncontained_tmp21;
+					__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
+				}
 			}
 
 			if (!rht_node->map[vl]) {

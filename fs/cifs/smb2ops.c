@@ -15,6 +15,11 @@
 #include <linux/fiemap.h>
 #include <uapi/linux/magic.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1368,6 +1373,10 @@ smb2_set_ea(const unsigned int xid, struct cifs_tcon *tcon,
 
 	len = sizeof(*ea) + ea_name_len + ea_value_len + 1;
 	ea = kzalloc(len, GFP_KERNEL);
+	{
+		typeof((*ea)) __uncontained_tmp108;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp108;
+	}
 	if (ea == NULL) {
 		rc = -ENOMEM;
 		goto sea_exit;
