@@ -1660,6 +1660,8 @@ static int __ipv6_dev_get_saddr(struct net *net,
 	// `struct inet6_ifaddr` in the last iteration, and escapes the funciton.
 	// Also the condition `else if (minihiscore < miniscore)` may change hiscore
 	// and make `score->ifa` used after the function call.
+	// RE: not a bug, since when this happens, score has been already swapped to 
+	// &scores[1 - new_hiscore_idx]; thus never points to the current hiscore
 	list_for_each_entry_rcu(pos, &idev->addr_list, if_list) {
 		int i;
 		score->ifa = pos;
