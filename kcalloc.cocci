@@ -17,7 +17,7 @@ virtual patch
 
 @calloc_function@
 expression c;
-identifier func =~ "^(kcalloc)$";
+identifier func =~ "^(kcalloc|kcalloc_node|kmalloc_array_node)$";
 @@
 
 c = func(...);
@@ -59,14 +59,14 @@ c = func(nr, <+... sizeof E ...+>, ...)@p1;
 @@
 (
 #include <...>
-+ 
++
 + #ifndef _UNCONTAINED_KCALLOC_H
 + #define _UNCONTAINED_KCALLOC_H
 + static volatile unsigned long __uncontained_kcalloc;
 + #endif /*_UNCONTAINED_KCALLOC_H*/
 |
 #include "..."
-+ 
++
 + #ifndef _UNCONTAINED_KCALLOC_H
 + #define _UNCONTAINED_KCALLOC_H
 + static volatile unsigned long __uncontained_kcalloc;
