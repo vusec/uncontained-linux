@@ -43,6 +43,11 @@
 #endif
 #include <rdma/rdma_vt.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -61,6 +66,11 @@ static volatile unsigned long __uncontained_complex_alloc;
 #include "qib.h"
 #include "qib_common.h"
 #include "qib_mad.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #ifdef CONFIG_DEBUG_FS
 #include "qib_debugfs.h"
 #include "qib_verbs.h"
@@ -1683,6 +1693,10 @@ int qib_setup_eagerbufs(struct qib_ctxtdata *rcd)
 		rcd->rcvegrbuf =
 			kcalloc_node(chunk, sizeof(rcd->rcvegrbuf[0]),
 				     GFP_KERNEL, rcd->node_id);
+		{
+			typeof((rcd->rcvegrbuf[0])) __uncontained_tmp3;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+		}
 		if (!rcd->rcvegrbuf)
 			goto bail;
 	}
@@ -1691,6 +1705,10 @@ int qib_setup_eagerbufs(struct qib_ctxtdata *rcd)
 			kmalloc_array_node(chunk,
 					   sizeof(rcd->rcvegrbuf_phys[0]),
 					   GFP_KERNEL, rcd->node_id);
+		{
+			typeof((rcd->rcvegrbuf_phys[0])) __uncontained_tmp4;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+		}
 		if (!rcd->rcvegrbuf_phys)
 			goto bail_rcvegrbuf;
 	}

@@ -33,8 +33,18 @@
 static volatile unsigned long __uncontained_kcalloc;
 #endif /*_UNCONTAINED_KCALLOC_H*/
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "trace.h"
 #include "nvme.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 
 #define SQ_SIZE(q)	((q)->q_depth << (q)->sqes)
 #define CQ_SIZE(q)	((q)->q_depth * sizeof(struct nvme_completion))
@@ -3078,6 +3088,10 @@ static int nvme_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	dev->nr_allocated_queues = nvme_max_io_queues(dev) + 1;
 	dev->queues = kcalloc_node(dev->nr_allocated_queues,
 			sizeof(struct nvme_queue), GFP_KERNEL, node);
+	{
+		struct nvme_queue __uncontained_tmp6;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!dev->queues)
 		goto free;
 

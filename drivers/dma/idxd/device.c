@@ -9,9 +9,19 @@
 #include <linux/irq.h>
 #include <linux/msi.h>
 #include <uapi/linux/idxd.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "../dmaengine.h"
 #include "idxd.h"
 #include "registers.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 
 static void idxd_cmd_exec(struct idxd_device *idxd, int cmd_code, u32 operand,
 			  u32 *status);
@@ -57,6 +67,10 @@ static int alloc_hw_descs(struct idxd_wq *wq, int num)
 
 	wq->hw_descs = kcalloc_node(num, sizeof(struct dsa_hw_desc *),
 				    GFP_KERNEL, node);
+	{
+		struct dsa_hw_desc *__uncontained_tmp1;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!wq->hw_descs)
 		return -ENOMEM;
 
@@ -90,6 +104,10 @@ static int alloc_descs(struct idxd_wq *wq, int num)
 
 	wq->descs = kcalloc_node(num, sizeof(struct idxd_desc *),
 				 GFP_KERNEL, node);
+	{
+		struct idxd_desc *__uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!wq->descs)
 		return -ENOMEM;
 

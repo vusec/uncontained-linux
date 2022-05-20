@@ -27,7 +27,17 @@
 #include <linux/module.h>
 #include <net/ip6_checksum.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vmxnet3_int.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 
 char vmxnet3_driver_name[] = "vmxnet3";
 #define VMXNET3_DRIVER_DESC "VMware vmxnet3 virtual NIC driver"
@@ -531,6 +541,10 @@ vmxnet3_tq_create(struct vmxnet3_tx_queue *tq,
 	tq->buf_info = kcalloc_node(tq->tx_ring.size, sizeof(tq->buf_info[0]),
 				    GFP_KERNEL,
 				    dev_to_node(&adapter->pdev->dev));
+	{
+		typeof((tq->buf_info[0])) __uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!tq->buf_info)
 		goto err;
 
@@ -1894,6 +1908,10 @@ vmxnet3_rq_create(struct vmxnet3_rx_queue *rq, struct vmxnet3_adapter *adapter)
 	bi = kcalloc_node(rq->rx_ring[0].size + rq->rx_ring[1].size,
 			  sizeof(rq->buf_info[0][0]), GFP_KERNEL,
 			  dev_to_node(&adapter->pdev->dev));
+	{
+		typeof((rq->buf_info[0][0])) __uncontained_tmp3;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!bi)
 		goto err;
 

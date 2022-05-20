@@ -10,10 +10,20 @@
 #include <linux/vmalloc.h>
 #include <linux/pci.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "nitrox_dev.h"
 #include "nitrox_common.h"
 #include "nitrox_req.h"
 #include "nitrox_csr.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 
 #define CRYPTO_CTX_SIZE	256
 
@@ -155,6 +165,10 @@ static int nitrox_alloc_pktin_queues(struct nitrox_device *ndev)
 	ndev->pkt_inq = kcalloc_node(ndev->nr_queues,
 				     sizeof(struct nitrox_cmdq),
 				     GFP_KERNEL, ndev->node);
+	{
+		struct nitrox_cmdq __uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!ndev->pkt_inq)
 		return -ENOMEM;
 

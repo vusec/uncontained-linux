@@ -41,6 +41,11 @@
 #include <net/page_pool.h>
 #include <net/xdp_sock_drv.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -84,6 +89,11 @@ static volatile unsigned long __uncontained_complex_alloc;
 #include "qos.h"
 #include "en/trap.h"
 #include "fpga/ipsec.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 
 bool mlx5e_check_fragmented_striding_rq_cap(struct mlx5_core_dev *mdev)
 {
@@ -5296,15 +5306,27 @@ int mlx5e_priv_init(struct mlx5e_priv *priv,
 		goto err_free_cpumask;
 
 	priv->txq2sq = kcalloc_node(num_txqs, sizeof(*priv->txq2sq), GFP_KERNEL, node);
+	{
+		typeof((*priv->txq2sq)) __uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!priv->txq2sq)
 		goto err_destroy_workqueue;
 
 	priv->tx_rates = kcalloc_node(num_txqs, sizeof(*priv->tx_rates), GFP_KERNEL, node);
+	{
+		typeof((*priv->tx_rates)) __uncontained_tmp1;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!priv->tx_rates)
 		goto err_free_txq2sq;
 
 	priv->channel_tc2realtxq =
 		kcalloc_node(nch, sizeof(*priv->channel_tc2realtxq), GFP_KERNEL, node);
+	{
+		typeof((*priv->channel_tc2realtxq)) __uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!priv->channel_tc2realtxq)
 		goto err_free_tx_rates;
 
@@ -5312,12 +5334,20 @@ int mlx5e_priv_init(struct mlx5e_priv *priv,
 		priv->channel_tc2realtxq[i] =
 			kcalloc_node(profile->max_tc, sizeof(**priv->channel_tc2realtxq),
 				     GFP_KERNEL, node);
+		{
+			typeof((**priv->channel_tc2realtxq)) __uncontained_tmp3;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+		}
 		if (!priv->channel_tc2realtxq[i])
 			goto err_free_channel_tc2realtxq;
 	}
 
 	priv->channel_stats =
 		kcalloc_node(nch, sizeof(*priv->channel_stats), GFP_KERNEL, node);
+	{
+		typeof((*priv->channel_stats)) __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!priv->channel_stats)
 		goto err_free_channel_tc2realtxq;
 

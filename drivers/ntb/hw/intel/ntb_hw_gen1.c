@@ -57,10 +57,20 @@
 #include <linux/slab.h>
 #include <linux/ntb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ntb_hw_intel.h"
 #include "ntb_hw_gen1.h"
 #include "ntb_hw_gen3.h"
 #include "ntb_hw_gen4.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 
 #define NTB_NAME	"ntb_hw_intel"
 #define NTB_DESC	"Intel(R) PCI-E Non-Transparent Bridge Driver"
@@ -381,11 +391,19 @@ int ndev_init_isr(struct intel_ntb_dev *ndev,
 
 	ndev->vec = kcalloc_node(msix_max, sizeof(*ndev->vec),
 				 GFP_KERNEL, node);
+	{
+		typeof((*ndev->vec)) __uncontained_tmp1;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!ndev->vec)
 		goto err_msix_vec_alloc;
 
 	ndev->msix = kcalloc_node(msix_max, sizeof(*ndev->msix),
 				  GFP_KERNEL, node);
+	{
+		typeof((*ndev->msix)) __uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!ndev->msix)
 		goto err_msix_alloc;
 

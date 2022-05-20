@@ -10,6 +10,11 @@
 static volatile unsigned long __uncontained_kcalloc;
 #endif /*_UNCONTAINED_KCALLOC_H*/
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -17,6 +22,11 @@ static volatile unsigned long __uncontained_complex_alloc;
 #include "hfi.h"
 #include "qp.h"
 #include "trace.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 
 #define SC(name) SEND_CTXT_##name
 /*
@@ -827,6 +837,10 @@ struct send_context *sc_alloc(struct hfi1_devdata *dd, int type,
 		sc->sr = kcalloc_node(sc->sr_size,
 				      sizeof(union pio_shadow_ring),
 				      GFP_KERNEL, numa);
+		{
+			union pio_shadow_ring __uncontained_tmp2;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+		}
 		if (!sc->sr) {
 			sc_free(sc);
 			return NULL;
@@ -2021,6 +2035,10 @@ int init_pervl_scs(struct hfi1_devdata *dd)
 	dd->kernel_send_context = kcalloc_node(dd->num_send_contexts,
 					       sizeof(struct send_context *),
 					       GFP_KERNEL, dd->node);
+	{
+		struct send_context *__uncontained_tmp3;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!dd->kernel_send_context)
 		goto freesc15;
 

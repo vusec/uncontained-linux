@@ -13,6 +13,11 @@
 #include <rdma/opa_addr.h>
 #include <rdma/uverbs_ioctl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -20,6 +25,11 @@ static volatile unsigned long __uncontained_complex_alloc;
 #include "qp.h"
 #include "vt.h"
 #include "trace.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 
 #define RVT_RWQ_COUNT_THRESHOLD 16
 
@@ -180,6 +190,10 @@ int rvt_wss_init(struct rvt_dev_info *rdi)
 
 	wss->entries = kcalloc_node(wss->num_entries, sizeof(*wss->entries),
 				    GFP_KERNEL, node);
+	{
+		typeof((*wss->entries)) __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!wss->entries) {
 		rvt_wss_exit(rdi);
 		return -ENOMEM;
@@ -391,6 +405,10 @@ int rvt_driver_qp_init(struct rvt_dev_info *rdi)
 		kmalloc_array_node(rdi->qp_dev->qp_table_size,
 			     sizeof(*rdi->qp_dev->qp_table),
 			     GFP_KERNEL, rdi->dparms.node);
+	{
+		typeof((*rdi->qp_dev->qp_table)) __uncontained_tmp6;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!rdi->qp_dev->qp_table)
 		goto no_qp_table;
 
@@ -1117,6 +1135,10 @@ int rvt_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
 					     sizeof(*qp->s_ack_queue),
 					     GFP_KERNEL,
 					     rdi->dparms.node);
+			{
+				typeof((*qp->s_ack_queue)) __uncontained_tmp5;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+			}
 			if (!qp->s_ack_queue)
 				goto bail_qp;
 		}

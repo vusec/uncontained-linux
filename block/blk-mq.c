@@ -34,6 +34,11 @@
 
 #include <linux/blk-mq.h>
 #include <linux/t10-pi.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "blk.h"
 #include "blk-mq.h"
 #include "blk-mq-debugfs.h"
@@ -42,6 +47,11 @@
 #include "blk-stat.h"
 #include "blk-mq-sched.h"
 #include "blk-rq-qos.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 
 static DEFINE_PER_CPU(struct llist_head, blk_cpu_done);
 
@@ -3174,6 +3184,10 @@ static struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
 	tags->rqs = kcalloc_node(nr_tags, sizeof(struct request *),
 				 GFP_NOIO | __GFP_NOWARN | __GFP_NORETRY,
 				 node);
+	{
+		struct request *__uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!tags->rqs) {
 		blk_mq_free_tags(tags);
 		return NULL;
@@ -3182,6 +3196,10 @@ static struct blk_mq_tags *blk_mq_alloc_rq_map(struct blk_mq_tag_set *set,
 	tags->static_rqs = kcalloc_node(nr_tags, sizeof(struct request *),
 					GFP_NOIO | __GFP_NOWARN | __GFP_NORETRY,
 					node);
+	{
+		struct request *__uncontained_tmp1;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!tags->static_rqs) {
 		kfree(tags->rqs);
 		blk_mq_free_tags(tags);
@@ -3550,6 +3568,10 @@ blk_mq_alloc_hctx(struct request_queue *q, struct blk_mq_tag_set *set,
 	 */
 	hctx->ctxs = kmalloc_array_node(nr_cpu_ids, sizeof(void *),
 			gfp, node);
+	{
+		void *__uncontained_tmp3;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!hctx->ctxs)
 		goto free_cpumask;
 
@@ -4219,6 +4241,10 @@ static int blk_mq_realloc_tag_set_tags(struct blk_mq_tag_set *set,
 
 	new_tags = kcalloc_node(new_nr_hw_queues, sizeof(struct blk_mq_tags *),
 				GFP_KERNEL, set->numa_node);
+	{
+		struct blk_mq_tags *__uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!new_tags)
 		return -ENOMEM;
 
@@ -4299,6 +4325,10 @@ int blk_mq_alloc_tag_set(struct blk_mq_tag_set *set)
 		set->map[i].mq_map = kcalloc_node(nr_cpu_ids,
 						  sizeof(set->map[i].mq_map[0]),
 						  GFP_KERNEL, set->numa_node);
+		{
+			typeof((set->map[i].mq_map[0])) __uncontained_tmp4;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+		}
 		if (!set->map[i].mq_map)
 			goto out_free_mq_map;
 		set->map[i].nr_queues = is_kdump_kernel() ? 1 : set->nr_hw_queues;

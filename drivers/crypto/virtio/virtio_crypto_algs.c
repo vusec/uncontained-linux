@@ -14,7 +14,17 @@
 #include <linux/atomic.h>
 
 #include <uapi/linux/virtio_crypto.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "virtio_crypto_common.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 
 
 struct virtio_crypto_skcipher_ctx {
@@ -371,6 +381,10 @@ __virtio_crypto_skcipher_do_req(struct virtio_crypto_sym_request *vc_sym_req,
 	sg_total = src_nents + dst_nents + 3;
 	sgs = kcalloc_node(sg_total, sizeof(*sgs), GFP_KERNEL,
 				dev_to_node(&vcrypto->vdev->dev));
+	{
+		typeof((*sgs)) __uncontained_tmp5;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!sgs)
 		return -ENOMEM;
 

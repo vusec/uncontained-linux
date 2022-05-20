@@ -127,9 +127,19 @@
 
 #include <trace/events/kmem.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include	"internal.h"
 
 #include	"slab.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 
 /*
  * DEBUG	- 1 for kmem_cache_create() to honour; SLAB_RED_ZONE & SLAB_POISON.
@@ -664,6 +674,10 @@ static struct alien_cache **alloc_alien_cache(int node, int limit, gfp_t gfp)
 	if (limit > 1)
 		limit = 12;
 	alc_ptr = kcalloc_node(nr_node_ids, sizeof(void *), gfp, node);
+	{
+		void *__uncontained_tmp5;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!alc_ptr)
 		return NULL;
 

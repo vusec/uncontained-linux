@@ -21,8 +21,18 @@
 #include "blk-mq-sched.h"
 #include "blk-mq-tag.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define CREATE_TRACE_POINTS
 #include <trace/events/kyber.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 
 /*
  * Scheduling domains: the device is divided into multiple domains based on the
@@ -473,6 +483,10 @@ static int kyber_init_hctx(struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
 	khd->kcqs = kmalloc_array_node(hctx->nr_ctx,
 				       sizeof(struct kyber_ctx_queue),
 				       GFP_KERNEL, hctx->numa_node);
+	{
+		struct kyber_ctx_queue __uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!khd->kcqs)
 		goto err_khd;
 
