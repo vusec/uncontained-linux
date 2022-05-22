@@ -20,6 +20,9 @@ struct akcipher_instance {
 		struct akcipher_alg alg;
 	};
 };
+// used in unions
+static struct akcipher_alg* __uncontained_nosanitize_dst_akcipher_alg __attribute__((used));
+static struct crypto_instance* __uncontained_nosanitize_dst_crypto_instance __attribute__((used));
 
 struct crypto_akcipher_spawn {
 	struct crypto_spawn base;
