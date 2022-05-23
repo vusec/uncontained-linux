@@ -34,6 +34,11 @@
 
 #include <linux/crash_dump.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "amd_iommu.h"
 #include "../irq_remapping.h"
 
@@ -2810,6 +2815,14 @@ static int __init early_amd_iommu_init(void)
 							remap_cache_sz,
 							DTE_INTTAB_ALIGNMENT,
 							0, NULL);
+		{
+			u32 __uncontained_tmp0;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+		}
+		{
+			u64 __uncontained_tmp1;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+		}
 		if (!amd_iommu_irq_cache)
 			goto out;
 
