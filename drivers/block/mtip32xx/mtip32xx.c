@@ -30,6 +30,11 @@
 #include <linux/debugfs.h>
 #include <linux/prefetch.h>
 #include <linux/numa.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "mtip32xx.h"
 
 #define HW_CMD_SLOT_SZ		(MTIP_MAX_COMMAND_SLOTS * 32)
@@ -3550,6 +3555,10 @@ static int mtip_block_initialize(struct driver_data *dd)
 	dd->tags.queue_depth = MTIP_MAX_COMMAND_SLOTS;
 	dd->tags.reserved_tags = 1;
 	dd->tags.cmd_size = sizeof(struct mtip_cmd);
+	{
+		struct mtip_cmd __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	dd->tags.numa_node = dd->numa_node;
 	dd->tags.flags = BLK_MQ_F_SHOULD_MERGE;
 	dd->tags.driver_data = dd;

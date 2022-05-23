@@ -9,6 +9,12 @@
 #include <linux/sched.h>
 #include <linux/fs.h>
 #include <linux/init.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "null_blk.h"
 
 #define FREE_BATCH		16
@@ -1880,6 +1886,10 @@ static int null_init_tag_set(struct nullb *nullb, struct blk_mq_tag_set *set)
 						g_hw_queue_depth;
 	set->numa_node = nullb ? nullb->dev->home_node : g_home_node;
 	set->cmd_size	= sizeof(struct nullb_cmd);
+	{
+		struct nullb_cmd __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	set->flags = BLK_MQ_F_SHOULD_MERGE;
 	if (g_no_sched)
 		set->flags |= BLK_MQ_F_NO_SCHED;

@@ -17,6 +17,11 @@
 #include <linux/numa.h>
 #include <uapi/linux/virtio_ring.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define PART_BITS 4
 #define VQ_NAME_LEN 16
 #define MAX_DISCARD_SEGMENTS 256u
@@ -776,6 +781,14 @@ static int virtblk_probe(struct virtio_device *vdev)
 	vblk->tag_set.cmd_size =
 		sizeof(struct virtblk_req) +
 		sizeof(struct scatterlist) * VIRTIO_BLK_INLINE_SG_CNT;
+	{
+		struct scatterlist __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
+	{
+		struct virtblk_req __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
 	vblk->tag_set.driver_data = vblk;
 	vblk->tag_set.nr_hw_queues = vblk->num_vqs;
 

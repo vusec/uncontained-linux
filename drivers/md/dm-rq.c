@@ -9,6 +9,11 @@
 
 #include <linux/blk-mq.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define DM_MSG_PREFIX "core-rq"
 
 /*
@@ -544,6 +549,10 @@ int dm_mq_init_request_queue(struct mapped_device *md, struct dm_table *t)
 	md->tag_set->driver_data = md;
 
 	md->tag_set->cmd_size = sizeof(struct dm_rq_target_io);
+	{
+		struct dm_rq_target_io __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
 	immutable_tgt = dm_table_get_immutable_target(t);
 	if (immutable_tgt && immutable_tgt->per_io_data_size) {
 		/* any target-specific per-io data is immediately after the tio */

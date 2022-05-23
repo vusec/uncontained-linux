@@ -158,6 +158,11 @@ enum {D_PRT, D_PRO, D_UNI, D_MOD, D_GEO, D_SBY, D_DLY, D_SLV};
 #include <linux/uaccess.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static DEFINE_MUTEX(pd_mutex);
 static DEFINE_SPINLOCK(pd_lock);
 
@@ -900,6 +905,10 @@ static int pd_probe_drive(struct pd_unit *disk, int autoprobe, int port,
 	memset(&disk->tag_set, 0, sizeof(disk->tag_set));
 	disk->tag_set.ops = &pd_mq_ops;
 	disk->tag_set.cmd_size = sizeof(struct pd_req);
+	{
+		struct pd_req __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	disk->tag_set.nr_hw_queues = 1;
 	disk->tag_set.nr_maps = 1;
 	disk->tag_set.queue_depth = 2;
