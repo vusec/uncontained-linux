@@ -43,6 +43,11 @@
 #include <linux/idr.h>
 #include <asm/div64.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "ubi-media.h"
 #include "ubi.h"
 
@@ -403,6 +408,10 @@ int ubiblock_create(struct ubi_volume_info *vi)
 	dev->tag_set.numa_node = NUMA_NO_NODE;
 	dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
 	dev->tag_set.cmd_size = sizeof(struct ubiblock_pdu);
+	{
+		struct ubiblock_pdu __uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
 	dev->tag_set.driver_data = dev;
 	dev->tag_set.nr_hw_queues = 1;
 
