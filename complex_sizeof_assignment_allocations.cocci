@@ -33,9 +33,9 @@ c = sizeof(t);@p
 c = sizeof E;@p
 )
 
-@alloc_call_type@
+@alloc_call_type exists@
 type t;
-type T =~ "^(unsigned char|char|unsigned short|short|unsigned int|int|unsigned long|long|size_t|ssize_t)$";
+type T =~ "(unsigned char|char|unsigned short|short|unsigned int|unsigned|int|unsigned long|long|size_t|ssize_t)";
 T c;
 expression res;
 fresh identifier i = "__uncontained_tmp";
@@ -51,9 +51,9 @@ res = func(<+... c ...+>, ...);@p2
 ++ __uncontained_complex_alloc = (unsigned long)&i;
 ++ }
 
-@alloc_call_var@
+@alloc_call_var exists@
 expression E;
-type T =~ "^(unsigned char|char|unsigned short|short|unsigned int|int|unsigned long|long|size_t|ssize_t)$";
+type T =~ "(unsigned char|char|unsigned short|short|unsigned int|unsigned|int|unsigned long|long|size_t|ssize_t)";
 T c;
 expression res;
 fresh identifier i = "__uncontained_tmp";

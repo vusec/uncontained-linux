@@ -34,7 +34,7 @@ c = func(sizeof(t), ...)@p;
 c = func(sizeof E, ...)@p;
 )
 
-@complex_sizeof_type@
+@complex_sizeof_type exists@
 type t;
 expression c;
 fresh identifier i = "__uncontained_tmp";
@@ -47,7 +47,7 @@ c = func(<+... sizeof(t) ...+>, ...)@p1;
 ++ __uncontained_complex_alloc = (unsigned long)&i;
 ++ }
 
-@complex_sizeof_var@
+@complex_sizeof_var exists@
 expression E, c;
 fresh identifier i = "__uncontained_tmp";
 position p1 != simple_sizeof.p;
