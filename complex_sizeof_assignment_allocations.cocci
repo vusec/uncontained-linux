@@ -19,8 +19,13 @@ virtual patch
 expression c;
 identifier func =~ "^(kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc|kvmalloc_node|kvzalloc_node|kmem_alloc|kmem_zalloc|vmalloc_node|vzalloc_node)$";
 @@
-
 c = func(...);
+
+@alloc_function2@
+expression c;
+identifier func2 =~ "^(kmem_cache_create)$";
+@@
+c = func2(...);
 
 @simple_sizeof_assignment@
 type t;
@@ -37,12 +42,14 @@ c = sizeof E;@p
 type t;
 type T =~ "(unsigned char|char|unsigned short|short|unsigned int|unsigned|int|unsigned long|long|size_t|ssize_t)";
 T c;
-expression res;
+expression res, first_param;
 fresh identifier i = "__uncontained_tmp";
 identifier alloc_function.func;
+identifier alloc_function2.func2;
 position p1 != simple_sizeof_assignment.p;
 position p2;
 @@
+(
 c = <+... sizeof(t) ...+>;@p1
 ...
 res = func(<+... c ...+>, ...);@p2
@@ -50,17 +57,28 @@ res = func(<+... c ...+>, ...);@p2
 ++ t i;
 ++ __uncontained_complex_alloc = (unsigned long)&i;
 ++ }
+|
+c = <+... sizeof(t) ...+>;@p1
+...
+res = func2(first_param, <+... c ...+>, ...);@p2
+++ {
+++ t i;
+++ __uncontained_complex_alloc = (unsigned long)&i;
+++ }
+)
 
 @alloc_call_var exists@
 expression E;
 type T =~ "(unsigned char|char|unsigned short|short|unsigned int|unsigned|int|unsigned long|long|size_t|ssize_t)";
 T c;
-expression res;
+expression res, first_param;
 fresh identifier i = "__uncontained_tmp";
 identifier alloc_function.func;
+identifier alloc_function2.func2;
 position p1 != simple_sizeof_assignment.p;
 position p2;
 @@
+(
 c = <+... sizeof E ...+>;@p1
 ...
 res = func(<+... c ...+>, ...);@p2
@@ -68,6 +86,15 @@ res = func(<+... c ...+>, ...);@p2
 ++ typeof (E) i;
 ++ __uncontained_complex_alloc = (unsigned long)&i;
 ++ }
+|
+c = <+... sizeof E ...+>;@p1
+...
+res = func2(first_param, <+... c ...+>, ...);@p2
+++ {
+++ typeof (E) i;
+++ __uncontained_complex_alloc = (unsigned long)&i;
+++ }
+)
 
 @add_glob_declaration depends on alloc_call_var || alloc_call_type@
 @@
