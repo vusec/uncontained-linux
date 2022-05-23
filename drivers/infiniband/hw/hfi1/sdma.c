@@ -968,8 +968,9 @@ ssize_t sdma_set_cpu_to_sde_map(struct sdma_engine *sde, const char *buf,
 			int ctr, pow;
 
 			/* Add new user mappings */
-			if (!rht_node->map[vl])
+			if (!rht_node->map[vl]) {
 				rht_node->map[vl] = kzalloc(sz, GFP_KERNEL);
+			}
 
 			if (!rht_node->map[vl]) {
 				ret = -ENOMEM;

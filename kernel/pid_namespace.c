@@ -50,9 +50,10 @@ static struct kmem_cache *create_pid_cachep(unsigned int level)
 	len = sizeof(struct pid) + level * sizeof(struct upid);
 	mutex_lock(&pid_caches_mutex);
 	/* Name collision forces to do allocation under mutex. */
-	if (!*pkc)
+	if (!*pkc) {
 		*pkc = kmem_cache_create(name, len, 0,
 					 SLAB_HWCACHE_ALIGN | SLAB_ACCOUNT, 0);
+	}
 	mutex_unlock(&pid_caches_mutex);
 	/* current can fail, but someone else can succeed. */
 	return READ_ONCE(*pkc);
