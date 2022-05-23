@@ -18,52 +18,80 @@ virtual patch
 @alloc_function@
 expression c;
 identifier func =~ "^(kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc|kvmalloc_node|kvzalloc_node|kmem_alloc|kmem_zalloc|vmalloc_node|vzalloc_node)$";
-identifier func2 =~ "^(kmem_cache_alloc)$";
 @@
-
 c = func(...);
+
+@alloc_function2@
+expression c;
+identifier func2 =~ "^(kmem_cache_create)$";
+@@
+c = func2(...);
 
 @simple_sizeof@
 type t;
-expression E, c;
+expression E, c, first_param;
 position p;
 identifier alloc_function.func;
+identifier alloc_function2.func2;
 @@
 (
 c = func(sizeof(t), ...)@p;
 |
 c = func(sizeof E, ...)@p;
+|
+c = func2(first_param, sizeof(t), ...)@p;
+|
+c = func2(first_param, sizeof E, ...)@p;
 )
 
 @complex_sizeof_type exists@
 type t;
-expression c;
+expression c, first_param;
 fresh identifier i = "__uncontained_tmp";
 position p1 != simple_sizeof.p;
 identifier alloc_function.func;
+identifier alloc_function2.func2;
 @@
+(
 c = func(<+... sizeof(t) ...+>, ...)@p1;
 ++ {
 ++ t i;
 ++ __uncontained_complex_alloc = (unsigned long)&i;
 ++ }
+|
+c = func2(first_param, <+... sizeof(t) ...+>, ...)@p1;
+++ {
+++ t i;
+++ __uncontained_complex_alloc = (unsigned long)&i;
+++ }
+)
 
 @complex_sizeof_var exists@
-expression E, c;
+expression E, c, first_param;
 fresh identifier i = "__uncontained_tmp";
 position p1 != simple_sizeof.p;
 identifier alloc_function.func;
+identifier alloc_function2.func2;
 @@
+(
 c = func(<+... sizeof E ...+>, ...)@p1;
 ++ {
 ++ typeof (E) i;
 ++ __uncontained_complex_alloc = (unsigned long)&i;
 ++ }
+|
+c = func2(first_param, <+... sizeof E ...+>, ...)@p1;
+++ {
+++ typeof (E) i;
+++ __uncontained_complex_alloc = (unsigned long)&i;
+++ }
+)
+
 
 @add_glob_declaration depends on complex_sizeof_type || complex_sizeof_var@
 @@
 #include <...>
-+
++ 
 + #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 + #define _UNCONTAINED_COMPLEX_ALLOC_H
 + static volatile unsigned long __uncontained_complex_alloc;
@@ -72,7 +100,7 @@ c = func(<+... sizeof E ...+>, ...)@p1;
 @add_glob_declaration2 depends on (complex_sizeof_type || complex_sizeof_var) && !add_glob_declaration@
 @@
 #include "..."
-+
++ 
 + #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 + #define _UNCONTAINED_COMPLEX_ALLOC_H
 + static volatile unsigned long __uncontained_complex_alloc;
