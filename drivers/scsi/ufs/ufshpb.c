@@ -11,6 +11,11 @@
 
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -2150,6 +2155,10 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
 	hpb->m_page_cache = kmem_cache_create("ufshpb_m_page_cache",
 			  sizeof(struct page *) * hpb->pages_per_srgn,
 			  0, 0, NULL);
+	{
+		struct page *__uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!hpb->m_page_cache) {
 		dev_err(hba->dev, "ufshpb(%d) ufshpb_m_page_cache create fail",
 			hpb->lun);

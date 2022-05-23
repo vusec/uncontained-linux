@@ -7,6 +7,11 @@
 #include <linux/module.h>
 #include <linux/highmem.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1468,6 +1473,14 @@ static int allocate_caches_and_workqueue(struct smbd_connection *info)
 			sizeof(struct smbd_request) +
 				sizeof(struct smbd_data_transfer),
 			0, SLAB_HWCACHE_ALIGN, NULL);
+	{
+		struct smbd_data_transfer __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
+	{
+		struct smbd_request __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!info->request_cache)
 		return -ENOMEM;
 
@@ -1484,6 +1497,10 @@ static int allocate_caches_and_workqueue(struct smbd_connection *info)
 			sizeof(struct smbd_response) +
 				info->max_receive_size,
 			0, SLAB_HWCACHE_ALIGN, NULL);
+	{
+		struct smbd_response __uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!info->response_cache)
 		goto out2;
 

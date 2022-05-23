@@ -58,6 +58,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -5318,6 +5323,10 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
 				sizeof(struct dwc2_dma_desc) *
 				MAX_DMA_DESC_NUM_GENERIC, 512, SLAB_CACHE_DMA,
 				NULL);
+		{
+			struct dwc2_dma_desc __uncontained_tmp0;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+		}
 		if (!hsotg->desc_gen_cache) {
 			dev_err(hsotg->dev,
 				"unable to create dwc2 generic desc cache\n");
@@ -5333,6 +5342,10 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
 		hsotg->desc_hsisoc_cache = kmem_cache_create("dwc2-hsisoc-desc",
 				sizeof(struct dwc2_dma_desc) *
 				MAX_DMA_DESC_NUM_HS_ISOC, 512, 0, NULL);
+		{
+			struct dwc2_dma_desc __uncontained_tmp1;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+		}
 		if (!hsotg->desc_hsisoc_cache) {
 			dev_err(hsotg->dev,
 				"unable to create dwc2 hs isoc desc cache\n");

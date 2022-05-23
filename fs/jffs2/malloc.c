@@ -20,6 +20,11 @@
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "nodelist.h"
 
 /* These are initialised to NULL in the kernel startup code.
@@ -65,6 +70,10 @@ int __init jffs2_create_slab_caches(void)
 	raw_node_ref_slab = kmem_cache_create("jffs2_refblock",
 					      sizeof(struct jffs2_raw_node_ref) * (REFS_PER_BLOCK + 1),
 					      0, 0, NULL);
+	{
+		struct jffs2_raw_node_ref __uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!raw_node_ref_slab)
 		goto err;
 

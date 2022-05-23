@@ -33,6 +33,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "glob.h"
 #include "connection.h"
 #include "smb_common.h"
@@ -1766,6 +1771,14 @@ static int smb_direct_create_pools(struct smb_direct_transport *t)
 					     sizeof(struct smb_direct_sendmsg) +
 					      sizeof(struct smb_direct_negotiate_resp),
 					     0, SLAB_HWCACHE_ALIGN, NULL);
+	{
+		struct smb_direct_negotiate_resp __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
+	{
+		struct smb_direct_sendmsg __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!t->sendmsg_cache)
 		return -ENOMEM;
 
@@ -1780,6 +1793,10 @@ static int smb_direct_create_pools(struct smb_direct_transport *t)
 					     sizeof(struct smb_direct_recvmsg) +
 					      t->max_recv_size,
 					     0, SLAB_HWCACHE_ALIGN, NULL);
+	{
+		struct smb_direct_recvmsg __uncontained_tmp5;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!t->recvmsg_cache)
 		goto err;
 
