@@ -16,6 +16,11 @@
 #include <scsi/scsi_cmnd.h>
 #include <scsi/sg.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #define uptr64(val) ((void __user *)(uintptr_t)(val))
 
 struct bsg_set {
@@ -378,6 +383,10 @@ struct request_queue *bsg_setup_queue(struct device *dev, const char *name,
 	set->queue_depth = 128;
 	set->numa_node = NUMA_NO_NODE;
 	set->cmd_size = sizeof(struct bsg_job) + dd_job_size;
+	{
+		struct bsg_job __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	set->flags = BLK_MQ_F_NO_SCHED | BLK_MQ_F_BLOCKING;
 	if (blk_mq_alloc_tag_set(set))
 		goto out_tag_set;

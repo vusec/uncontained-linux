@@ -28,6 +28,11 @@
 #include <linux/sed-opal.h>
 #include <linux/pci-p2pdma.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1779,6 +1784,10 @@ static int nvme_alloc_admin_tags(struct nvme_dev *dev)
 		dev->admin_tagset.timeout = NVME_ADMIN_TIMEOUT;
 		dev->admin_tagset.numa_node = dev->ctrl.numa_node;
 		dev->admin_tagset.cmd_size = sizeof(struct nvme_iod);
+		{
+			struct nvme_iod __uncontained_tmp2;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+		}
 		dev->admin_tagset.flags = BLK_MQ_F_NO_SCHED;
 		dev->admin_tagset.driver_data = dev;
 
@@ -2552,6 +2561,10 @@ static void nvme_dev_add(struct nvme_dev *dev)
 		dev->tagset.queue_depth = min_t(unsigned int, dev->q_depth,
 						BLK_MQ_MAX_DEPTH) - 1;
 		dev->tagset.cmd_size = sizeof(struct nvme_iod);
+		{
+			struct nvme_iod __uncontained_tmp3;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+		}
 		dev->tagset.flags = BLK_MQ_F_SHOULD_MERGE;
 		dev->tagset.driver_data = dev;
 

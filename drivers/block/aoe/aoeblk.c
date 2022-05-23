@@ -18,6 +18,11 @@
 #include <linux/moduleparam.h>
 #include <linux/debugfs.h>
 #include <scsi/sg.h>
+
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 #include "aoe.h"
 
 static DEFINE_MUTEX(aoeblk_mutex);
@@ -370,6 +375,10 @@ aoeblk_gdalloc(void *vp)
 	set = &d->tag_set;
 	set->ops = &aoeblk_mq_ops;
 	set->cmd_size = sizeof(struct aoe_req);
+	{
+		struct aoe_req __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	set->nr_hw_queues = 1;
 	set->queue_depth = 128;
 	set->numa_node = NUMA_NO_NODE;

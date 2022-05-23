@@ -20,6 +20,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -1716,6 +1721,10 @@ static struct blk_mq_tag_set *nvme_tcp_alloc_tagset(struct nvme_ctrl *nctrl,
 		set->numa_node = nctrl->numa_node;
 		set->flags = BLK_MQ_F_BLOCKING;
 		set->cmd_size = sizeof(struct nvme_tcp_request);
+		{
+			struct nvme_tcp_request __uncontained_tmp1;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+		}
 		set->driver_data = ctrl;
 		set->nr_hw_queues = 1;
 		set->timeout = NVME_ADMIN_TIMEOUT;
@@ -1728,6 +1737,10 @@ static struct blk_mq_tag_set *nvme_tcp_alloc_tagset(struct nvme_ctrl *nctrl,
 		set->numa_node = nctrl->numa_node;
 		set->flags = BLK_MQ_F_SHOULD_MERGE | BLK_MQ_F_BLOCKING;
 		set->cmd_size = sizeof(struct nvme_tcp_request);
+		{
+			struct nvme_tcp_request __uncontained_tmp2;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+		}
 		set->driver_data = ctrl;
 		set->nr_hw_queues = nctrl->queue_count - 1;
 		set->timeout = NVME_IO_TIMEOUT;

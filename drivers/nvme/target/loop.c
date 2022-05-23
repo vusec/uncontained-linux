@@ -10,6 +10,11 @@
 #include <linux/module.h>
 #include <linux/parser.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -362,6 +367,14 @@ static int nvme_loop_configure_admin_queue(struct nvme_loop_ctrl *ctrl)
 	ctrl->admin_tag_set.numa_node = ctrl->ctrl.numa_node;
 	ctrl->admin_tag_set.cmd_size = sizeof(struct nvme_loop_iod) +
 		NVME_INLINE_SG_CNT * sizeof(struct scatterlist);
+	{
+		struct nvme_loop_iod __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
+	{
+		struct scatterlist __uncontained_tmp2;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp2;
+	}
 	ctrl->admin_tag_set.driver_data = ctrl;
 	ctrl->admin_tag_set.nr_hw_queues = 1;
 	ctrl->admin_tag_set.timeout = NVME_ADMIN_TIMEOUT;
@@ -539,6 +552,14 @@ static int nvme_loop_create_io_queues(struct nvme_loop_ctrl *ctrl)
 	ctrl->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
 	ctrl->tag_set.cmd_size = sizeof(struct nvme_loop_iod) +
 		NVME_INLINE_SG_CNT * sizeof(struct scatterlist);
+	{
+		struct nvme_loop_iod __uncontained_tmp3;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp3;
+	}
+	{
+		struct scatterlist __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	ctrl->tag_set.driver_data = ctrl;
 	ctrl->tag_set.nr_hw_queues = ctrl->ctrl.queue_count - 1;
 	ctrl->tag_set.timeout = NVME_IO_TIMEOUT;

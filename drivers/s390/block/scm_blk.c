@@ -19,6 +19,11 @@
 #include <linux/list.h>
 #include <asm/eadm.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -474,6 +479,10 @@ int scm_blk_dev_setup(struct scm_blk_dev *bdev, struct scm_device *scmdev)
 
 	bdev->tag_set.ops = &scm_mq_ops;
 	bdev->tag_set.cmd_size = sizeof(blk_status_t);
+	{
+		blk_status_t __uncontained_tmp4;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp4;
+	}
 	bdev->tag_set.nr_hw_queues = nr_requests;
 	bdev->tag_set.queue_depth = nr_requests_per_io * nr_requests;
 	bdev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
