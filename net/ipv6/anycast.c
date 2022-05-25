@@ -487,10 +487,13 @@ static inline struct ifacaddr6 *ac6_get_first(struct seq_file *seq)
 	struct ifacaddr6 *im = NULL;
 	struct ac6_iter_state *state = ac6_seq_private(seq);
 	struct net *net = seq_file_net(seq);
+	struct net_device *dev = NULL;
 
 	state->idev = NULL;
-	for_each_netdev_rcu(net, state->dev) {
+	state->dev = NULL;
+	for_each_netdev_rcu(net, dev) {
 		struct inet6_dev *idev;
+		state->dev = dev;
 		idev = __in6_dev_get(state->dev);
 		if (!idev)
 			continue;
