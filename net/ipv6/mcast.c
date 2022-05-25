@@ -2863,10 +2863,13 @@ static inline struct ifmcaddr6 *igmp6_mc_get_first(struct seq_file *seq)
 	struct ifmcaddr6 *im = NULL;
 	struct igmp6_mc_iter_state *state = igmp6_mc_seq_private(seq);
 	struct net *net = seq_file_net(seq);
+	struct net_device *dev = NULL;
 
 	state->idev = NULL;
-	for_each_netdev_rcu(net, state->dev) {
+	state->dev = NULL;
+	for_each_netdev_rcu(net, dev) {
 		struct inet6_dev *idev;
+    state->dev = dev;
 		idev = __in6_dev_get(state->dev);
 		if (!idev)
 			continue;
@@ -2971,11 +2974,14 @@ static inline struct ip6_sf_list *igmp6_mcf_get_first(struct seq_file *seq)
 	struct ifmcaddr6 *im = NULL;
 	struct igmp6_mcf_iter_state *state = igmp6_mcf_seq_private(seq);
 	struct net *net = seq_file_net(seq);
+	struct net_device *dev = NULL;
 
 	state->idev = NULL;
 	state->im = NULL;
-	for_each_netdev_rcu(net, state->dev) {
+	state->dev = NULL;
+	for_each_netdev_rcu(net, dev) {
 		struct inet6_dev *idev;
+		state->dev = dev;
 		idev = __in6_dev_get(state->dev);
 		if (unlikely(idev == NULL))
 			continue;
