@@ -4780,7 +4780,8 @@ static int io_provide_buffers_prep(struct io_kiocb *req,
 
 static int io_refill_buffer_cache(struct io_ring_ctx *ctx)
 {
-	struct io_buffer *buf;
+	struct io_buffer **buf;
+	struct io_buffer *allocd_buf;
 	struct page *page;
 	int bufs_in_page;
 
@@ -4804,16 +4805,22 @@ static int io_refill_buffer_cache(struct io_ring_ctx *ctx)
 	 * No free buffers and no completion entries either. Allocate a new
 	 * page worth of buffer entries and add those to our freelist.
 	 */
+	// UNCONTAINED: alloc each buffer separatedly with kmalloc to have redzones
 	page = alloc_page(GFP_KERNEL_ACCOUNT);
 	if (!page)
 		return -ENOMEM;
 
+	// UNCONTAINED: use the page to keep track of the buffers allocated
 	list_add(&page->lru, &ctx->io_buffers_pages);
 
 	buf = page_address(page);
-	bufs_in_page = PAGE_SIZE / sizeof(*buf);
+	bufs_in_page = PAGE_SIZE / sizeof(*allocd_buf);
 	while (bufs_in_page) {
-		list_add_tail(&buf->list, &ctx->io_buffers_cache);
+		allocd_buf = kmalloc(sizeof(*allocd_buf), GFP_KERNEL_ACCOUNT);
+		*buf = allocd_buf;
+		if (!allocd_buf)
+			return -ENOMEM;
+		list_add_tail(&allocd_buf->list, &ctx->io_buffers_cache);
 		buf++;
 		bufs_in_page--;
 	}
@@ -9992,8 +9999,15 @@ static void io_destroy_buffers(struct io_ring_ctx *ctx)
 
 	while (!list_empty(&ctx->io_buffers_pages)) {
 		struct page *page;
+		struct io_buffer** buf;
 
 		page = list_first_entry(&ctx->io_buffers_pages, struct page, lru);
+		buf = page_address(page);
+		// UNCONTAINED: free all the buffers we allocated (separatedly)
+		for (i = 0; i < (PAGE_SIZE / sizeof(struct io_buffer)); i++) {
+			if (!buf[i]) break;
+			kfree(buf[i]);
+		}
 		list_del_init(&page->lru);
 		__free_page(page);
 	}
