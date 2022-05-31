@@ -883,8 +883,8 @@ int nvme_mpath_init_identify(struct nvme_ctrl *ctrl, struct nvme_id_ctrl *id)
 		nvme_mpath_uninit(ctrl);
 		ctrl->ana_log_buf = kvmalloc(ana_log_size, GFP_KERNEL);
 		{
-			typeof((__le32)) __uncontained_tmp29;
-			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp29;
+			__le32 __uncontained_tmp21;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp21;
 		}
 		{
 			struct nvme_ana_group_desc __uncontained_tmp27;

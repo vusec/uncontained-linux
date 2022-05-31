@@ -116,12 +116,12 @@ cifs_get_spnego_key(struct cifs_ses *sesInfo,
 	spnego_key = ERR_PTR(-ENOMEM);
 	description = kzalloc(desc_len, GFP_KERNEL);
 	{
-		typeof((pid_t)) __uncontained_tmp69;
-		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp69;
+		pid_t __uncontained_tmp75;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
 	}
 	{
-		typeof((uid_t)) __uncontained_tmp70;
-		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp70;
+		uid_t __uncontained_tmp76;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp76;
 	}
 	if (description == NULL)
 		goto out;

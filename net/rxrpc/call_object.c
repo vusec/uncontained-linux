@@ -126,7 +126,7 @@ struct rxrpc_call *rxrpc_alloc_call(struct rxrpc_sock *rx, gfp_t gfp,
 
 	call->rxtx_annotations = kcalloc(RXRPC_RXTX_BUFF_SIZE, sizeof(u8), gfp);
 	{
-		typeof((u8)) __uncontained_tmp333;
+		u8 __uncontained_tmp333;
 		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp333;
 	}
 	if (!call->rxtx_annotations)

@@ -155,7 +155,7 @@ int mpi_resize(MPI a, unsigned nlimbs)
 	if (a->d) {
 		p = kcalloc(nlimbs, sizeof(mpi_limb_t), GFP_KERNEL);
 		{
-			typeof((mpi_limb_t)) __uncontained_tmp308;
+			mpi_limb_t __uncontained_tmp308;
 			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp308;
 		}
 		if (!p)
@@ -166,7 +166,7 @@ int mpi_resize(MPI a, unsigned nlimbs)
 	} else {
 		a->d = kcalloc(nlimbs, sizeof(mpi_limb_t), GFP_KERNEL);
 		{
-			typeof((mpi_limb_t)) __uncontained_tmp309;
+			mpi_limb_t __uncontained_tmp309;
 			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp309;
 		}
 		if (!a->d)
