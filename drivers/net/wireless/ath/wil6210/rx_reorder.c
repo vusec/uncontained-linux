@@ -7,6 +7,11 @@
 #include "wil6210.h"
 #include "txrx.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SEQ_MODULO 0x1000
 #define SEQ_MASK   0xfff
 
@@ -248,6 +253,10 @@ struct wil_tid_ampdu_rx *wil_tid_ampdu_rx_alloc(struct wil6210_priv *wil,
 
 	r->reorder_buf =
 		kcalloc(size, sizeof(struct sk_buff *), GFP_KERNEL);
+	{
+		struct sk_buff *__uncontained_tmp180;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp180;
+	}
 	if (!r->reorder_buf) {
 		kfree(r);
 		return NULL;

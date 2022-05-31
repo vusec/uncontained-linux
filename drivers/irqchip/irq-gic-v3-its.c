@@ -37,6 +37,11 @@
 #include <asm/cputype.h>
 #include <asm/exception.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "irq-gic-common.h"
 
 #define ITS_FLAGS_CMDQ_NEEDS_FLUSHING		(1ULL << 0)
@@ -1822,6 +1827,10 @@ static int its_vlpi_map(struct irq_data *d, struct its_cmd_info *info)
 
 		maps = kcalloc(its_dev->event_map.nr_lpis, sizeof(*maps),
 			       GFP_ATOMIC);
+		{
+			typeof((*maps)) __uncontained_tmp118;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+		}
 		if (!maps) {
 			ret = -ENOMEM;
 			goto out;
@@ -2926,6 +2935,10 @@ static int its_alloc_collections(struct its_node *its)
 
 	its->collections = kcalloc(nr_cpu_ids, sizeof(*its->collections),
 				   GFP_KERNEL);
+	{
+		typeof((*its->collections)) __uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!its->collections)
 		return -ENOMEM;
 
@@ -3378,11 +3391,20 @@ static struct its_device *its_create_device(struct its_node *its, u32 dev_id,
 	itt = kzalloc_node(sz, GFP_KERNEL, its->numa_node);
 	if (alloc_lpis) {
 		lpi_map = its_lpi_alloc(nvecs, &lpi_base, &nr_lpis);
-		if (lpi_map)
+		if (lpi_map) {
 			col_map = kcalloc(nr_lpis, sizeof(*col_map),
 					  GFP_KERNEL);
+			{
+				typeof((*col_map)) __uncontained_tmp120;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+			}
+		}
 	} else {
 		col_map = kcalloc(nr_ites, sizeof(*col_map), GFP_KERNEL);
+		{
+			typeof((*col_map)) __uncontained_tmp121;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+		}
 		nr_lpis = 0;
 		lpi_base = 0;
 	}
@@ -4930,6 +4952,10 @@ static int its_init_vpe_domain(void)
 	entries = roundup_pow_of_two(nr_cpu_ids);
 	vpe_proxy.vpes = kcalloc(entries, sizeof(*vpe_proxy.vpes),
 				 GFP_KERNEL);
+	{
+		typeof((*vpe_proxy.vpes)) __uncontained_tmp122;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp122;
+	}
 	if (!vpe_proxy.vpes)
 		return -ENOMEM;
 

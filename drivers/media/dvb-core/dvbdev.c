@@ -26,6 +26,11 @@
 /* Due to enum tuner_pad_index */
 #include <media/tuner.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static DEFINE_MUTEX(dvbdev_mutex);
 static int dvbdev_debug;
 
@@ -247,11 +252,19 @@ static int dvb_create_tsout_entity(struct dvb_device *dvbdev,
 
 	dvbdev->tsout_pads = kcalloc(npads, sizeof(*dvbdev->tsout_pads),
 				     GFP_KERNEL);
+	{
+		typeof((*dvbdev->tsout_pads)) __uncontained_tmp127;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp127;
+	}
 	if (!dvbdev->tsout_pads)
 		return -ENOMEM;
 
 	dvbdev->tsout_entity = kcalloc(npads, sizeof(*dvbdev->tsout_entity),
 				       GFP_KERNEL);
+	{
+		typeof((*dvbdev->tsout_entity)) __uncontained_tmp128;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp128;
+	}
 	if (!dvbdev->tsout_entity)
 		return -ENOMEM;
 
@@ -330,6 +343,10 @@ static int dvb_create_media_entity(struct dvb_device *dvbdev,
 	if (npads) {
 		dvbdev->pads = kcalloc(npads, sizeof(*dvbdev->pads),
 				       GFP_KERNEL);
+		{
+			typeof((*dvbdev->pads)) __uncontained_tmp129;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp129;
+		}
 		if (!dvbdev->pads) {
 			kfree(dvbdev->entity);
 			return -ENOMEM;

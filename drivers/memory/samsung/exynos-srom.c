@@ -14,6 +14,11 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "exynos-srom.h"
 
 static const unsigned long exynos_srom_offsets[] = {
@@ -55,6 +60,10 @@ exynos_srom_alloc_reg_dump(const unsigned long *rdump,
 	unsigned int i;
 
 	rd = kcalloc(nr_rdump, sizeof(*rd), GFP_KERNEL);
+	{
+		typeof((*rd)) __uncontained_tmp129;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp129;
+	}
 	if (!rd)
 		return NULL;
 

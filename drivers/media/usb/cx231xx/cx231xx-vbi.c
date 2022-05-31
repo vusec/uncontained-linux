@@ -23,6 +23,11 @@
 #include <media/drv-intf/msp3400.h>
 #include <media/tuner.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cx231xx-vbi.h"
 
 static inline void print_err_status(struct cx231xx *dev, int packet, int status)
@@ -373,6 +378,10 @@ int cx231xx_init_vbi_isoc(struct cx231xx *dev, int max_packets,
 
 	dev->vbi_mode.bulk_ctl.urb = kcalloc(num_bufs, sizeof(void *),
 					     GFP_KERNEL);
+	{
+		void *__uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!dev->vbi_mode.bulk_ctl.urb) {
 		dev_err(dev->dev,
 			"cannot alloc memory for usb buffers\n");
@@ -381,6 +390,10 @@ int cx231xx_init_vbi_isoc(struct cx231xx *dev, int max_packets,
 
 	dev->vbi_mode.bulk_ctl.transfer_buffer =
 	    kcalloc(num_bufs, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp116;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (!dev->vbi_mode.bulk_ctl.transfer_buffer) {
 		dev_err(dev->dev,
 			"cannot allocate memory for usbtransfer\n");

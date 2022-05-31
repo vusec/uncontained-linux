@@ -16,6 +16,11 @@
 #include <linux/io.h>
 #include <linux/of.h>
 #include <linux/of_address.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "common.h"
 
 /*
@@ -311,6 +316,10 @@ static void __init kirkwood_clk_muxing_setup(struct device_node *np,
 	ctrl->num_muxes = n;
 	ctrl->muxes = kcalloc(ctrl->num_muxes, sizeof(struct clk *),
 			GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp28;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (WARN_ON(!ctrl->muxes))
 		goto muxes_out;
 

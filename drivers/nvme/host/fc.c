@@ -18,6 +18,11 @@
 #include <scsi/scsi_transport_fc.h>
 #include <linux/blk-mq-pci.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -3585,6 +3590,10 @@ nvme_fc_init_ctrl(struct device *dev, struct nvmf_ctrl_options *opts,
 	ret = -ENOMEM;
 	ctrl->queues = kcalloc(ctrl->ctrl.queue_count,
 				sizeof(struct nvme_fc_queue), GFP_KERNEL);
+	{
+		struct nvme_fc_queue __uncontained_tmp247;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp247;
+	}
 	if (!ctrl->queues)
 		goto out_free_ida;
 

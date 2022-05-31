@@ -25,6 +25,11 @@
 #include <linux/uio.h>
 #include <linux/delay.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "pcm_local.h"
 
 #ifdef CONFIG_SND_DEBUG
@@ -376,6 +381,10 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
 	 * recent application of corresponding rule.
 	 */
 	rstamps = kcalloc(constrs->rules_num, sizeof(unsigned int), GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp347;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp347;
+	}
 	if (!rstamps)
 		return -ENOMEM;
 

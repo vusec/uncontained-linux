@@ -13,6 +13,11 @@
 
 #include <asm/opal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static DEFINE_MUTEX(powercap_mutex);
 
 static struct kobject *powercap_kobj;
@@ -152,6 +157,10 @@ void __init opal_powercap_init(void)
 
 	pcaps = kcalloc(of_get_child_count(powercap), sizeof(*pcaps),
 			GFP_KERNEL);
+	{
+		typeof((*pcaps)) __uncontained_tmp7;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!pcaps)
 		return;
 
@@ -184,11 +193,19 @@ void __init opal_powercap_init(void)
 
 		pcaps[i].pattrs = kcalloc(j, sizeof(struct powercap_attr),
 					  GFP_KERNEL);
+		{
+			struct powercap_attr __uncontained_tmp5;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+		}
 		if (!pcaps[i].pattrs)
 			goto out_pcaps_pattrs;
 
 		pcaps[i].pg.attrs = kcalloc(j + 1, sizeof(struct attribute *),
 					    GFP_KERNEL);
+		{
+			struct attribute *__uncontained_tmp6;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp6;
+		}
 		if (!pcaps[i].pg.attrs) {
 			kfree(pcaps[i].pattrs);
 			goto out_pcaps_pattrs;

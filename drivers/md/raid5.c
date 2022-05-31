@@ -50,6 +50,11 @@
 #include <trace/events/block.h>
 #include <linux/list_sort.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -504,6 +509,10 @@ init_stripe_shared_pages(struct stripe_head *sh, struct r5conf *conf, int disks)
 	nr_pages = (disks + cnt - 1) / cnt;
 
 	sh->pages = kcalloc(nr_pages, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp121;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+	}
 	if (!sh->pages)
 		return -ENOMEM;
 	sh->nr_pages = nr_pages;
@@ -2578,6 +2587,10 @@ static int resize_stripes(struct r5conf *conf, int newsize)
 	 * conf->disks and the scribble region
 	 */
 	ndisks = kcalloc(newsize, sizeof(struct disk_info), GFP_NOIO);
+	{
+		struct disk_info __uncontained_tmp122;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp122;
+	}
 	if (ndisks) {
 		for (i = 0; i < conf->pool_size; i++)
 			ndisks[i] = conf->disks[i];
@@ -7001,6 +7014,10 @@ static int alloc_thread_groups(struct r5conf *conf, int cnt, int *group_cnt,
 	workers = kcalloc(size, *group_cnt, GFP_NOIO);
 	*worker_groups = kcalloc(*group_cnt, sizeof(struct r5worker_group),
 				 GFP_NOIO);
+	{
+		struct r5worker_group __uncontained_tmp123;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (!*worker_groups || !workers) {
 		kfree(workers);
 		kfree(*worker_groups);
@@ -7238,6 +7255,10 @@ static struct r5conf *setup_conf(struct mddev *mddev)
 	conf->pending_data = kcalloc(PENDING_IO_MAX,
 				     sizeof(struct r5pending_data),
 				     GFP_KERNEL);
+	{
+		struct r5pending_data __uncontained_tmp124;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (!conf->pending_data)
 		goto abort;
 	for (i = 0; i < PENDING_IO_MAX; i++)
@@ -7287,6 +7308,10 @@ static struct r5conf *setup_conf(struct mddev *mddev)
 
 	conf->disks = kcalloc(max_disks, sizeof(struct disk_info),
 			      GFP_KERNEL);
+	{
+		struct disk_info __uncontained_tmp125;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp125;
+	}
 
 	if (!conf->disks)
 		goto abort;

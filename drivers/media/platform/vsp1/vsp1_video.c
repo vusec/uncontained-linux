@@ -23,6 +23,11 @@
 #include <media/videobuf2-v4l2.h>
 #include <media/videobuf2-dma-contig.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vsp1.h"
 #include "vsp1_brx.h"
 #include "vsp1_dl.h"
@@ -286,6 +291,10 @@ static int vsp1_video_pipeline_setup_partitions(struct vsp1_pipeline *pipe)
 	pipe->partitions = DIV_ROUND_UP(format->width, div_size);
 	pipe->part_table = kcalloc(pipe->partitions, sizeof(*pipe->part_table),
 				   GFP_KERNEL);
+	{
+		typeof((*pipe->part_table)) __uncontained_tmp45;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!pipe->part_table)
 		return -ENOMEM;
 

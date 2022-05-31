@@ -24,6 +24,11 @@
 #include <linux/power/bq24190_charger.h>
 #include <linux/serdev.h>
 #include <linux/string.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 /* For gpio_get_desc() which is EXPORT_SYMBOL_GPL() */
 #include "../../gpio/gpiolib.h"
 #include "../../gpio/gpiolib-acpi.h"
@@ -900,6 +905,10 @@ static __init int x86_android_tablet_init(void)
 	}
 
 	i2c_clients = kcalloc(dev_info->i2c_client_count, sizeof(*i2c_clients), GFP_KERNEL);
+	{
+		typeof((*i2c_clients)) __uncontained_tmp221;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp221;
+	}
 	if (!i2c_clients) {
 		x86_android_tablet_cleanup();
 		return -ENOMEM;
@@ -915,6 +924,10 @@ static __init int x86_android_tablet_init(void)
 	}
 
 	pdevs = kcalloc(dev_info->pdev_count, sizeof(*pdevs), GFP_KERNEL);
+	{
+		typeof((*pdevs)) __uncontained_tmp222;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp222;
+	}
 	if (!pdevs) {
 		x86_android_tablet_cleanup();
 		return -ENOMEM;
@@ -930,6 +943,10 @@ static __init int x86_android_tablet_init(void)
 	}
 
 	serdevs = kcalloc(dev_info->serdev_count, sizeof(*serdevs), GFP_KERNEL);
+	{
+		typeof((*serdevs)) __uncontained_tmp223;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp223;
+	}
 	if (!serdevs) {
 		x86_android_tablet_cleanup();
 		return -ENOMEM;

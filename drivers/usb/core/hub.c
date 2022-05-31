@@ -35,6 +35,11 @@
 #include <linux/uaccess.h>
 #include <asm/byteorder.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hub.h"
 #include "otg_productlist.h"
 
@@ -1447,6 +1452,10 @@ static int hub_configure(struct usb_hub *hub,
 			(maxchild == 1) ? "" : "s");
 
 	hub->ports = kcalloc(maxchild, sizeof(struct usb_port *), GFP_KERNEL);
+	{
+		struct usb_port *__uncontained_tmp291;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp291;
+	}
 	if (!hub->ports) {
 		ret = -ENOMEM;
 		goto fail;

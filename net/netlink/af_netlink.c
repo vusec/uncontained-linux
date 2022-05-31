@@ -72,6 +72,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/netlink.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2900,6 +2905,10 @@ static int __init netlink_proto_init(void)
 	BUILD_BUG_ON(sizeof(struct netlink_skb_parms) > sizeof_field(struct sk_buff, cb));
 
 	nl_table = kcalloc(MAX_LINKS, sizeof(*nl_table), GFP_KERNEL);
+	{
+		typeof((*nl_table)) __uncontained_tmp296;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp296;
+	}
 	if (!nl_table)
 		goto panic;
 

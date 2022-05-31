@@ -12,6 +12,11 @@
 #include <linux/ioport.h>
 #include <linux/platform_device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 #ifdef CONFIG_RTC_MC146818_LIB
@@ -169,6 +174,10 @@ void __init acpi_watchdog_init(void)
 	}
 
 	resources = kcalloc(nresources, sizeof(*resources), GFP_KERNEL);
+	{
+		typeof((*resources)) __uncontained_tmp15;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!resources)
 		goto fail_free_resource_list;
 

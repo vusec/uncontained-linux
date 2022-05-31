@@ -21,6 +21,11 @@
 #include <linux/mtd/nftl.h>
 #include <linux/mtd/inftl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * find_boot_record: Find the INFTL Media Header and its Spare copy which
  *	contains the various device information of the INFTL partition and
@@ -551,6 +556,10 @@ int INFTL_mount(struct INFTLrecord *s)
 
 	/* Temporary buffer to store ANAC numbers. */
 	ANACtable = kcalloc(s->nb_blocks, sizeof(u8), GFP_KERNEL);
+	{
+		u8 __uncontained_tmp140;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!ANACtable)
 		return -ENOMEM;
 

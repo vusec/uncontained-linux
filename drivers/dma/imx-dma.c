@@ -27,6 +27,11 @@
 #include <asm/irq.h>
 #include <linux/platform_data/dma-imx.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dmaengine.h"
 #define IMXDMA_MAX_CHAN_DESCRIPTORS	16
 #define IMX_DMA_CHANNELS  16
@@ -869,6 +874,10 @@ static struct dma_async_tx_descriptor *imxdma_prep_dma_cyclic(
 
 	imxdmac->sg_list = kcalloc(periods + 1,
 			sizeof(struct scatterlist), GFP_ATOMIC);
+	{
+		struct scatterlist __uncontained_tmp35;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!imxdmac->sg_list)
 		return NULL;
 

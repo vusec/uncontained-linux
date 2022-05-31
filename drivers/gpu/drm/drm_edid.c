@@ -44,6 +44,11 @@
 #include <drm/drm_print.h>
 #include <drm/drm_scdc_helper.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "drm_crtc_internal.h"
 
 #define version_greater(edid, maj, min) \
@@ -4674,6 +4679,10 @@ int drm_edid_to_sad(struct edid *edid, struct cea_sad **sads)
 
 			count = dbl / 3; /* SAD is 3B */
 			*sads = kcalloc(count, sizeof(**sads), GFP_KERNEL);
+			{
+				typeof((**sads)) __uncontained_tmp85;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+			}
 			if (!*sads)
 				return -ENOMEM;
 			for (j = 0; j < count; j++) {

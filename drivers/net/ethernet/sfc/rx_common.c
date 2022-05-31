@@ -11,6 +11,11 @@
 #include "net_driver.h"
 #include <linux/module.h>
 #include <linux/iommu.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "efx.h"
 #include "nic.h"
 #include "rx_common.h"
@@ -155,6 +160,10 @@ static void efx_init_rx_recycle_ring(struct efx_rx_queue *rx_queue)
 					    efx->rx_bufs_per_page);
 	rx_queue->page_ring = kcalloc(page_ring_size,
 				      sizeof(*rx_queue->page_ring), GFP_KERNEL);
+	{
+		typeof((*rx_queue->page_ring)) __uncontained_tmp206;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp206;
+	}
 	if (!rx_queue->page_ring)
 		rx_queue->page_ptr_mask = 0;
 	else
@@ -218,6 +227,10 @@ int efx_probe_rx_queue(struct efx_rx_queue *rx_queue)
 	/* Allocate RX buffers */
 	rx_queue->buffer = kcalloc(entries, sizeof(*rx_queue->buffer),
 				   GFP_KERNEL);
+	{
+		typeof((*rx_queue->buffer)) __uncontained_tmp207;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp207;
+	}
 	if (!rx_queue->buffer)
 		return -ENOMEM;
 
@@ -821,6 +834,10 @@ int efx_probe_filters(struct efx_nic *efx)
 				kcalloc(efx->type->max_rx_ip_filters,
 					sizeof(*channel->rps_flow_id),
 					GFP_KERNEL);
+			{
+				typeof((*channel->rps_flow_id)) __uncontained_tmp208;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp208;
+			}
 			if (!channel->rps_flow_id)
 				success = 0;
 			else

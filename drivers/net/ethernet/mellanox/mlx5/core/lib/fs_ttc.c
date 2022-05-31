@@ -6,6 +6,11 @@
 #include <linux/tcp.h>
 #include <linux/mlx5/fs.h>
 #include <linux/mlx5/driver.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "mlx5_core.h"
 #include "lib/fs_ttc.h"
 
@@ -298,6 +303,10 @@ static int mlx5_create_ttc_table_groups(struct mlx5_ttc_table *ttc,
 	u8 *mc;
 
 	ttc->g = kcalloc(MLX5_TTC_NUM_GROUPS, sizeof(*ttc->g), GFP_KERNEL);
+	{
+		typeof((*ttc->g)) __uncontained_tmp188;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp188;
+	}
 	if (!ttc->g)
 		return -ENOMEM;
 	in = kvzalloc(inlen, GFP_KERNEL);
@@ -438,6 +447,10 @@ static int mlx5_create_inner_ttc_table_groups(struct mlx5_ttc_table *ttc)
 
 	ttc->g = kcalloc(MLX5_INNER_TTC_NUM_GROUPS, sizeof(*ttc->g),
 			 GFP_KERNEL);
+	{
+		typeof((*ttc->g)) __uncontained_tmp189;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp189;
+	}
 	if (!ttc->g)
 		return -ENOMEM;
 	in = kvzalloc(inlen, GFP_KERNEL);

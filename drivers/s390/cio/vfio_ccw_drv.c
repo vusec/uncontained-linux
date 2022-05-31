@@ -19,6 +19,11 @@
 
 #include <asm/isc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "chp.h"
 #include "ioasm.h"
 #include "css.h"
@@ -155,6 +160,10 @@ static struct vfio_ccw_private *vfio_ccw_alloc_private(struct subchannel *sch)
 
 	private->cp.guest_cp = kcalloc(CCWCHAIN_LEN_MAX, sizeof(struct ccw1),
 				       GFP_KERNEL);
+	{
+		struct ccw1 __uncontained_tmp259;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp259;
+	}
 	if (!private->cp.guest_cp)
 		goto out_free_private;
 

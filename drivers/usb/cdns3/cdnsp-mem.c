@@ -15,6 +15,11 @@
 #include <linux/slab.h>
 #include <linux/usb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cdnsp-gadget.h"
 #include "cdnsp-trace.h"
 
@@ -578,6 +583,10 @@ int cdnsp_alloc_stream_info(struct cdnsp_device *pdev,
 	stream_info->stream_rings = kcalloc(num_streams,
 					    sizeof(struct cdnsp_ring *),
 					    GFP_ATOMIC);
+	{
+		struct cdnsp_ring *__uncontained_tmp255;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp255;
+	}
 	if (!stream_info->stream_rings)
 		return -ENOMEM;
 

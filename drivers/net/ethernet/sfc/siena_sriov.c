@@ -6,6 +6,11 @@
 #include <linux/pci.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -836,6 +841,10 @@ static int efx_vfdi_set_status_page(struct siena_vf *vf)
 	if (page_count) {
 		vf->peer_page_addrs = kcalloc(page_count, sizeof(u64),
 					      GFP_KERNEL);
+		{
+			u64 __uncontained_tmp190;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp190;
+		}
 		if (vf->peer_page_addrs) {
 			memcpy(vf->peer_page_addrs,
 			       req->u.set_status_page.peer_page_addr,
@@ -1207,6 +1216,10 @@ static int efx_siena_sriov_vf_alloc(struct efx_nic *efx)
 
 	nic_data->vf = kcalloc(efx->vf_count, sizeof(*nic_data->vf),
 			       GFP_KERNEL);
+	{
+		typeof((*nic_data->vf)) __uncontained_tmp191;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp191;
+	}
 	if (!nic_data->vf)
 		return -ENOMEM;
 

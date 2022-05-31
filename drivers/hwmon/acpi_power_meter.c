@@ -19,6 +19,11 @@
 #include <linux/err.h>
 #include <linux/acpi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define ACPI_POWER_METER_NAME		"power_meter"
 #define ACPI_POWER_METER_DEVICE_NAME	"Power Meter"
 #define ACPI_POWER_METER_CLASS		"pwr_meter_resource"
@@ -574,6 +579,10 @@ static int read_domain_devices(struct acpi_power_meter_resource *resource)
 	resource->domain_devices = kcalloc(pss->package.count,
 					   sizeof(struct acpi_device *),
 					   GFP_KERNEL);
+	{
+		struct acpi_device *__uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!resource->domain_devices) {
 		res = -ENOMEM;
 		goto end;
@@ -797,6 +806,10 @@ static int read_capabilities(struct acpi_power_meter_resource *resource)
 
 		*str = kcalloc(element->string.length + 1, sizeof(u8),
 			       GFP_KERNEL);
+		{
+			typeof((u8)) __uncontained_tmp85;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+		}
 		if (!*str) {
 			res = -ENOMEM;
 			goto error;

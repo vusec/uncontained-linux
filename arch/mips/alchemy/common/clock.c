@@ -44,6 +44,11 @@
 #include <linux/types.h>
 #include <asm/mach-au1x00/au1000.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Base clock: 12MHz is the default in all databooks, and I haven't
  * found any board yet which uses a different rate.
  */
@@ -993,6 +998,10 @@ static int __init alchemy_clk_setup_imux(int ctype)
 	}
 
 	a = kcalloc(6, sizeof(*a), GFP_KERNEL);
+	{
+		typeof((*a)) __uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!a)
 		return -ENOMEM;
 

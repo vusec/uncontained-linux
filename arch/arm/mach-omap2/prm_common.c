@@ -24,6 +24,11 @@
 #include <linux/clk-provider.h>
 #include <linux/clk/ti.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "soc.h"
 #include "prm2xxx_3xxx.h"
 #include "prm2xxx.h"
@@ -282,10 +287,22 @@ int omap_prcm_register_chain_handler(struct omap_prcm_irq_setup *irq_setup)
 	prcm_irq_setup = irq_setup;
 
 	prcm_irq_chips = kcalloc(nr_regs, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 	prcm_irq_setup->saved_mask = kcalloc(nr_regs, sizeof(u32),
 					     GFP_KERNEL);
+	{
+		u32 __uncontained_tmp3;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+	}
 	prcm_irq_setup->priority_mask = kcalloc(nr_regs, sizeof(u32),
 						GFP_KERNEL);
+	{
+		u32 __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 
 	if (!prcm_irq_chips || !prcm_irq_setup->saved_mask ||
 	    !prcm_irq_setup->priority_mask)

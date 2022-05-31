@@ -15,6 +15,11 @@
 #include <asm/vdso.h>
 #include <linux/time_namespace.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifdef CONFIG_GENERIC_TIME_VSYSCALL
 #include <vdso/datapage.h>
 #else
@@ -85,6 +90,10 @@ static int __init __vdso_init(void)
 	vdso_pagelist = kcalloc(vdso_info.vdso_pages,
 				sizeof(struct page *),
 				GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp8;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp8;
+	}
 	if (vdso_pagelist == NULL)
 		return -ENOMEM;
 

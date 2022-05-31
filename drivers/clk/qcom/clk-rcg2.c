@@ -17,6 +17,11 @@
 
 #include <asm/div64.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk-rcg.h"
 #include "common.h"
 
@@ -1104,6 +1109,10 @@ static int clk_rcg2_dfs_populate_freq_table(struct clk_rcg2 *rcg)
 
 	/* Allocate space for 1 extra since table is NULL terminated */
 	freq_tbl = kcalloc(MAX_PERF_LEVEL + 1, sizeof(*freq_tbl), GFP_KERNEL);
+	{
+		typeof((*freq_tbl)) __uncontained_tmp36;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!freq_tbl)
 		return -ENOMEM;
 	rcg->freq_tbl = freq_tbl;

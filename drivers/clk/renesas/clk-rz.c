@@ -15,6 +15,11 @@
 #include <linux/of_address.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct rz_cpg {
 	struct clk_onecell_data data;
 	void __iomem *reg;
@@ -96,6 +101,10 @@ static void __init rz_cpg_clocks_init(struct device_node *np)
 
 	cpg = kzalloc(sizeof(*cpg), GFP_KERNEL);
 	clks = kcalloc(num_clks, sizeof(*clks), GFP_KERNEL);
+	{
+		typeof((*clks)) __uncontained_tmp47;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+	}
 	BUG_ON(!cpg || !clks);
 
 	cpg->data.clks = clks;

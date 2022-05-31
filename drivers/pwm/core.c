@@ -23,6 +23,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/pwm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MAX_PWMS 1024
 
 static DEFINE_MUTEX(pwm_lookup_lock);
@@ -286,6 +291,10 @@ int pwmchip_add(struct pwm_chip *chip)
 	chip->base = ret;
 
 	chip->pwms = kcalloc(chip->npwm, sizeof(*pwm), GFP_KERNEL);
+	{
+		typeof((*pwm)) __uncontained_tmp256;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp256;
+	}
 	if (!chip->pwms) {
 		ret = -ENOMEM;
 		goto out;

@@ -27,6 +27,11 @@
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -561,6 +566,10 @@ static int s3c_cpufreq_build_freq(void)
 	size++;
 
 	ftab = kcalloc(size, sizeof(*ftab), GFP_KERNEL);
+	{
+		typeof((*ftab)) __uncontained_tmp45;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!ftab)
 		return -ENOMEM;
 

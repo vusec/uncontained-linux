@@ -17,6 +17,11 @@
 #include <linux/vmalloc.h>
 #include <linux/vbox_err.h>
 #include <linux/vbox_utils.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "vboxguest_core.h"
 
 /* Get the pointer to the first parameter of a HGCM call request. */
@@ -267,6 +272,10 @@ static int hgcm_call_preprocess(
 				bounce_bufs = kcalloc(parm_count,
 						      sizeof(void *),
 						      GFP_KERNEL);
+				{
+					void *__uncontained_tmp253;
+					__uncontained_kcalloc = (unsigned long)&__uncontained_tmp253;
+				}
 				if (!bounce_bufs)
 					return -ENOMEM;
 

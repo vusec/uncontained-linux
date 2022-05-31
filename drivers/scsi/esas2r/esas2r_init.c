@@ -43,6 +43,11 @@
 
 #include "esas2r.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static bool esas2r_initmem_alloc(struct esas2r_adapter *a,
 				 struct esas2r_mem_desc *mem_desc,
 				 u32 align)
@@ -786,6 +791,10 @@ bool esas2r_init_adapter_struct(struct esas2r_adapter *a,
 	a->first_ae_req =
 		kcalloc(num_ae_requests, sizeof(struct esas2r_request),
 			GFP_KERNEL);
+	{
+		struct esas2r_request __uncontained_tmp262;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp262;
+	}
 
 	if (a->first_ae_req == NULL) {
 		esas2r_log(ESAS2R_LOG_CRIT,
@@ -796,6 +805,10 @@ bool esas2r_init_adapter_struct(struct esas2r_adapter *a,
 	/* allocate the S/G list memory descriptors */
 	a->sg_list_mds = kcalloc(num_sg_lists, sizeof(struct esas2r_mem_desc),
 				 GFP_KERNEL);
+	{
+		struct esas2r_mem_desc __uncontained_tmp263;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp263;
+	}
 
 	if (a->sg_list_mds == NULL) {
 		esas2r_log(ESAS2R_LOG_CRIT,
@@ -808,6 +821,10 @@ bool esas2r_init_adapter_struct(struct esas2r_adapter *a,
 		kcalloc(num_requests + num_ae_requests + 1,
 			sizeof(struct esas2r_request *),
 			GFP_KERNEL);
+	{
+		struct esas2r_request *__uncontained_tmp264;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp264;
+	}
 
 	if (a->req_table == NULL) {
 		esas2r_log(ESAS2R_LOG_CRIT,

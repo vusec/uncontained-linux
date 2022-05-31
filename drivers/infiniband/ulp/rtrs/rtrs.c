@@ -12,6 +12,11 @@
 #include <linux/module.h>
 #include <linux/inet.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rtrs-pri.h"
 #include "rtrs-log.h"
 
@@ -27,6 +32,10 @@ struct rtrs_iu *rtrs_iu_alloc(u32 iu_num, size_t size, gfp_t gfp_mask,
 	int i;
 
 	ius = kcalloc(iu_num, sizeof(*ius), gfp_mask);
+	{
+		typeof((*ius)) __uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!ius)
 		return NULL;
 	for (i = 0; i < iu_num; i++) {

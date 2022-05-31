@@ -8,6 +8,11 @@
 #include "fjes.h"
 #include "fjes_trace.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -227,6 +232,10 @@ static int fjes_hw_setup(struct fjes_hw *hw)
 
 	buf = kcalloc(hw->max_epid, sizeof(struct ep_share_mem_info),
 		      GFP_KERNEL);
+	{
+		struct ep_share_mem_info __uncontained_tmp199;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp199;
+	}
 	if (!buf)
 		return -ENOMEM;
 

@@ -31,6 +31,11 @@
 #include <target/target_core_backend.h>
 #include <target/target_core_fabric.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "target_core_internal.h"
 #include "target_core_alua.h"
 #include "target_core_pr.h"
@@ -728,6 +733,10 @@ struct se_device *target_alloc_device(struct se_hba *hba, const char *name)
 		return NULL;
 
 	dev->queues = kcalloc(nr_cpu_ids, sizeof(*dev->queues), GFP_KERNEL);
+	{
+		typeof((*dev->queues)) __uncontained_tmp285;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp285;
+	}
 	if (!dev->queues) {
 		dev->transport->free_device(dev);
 		return NULL;

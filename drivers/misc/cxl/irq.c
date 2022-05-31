@@ -12,6 +12,11 @@
 #include <asm/cputable.h>
 #include <misc/cxl-base.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cxl.h"
 #include "trace.h"
 
@@ -320,6 +325,10 @@ int afu_allocate_irqs(struct cxl_context *ctx, u32 count)
 	ctx->irq_count = count;
 	ctx->irq_bitmap = kcalloc(BITS_TO_LONGS(count),
 				  sizeof(*ctx->irq_bitmap), GFP_KERNEL);
+	{
+		typeof((*ctx->irq_bitmap)) __uncontained_tmp132;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (!ctx->irq_bitmap)
 		goto out;
 

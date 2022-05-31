@@ -8,6 +8,11 @@
 #include "i915_pvinfo.h"
 #include "i915_vgpu.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * DOC: fence register handling
  *
@@ -860,6 +865,10 @@ void intel_ggtt_init_fences(struct i915_ggtt *ggtt)
 	ggtt->fence_regs = kcalloc(num_fences,
 				   sizeof(*ggtt->fence_regs),
 				   GFP_KERNEL);
+	{
+		typeof((*ggtt->fence_regs)) __uncontained_tmp70;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!ggtt->fence_regs)
 		num_fences = 0;
 

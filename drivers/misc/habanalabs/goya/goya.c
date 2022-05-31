@@ -16,6 +16,11 @@
 #include <linux/iommu.h>
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -371,6 +376,10 @@ int goya_set_fixed_properties(struct hl_device *hdev)
 	prop->hw_queues_props = kcalloc(prop->max_queues,
 			sizeof(struct hw_queue_properties),
 			GFP_KERNEL);
+	{
+		struct hw_queue_properties __uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 
 	if (!prop->hw_queues_props)
 		return -ENOMEM;

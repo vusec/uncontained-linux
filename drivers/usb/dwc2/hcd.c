@@ -53,6 +53,11 @@
 #include <linux/usb/hcd.h>
 #include <linux/usb/ch11.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -5168,11 +5173,19 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
 	hsotg->frame_num_array = kcalloc(FRAME_NUM_ARRAY_SIZE,
 					 sizeof(*hsotg->frame_num_array),
 					 GFP_KERNEL);
+	{
+		typeof((*hsotg->frame_num_array)) __uncontained_tmp210;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp210;
+	}
 	if (!hsotg->frame_num_array)
 		goto error1;
 	hsotg->last_frame_num_array =
 		kcalloc(FRAME_NUM_ARRAY_SIZE,
 			sizeof(*hsotg->last_frame_num_array), GFP_KERNEL);
+	{
+		typeof((*hsotg->last_frame_num_array)) __uncontained_tmp211;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp211;
+	}
 	if (!hsotg->last_frame_num_array)
 		goto error1;
 #endif

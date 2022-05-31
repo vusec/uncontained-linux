@@ -4,6 +4,11 @@
 #include "ice_lib.h"
 #include "ice_switch.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define ICE_ETH_DA_OFFSET		0
 #define ICE_ETH_ETHTYPE_OFFSET		12
 #define ICE_ETH_VLAN_TCI_OFFSET		14
@@ -1246,6 +1251,10 @@ ice_get_recp_frm_fw(struct ice_hw *hw, struct ice_sw_recipe *recps, u8 rid,
 
 	/* we need a buffer big enough to accommodate all the recipes */
 	tmp = kcalloc(ICE_MAX_NUM_RECIPES, sizeof(*tmp), GFP_KERNEL);
+	{
+		typeof((*tmp)) __uncontained_tmp180;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp180;
+	}
 	if (!tmp)
 		return -ENOMEM;
 
@@ -4145,6 +4154,10 @@ ice_add_sw_recipe(struct ice_hw *hw, struct ice_sw_recipe *rm,
 		return -ENOSPC;
 
 	tmp = kcalloc(ICE_MAX_NUM_RECIPES, sizeof(*tmp), GFP_KERNEL);
+	{
+		typeof((*tmp)) __uncontained_tmp181;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp181;
+	}
 	if (!tmp)
 		return -ENOMEM;
 
@@ -4444,6 +4457,10 @@ ice_get_fv(struct ice_hw *hw, struct ice_adv_lkup_elem *lkups, u16 lkups_cnt,
 	u16 i;
 
 	prot_ids = kcalloc(lkups_cnt, sizeof(*prot_ids), GFP_KERNEL);
+	{
+		typeof((*prot_ids)) __uncontained_tmp182;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp182;
+	}
 	if (!prot_ids)
 		return -ENOMEM;
 

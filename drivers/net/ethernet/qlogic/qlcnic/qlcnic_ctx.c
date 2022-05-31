@@ -6,6 +6,11 @@
 
 #include "qlcnic.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static const struct qlcnic_mailbox_metadata qlcnic_mbx_tbl[] = {
 	{QLCNIC_CMD_CREATE_RX_CTX, 4, 1},
 	{QLCNIC_CMD_DESTROY_RX_CTX, 2, 1},
@@ -63,10 +68,18 @@ int qlcnic_82xx_alloc_mbx_args(struct qlcnic_cmd_args *mbx,
 			mbx->rsp.num = mbx_tbl[i].out_args;
 			mbx->req.arg = kcalloc(mbx->req.num,
 					       sizeof(u32), GFP_ATOMIC);
+			{
+				u32 __uncontained_tmp210;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp210;
+			}
 			if (!mbx->req.arg)
 				return -ENOMEM;
 			mbx->rsp.arg = kcalloc(mbx->rsp.num,
 					       sizeof(u32), GFP_ATOMIC);
+			{
+				u32 __uncontained_tmp211;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp211;
+			}
 			if (!mbx->rsp.arg) {
 				kfree(mbx->req.arg);
 				mbx->req.arg = NULL;

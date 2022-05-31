@@ -67,6 +67,11 @@
 #include "bnx2x_dcb.h"
 #include "bnx2x_sp.h"
 #include <linux/firmware.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "bnx2x_fw_file_hdr.h"
 /* FW files */
 #define FW_FILE_VERSION					\
@@ -8396,6 +8401,10 @@ int bnx2x_alloc_mem(struct bnx2x *bp)
 	}
 	bp->ilt->lines = kcalloc(ILT_MAX_LINES, sizeof(struct ilt_line),
 				 GFP_KERNEL);
+	{
+		struct ilt_line __uncontained_tmp145;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp145;
+	}
 	if (!bp->ilt->lines)
 		goto alloc_mem_err;
 

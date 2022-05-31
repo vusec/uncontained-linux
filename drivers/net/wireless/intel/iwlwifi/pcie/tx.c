@@ -11,6 +11,11 @@
 #include <net/ip6_checksum.h>
 #include <net/tso.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "iwl-debug.h"
 #include "iwl-csr.h"
 #include "iwl-prph.h"
@@ -524,6 +529,10 @@ static int iwl_pcie_tx_alloc(struct iwl_trans *trans)
 	trans_pcie->txq_memory =
 		kcalloc(trans->trans_cfg->base_params->num_of_queues,
 			sizeof(struct iwl_txq), GFP_KERNEL);
+	{
+		struct iwl_txq __uncontained_tmp236;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp236;
+	}
 	if (!trans_pcie->txq_memory) {
 		IWL_ERR(trans, "Not enough memory for txq\n");
 		ret = -ENOMEM;

@@ -14,6 +14,11 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 /*
  * sunxi_usb_reset... - reset bits in usb clk registers handling
@@ -115,6 +120,10 @@ static void __init sunxi_usb_clk_setup(struct device_node *node,
 		return;
 
 	clk_data->clks = kcalloc(qty + 1, sizeof(struct clk *), GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!clk_data->clks) {
 		kfree(clk_data);
 		return;

@@ -14,6 +14,11 @@
 #include <rdma/ib_verbs.h>
 #include <rdma/uverbs_ioctl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "efa.h"
 
 enum {
@@ -1268,6 +1273,10 @@ static int pbl_chunk_list_create(struct efa_dev *dev, struct pbl_context *pbl)
 	chunk_list->chunks = kcalloc(chunk_list_size,
 				     sizeof(*chunk_list->chunks),
 				     GFP_KERNEL);
+	{
+		typeof((*chunk_list->chunks)) __uncontained_tmp101;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!chunk_list->chunks)
 		return -ENOMEM;
 

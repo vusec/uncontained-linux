@@ -16,6 +16,11 @@
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* XGMAC Register definitions */
 #define XGMAC_CONTROL		0x00000000	/* MAC Configuration */
 #define XGMAC_FRAME_FILTER	0x00000004	/* MAC Frame Filter */
@@ -731,6 +736,10 @@ static int xgmac_dma_desc_rings_init(struct net_device *dev)
 
 	priv->rx_skbuff = kcalloc(DMA_RX_RING_SZ, sizeof(struct sk_buff *),
 				  GFP_KERNEL);
+	{
+		struct sk_buff *__uncontained_tmp140;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!priv->rx_skbuff)
 		return -ENOMEM;
 
@@ -744,6 +753,10 @@ static int xgmac_dma_desc_rings_init(struct net_device *dev)
 
 	priv->tx_skbuff = kcalloc(DMA_TX_RING_SZ, sizeof(struct sk_buff *),
 				  GFP_KERNEL);
+	{
+		struct sk_buff *__uncontained_tmp141;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp141;
+	}
 	if (!priv->tx_skbuff)
 		goto err_tx_skb;
 

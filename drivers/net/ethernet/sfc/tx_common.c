@@ -13,6 +13,11 @@
 #include "nic_common.h"
 #include "tx_common.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static unsigned int efx_tx_cb_page_count(struct efx_tx_queue *tx_queue)
 {
 	return DIV_ROUND_UP(tx_queue->ptr_mask + 1,
@@ -37,11 +42,19 @@ int efx_probe_tx_queue(struct efx_tx_queue *tx_queue)
 	/* Allocate software ring */
 	tx_queue->buffer = kcalloc(entries, sizeof(*tx_queue->buffer),
 				   GFP_KERNEL);
+	{
+		typeof((*tx_queue->buffer)) __uncontained_tmp221;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp221;
+	}
 	if (!tx_queue->buffer)
 		return -ENOMEM;
 
 	tx_queue->cb_page = kcalloc(efx_tx_cb_page_count(tx_queue),
 				    sizeof(tx_queue->cb_page[0]), GFP_KERNEL);
+	{
+		typeof((tx_queue->cb_page[0])) __uncontained_tmp222;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp222;
+	}
 	if (!tx_queue->cb_page) {
 		rc = -ENOMEM;
 		goto fail1;

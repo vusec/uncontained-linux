@@ -17,6 +17,11 @@
 #include <linux/pci.h>
 #include <linux/mutex.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "b43legacy.h"
 #include "main.h"
 #include "debugfs.h"
@@ -371,6 +376,10 @@ void b43legacy_debugfs_add_device(struct b43legacy_wldev *dev)
 	log = &e->txstatlog;
 	log->log = kcalloc(B43legacy_NR_LOGGED_TXSTATUS,
 			   sizeof(struct b43legacy_txstatus), GFP_KERNEL);
+	{
+		struct b43legacy_txstatus __uncontained_tmp197;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp197;
+	}
 	if (!log->log) {
 		b43legacyerr(dev->wl, "debugfs: add device txstatus OOM\n");
 		kfree(e);

@@ -19,6 +19,11 @@
 #include <linux/adxl.h>
 #include <acpi/nfit.h>
 #include <asm/mce.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "edac_module.h"
 #include "skx_common.h"
 
@@ -86,6 +91,10 @@ int __init skx_adxl_get(void)
 
 	adxl_values = kcalloc(adxl_component_count, sizeof(*adxl_values),
 			      GFP_KERNEL);
+	{
+		typeof((*adxl_values)) __uncontained_tmp62;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!adxl_values) {
 		adxl_component_count = 0;
 		return -ENOMEM;

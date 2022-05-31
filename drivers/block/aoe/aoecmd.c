@@ -16,6 +16,11 @@
 #include <net/net_namespace.h>
 #include <asm/unaligned.h>
 #include <linux/uio.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "aoe.h"
 
 #define MAXIOC (8192)	/* default meant to avoid most soft lockups */
@@ -1417,6 +1422,10 @@ grow_targets(struct aoedev *d)
 	oldn = d->ntargets;
 	newn = oldn * 2;
 	tt = kcalloc(newn, sizeof(*d->targets), GFP_ATOMIC);
+	{
+		typeof((*d->targets)) __uncontained_tmp29;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!tt)
 		return NULL;
 	memmove(tt, d->targets, sizeof(*d->targets) * oldn);
@@ -1685,16 +1694,28 @@ aoecmd_init(void)
 	ncpus = num_online_cpus();
 
 	iocq = kcalloc(ncpus, sizeof(struct iocq_ktio), GFP_KERNEL);
+	{
+		struct iocq_ktio __uncontained_tmp26;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp26;
+	}
 	if (!iocq)
 		return -ENOMEM;
 
 	kts = kcalloc(ncpus, sizeof(struct ktstate), GFP_KERNEL);
+	{
+		struct ktstate __uncontained_tmp27;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!kts) {
 		ret = -ENOMEM;
 		goto kts_fail;
 	}
 
 	ktiowq = kcalloc(ncpus, sizeof(wait_queue_head_t), GFP_KERNEL);
+	{
+		wait_queue_head_t __uncontained_tmp28;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp28;
+	}
 	if (!ktiowq) {
 		ret = -ENOMEM;
 		goto ktiowq_fail;

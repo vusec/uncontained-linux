@@ -738,6 +738,12 @@ static u64 sched_vslice(struct cfs_rq *cfs_rq, struct sched_entity *se)
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifdef CONFIG_SMP
 
 static int select_idle_sibling(struct task_struct *p, int prev_cpu, int cpu);
@@ -11472,9 +11478,17 @@ int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
 	int i;
 
 	tg->cfs_rq = kcalloc(nr_cpu_ids, sizeof(cfs_rq), GFP_KERNEL);
+	{
+		typeof((cfs_rq)) __uncontained_tmp311;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp311;
+	}
 	if (!tg->cfs_rq)
 		goto err;
 	tg->se = kcalloc(nr_cpu_ids, sizeof(se), GFP_KERNEL);
+	{
+		typeof((se)) __uncontained_tmp312;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp312;
+	}
 	if (!tg->se)
 		goto err;
 

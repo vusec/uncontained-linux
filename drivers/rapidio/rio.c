@@ -24,6 +24,11 @@
 #include <linux/slab.h>
 #include <linux/interrupt.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rio.h"
 
 /*
@@ -2104,6 +2109,10 @@ int rio_init_mports(void)
 	}
 
 	work = kcalloc(n, sizeof *work, GFP_KERNEL);
+	{
+		typeof(*work) __uncontained_tmp257;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp257;
+	}
 	if (!work) {
 		destroy_workqueue(rio_wq);
 		goto no_disc;

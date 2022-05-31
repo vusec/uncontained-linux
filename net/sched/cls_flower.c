@@ -31,6 +31,11 @@
 
 #include <uapi/linux/netfilter/nf_conntrack_common.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define TCA_FLOWER_KEY_CT_FLAGS_MAX \
 		((__TCA_FLOWER_KEY_CT_FLAGS_MAX - 1) << 1)
 #define TCA_FLOWER_KEY_CT_FLAGS_MASK \
@@ -2003,6 +2008,10 @@ static int fl_change(struct net *net, struct sk_buff *in_skb,
 	}
 
 	tb = kcalloc(TCA_FLOWER_MAX + 1, sizeof(struct nlattr *), GFP_KERNEL);
+	{
+		struct nlattr *__uncontained_tmp246;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp246;
+	}
 	if (!tb) {
 		err = -ENOBUFS;
 		goto errout_mask_alloc;
@@ -2377,6 +2386,10 @@ static void *fl_tmplt_create(struct net *net, struct tcf_chain *chain,
 		return ERR_PTR(-EINVAL);
 
 	tb = kcalloc(TCA_FLOWER_MAX + 1, sizeof(struct nlattr *), GFP_KERNEL);
+	{
+		struct nlattr *__uncontained_tmp247;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp247;
+	}
 	if (!tb)
 		return ERR_PTR(-ENOBUFS);
 	err = nla_parse_nested_deprecated(tb, TCA_FLOWER_MAX,

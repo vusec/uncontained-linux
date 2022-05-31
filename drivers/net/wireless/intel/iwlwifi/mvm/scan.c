@@ -13,6 +13,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mvm.h"
 #include "fw/api/scan.h"
 #include "iwl-io.h"
@@ -547,6 +552,10 @@ iwl_mvm_config_sched_scan_profiles(struct iwl_mvm *mvm,
 		blocklist_len = IWL_SCAN_MAX_BLACKLIST_LEN;
 
 	blocklist = kcalloc(blocklist_len, sizeof(*blocklist), GFP_KERNEL);
+	{
+		typeof((*blocklist)) __uncontained_tmp202;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp202;
+	}
 	if (!blocklist)
 		return -ENOMEM;
 

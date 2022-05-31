@@ -28,6 +28,11 @@
 #include <linux/slab.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dw-axi-dmac.h"
 #include "../dmaengine.h"
 #include "../virt-dma.h"
@@ -246,6 +251,10 @@ static struct axi_dma_desc *axi_desc_alloc(u32 num)
 		return NULL;
 
 	desc->hw_desc = kcalloc(num, sizeof(*desc->hw_desc), GFP_NOWAIT);
+	{
+		typeof((*desc->hw_desc)) __uncontained_tmp62;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!desc->hw_desc) {
 		kfree(desc);
 		return NULL;

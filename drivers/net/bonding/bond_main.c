@@ -85,6 +85,11 @@
 #include <net/bonding.h>
 #include <net/bond_3ad.h>
 #include <net/bond_alb.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #if IS_ENABLED(CONFIG_TLS_DEVICE)
 #include <net/tls.h>
 #endif
@@ -2867,6 +2872,10 @@ struct bond_vlan_tag *bond_verify_device_path(struct net_device *start_dev,
 
 	if (start_dev == end_dev) {
 		tags = kcalloc(level + 1, sizeof(*tags), GFP_ATOMIC);
+		{
+			typeof((*tags)) __uncontained_tmp142;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+		}
 		if (!tags)
 			return ERR_PTR(-ENOMEM);
 		tags[level].vlan_proto = VLAN_N_VID;

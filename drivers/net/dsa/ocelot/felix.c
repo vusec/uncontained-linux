@@ -23,6 +23,11 @@
 #include <linux/of.h>
 #include <net/pkt_sched.h>
 #include <net/dsa.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "felix.h"
 
 static int felix_tag_8021q_rxvlan_add(struct felix *felix, int port, u16 vid,
@@ -1021,6 +1026,10 @@ static int felix_init_structs(struct felix *felix, int num_phys_ports)
 
 	port_phy_modes = kcalloc(num_phys_ports, sizeof(phy_interface_t),
 				 GFP_KERNEL);
+	{
+		phy_interface_t __uncontained_tmp140;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!port_phy_modes)
 		return -ENOMEM;
 

@@ -20,6 +20,11 @@
 #include <linux/pci.h>
 #include <linux/list.h>
 #include <linux/init.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ibmphp.h"
 
 /*
@@ -71,11 +76,19 @@ static struct controller *alloc_ebda_hpc(u32 slot_count, u32 bus_count)
 		goto error;
 
 	slots = kcalloc(slot_count, sizeof(struct ebda_hpc_slot), GFP_KERNEL);
+	{
+		struct ebda_hpc_slot __uncontained_tmp234;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp234;
+	}
 	if (!slots)
 		goto error_contr;
 	controller->slots = slots;
 
 	buses = kcalloc(bus_count, sizeof(struct ebda_hpc_bus), GFP_KERNEL);
+	{
+		struct ebda_hpc_bus __uncontained_tmp235;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp235;
+	}
 	if (!buses)
 		goto error_slots;
 	controller->buses = buses;

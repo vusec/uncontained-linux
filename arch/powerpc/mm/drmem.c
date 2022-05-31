@@ -14,6 +14,11 @@
 #include <asm/prom.h>
 #include <asm/drmem.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int n_root_addr_cells, n_root_size_cells;
 
 static struct drmem_lmb_info __drmem_info;
@@ -432,6 +437,10 @@ static void __init init_drmem_v1_lmbs(const __be32 *prop)
 
 	drmem_info->lmbs = kcalloc(drmem_info->n_lmbs, sizeof(*lmb),
 				   GFP_KERNEL);
+	{
+		typeof((*lmb)) __uncontained_tmp5;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!drmem_info->lmbs)
 		return;
 
@@ -460,6 +469,10 @@ static void __init init_drmem_v2_lmbs(const __be32 *prop)
 
 	drmem_info->lmbs = kcalloc(drmem_info->n_lmbs, sizeof(*lmb),
 				   GFP_KERNEL);
+	{
+		typeof((*lmb)) __uncontained_tmp6;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!drmem_info->lmbs)
 		return;
 

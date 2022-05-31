@@ -22,6 +22,11 @@
 #include <asm/vvar.h>
 #include <asm/page.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 unsigned int __read_mostly vdso_enabled = 1;
 
 static struct vm_special_mapping vvar_mapping = {
@@ -266,6 +271,10 @@ int __init init_vdso_image(const struct vdso_image *image,
 		goto oom;
 
 	cpp = kcalloc(cnpages, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	vdso_mapping->pages = cpp;
 
 	if (!cpp)
@@ -288,6 +297,10 @@ int __init init_vdso_image(const struct vdso_image *image,
 		if (WARN_ON(dnpages != 1))
 			goto oom;
 		dpp = kcalloc(dnpages, sizeof(struct page *), GFP_KERNEL);
+		{
+			struct page *__uncontained_tmp11;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp11;
+		}
 		vvar_mapping.pages = dpp;
 
 		if (!dpp)

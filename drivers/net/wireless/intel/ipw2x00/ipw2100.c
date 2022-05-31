@@ -183,6 +183,11 @@ static struct ipw2100_fw ipw2100_firmware;
 #endif
 
 #include <linux/moduleparam.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 module_param(debug, int, 0444);
 module_param_named(mode, network_mode, int, 0444);
 module_param(channel, int, 0444);
@@ -1904,6 +1909,10 @@ static int ipw2100_wdev_init(struct net_device *dev)
 		bg_band->channels = kcalloc(geo->bg_channels,
 					    sizeof(struct ieee80211_channel),
 					    GFP_KERNEL);
+		{
+			struct ieee80211_channel __uncontained_tmp201;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp201;
+		}
 		if (!bg_band->channels) {
 			ipw2100_down(priv);
 			return -ENOMEM;

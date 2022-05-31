@@ -18,6 +18,11 @@
 #include <linux/iio/iio.h>
 #include <linux/iio/sysfs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define AD5360_CMD(x)				((x) << 22)
 #define AD5360_ADDR(x)				((x) << 16)
 
@@ -441,6 +446,10 @@ static int ad5360_alloc_channels(struct iio_dev *indio_dev)
 
 	channels = kcalloc(st->chip_info->num_channels,
 			   sizeof(struct iio_chan_spec), GFP_KERNEL);
+	{
+		struct iio_chan_spec __uncontained_tmp14;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+	}
 
 	if (!channels)
 		return -ENOMEM;

@@ -19,6 +19,11 @@
 #include <asm/imc-pmu.h>
 #include <asm/cputhreads.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static struct dentry *imc_debugfs_parent;
 
 /* Helpers to export imc command and mode via debugfs */
@@ -93,10 +98,18 @@ static int imc_get_mem_addr_nest(struct device_node *node,
 		return -ENODEV;
 
 	base_addr_arr = kcalloc(nr_chips, sizeof(*base_addr_arr), GFP_KERNEL);
+	{
+		typeof((*base_addr_arr)) __uncontained_tmp12;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!base_addr_arr)
 		return -ENOMEM;
 
 	chipid_arr = kcalloc(nr_chips, sizeof(*chipid_arr), GFP_KERNEL);
+	{
+		typeof((*chipid_arr)) __uncontained_tmp13;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!chipid_arr) {
 		kfree(base_addr_arr);
 		return -ENOMEM;
@@ -111,6 +124,10 @@ static int imc_get_mem_addr_nest(struct device_node *node,
 
 	pmu_ptr->mem_info = kcalloc(nr_chips + 1, sizeof(*pmu_ptr->mem_info),
 				    GFP_KERNEL);
+	{
+		typeof((*pmu_ptr->mem_info)) __uncontained_tmp14;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!pmu_ptr->mem_info)
 		goto error;
 

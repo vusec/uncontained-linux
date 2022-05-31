@@ -34,6 +34,11 @@
 #include <asm/io.h>
 #include <asm/smp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "appldata.h"
 
 
@@ -367,6 +372,10 @@ int appldata_register_ops(struct appldata_ops *ops)
 		return -EINVAL;
 
 	ops->ctl_table = kcalloc(4, sizeof(struct ctl_table), GFP_KERNEL);
+	{
+		struct ctl_table __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!ops->ctl_table)
 		return -ENOMEM;
 

@@ -133,6 +133,11 @@
 #include <linux/input/sparse-keymap.h>
 #include <linux/platform_device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 MODULE_AUTHOR("Hiroshi Miura <miura@da-cha.org>");
 MODULE_AUTHOR("David Bronaugh <dbronaugh@linuxboxen.org>");
@@ -928,6 +933,10 @@ static int acpi_pcc_hotkey_add(struct acpi_device *device)
 	}
 
 	pcc->sinf = kcalloc(num_sifr + 1, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp220;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp220;
+	}
 	if (!pcc->sinf) {
 		result = -ENOMEM;
 		goto out_hotkey;

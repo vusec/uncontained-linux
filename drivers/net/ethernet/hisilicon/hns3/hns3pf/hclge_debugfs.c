@@ -3,6 +3,11 @@
 
 #include <linux/device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hclge_debugfs.h"
 #include "hclge_err.h"
 #include "hclge_main.h"
@@ -179,6 +184,10 @@ hclge_dbg_dump_reg_tqp(struct hclge_dev *hdev,
 		return ret;
 
 	desc_src = kcalloc(bd_num, sizeof(struct hclge_desc), GFP_KERNEL);
+	{
+		struct hclge_desc __uncontained_tmp161;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp161;
+	}
 	if (!desc_src)
 		return -ENOMEM;
 
@@ -233,6 +242,10 @@ hclge_dbg_dump_reg_common(struct hclge_dev *hdev,
 		return ret;
 
 	desc_src = kcalloc(bd_num, sizeof(struct hclge_desc), GFP_KERNEL);
+	{
+		struct hclge_desc __uncontained_tmp162;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp162;
+	}
 	if (!desc_src)
 		return -ENOMEM;
 
@@ -1527,6 +1540,10 @@ static int hclge_dbg_dump_fd_tcam(struct hclge_dev *hdev, char *buf, int len)
 		return 0;
 
 	rule_locs = kcalloc(rule_num, sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp163;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp163;
+	}
 	if (!rule_locs)
 		return -ENOMEM;
 
@@ -1744,6 +1761,10 @@ hclge_dbg_get_imp_stats_info(struct hclge_dev *hdev, char *buf, int len)
 	}
 
 	desc_src = kcalloc(bd_num, sizeof(struct hclge_desc), GFP_KERNEL);
+	{
+		struct hclge_desc __uncontained_tmp164;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp164;
+	}
 	if (!desc_src)
 		return -ENOMEM;
 

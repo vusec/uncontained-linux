@@ -37,6 +37,11 @@
 #include <linux/aer.h>
 #include <linux/crash_dump.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2116,6 +2121,10 @@ lpfc_sli_next_iotag(struct lpfc_hba *phba, struct lpfc_iocbq *iocbq)
 		spin_unlock_irq(&phba->hbalock);
 		new_arr = kcalloc(new_len, sizeof(struct lpfc_iocbq *),
 				  GFP_KERNEL);
+		{
+			struct lpfc_iocbq *__uncontained_tmp182;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp182;
+		}
 		if (new_arr) {
 			spin_lock_irq(&phba->hbalock);
 			old_arr = psli->iocbq_lookup;
@@ -5660,6 +5669,10 @@ lpfc_sli_hba_setup(struct lpfc_hba *phba)
 			phba->vpi_bmask = kcalloc(longs,
 						  sizeof(unsigned long),
 						  GFP_KERNEL);
+			{
+				unsigned long __uncontained_tmp183;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp183;
+			}
 			if (!phba->vpi_bmask) {
 				rc = -ENOMEM;
 				goto lpfc_sli_hba_setup_error;
@@ -5668,6 +5681,10 @@ lpfc_sli_hba_setup(struct lpfc_hba *phba)
 			phba->vpi_ids = kcalloc(phba->max_vpi + 1,
 						sizeof(uint16_t),
 						GFP_KERNEL);
+			{
+				uint16_t __uncontained_tmp184;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp184;
+			}
 			if (!phba->vpi_ids) {
 				kfree(phba->vpi_bmask);
 				rc = -ENOMEM;
@@ -6399,6 +6416,10 @@ lpfc_sli4_alloc_extent(struct lpfc_hba *phba, uint16_t type)
 		phba->sli4_hba.rpi_bmask = kcalloc(longs,
 						   sizeof(unsigned long),
 						   GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp185;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp185;
+		}
 		if (unlikely(!phba->sli4_hba.rpi_bmask)) {
 			rc = -ENOMEM;
 			goto err_exit;
@@ -6406,6 +6427,10 @@ lpfc_sli4_alloc_extent(struct lpfc_hba *phba, uint16_t type)
 		phba->sli4_hba.rpi_ids = kcalloc(rsrc_id_cnt,
 						 sizeof(uint16_t),
 						 GFP_KERNEL);
+		{
+			uint16_t __uncontained_tmp186;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp186;
+		}
 		if (unlikely(!phba->sli4_hba.rpi_ids)) {
 			kfree(phba->sli4_hba.rpi_bmask);
 			rc = -ENOMEM;
@@ -6427,12 +6452,20 @@ lpfc_sli4_alloc_extent(struct lpfc_hba *phba, uint16_t type)
 	case LPFC_RSC_TYPE_FCOE_VPI:
 		phba->vpi_bmask = kcalloc(longs, sizeof(unsigned long),
 					  GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp187;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp187;
+		}
 		if (unlikely(!phba->vpi_bmask)) {
 			rc = -ENOMEM;
 			goto err_exit;
 		}
 		phba->vpi_ids = kcalloc(rsrc_id_cnt, sizeof(uint16_t),
 					 GFP_KERNEL);
+		{
+			uint16_t __uncontained_tmp188;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp188;
+		}
 		if (unlikely(!phba->vpi_ids)) {
 			kfree(phba->vpi_bmask);
 			rc = -ENOMEM;
@@ -6448,6 +6481,10 @@ lpfc_sli4_alloc_extent(struct lpfc_hba *phba, uint16_t type)
 		phba->sli4_hba.xri_bmask = kcalloc(longs,
 						   sizeof(unsigned long),
 						   GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp189;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp189;
+		}
 		if (unlikely(!phba->sli4_hba.xri_bmask)) {
 			rc = -ENOMEM;
 			goto err_exit;
@@ -6456,6 +6493,10 @@ lpfc_sli4_alloc_extent(struct lpfc_hba *phba, uint16_t type)
 		phba->sli4_hba.xri_ids = kcalloc(rsrc_id_cnt,
 						 sizeof(uint16_t),
 						 GFP_KERNEL);
+		{
+			uint16_t __uncontained_tmp190;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp190;
+		}
 		if (unlikely(!phba->sli4_hba.xri_ids)) {
 			kfree(phba->sli4_hba.xri_bmask);
 			rc = -ENOMEM;
@@ -6471,6 +6512,10 @@ lpfc_sli4_alloc_extent(struct lpfc_hba *phba, uint16_t type)
 		phba->sli4_hba.vfi_bmask = kcalloc(longs,
 						   sizeof(unsigned long),
 						   GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp191;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp191;
+		}
 		if (unlikely(!phba->sli4_hba.vfi_bmask)) {
 			rc = -ENOMEM;
 			goto err_exit;
@@ -6478,6 +6523,10 @@ lpfc_sli4_alloc_extent(struct lpfc_hba *phba, uint16_t type)
 		phba->sli4_hba.vfi_ids = kcalloc(rsrc_id_cnt,
 						 sizeof(uint16_t),
 						 GFP_KERNEL);
+		{
+			uint16_t __uncontained_tmp192;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp192;
+		}
 		if (unlikely(!phba->sli4_hba.vfi_ids)) {
 			kfree(phba->sli4_hba.vfi_bmask);
 			rc = -ENOMEM;
@@ -7160,12 +7209,20 @@ lpfc_sli4_alloc_resource_identifiers(struct lpfc_hba *phba)
 		phba->sli4_hba.rpi_bmask = kcalloc(longs,
 						   sizeof(unsigned long),
 						   GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp193;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp193;
+		}
 		if (unlikely(!phba->sli4_hba.rpi_bmask)) {
 			rc = -ENOMEM;
 			goto err_exit;
 		}
 		phba->sli4_hba.rpi_ids = kcalloc(count, sizeof(uint16_t),
 						 GFP_KERNEL);
+		{
+			uint16_t __uncontained_tmp194;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp194;
+		}
 		if (unlikely(!phba->sli4_hba.rpi_ids)) {
 			rc = -ENOMEM;
 			goto free_rpi_bmask;
@@ -7187,12 +7244,20 @@ lpfc_sli4_alloc_resource_identifiers(struct lpfc_hba *phba)
 		longs = (count + BITS_PER_LONG - 1) / BITS_PER_LONG;
 		phba->vpi_bmask = kcalloc(longs, sizeof(unsigned long),
 					  GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp195;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp195;
+		}
 		if (unlikely(!phba->vpi_bmask)) {
 			rc = -ENOMEM;
 			goto free_rpi_ids;
 		}
 		phba->vpi_ids = kcalloc(count, sizeof(uint16_t),
 					GFP_KERNEL);
+		{
+			uint16_t __uncontained_tmp196;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp196;
+		}
 		if (unlikely(!phba->vpi_ids)) {
 			rc = -ENOMEM;
 			goto free_vpi_bmask;
@@ -7215,6 +7280,10 @@ lpfc_sli4_alloc_resource_identifiers(struct lpfc_hba *phba)
 		phba->sli4_hba.xri_bmask = kcalloc(longs,
 						   sizeof(unsigned long),
 						   GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp197;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp197;
+		}
 		if (unlikely(!phba->sli4_hba.xri_bmask)) {
 			rc = -ENOMEM;
 			goto free_vpi_ids;
@@ -7222,6 +7291,10 @@ lpfc_sli4_alloc_resource_identifiers(struct lpfc_hba *phba)
 		phba->sli4_hba.max_cfg_param.xri_used = 0;
 		phba->sli4_hba.xri_ids = kcalloc(count, sizeof(uint16_t),
 						 GFP_KERNEL);
+		{
+			uint16_t __uncontained_tmp198;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp198;
+		}
 		if (unlikely(!phba->sli4_hba.xri_ids)) {
 			rc = -ENOMEM;
 			goto free_xri_bmask;
@@ -7244,12 +7317,20 @@ lpfc_sli4_alloc_resource_identifiers(struct lpfc_hba *phba)
 		phba->sli4_hba.vfi_bmask = kcalloc(longs,
 						   sizeof(unsigned long),
 						   GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp199;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp199;
+		}
 		if (unlikely(!phba->sli4_hba.vfi_bmask)) {
 			rc = -ENOMEM;
 			goto free_xri_ids;
 		}
 		phba->sli4_hba.vfi_ids = kcalloc(count, sizeof(uint16_t),
 						 GFP_KERNEL);
+		{
+			uint16_t __uncontained_tmp200;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp200;
+		}
 		if (unlikely(!phba->sli4_hba.vfi_ids)) {
 			rc = -ENOMEM;
 			goto free_vfi_bmask;

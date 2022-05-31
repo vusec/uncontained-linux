@@ -12,6 +12,11 @@
 #include <net/tso.h>
 #include <uapi/linux/bpf.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "nic_reg.h"
 #include "nic.h"
 #include "q_struct.h"
@@ -291,6 +296,10 @@ static int  nicvf_init_rbdr(struct nicvf *nic, struct rbdr *rbdr,
 	rbdr->pgcnt = roundup_pow_of_two(rbdr->pgcnt);
 	rbdr->pgcache = kcalloc(rbdr->pgcnt, sizeof(*rbdr->pgcache),
 				GFP_KERNEL);
+	{
+		typeof((*rbdr->pgcache)) __uncontained_tmp154;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp154;
+	}
 	if (!rbdr->pgcache)
 		return -ENOMEM;
 	rbdr->pgidx = 0;
@@ -513,6 +522,10 @@ static int nicvf_init_snd_queue(struct nicvf *nic,
 
 	sq->desc = sq->dmem.base;
 	sq->skbuff = kcalloc(q_len, sizeof(u64), GFP_KERNEL);
+	{
+		u64 __uncontained_tmp152;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp152;
+	}
 	if (!sq->skbuff)
 		return -ENOMEM;
 
@@ -526,6 +539,10 @@ static int nicvf_init_snd_queue(struct nicvf *nic,
 	if (qidx < nic->pnicvf->xdp_tx_queues) {
 		/* Alloc memory to save page pointers for XDP_TX */
 		sq->xdp_page = kcalloc(q_len, sizeof(u64), GFP_KERNEL);
+		{
+			u64 __uncontained_tmp153;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp153;
+		}
 		if (!sq->xdp_page)
 			return -ENOMEM;
 		sq->xdp_desc_cnt = 0;

@@ -37,6 +37,11 @@
 #include <linux/slab.h>
 #include <linux/timer.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "tw686x.h"
 #include "tw686x-regs.h"
 
@@ -252,6 +257,10 @@ static int tw686x_probe(struct pci_dev *pci_dev,
 
 	dev->video_channels = kcalloc(max_channels(dev),
 		sizeof(*dev->video_channels), GFP_KERNEL);
+	{
+		typeof((*dev->video_channels)) __uncontained_tmp126;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp126;
+	}
 	if (!dev->video_channels) {
 		err = -ENOMEM;
 		goto free_dev;
@@ -259,6 +268,10 @@ static int tw686x_probe(struct pci_dev *pci_dev,
 
 	dev->audio_channels = kcalloc(max_channels(dev),
 		sizeof(*dev->audio_channels), GFP_KERNEL);
+	{
+		typeof((*dev->audio_channels)) __uncontained_tmp127;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp127;
+	}
 	if (!dev->audio_channels) {
 		err = -ENOMEM;
 		goto free_video;

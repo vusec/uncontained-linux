@@ -10,6 +10,11 @@
 #include <kvm/arm_vgic.h>
 #include <asm/kvm_emulate.h>
 #include <asm/kvm_mmu.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "vgic.h"
 
 /*
@@ -136,6 +141,10 @@ static int kvm_vgic_dist_init(struct kvm *kvm, unsigned int nr_spis)
 	int i;
 
 	dist->spis = kcalloc(nr_spis, sizeof(struct vgic_irq), GFP_KERNEL_ACCOUNT);
+	{
+		struct vgic_irq __uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (!dist->spis)
 		return  -ENOMEM;
 

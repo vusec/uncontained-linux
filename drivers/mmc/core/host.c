@@ -24,6 +24,11 @@
 #include <linux/mmc/card.h>
 #include <linux/mmc/slot-gpio.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -474,6 +479,10 @@ int mmc_of_parse_voltage(struct mmc_host *host, u32 *mask)
 	}
 
 	voltage_ranges = kcalloc(2 * num_ranges, sizeof(*voltage_ranges), GFP_KERNEL);
+	{
+		typeof((*voltage_ranges)) __uncontained_tmp135;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp135;
+	}
 	if (!voltage_ranges)
 		return -ENOMEM;
 

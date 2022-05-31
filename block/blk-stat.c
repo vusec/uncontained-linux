@@ -8,6 +8,11 @@
 #include <linux/rculist.h>
 #include <linux/blk-mq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "blk-stat.h"
 #include "blk-mq.h"
 #include "blk.h"
@@ -237,6 +242,10 @@ bool blk_stats_alloc_enable(struct request_queue *q)
 
 	poll_stat = kcalloc(BLK_MQ_POLL_STATS_BKTS, sizeof(*poll_stat),
 				GFP_ATOMIC);
+	{
+		typeof((*poll_stat)) __uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!poll_stat)
 		return false;
 

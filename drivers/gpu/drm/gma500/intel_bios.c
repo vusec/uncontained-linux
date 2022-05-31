@@ -8,6 +8,11 @@
 #include <drm/drm.h>
 #include <drm/drm_dp_helper.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "intel_bios.h"
 #include "psb_drv.h"
 #include "psb_intel_drv.h"
@@ -477,6 +482,10 @@ parse_device_mapping(struct drm_psb_private *dev_priv,
 		return;
 	}
 	dev_priv->child_dev = kcalloc(count, sizeof(*p_child), GFP_KERNEL);
+	{
+		typeof((*p_child)) __uncontained_tmp66;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!dev_priv->child_dev) {
 		DRM_DEBUG_KMS("No memory space for child devices\n");
 		return;

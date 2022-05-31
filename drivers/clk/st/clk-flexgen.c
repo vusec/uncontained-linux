@@ -16,6 +16,11 @@
 #include <linux/of.h>
 #include <linux/of_address.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct clkgen_clk_out {
 	const char *name;
 	unsigned long flags;
@@ -285,6 +290,10 @@ static const char ** __init flexgen_get_parents(struct device_node *np,
 		return NULL;
 
 	parents = kcalloc(nparents, sizeof(const char *), GFP_KERNEL);
+	{
+		const char *__uncontained_tmp30;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!parents)
 		return NULL;
 
@@ -693,6 +702,10 @@ static void __init st_of_flexgen_setup(struct device_node *np)
 
 	clk_data->clks = kcalloc(clk_data->clk_num, sizeof(struct clk *),
 			GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!clk_data->clks)
 		goto err;
 

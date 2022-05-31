@@ -8,6 +8,11 @@
 #include <linux/slab.h>
 
 #include <asm/page.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #ifdef GENERIC_TIME_VSYSCALL
 #include <vdso/datapage.h>
 #else
@@ -35,6 +40,10 @@ static int __init vdso_init(void)
 	vdso_pages = (vdso_end - vdso_start) >> PAGE_SHIFT;
 	vdso_pagelist =
 		kcalloc(vdso_pages + 1, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (unlikely(vdso_pagelist == NULL)) {
 		pr_err("vdso: pagelist allocation failed\n");
 		return -ENOMEM;

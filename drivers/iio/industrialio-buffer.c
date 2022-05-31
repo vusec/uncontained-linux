@@ -28,6 +28,11 @@
 #include <linux/iio/buffer.h>
 #include <linux/iio/buffer_impl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static const char * const iio_endian_prefix[] = {
 	[IIO_BE] = "be",
 	[IIO_LE] = "le",
@@ -1457,6 +1462,10 @@ static int iio_buffer_register_legacy_sysfs_groups(struct iio_dev *indio_dev,
 	int ret;
 
 	attrs = kcalloc(buffer_attrcount + 1, sizeof(*attrs), GFP_KERNEL);
+	{
+		typeof((*attrs)) __uncontained_tmp85;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+	}
 	if (!attrs)
 		return -ENOMEM;
 
@@ -1471,6 +1480,10 @@ static int iio_buffer_register_legacy_sysfs_groups(struct iio_dev *indio_dev,
 		goto error_free_buffer_attrs;
 
 	attrs = kcalloc(scan_el_attrcount + 1, sizeof(*attrs), GFP_KERNEL);
+	{
+		typeof((*attrs)) __uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!attrs) {
 		ret = -ENOMEM;
 		goto error_free_buffer_attrs;
@@ -1650,6 +1663,10 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
 
 	attrn = buffer_attrcount + scan_el_attrcount + ARRAY_SIZE(iio_buffer_attrs);
 	attr = kcalloc(attrn + 1, sizeof(* attr), GFP_KERNEL);
+	{
+		typeof((*attr)) __uncontained_tmp87;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (!attr) {
 		ret = -ENOMEM;
 		goto error_free_scan_mask;

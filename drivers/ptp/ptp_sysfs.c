@@ -8,6 +8,11 @@
 #include <linux/capability.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -434,10 +439,18 @@ int ptp_populate_pin_groups(struct ptp_clock *ptp)
 
 	ptp->pin_dev_attr = kcalloc(n_pins, sizeof(*ptp->pin_dev_attr),
 				    GFP_KERNEL);
+	{
+		typeof((*ptp->pin_dev_attr)) __uncontained_tmp219;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp219;
+	}
 	if (!ptp->pin_dev_attr)
 		goto no_dev_attr;
 
 	ptp->pin_attr = kcalloc(1 + n_pins, sizeof(*ptp->pin_attr), GFP_KERNEL);
+	{
+		typeof((*ptp->pin_attr)) __uncontained_tmp220;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp220;
+	}
 	if (!ptp->pin_attr)
 		goto no_pin_attr;
 

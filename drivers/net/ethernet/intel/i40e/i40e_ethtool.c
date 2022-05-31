@@ -7,6 +7,11 @@
 #include "i40e_diag.h"
 #include "i40e_txrx_common.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* ethtool statistics helpers */
 
 /**
@@ -2023,6 +2028,10 @@ static int i40e_set_ringparam(struct net_device *netdev,
 			    vsi->tx_rings[0]->count, new_tx_count);
 		tx_rings = kcalloc(tx_alloc_queue_pairs,
 				   sizeof(struct i40e_ring), GFP_KERNEL);
+		{
+			struct i40e_ring __uncontained_tmp155;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp155;
+		}
 		if (!tx_rings) {
 			err = -ENOMEM;
 			goto done;
@@ -2062,6 +2071,10 @@ static int i40e_set_ringparam(struct net_device *netdev,
 			    vsi->rx_rings[0]->count, new_rx_count);
 		rx_rings = kcalloc(vsi->alloc_queue_pairs,
 				   sizeof(struct i40e_ring), GFP_KERNEL);
+		{
+			struct i40e_ring __uncontained_tmp156;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp156;
+		}
 		if (!rx_rings) {
 			err = -ENOMEM;
 			goto free_tx;

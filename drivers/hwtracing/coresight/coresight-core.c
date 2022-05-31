@@ -19,6 +19,11 @@
 #include <linux/delay.h>
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "coresight-etm-perf.h"
 #include "coresight-priv.h"
 #include "coresight-syscfg.h"
@@ -1592,6 +1597,10 @@ struct coresight_device *coresight_register(struct coresight_desc *desc)
 	}
 
 	refcnts = kcalloc(nr_refcnts, sizeof(*refcnts), GFP_KERNEL);
+	{
+		typeof((*refcnts)) __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!refcnts) {
 		ret = -ENOMEM;
 		goto err_free_csdev;

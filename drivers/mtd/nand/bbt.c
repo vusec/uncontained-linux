@@ -12,6 +12,11 @@
 #include <linux/mtd/nand.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * nanddev_bbt_init() - Initialize the BBT (Bad Block Table)
  * @nand: NAND device
@@ -29,6 +34,10 @@ int nanddev_bbt_init(struct nand_device *nand)
 
 	nand->bbt.cache = kcalloc(nwords, sizeof(*nand->bbt.cache),
 				  GFP_KERNEL);
+	{
+		typeof((*nand->bbt.cache)) __uncontained_tmp141;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp141;
+	}
 	if (!nand->bbt.cache)
 		return -ENOMEM;
 

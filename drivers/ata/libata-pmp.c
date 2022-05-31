@@ -10,6 +10,11 @@
 #include <linux/export.h>
 #include <linux/libata.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "libata.h"
 #include "libata-transport.h"
 
@@ -341,6 +346,10 @@ static int sata_pmp_init_links (struct ata_port *ap, int nr_ports)
 	if (!pmp_link) {
 		pmp_link = kcalloc(SATA_PMP_MAX_PORTS, sizeof(pmp_link[0]),
 				   GFP_NOIO);
+		{
+			typeof((pmp_link[0])) __uncontained_tmp22;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+		}
 		if (!pmp_link)
 			return -ENOMEM;
 

@@ -23,6 +23,11 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifdef CONFIG_SUPERH
 #include <asm/platform_early.h>
 #endif
@@ -422,6 +427,10 @@ static int sh_mtu2_setup(struct sh_mtu2_device *mtu,
 
 	mtu->channels = kcalloc(mtu->num_channels, sizeof(*mtu->channels),
 				GFP_KERNEL);
+	{
+		typeof((*mtu->channels)) __uncontained_tmp41;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (mtu->channels == NULL) {
 		ret = -ENOMEM;
 		goto err_unmap;

@@ -50,6 +50,11 @@
 #include <sound/pcm_drm_eld.h>
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "media/cec.h"
 #include "vc4_drv.h"
 #include "vc4_hdmi.h"
@@ -2294,6 +2299,10 @@ static int vc4_hdmi_build_regset(struct vc4_hdmi *vc4_hdmi,
 
 	regs = kcalloc(variant->num_registers, sizeof(*regs),
 		       GFP_KERNEL);
+	{
+		typeof((*regs)) __uncontained_tmp81;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!regs)
 		return -ENOMEM;
 

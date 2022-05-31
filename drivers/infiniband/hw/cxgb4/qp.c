@@ -33,6 +33,11 @@
 #include <linux/module.h>
 #include <rdma/uverbs_ioctl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "iw_cxgb4.h"
 
 static int db_delay_usecs = 1;
@@ -225,6 +230,10 @@ static int create_qp(struct c4iw_rdev *rdev, struct t4_wq *wq,
 	if (!user) {
 		wq->sq.sw_sq = kcalloc(wq->sq.size, sizeof(*wq->sq.sw_sq),
 				       GFP_KERNEL);
+		{
+			typeof((*wq->sq.sw_sq)) __uncontained_tmp17;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+		}
 		if (!wq->sq.sw_sq) {
 			ret = -ENOMEM;
 			goto free_rq_qid;//FIXME
@@ -234,6 +243,10 @@ static int create_qp(struct c4iw_rdev *rdev, struct t4_wq *wq,
 			wq->rq.sw_rq = kcalloc(wq->rq.size,
 					       sizeof(*wq->rq.sw_rq),
 					       GFP_KERNEL);
+			{
+				typeof((*wq->rq.sw_rq)) __uncontained_tmp18;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+			}
 			if (!wq->rq.sw_rq) {
 				ret = -ENOMEM;
 				goto free_sw_sq;
@@ -2527,11 +2540,19 @@ static int alloc_srq_queue(struct c4iw_srq *srq, struct c4iw_dev_ucontext *uctx,
 	if (!user) {
 		wq->sw_rq = kcalloc(wq->size, sizeof(*wq->sw_rq),
 				    GFP_KERNEL);
+		{
+			typeof((*wq->sw_rq)) __uncontained_tmp19;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+		}
 		if (!wq->sw_rq)
 			goto err_put_qpid;
 		wq->pending_wrs = kcalloc(srq->wq.size,
 					  sizeof(*srq->wq.pending_wrs),
 					  GFP_KERNEL);
+		{
+			typeof((*srq->wq.pending_wrs)) __uncontained_tmp20;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+		}
 		if (!wq->pending_wrs)
 			goto err_free_sw_rq;
 	}

@@ -8,6 +8,11 @@
 #include "cxgb4_filter.h"
 #include "cxgb4_tc_flower.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int cxgb4_matchall_egress_validate(struct net_device *dev,
 					  struct tc_cls_matchall_offload *cls)
 {
@@ -499,6 +504,10 @@ int cxgb4_init_tc_matchall(struct adapter *adap)
 	tc_port_matchall = kcalloc(adap->params.nports,
 				   sizeof(*tc_port_matchall),
 				   GFP_KERNEL);
+	{
+		typeof((*tc_port_matchall)) __uncontained_tmp158;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp158;
+	}
 	if (!tc_port_matchall) {
 		ret = -ENOMEM;
 		goto out_free_matchall;

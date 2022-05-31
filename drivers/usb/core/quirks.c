@@ -10,6 +10,11 @@
 #include <linux/usb.h>
 #include <linux/usb/quirks.h>
 #include <linux/usb/hcd.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "usb.h"
 
 struct quirk_entry {
@@ -63,6 +68,10 @@ static int quirks_param_set(const char *value, const struct kernel_param *kp)
 
 	quirk_list = kcalloc(quirk_count, sizeof(struct quirk_entry),
 			     GFP_KERNEL);
+	{
+		struct quirk_entry __uncontained_tmp259;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp259;
+	}
 	if (!quirk_list) {
 		quirk_count = 0;
 		mutex_unlock(&quirk_mutex);

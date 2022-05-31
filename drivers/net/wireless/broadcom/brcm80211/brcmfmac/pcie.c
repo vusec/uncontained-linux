@@ -20,6 +20,11 @@
 #include <brcmu_wifi.h>
 #include <brcm_hw_ids.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Custom brcmf_err() that takes bus arg and passes it further */
 #define brcmf_err(bus, fmt, ...)					\
 	do {								\
@@ -1249,6 +1254,10 @@ static int brcmf_pcie_init_ringbuffers(struct brcmf_pciedev_info *devinfo)
 	devinfo->shared.max_submissionrings = max_submissionrings;
 	devinfo->shared.max_completionrings = max_completionrings;
 	rings = kcalloc(max_flowrings, sizeof(*ring), GFP_KERNEL);
+	{
+		typeof((*ring)) __uncontained_tmp217;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp217;
+	}
 	if (!rings)
 		goto fail;
 
@@ -1813,6 +1822,10 @@ static void brcmf_pcie_setup(struct device *dev, int ret,
 
 	flowrings = kcalloc(devinfo->shared.max_flowrings, sizeof(*flowrings),
 			    GFP_KERNEL);
+	{
+		typeof((*flowrings)) __uncontained_tmp218;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp218;
+	}
 	if (!flowrings)
 		goto fail;
 

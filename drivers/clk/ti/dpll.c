@@ -22,6 +22,11 @@
 #include <linux/of.h>
 #include <linux/of_address.h>
 #include <linux/clk/ti.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "clock.h"
 
 #undef pr_fmt
@@ -314,6 +319,10 @@ static void __init of_ti_dpll_setup(struct device_node *node,
 	}
 
 	parent_names = kcalloc(init->num_parents, sizeof(char *), GFP_KERNEL);
+	{
+		char *__uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!parent_names)
 		goto cleanup;
 

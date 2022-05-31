@@ -32,6 +32,11 @@
 #include <asm/dcr-regs.h>
 #include <mm/mmu_decl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "pci.h"
 
 static int dma_offset_set;
@@ -1448,6 +1453,10 @@ static int __init ppc4xx_pciex_check_core_init(struct device_node *np)
 		ppc4xx_pciex_ports =
 		       kcalloc(count, sizeof(struct ppc4xx_pciex_port),
 			       GFP_KERNEL);
+		{
+			struct ppc4xx_pciex_port __uncontained_tmp3;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+		}
 		if (ppc4xx_pciex_ports) {
 			ppc4xx_pciex_port_count = count;
 			return 0;

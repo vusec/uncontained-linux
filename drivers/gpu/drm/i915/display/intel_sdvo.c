@@ -35,6 +35,11 @@
 #include <drm/drm_crtc.h>
 #include <drm/drm_edid.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "i915_drv.h"
 #include "intel_atomic.h"
 #include "intel_connector.h"
@@ -474,6 +479,10 @@ static bool __intel_sdvo_write_cmd(struct intel_sdvo *intel_sdvo, u8 cmd,
 		return false;
 
 	msgs = kcalloc(args_len + 3, sizeof(*msgs), GFP_KERNEL);
+	{
+		typeof((*msgs)) __uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!msgs) {
 		kfree(buf);
 		return false;

@@ -2,6 +2,11 @@
 /* Copyright (c) 2019 Mellanox Technologies */
 
 #include <linux/mlx5/vport.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "mlx5_core.h"
 #include "fs_core.h"
 #include "fs_cmd.h"
@@ -265,6 +270,10 @@ static int mlx5_cmd_dr_create_fte(struct mlx5_flow_root_namespace *ns,
 
 	actions = kcalloc(MLX5_FLOW_CONTEXT_ACTION_MAX, sizeof(*actions),
 			  GFP_KERNEL);
+	{
+		typeof((*actions)) __uncontained_tmp194;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp194;
+	}
 	if (!actions) {
 		err = -ENOMEM;
 		goto out_err;
@@ -272,6 +281,10 @@ static int mlx5_cmd_dr_create_fte(struct mlx5_flow_root_namespace *ns,
 
 	fs_dr_actions = kcalloc(MLX5_FLOW_CONTEXT_ACTION_MAX,
 				sizeof(*fs_dr_actions), GFP_KERNEL);
+	{
+		typeof((*fs_dr_actions)) __uncontained_tmp195;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp195;
+	}
 	if (!fs_dr_actions) {
 		err = -ENOMEM;
 		goto free_actions_alloc;
@@ -279,6 +292,10 @@ static int mlx5_cmd_dr_create_fte(struct mlx5_flow_root_namespace *ns,
 
 	term_actions = kcalloc(MLX5_FLOW_CONTEXT_ACTION_MAX,
 			       sizeof(*term_actions), GFP_KERNEL);
+	{
+		typeof((*term_actions)) __uncontained_tmp196;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp196;
+	}
 	if (!term_actions) {
 		err = -ENOMEM;
 		goto free_fs_dr_actions_alloc;

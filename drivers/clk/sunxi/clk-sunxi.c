@@ -16,6 +16,11 @@
 #include <linux/spinlock.h>
 #include <linux/log2.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk-factors.h"
 
 static DEFINE_SPINLOCK(clk_lock);
@@ -1007,6 +1012,10 @@ static struct clk ** __init sunxi_divs_clk_setup(struct device_node *node,
 		goto out_unmap;
 
 	clks = kcalloc(ndivs, sizeof(*clks), GFP_KERNEL);
+	{
+		typeof((*clks)) __uncontained_tmp32;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!clks)
 		goto free_clkdata;
 

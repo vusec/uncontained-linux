@@ -27,6 +27,11 @@
 #include <asm/mach/irq.h>
 
 #include <mach/irqs.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "regs-irq.h"
 #include "regs-gpio.h"
 
@@ -1276,6 +1281,10 @@ static int __init s3c_init_intc_of(struct device_node *np,
 		intc->domain = domain;
 		intc->irqs = kcalloc(32, sizeof(struct s3c_irq_data),
 				     GFP_KERNEL);
+		{
+			struct s3c_irq_data __uncontained_tmp1;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+		}
 		if (!intc->irqs) {
 			kfree(intc);
 			return -ENOMEM;

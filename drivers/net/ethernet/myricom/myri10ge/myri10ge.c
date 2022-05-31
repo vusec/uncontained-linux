@@ -71,6 +71,11 @@
 #include <asm/byteorder.h>
 #include <asm/processor.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -3718,6 +3723,10 @@ static void myri10ge_probe_slices(struct myri10ge_priv *mgp)
 
 	mgp->msix_vectors = kcalloc(mgp->num_slices, sizeof(*mgp->msix_vectors),
 				    GFP_KERNEL);
+	{
+		typeof((*mgp->msix_vectors)) __uncontained_tmp196;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp196;
+	}
 	if (mgp->msix_vectors == NULL)
 		goto no_msix;
 	for (i = 0; i < mgp->num_slices; i++) {

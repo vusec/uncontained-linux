@@ -29,6 +29,11 @@
 #include <net/ipv6.h>
 #include <net/ip6_checksum.h>
 #include <linux/prefetch.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "bnx2x_cmn.h"
 #include "bnx2x_init.h"
 #include "bnx2x_sp.h"
@@ -4576,6 +4581,10 @@ static int bnx2x_alloc_fp_mem_at(struct bnx2x *bp, int index)
 			txdata->tx_buf_ring = kcalloc(NUM_TX_BD,
 						      sizeof(struct sw_tx_bd),
 						      GFP_KERNEL);
+			{
+				struct sw_tx_bd __uncontained_tmp144;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp144;
+			}
 			if (!txdata->tx_buf_ring)
 				goto alloc_mem_err;
 			txdata->tx_desc_ring = BNX2X_PCI_ALLOC(&txdata->tx_desc_mapping,
@@ -4590,6 +4599,10 @@ static int bnx2x_alloc_fp_mem_at(struct bnx2x *bp, int index)
 		/* fastpath rx rings: rx_buf rx_desc rx_comp */
 		bnx2x_fp(bp, index, rx_buf_ring) =
 			kcalloc(NUM_RX_BD, sizeof(struct sw_rx_bd), GFP_KERNEL);
+		{
+			struct sw_rx_bd __uncontained_tmp145;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp145;
+		}
 		if (!bnx2x_fp(bp, index, rx_buf_ring))
 			goto alloc_mem_err;
 		bnx2x_fp(bp, index, rx_desc_ring) =
@@ -4609,6 +4622,10 @@ static int bnx2x_alloc_fp_mem_at(struct bnx2x *bp, int index)
 		bnx2x_fp(bp, index, rx_page_ring) =
 			kcalloc(NUM_RX_SGE, sizeof(struct sw_rx_page),
 				GFP_KERNEL);
+		{
+			struct sw_rx_page __uncontained_tmp146;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp146;
+		}
 		if (!bnx2x_fp(bp, index, rx_page_ring))
 			goto alloc_mem_err;
 		bnx2x_fp(bp, index, rx_sge_ring) =
@@ -4739,12 +4756,20 @@ int bnx2x_alloc_mem_bp(struct bnx2x *bp)
 	BNX2X_DEV_INFO("fp_array_size %d\n", bp->fp_array_size);
 
 	fp = kcalloc(bp->fp_array_size, sizeof(*fp), GFP_KERNEL);
+	{
+		typeof((*fp)) __uncontained_tmp151;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp151;
+	}
 	if (!fp)
 		goto alloc_err;
 	for (i = 0; i < bp->fp_array_size; i++) {
 		fp[i].tpa_info =
 			kcalloc(ETH_MAX_AGGREGATION_QUEUES_E1H_E2,
 				sizeof(struct bnx2x_agg_info), GFP_KERNEL);
+		{
+			struct bnx2x_agg_info __uncontained_tmp147;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp147;
+		}
 		if (!(fp[i].tpa_info))
 			goto alloc_err;
 	}
@@ -4754,12 +4779,20 @@ int bnx2x_alloc_mem_bp(struct bnx2x *bp)
 	/* allocate sp objs */
 	bp->sp_objs = kcalloc(bp->fp_array_size, sizeof(struct bnx2x_sp_objs),
 			      GFP_KERNEL);
+	{
+		struct bnx2x_sp_objs __uncontained_tmp148;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (!bp->sp_objs)
 		goto alloc_err;
 
 	/* allocate fp_stats */
 	bp->fp_stats = kcalloc(bp->fp_array_size, sizeof(struct bnx2x_fp_stats),
 			       GFP_KERNEL);
+	{
+		struct bnx2x_fp_stats __uncontained_tmp149;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp149;
+	}
 	if (!bp->fp_stats)
 		goto alloc_err;
 
@@ -4770,11 +4803,19 @@ int bnx2x_alloc_mem_bp(struct bnx2x *bp)
 
 	bp->bnx2x_txq = kcalloc(txq_array_size, sizeof(struct bnx2x_fp_txdata),
 				GFP_KERNEL);
+	{
+		struct bnx2x_fp_txdata __uncontained_tmp150;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp150;
+	}
 	if (!bp->bnx2x_txq)
 		goto alloc_err;
 
 	/* msix table */
 	tbl = kcalloc(msix_table_size, sizeof(*tbl), GFP_KERNEL);
+	{
+		typeof((*tbl)) __uncontained_tmp152;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp152;
+	}
 	if (!tbl)
 		goto alloc_err;
 	bp->msix_table = tbl;

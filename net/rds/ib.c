@@ -41,6 +41,11 @@
 #include <linux/module.h>
 #include <net/addrconf.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rds_single_path.h"
 #include "rds.h"
 #include "ib.h"
@@ -175,6 +180,10 @@ static int rds_ib_add_one(struct ib_device *device)
 	rds_ibdev->vector_load = kcalloc(device->num_comp_vectors,
 					 sizeof(int),
 					 GFP_KERNEL);
+	{
+		int __uncontained_tmp297;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp297;
+	}
 	if (!rds_ibdev->vector_load) {
 		pr_err("RDS/IB: %s failed to allocate vector memory\n",
 			__func__);

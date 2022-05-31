@@ -48,6 +48,11 @@
 #include <linux/if_ether.h>
 #include <rdma/ib_mad.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "roce_hsi.h"
 
 #include "qplib_res.h"
@@ -622,6 +627,10 @@ int bnxt_qplib_create_srq(struct bnxt_qplib_res *res,
 
 	srq->swq = kcalloc(srq->hwq.max_elements, sizeof(*srq->swq),
 			   GFP_KERNEL);
+	{
+		typeof((*srq->swq)) __uncontained_tmp92;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!srq->swq) {
 		rc = -ENOMEM;
 		goto fail;
@@ -792,6 +801,10 @@ static int bnxt_qplib_alloc_init_swq(struct bnxt_qplib_q *que)
 	int indx;
 
 	que->swq = kcalloc(que->max_wqe, sizeof(*que->swq), GFP_KERNEL);
+	{
+		typeof((*que->swq)) __uncontained_tmp93;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!que->swq) {
 		rc = -ENOMEM;
 		goto out;

@@ -15,6 +15,11 @@
 #include "bfad_drv.h"
 #include "bfad_im.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * FC transport template entry, get SCSI target port ID.
  */
@@ -923,6 +928,10 @@ bfad_im_num_of_discovered_ports_show(struct device *dev,
 
 	rports = kcalloc(nrports, sizeof(struct bfa_rport_qualifier_s),
 			 GFP_ATOMIC);
+	{
+		struct bfa_rport_qualifier_s __uncontained_tmp244;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp244;
+	}
 	if (rports == NULL)
 		return snprintf(buf, PAGE_SIZE, "Failed\n");
 

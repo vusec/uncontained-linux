@@ -45,6 +45,11 @@
 #include <drm/drm_file.h>
 #include <drm/drm_print.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "drm_legacy.h"
 
 
@@ -796,6 +801,10 @@ int drm_legacy_addbufs_agp(struct drm_device *dev,
 	}
 
 	entry->buflist = kcalloc(count, sizeof(*entry->buflist), GFP_KERNEL);
+	{
+		typeof((*entry->buflist)) __uncontained_tmp63;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!entry->buflist) {
 		mutex_unlock(&dev->struct_mutex);
 		atomic_dec(&dev->buf_alloc);
@@ -946,6 +955,10 @@ int drm_legacy_addbufs_pci(struct drm_device *dev,
 	}
 
 	entry->buflist = kcalloc(count, sizeof(*entry->buflist), GFP_KERNEL);
+	{
+		typeof((*entry->buflist)) __uncontained_tmp64;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!entry->buflist) {
 		mutex_unlock(&dev->struct_mutex);
 		atomic_dec(&dev->buf_alloc);
@@ -953,6 +966,10 @@ int drm_legacy_addbufs_pci(struct drm_device *dev,
 	}
 
 	entry->seglist = kcalloc(count, sizeof(*entry->seglist), GFP_KERNEL);
+	{
+		typeof((*entry->seglist)) __uncontained_tmp65;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!entry->seglist) {
 		kfree(entry->buflist);
 		mutex_unlock(&dev->struct_mutex);
@@ -1174,6 +1191,10 @@ static int drm_legacy_addbufs_sg(struct drm_device *dev,
 	}
 
 	entry->buflist = kcalloc(count, sizeof(*entry->buflist), GFP_KERNEL);
+	{
+		typeof((*entry->buflist)) __uncontained_tmp66;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!entry->buflist) {
 		mutex_unlock(&dev->struct_mutex);
 		atomic_dec(&dev->buf_alloc);

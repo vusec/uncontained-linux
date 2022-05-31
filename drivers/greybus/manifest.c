@@ -8,6 +8,11 @@
 
 #include <linux/greybus.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static const char *get_descriptor_type_string(u8 type)
 {
 	switch (type) {
@@ -277,6 +282,10 @@ static u32 gb_manifest_parse_cports(struct gb_bundle *bundle)
 
 	bundle->cport_desc = kcalloc(count, sizeof(*bundle->cport_desc),
 				     GFP_KERNEL);
+	{
+		typeof((*bundle->cport_desc)) __uncontained_tmp100;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (!bundle->cport_desc)
 		goto exit;
 

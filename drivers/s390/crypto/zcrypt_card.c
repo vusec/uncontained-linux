@@ -26,6 +26,11 @@
 #include <linux/debugfs.h>
 #include <asm/debug.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "zcrypt_debug.h"
 #include "zcrypt_api.h"
 
@@ -89,8 +94,13 @@ static ssize_t online_store(struct device *dev,
 	 */
 	list_for_each_entry(zq, &zc->zqueues, list)
 		maxzqs++;
-	if (maxzqs > 0)
+	if (maxzqs > 0) {
 		zq_uelist = kcalloc(maxzqs + 1, sizeof(zq), GFP_ATOMIC);
+		{
+			typeof((zq)) __uncontained_tmp250;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp250;
+		}
+	}
 	list_for_each_entry(zq, &zc->zqueues, list)
 		if (zcrypt_queue_force_online(zq, online))
 			if (zq_uelist) {

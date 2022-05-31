@@ -10,6 +10,11 @@
 #include <linux/xarray.h>
 #include <asm/syscall.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "trace_output.h"
 #include "trace.h"
 
@@ -532,6 +537,10 @@ void __init init_ftrace_syscalls(void)
 		syscalls_metadata = kcalloc(NR_syscalls,
 					sizeof(*syscalls_metadata),
 					GFP_KERNEL);
+		{
+			typeof((*syscalls_metadata)) __uncontained_tmp302;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp302;
+		}
 		if (!syscalls_metadata) {
 			WARN_ON(1);
 			return;

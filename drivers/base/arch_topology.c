@@ -19,6 +19,11 @@
 #include <linux/rcupdate.h>
 #include <linux/sched.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
 static struct cpumask scale_freq_counters_mask;
 static bool scale_freq_invariant;
@@ -305,6 +310,10 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
 			raw_capacity = kcalloc(num_possible_cpus(),
 					       sizeof(*raw_capacity),
 					       GFP_KERNEL);
+			{
+				typeof((*raw_capacity)) __uncontained_tmp21;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp21;
+			}
 			if (!raw_capacity) {
 				cap_parsing_failed = true;
 				return false;
@@ -352,6 +361,10 @@ void topology_init_cpu_capacity_cppc(void)
 
 	raw_capacity = kcalloc(num_possible_cpus(), sizeof(*raw_capacity),
 			       GFP_KERNEL);
+	{
+		typeof((*raw_capacity)) __uncontained_tmp22;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!raw_capacity)
 		return;
 

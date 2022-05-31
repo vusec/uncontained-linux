@@ -13,6 +13,11 @@
 #include <linux/spinlock_types.h>
 #include <net/sock.h>
 #include <net/af_rxrpc.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ar-internal.h"
 
 const char *const rxrpc_call_states[NR__RXRPC_CALL_STATES] = {
@@ -112,10 +117,18 @@ struct rxrpc_call *rxrpc_alloc_call(struct rxrpc_sock *rx, gfp_t gfp,
 	call->rxtx_buffer = kcalloc(RXRPC_RXTX_BUFF_SIZE,
 				    sizeof(struct sk_buff *),
 				    gfp);
+	{
+		struct sk_buff *__uncontained_tmp332;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp332;
+	}
 	if (!call->rxtx_buffer)
 		goto nomem;
 
 	call->rxtx_annotations = kcalloc(RXRPC_RXTX_BUFF_SIZE, sizeof(u8), gfp);
+	{
+		typeof((u8)) __uncontained_tmp333;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp333;
+	}
 	if (!call->rxtx_annotations)
 		goto nomem_2;
 

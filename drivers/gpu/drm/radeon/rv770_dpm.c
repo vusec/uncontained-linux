@@ -33,6 +33,11 @@
 #include "evergreen.h"
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MC_CG_ARB_FREQ_F0           0x0a
 #define MC_CG_ARB_FREQ_F1           0x0b
 #define MC_CG_ARB_FREQ_F2           0x0c
@@ -2286,6 +2291,10 @@ int rv7xx_parse_power_table(struct radeon_device *rdev)
 	rdev->pm.dpm.ps = kcalloc(power_info->pplib.ucNumStates,
 				  sizeof(struct radeon_ps),
 				  GFP_KERNEL);
+	{
+		struct radeon_ps __uncontained_tmp79;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!rdev->pm.dpm.ps)
 		return -ENOMEM;
 

@@ -10,6 +10,11 @@
 #include <linux/of_address.h>
 #include <linux/of_platform.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cxl.h"
 
 
@@ -300,6 +305,10 @@ static int read_adapter_irq_config(struct cxl *adapter, struct device_node *np)
 
 	adapter->guest->irq_avail = kcalloc(nranges, sizeof(struct irq_avail),
 					    GFP_KERNEL);
+	{
+		struct irq_avail __uncontained_tmp136;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp136;
+	}
 	if (adapter->guest->irq_avail == NULL)
 		return -ENOMEM;
 
@@ -310,6 +319,10 @@ static int read_adapter_irq_config(struct cxl *adapter, struct device_node *np)
 		cur->range  = be32_to_cpu(ranges[i * 2 + 1]);
 		cur->bitmap = kcalloc(BITS_TO_LONGS(cur->range),
 				sizeof(*cur->bitmap), GFP_KERNEL);
+		{
+			typeof((*cur->bitmap)) __uncontained_tmp137;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp137;
+		}
 		if (cur->bitmap == NULL)
 			goto err;
 		if (cur->offset < adapter->guest->irq_base_offset)

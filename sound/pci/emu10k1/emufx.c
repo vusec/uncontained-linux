@@ -28,6 +28,11 @@
 #include <sound/tlv.h>
 #include <sound/emu10k1.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1240,10 +1245,18 @@ static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
 
 	icode->gpr_map = kcalloc(512 + 256 + 256 + 2 * 1024,
 				 sizeof(u_int32_t), GFP_KERNEL);
+	{
+		u_int32_t __uncontained_tmp314;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp314;
+	}
 	if (!icode->gpr_map)
 		goto __err_gpr;
 	controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
 			   sizeof(*controls), GFP_KERNEL);
+	{
+		typeof((*controls)) __uncontained_tmp317;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp317;
+	}
 	if (!controls)
 		goto __err_ctrls;
 
@@ -1875,12 +1888,20 @@ static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
 
 	icode->gpr_map = kcalloc(256 + 160 + 160 + 2 * 512,
 				 sizeof(u_int32_t), GFP_KERNEL);
+	{
+		u_int32_t __uncontained_tmp315;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp315;
+	}
 	if (!icode->gpr_map)
 		goto __err_gpr;
 
 	controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
 			   sizeof(struct snd_emu10k1_fx8010_control_gpr),
 			   GFP_KERNEL);
+	{
+		struct snd_emu10k1_fx8010_control_gpr __uncontained_tmp316;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp316;
+	}
 	if (!controls)
 		goto __err_ctrls;
 

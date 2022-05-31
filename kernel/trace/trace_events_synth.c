@@ -18,6 +18,11 @@
 #include <linux/trace_events.h>
 #include <trace/events/mmflags.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -878,6 +883,10 @@ static struct synth_event *alloc_synth_event(const char *name, int n_fields,
 	}
 
 	event->fields = kcalloc(n_fields, sizeof(*event->fields), GFP_KERNEL);
+	{
+		typeof((*event->fields)) __uncontained_tmp300;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp300;
+	}
 	if (!event->fields) {
 		free_synth_event(event);
 		event = ERR_PTR(-ENOMEM);
@@ -892,6 +901,10 @@ static struct synth_event *alloc_synth_event(const char *name, int n_fields,
 		event->dynamic_fields = kcalloc(n_dynamic_fields,
 						sizeof(*event->dynamic_fields),
 						GFP_KERNEL);
+		{
+			typeof((*event->dynamic_fields)) __uncontained_tmp301;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp301;
+		}
 		if (!event->dynamic_fields) {
 			free_synth_event(event);
 			event = ERR_PTR(-ENOMEM);

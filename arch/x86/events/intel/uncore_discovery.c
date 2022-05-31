@@ -8,6 +8,11 @@
 #include "uncore.h"
 #include "uncore_discovery.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static struct rb_root discovery_tables = RB_ROOT;
 static int num_discovered_types[UNCORE_ACCESS_MAX];
 
@@ -102,6 +107,10 @@ add_uncore_discovery_type(struct uncore_unit_discovery *unit)
 		return NULL;
 
 	type->box_ctrl_die = kcalloc(__uncore_max_dies, sizeof(u64), GFP_KERNEL);
+	{
+		u64 __uncontained_tmp12;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!type->box_ctrl_die)
 		goto free_type;
 
@@ -158,10 +167,18 @@ uncore_insert_box_info(struct uncore_unit_discovery *unit,
 		return;
 
 	box_offset = kcalloc(type->num_boxes + 1, sizeof(unsigned int), GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp13;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!box_offset)
 		return;
 
 	ids = kcalloc(type->num_boxes + 1, sizeof(unsigned int), GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp14;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!ids)
 		goto free_box_offset;
 
@@ -579,6 +596,10 @@ intel_uncore_generic_init_uncores(enum uncore_access_type type_id, int num_extra
 
 	uncores = kcalloc(num_discovered_types[type_id] + num_extra + 1,
 			  sizeof(struct intel_uncore_type *), GFP_KERNEL);
+	{
+		struct intel_uncore_type *__uncontained_tmp15;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!uncores)
 		return empty_uncore;
 

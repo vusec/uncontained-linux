@@ -32,6 +32,11 @@
 
 #include "mlx5_ib.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct mlx5_ib_gsi_wr {
 	struct ib_cqe cqe;
 	struct ib_wc wc;
@@ -105,12 +110,20 @@ int mlx5_ib_create_gsi(struct ib_pd *pd, struct mlx5_ib_qp *mqp,
 
 	gsi = &mqp->gsi;
 	gsi->tx_qps = kcalloc(num_qps, sizeof(*gsi->tx_qps), GFP_KERNEL);
+	{
+		typeof((*gsi->tx_qps)) __uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!gsi->tx_qps)
 		return -ENOMEM;
 
 	gsi->outstanding_wrs =
 		kcalloc(attr->cap.max_send_wr, sizeof(*gsi->outstanding_wrs),
 			GFP_KERNEL);
+	{
+		typeof((*gsi->outstanding_wrs)) __uncontained_tmp104;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!gsi->outstanding_wrs) {
 		ret = -ENOMEM;
 		goto err_free_tx;

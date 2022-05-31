@@ -21,6 +21,11 @@
 
 #include <video/omapfb_dss.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dss.h"
 #include "dss_features.h"
 
@@ -50,6 +55,10 @@ void dss_init_overlays(struct platform_device *pdev)
 
 	overlays = kcalloc(num_overlays, sizeof(struct omap_overlay),
 			   GFP_KERNEL);
+	{
+		struct omap_overlay __uncontained_tmp306;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp306;
+	}
 
 	BUG_ON(overlays == NULL);
 

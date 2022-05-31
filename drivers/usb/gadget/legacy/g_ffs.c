@@ -10,6 +10,11 @@
 
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #if defined CONFIG_USB_FUNCTIONFS_ETH || defined CONFIG_USB_FUNCTIONFS_RNDIS
 #include <linux/netdevice.h>
 
@@ -191,6 +196,10 @@ static int __init gfs_init(void)
 	 * Allocate in one chunk for easier maintenance
 	 */
 	f_ffs[0] = kcalloc(func_num * N_CONF, sizeof(*f_ffs), GFP_KERNEL);
+	{
+		typeof((*f_ffs)) __uncontained_tmp262;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp262;
+	}
 	if (!f_ffs[0]) {
 		ret = -ENOMEM;
 		goto no_func;
@@ -199,6 +208,10 @@ static int __init gfs_init(void)
 		f_ffs[i] = f_ffs[0] + i * func_num;
 
 	fi_ffs = kcalloc(func_num, sizeof(*fi_ffs), GFP_KERNEL);
+	{
+		typeof((*fi_ffs)) __uncontained_tmp263;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp263;
+	}
 	if (!fi_ffs) {
 		ret = -ENOMEM;
 		goto no_func;

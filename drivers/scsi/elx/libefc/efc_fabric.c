@@ -20,6 +20,11 @@
 
 #include "efc.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static void
 efc_fabric_initiate_shutdown(struct efc_node *node)
 {
@@ -686,6 +691,10 @@ efc_process_gidpt_payload(struct efc_node *node,
 
 	/* Allocate a buffer for all nodes */
 	active_nodes = kcalloc(port_count, sizeof(*active_nodes), GFP_ATOMIC);
+	{
+		typeof((*active_nodes)) __uncontained_tmp226;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp226;
+	}
 	if (!active_nodes) {
 		node_printf(node, "efc_malloc failed\n");
 		return -EIO;

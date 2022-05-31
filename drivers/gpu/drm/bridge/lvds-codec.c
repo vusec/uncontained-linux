@@ -17,6 +17,11 @@
 #include <drm/drm_of.h>
 #include <drm/drm_panel.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct lvds_codec {
 	struct device *dev;
 	struct drm_bridge bridge;
@@ -94,6 +99,10 @@ lvds_codec_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
 
 	input_fmts = kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts),
 			     GFP_KERNEL);
+	{
+		typeof((*input_fmts)) __uncontained_tmp61;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!input_fmts)
 		return NULL;
 

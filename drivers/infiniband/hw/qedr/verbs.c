@@ -50,6 +50,11 @@
 #include "qedr.h"
 #include "verbs.h"
 #include <rdma/qedr-abi.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qedr_roce_cm.h"
 #include "qedr_iw_cm.h"
 
@@ -537,6 +542,10 @@ static struct qedr_pbl *qedr_alloc_pbl_tbl(struct qedr_dev *dev,
 	int i;
 
 	pbl_table = kcalloc(pbl_info->num_pbls, sizeof(*pbl_table), flags);
+	{
+		typeof((*pbl_table)) __uncontained_tmp30;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!pbl_table)
 		return ERR_PTR(-ENOMEM);
 
@@ -2178,6 +2187,10 @@ static int qedr_create_kernel_qp(struct qedr_dev *dev,
 
 	qp->wqe_wr_id = kcalloc(qp->sq.max_wr, sizeof(*qp->wqe_wr_id),
 				GFP_KERNEL);
+	{
+		typeof((*qp->wqe_wr_id)) __uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!qp->wqe_wr_id) {
 		DP_ERR(dev, "create qp: failed SQ shadow memory allocation\n");
 		return -ENOMEM;
@@ -2196,6 +2209,10 @@ static int qedr_create_kernel_qp(struct qedr_dev *dev,
 	/* Allocate driver internal RQ array */
 	qp->rqe_wr_id = kcalloc(qp->rq.max_wr, sizeof(*qp->rqe_wr_id),
 				GFP_KERNEL);
+	{
+		typeof((*qp->rqe_wr_id)) __uncontained_tmp32;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (!qp->rqe_wr_id) {
 		DP_ERR(dev,
 		       "create qp: failed RQ shadow memory allocation\n");

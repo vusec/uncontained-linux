@@ -30,6 +30,11 @@
 #include <sound/designware_i2s.h>
 #include <sound/pcm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "amdgpu.h"
 #include "atom.h"
 #include "amdgpu_acp.h"
@@ -237,6 +242,10 @@ static int acp_hw_init(void *handle)
 
 	adev->acp.acp_cell = kcalloc(ACP_DEVS, sizeof(struct mfd_cell),
 							GFP_KERNEL);
+	{
+		struct mfd_cell __uncontained_tmp52;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp52;
+	}
 
 	if (adev->acp.acp_cell == NULL) {
 		r = -ENOMEM;
@@ -244,12 +253,20 @@ static int acp_hw_init(void *handle)
 	}
 
 	adev->acp.acp_res = kcalloc(5, sizeof(struct resource), GFP_KERNEL);
+	{
+		struct resource __uncontained_tmp53;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp53;
+	}
 	if (adev->acp.acp_res == NULL) {
 		r = -ENOMEM;
 		goto failure;
 	}
 
 	i2s_pdata = kcalloc(3, sizeof(struct i2s_platform_data), GFP_KERNEL);
+	{
+		struct i2s_platform_data __uncontained_tmp54;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (i2s_pdata == NULL) {
 		r = -ENOMEM;
 		goto failure;

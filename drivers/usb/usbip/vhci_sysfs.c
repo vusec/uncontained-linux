@@ -13,6 +13,11 @@
 /* Hardening for Spectre-v1 */
 #include <linux/nospec.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "usbip_common.h"
 #include "vhci.h"
 
@@ -477,6 +482,10 @@ static int init_status_attrs(void)
 
 	status_attrs = kcalloc(vhci_num_controllers, sizeof(struct status_attr),
 			       GFP_KERNEL);
+	{
+		struct status_attr __uncontained_tmp221;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp221;
+	}
 	if (status_attrs == NULL)
 		return -ENOMEM;
 
@@ -502,6 +511,10 @@ int vhci_init_attr_group(void)
 
 	attrs = kcalloc((vhci_num_controllers + 5), sizeof(struct attribute *),
 			GFP_KERNEL);
+	{
+		struct attribute *__uncontained_tmp222;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp222;
+	}
 	if (attrs == NULL)
 		return -ENOMEM;
 

@@ -21,6 +21,11 @@
 #include <drm/drm_encoder.h>
 #include <drm/drm_print.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "drm_crtc_internal.h"
 #include "drm_internal.h"
 
@@ -41,6 +46,10 @@ int drm_client_modeset_create(struct drm_client_dev *client)
 
 	/* Add terminating zero entry to enable index less iteration */
 	client->modesets = kcalloc(num_crtc + 1, sizeof(*client->modesets), GFP_KERNEL);
+	{
+		typeof((*client->modesets)) __uncontained_tmp80;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!client->modesets)
 		return -ENOMEM;
 
@@ -56,6 +65,10 @@ int drm_client_modeset_create(struct drm_client_dev *client)
 	for (modeset = client->modesets; modeset->crtc; modeset++) {
 		modeset->connectors = kcalloc(max_connector_count,
 					      sizeof(*modeset->connectors), GFP_KERNEL);
+		{
+			typeof((*modeset->connectors)) __uncontained_tmp81;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+		}
 		if (!modeset->connectors)
 			goto err_free;
 	}
@@ -507,6 +520,10 @@ static int drm_client_pick_crtcs(struct drm_client_dev *client,
 		return best_score;
 
 	crtcs = kcalloc(connector_count, sizeof(*crtcs), GFP_KERNEL);
+	{
+		typeof((*crtcs)) __uncontained_tmp82;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!crtcs)
 		return best_score;
 
@@ -582,6 +599,10 @@ static bool drm_client_firmware_config(struct drm_client_dev *client,
 		return false;
 
 	save_enabled = kcalloc(count, sizeof(bool), GFP_KERNEL);
+	{
+		bool __uncontained_tmp78;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!save_enabled)
 		return false;
 
@@ -802,9 +823,25 @@ int drm_client_modeset_probe(struct drm_client_dev *client, unsigned int width, 
 		return 0;
 
 	crtcs = kcalloc(connector_count, sizeof(*crtcs), GFP_KERNEL);
+	{
+		typeof((*crtcs)) __uncontained_tmp83;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+	}
 	modes = kcalloc(connector_count, sizeof(*modes), GFP_KERNEL);
+	{
+		typeof((*modes)) __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	offsets = kcalloc(connector_count, sizeof(*offsets), GFP_KERNEL);
+	{
+		typeof((*offsets)) __uncontained_tmp85;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp85;
+	}
 	enabled = kcalloc(connector_count, sizeof(bool), GFP_KERNEL);
+	{
+		bool __uncontained_tmp79;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!crtcs || !modes || !enabled || !offsets) {
 		DRM_ERROR("Memory allocation failed\n");
 		ret = -ENOMEM;

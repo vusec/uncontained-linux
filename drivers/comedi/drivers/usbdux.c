@@ -75,6 +75,11 @@
 #include <linux/compiler.h>
 #include <linux/comedi/comedi_usb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* constants for firmware upload and download */
 #define USBDUX_FIRMWARE		"usbdux_firmware.bin"
 #define USBDUX_FIRMWARE_MAX_LEN	0x2000
@@ -1445,8 +1450,16 @@ static int usbdux_alloc_usb_buffers(struct comedi_device *dev)
 	devpriv->insn_buf = kzalloc(SIZEINSNBUF, GFP_KERNEL);
 	devpriv->ai_urbs = kcalloc(devpriv->n_ai_urbs, sizeof(void *),
 				   GFP_KERNEL);
+	{
+		void *__uncontained_tmp52;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp52;
+	}
 	devpriv->ao_urbs = kcalloc(devpriv->n_ao_urbs, sizeof(void *),
 				   GFP_KERNEL);
+	{
+		void *__uncontained_tmp53;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp53;
+	}
 	if (!devpriv->dux_commands || !devpriv->in_buf || !devpriv->insn_buf ||
 	    !devpriv->ai_urbs || !devpriv->ao_urbs)
 		return -ENOMEM;

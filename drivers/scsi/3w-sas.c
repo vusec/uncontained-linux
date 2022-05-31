@@ -69,6 +69,11 @@
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_tcq.h>
 #include <scsi/scsi_cmnd.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "3w-sas.h"
 
 /* Globals */
@@ -1053,6 +1058,10 @@ static int twl_initialize_device_extension(TW_Device_Extension *tw_dev)
 
 	/* Allocate event info space */
 	tw_dev->event_queue[0] = kcalloc(TW_Q_LENGTH, sizeof(TW_Event), GFP_KERNEL);
+	{
+		TW_Event __uncontained_tmp229;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp229;
+	}
 	if (!tw_dev->event_queue[0]) {
 		TW_PRINTK(tw_dev->host, TW_DRIVER, 0xc, "Event info memory allocation failed");
 		goto out;

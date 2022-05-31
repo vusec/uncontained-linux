@@ -22,6 +22,11 @@
 #include <asm/trapnr.h>
 #include <asm/fpu/xcr.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2204,6 +2209,10 @@ int sev_cpu_init(struct svm_cpu_data *sd)
 		return 0;
 
 	sd->sev_vmcbs = kcalloc(nr_asids, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp8;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp8;
+	}
 	if (!sd->sev_vmcbs)
 		return -ENOMEM;
 

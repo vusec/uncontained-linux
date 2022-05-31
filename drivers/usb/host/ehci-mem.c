@@ -214,6 +214,10 @@ static int ehci_mem_init (struct ehci_hcd *ehci, gfp_t flags)
 
 	/* software shadow of hardware table */
 	ehci->pshadow = kcalloc(ehci->periodic_size, sizeof(void *), flags);
+	{
+		void *__uncontained_tmp265;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp265;
+	}
 	if (ehci->pshadow != NULL)
 		return 0;
 

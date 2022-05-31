@@ -35,6 +35,11 @@
 #include <linux/uaccess.h>
 #include <linux/dax.h>
 #include <linux/iversion.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ext2.h"
 #include "xattr.h"
 #include "acl.h"
@@ -1079,6 +1084,10 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
 	}
 	bgl_lock_init(sbi->s_blockgroup_lock);
 	sbi->s_debts = kcalloc(sbi->s_groups_count, sizeof(*sbi->s_debts), GFP_KERNEL);
+	{
+		typeof((*sbi->s_debts)) __uncontained_tmp322;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp322;
+	}
 	if (!sbi->s_debts) {
 		ret = -ENOMEM;
 		ext2_msg(sb, KERN_ERR, "error: not enough memory");

@@ -13,6 +13,11 @@
 #include <linux/module.h>
 #include <linux/netdevice.h>
 #include <net/gre.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "efx_common.h"
 #include "efx_channels.h"
 #include "efx.h"
@@ -1022,6 +1027,10 @@ int efx_init_struct(struct efx_nic *efx,
 	/* Failure to allocate is not fatal, but may degrade ARFS performance */
 	efx->rps_hash_table = kcalloc(EFX_ARFS_HASH_TABLE_SIZE,
 				      sizeof(*efx->rps_hash_table), GFP_KERNEL);
+	{
+		typeof((*efx->rps_hash_table)) __uncontained_tmp193;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp193;
+	}
 #endif
 	efx->mdio.dev = net_dev;
 	INIT_WORK(&efx->mac_work, efx_mac_work);

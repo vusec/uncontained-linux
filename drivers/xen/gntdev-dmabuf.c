@@ -19,6 +19,11 @@
 #include <xen/xen.h>
 #include <xen/grant_table.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gntdev-common.h"
 #include "gntdev-dmabuf.h"
 
@@ -555,12 +560,20 @@ static struct gntdev_dmabuf *dmabuf_imp_alloc_storage(int count)
 	gntdev_dmabuf->u.imp.refs = kcalloc(count,
 					    sizeof(gntdev_dmabuf->u.imp.refs[0]),
 					    GFP_KERNEL);
+	{
+		typeof((gntdev_dmabuf->u.imp.refs[0])) __uncontained_tmp225;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp225;
+	}
 	if (!gntdev_dmabuf->u.imp.refs)
 		goto fail;
 
 	gntdev_dmabuf->pages = kcalloc(count,
 				       sizeof(gntdev_dmabuf->pages[0]),
 				       GFP_KERNEL);
+	{
+		typeof((gntdev_dmabuf->pages[0])) __uncontained_tmp226;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp226;
+	}
 	if (!gntdev_dmabuf->pages)
 		goto fail;
 
@@ -757,6 +770,10 @@ long gntdev_ioctl_dmabuf_exp_from_refs(struct gntdev_priv *priv, int use_ptemod,
 		return -EINVAL;
 
 	refs = kcalloc(op.count, sizeof(*refs), GFP_KERNEL);
+	{
+		typeof((*refs)) __uncontained_tmp227;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp227;
+	}
 	if (!refs)
 		return -ENOMEM;
 

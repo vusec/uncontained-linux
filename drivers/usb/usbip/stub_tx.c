@@ -7,6 +7,11 @@
 #include <linux/socket.h>
 #include <linux/scatterlist.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "usbip_common.h"
 #include "stub.h"
 
@@ -191,6 +196,10 @@ static int stub_send_ret_submit(struct stub_device *sdev)
 			iovnum = 2;
 
 		iov = kcalloc(iovnum, sizeof(struct kvec), GFP_KERNEL);
+		{
+			struct kvec __uncontained_tmp299;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp299;
+		}
 
 		if (!iov) {
 			usbip_event_add(&sdev->ud, SDEV_EVENT_ERROR_MALLOC);

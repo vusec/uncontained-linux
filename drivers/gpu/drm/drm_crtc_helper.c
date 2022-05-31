@@ -48,6 +48,11 @@
 #include <drm/drm_print.h>
 #include <drm/drm_vblank.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "drm_crtc_helper_internal.h"
 
 /**
@@ -567,11 +572,19 @@ int drm_crtc_helper_set_config(struct drm_mode_set *set,
 	 */
 	save_encoder_crtcs = kcalloc(dev->mode_config.num_encoder,
 				sizeof(struct drm_crtc *), GFP_KERNEL);
+	{
+		struct drm_crtc *__uncontained_tmp83;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!save_encoder_crtcs)
 		return -ENOMEM;
 
 	save_connector_encoders = kcalloc(dev->mode_config.num_connector,
 				sizeof(struct drm_encoder *), GFP_KERNEL);
+	{
+		struct drm_encoder *__uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!save_connector_encoders) {
 		kfree(save_encoder_crtcs);
 		return -ENOMEM;

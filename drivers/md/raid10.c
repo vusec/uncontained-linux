@@ -18,6 +18,11 @@
 #include <linux/kthread.h>
 #include <linux/raid/md_p.h>
 #include <trace/events/block.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "md.h"
 #include "raid10.h"
 #include "raid0.h"
@@ -3988,6 +3993,10 @@ static struct r10conf *setup_conf(struct mddev *mddev)
 	conf->mirrors = kcalloc(mddev->raid_disks + max(0, -mddev->delta_disks),
 				sizeof(struct raid10_info),
 				GFP_KERNEL);
+	{
+		struct raid10_info __uncontained_tmp125;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (!conf->mirrors)
 		goto out;
 
@@ -4431,6 +4440,10 @@ static int raid10_check_reshape(struct mddev *mddev)
 			kcalloc(mddev->raid_disks + mddev->delta_disks,
 				sizeof(struct raid10_info),
 				GFP_KERNEL);
+		{
+			struct raid10_info __uncontained_tmp126;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp126;
+		}
 		if (!conf->mirrors_new)
 			return -ENOMEM;
 	}

@@ -20,6 +20,11 @@
 #include <linux/spinlock.h>
 #include <linux/time.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cgu.h"
 
 #define MHZ (1000 * 1000)
@@ -794,6 +799,10 @@ int ingenic_cgu_register_clocks(struct ingenic_cgu *cgu)
 
 	cgu->clocks.clks = kcalloc(cgu->clocks.clk_num, sizeof(struct clk *),
 				   GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp35;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!cgu->clocks.clks) {
 		err = -ENOMEM;
 		goto err_out;

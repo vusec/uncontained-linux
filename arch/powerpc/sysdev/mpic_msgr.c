@@ -17,6 +17,11 @@
 #include <asm/ppc-pci.h>
 #include <asm/mpic_msgr.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MPIC_MSGR_REGISTERS_PER_BLOCK	4
 #define MPIC_MSGR_STRIDE		0x10
 #define MPIC_MSGR_MER_OFFSET		0x100
@@ -181,6 +186,10 @@ static int mpic_msgr_probe(struct platform_device *dev)
 
 		mpic_msgrs = kcalloc(mpic_msgr_count, sizeof(*mpic_msgrs),
 							 GFP_KERNEL);
+		{
+			typeof((*mpic_msgrs)) __uncontained_tmp9;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp9;
+		}
 		if (!mpic_msgrs) {
 			dev_err(&dev->dev,
 				"No memory for message register blocks\n");

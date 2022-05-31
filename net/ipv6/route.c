@@ -72,6 +72,11 @@ static int ip6_rt_type_to_error(u8 fib6_type);
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/fib6.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 EXPORT_TRACEPOINT_SYMBOL_GPL(fib6_table_lookup);
 #undef CREATE_TRACE_POINTS
 
@@ -1667,6 +1672,10 @@ static int rt6_insert_exception(struct rt6_info *nrt,
 	if (!bucket) {
 		bucket = kcalloc(FIB6_EXCEPTION_BUCKET_SIZE, sizeof(*bucket),
 				 GFP_ATOMIC);
+		{
+			typeof((*bucket)) __uncontained_tmp323;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp323;
+		}
 		if (!bucket) {
 			err = -ENOMEM;
 			goto out;

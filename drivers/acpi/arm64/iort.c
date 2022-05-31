@@ -20,6 +20,11 @@
 #include <linux/slab.h>
 #include <linux/dma-map-ops.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define IORT_TYPE_MASK(type)	(1 << (type))
 #define IORT_MSI_TYPE		(1 << ACPI_IORT_NODE_ITS_GROUP)
 #define IORT_IOMMU_TYPE		((1 << ACPI_IORT_NODE_SMMU) |	\
@@ -1477,6 +1482,10 @@ static int __init iort_add_platform_device(struct acpi_iort_node *node,
 	count = ops->dev_count_resources(node);
 
 	r = kcalloc(count, sizeof(*r), GFP_KERNEL);
+	{
+		typeof((*r)) __uncontained_tmp16;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!r) {
 		ret = -ENOMEM;
 		goto dev_put;

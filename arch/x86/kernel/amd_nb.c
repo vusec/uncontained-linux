@@ -15,6 +15,11 @@
 #include <linux/pci_ids.h>
 #include <asm/amd_nb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define PCI_DEVICE_ID_AMD_17H_ROOT	0x1450
 #define PCI_DEVICE_ID_AMD_17H_M10H_ROOT	0x15d0
 #define PCI_DEVICE_ID_AMD_17H_M30H_ROOT	0x1480
@@ -234,6 +239,10 @@ int amd_cache_northbridges(void)
 	}
 
 	nb = kcalloc(misc_count, sizeof(struct amd_northbridge), GFP_KERNEL);
+	{
+		struct amd_northbridge __uncontained_tmp13;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!nb)
 		return -ENOMEM;
 

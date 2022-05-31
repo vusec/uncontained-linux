@@ -18,6 +18,11 @@
 #include "dwc-xlgmac.h"
 #include "dwc-xlgmac-reg.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static void xlgmac_unmap_desc_data(struct xlgmac_pdata *pdata,
 				   struct xlgmac_desc_data *desc_data)
 {
@@ -143,6 +148,10 @@ static int xlgmac_init_ring(struct xlgmac_pdata *pdata,
 	ring->desc_data_head = kcalloc(dma_desc_count,
 					sizeof(struct xlgmac_desc_data),
 					GFP_KERNEL);
+	{
+		struct xlgmac_desc_data __uncontained_tmp192;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp192;
+	}
 	if (!ring->desc_data_head)
 		return -ENOMEM;
 
@@ -236,6 +245,10 @@ static int xlgmac_alloc_channels(struct xlgmac_pdata *pdata)
 
 	channel_head = kcalloc(pdata->channel_count,
 			       sizeof(struct xlgmac_channel), GFP_KERNEL);
+	{
+		struct xlgmac_channel __uncontained_tmp193;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp193;
+	}
 	if (!channel_head)
 		return ret;
 
@@ -244,11 +257,19 @@ static int xlgmac_alloc_channels(struct xlgmac_pdata *pdata)
 
 	tx_ring = kcalloc(pdata->tx_ring_count, sizeof(struct xlgmac_ring),
 			  GFP_KERNEL);
+	{
+		struct xlgmac_ring __uncontained_tmp194;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp194;
+	}
 	if (!tx_ring)
 		goto err_tx_ring;
 
 	rx_ring = kcalloc(pdata->rx_ring_count, sizeof(struct xlgmac_ring),
 			  GFP_KERNEL);
+	{
+		struct xlgmac_ring __uncontained_tmp195;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp195;
+	}
 	if (!rx_ring)
 		goto err_rx_ring;
 

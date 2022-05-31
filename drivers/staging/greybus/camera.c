@@ -16,6 +16,11 @@
 #include <linux/vmalloc.h>
 #include <linux/greybus.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -827,6 +832,10 @@ static int gb_camera_op_configure_streams(void *priv, unsigned int *nstreams,
 		return -EINVAL;
 
 	gb_streams = kcalloc(gb_nstreams, sizeof(*gb_streams), GFP_KERNEL);
+	{
+		typeof((*gb_streams)) __uncontained_tmp284;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp284;
+	}
 	if (!gb_streams)
 		return -ENOMEM;
 
@@ -968,6 +977,10 @@ static ssize_t gb_camera_debugfs_configure_streams(struct gb_camera *gcam,
 
 	/* For each stream to configure parse width, height and format */
 	streams = kcalloc(nstreams, sizeof(*streams), GFP_KERNEL);
+	{
+		typeof((*streams)) __uncontained_tmp285;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp285;
+	}
 	if (!streams)
 		return -ENOMEM;
 

@@ -26,6 +26,11 @@
 #include <linux/usb/gadget.h>
 #include <linux/clk.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "bdc.h"
 #include "bdc_dbg.h"
 
@@ -399,6 +404,10 @@ static int bdc_mem_alloc(struct bdc *bdc)
 	/* allocate array of ep pointers */
 	bdc->bdc_ep_array = kcalloc(bdc->num_eps, sizeof(struct bdc_ep *),
 								GFP_KERNEL);
+	{
+		struct bdc_ep *__uncontained_tmp264;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp264;
+	}
 	if (!bdc->bdc_ep_array)
 		goto fail;
 

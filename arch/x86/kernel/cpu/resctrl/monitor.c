@@ -18,6 +18,11 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <asm/cpu_device_id.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "internal.h"
 
 struct rmid_entry {
@@ -627,6 +632,10 @@ static int dom_data_init(struct rdt_resource *r)
 
 	nr_rmids = r->num_rmid;
 	rmid_ptrs = kcalloc(nr_rmids, sizeof(struct rmid_entry), GFP_KERNEL);
+	{
+		struct rmid_entry __uncontained_tmp9;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!rmid_ptrs)
 		return -ENOMEM;
 

@@ -19,6 +19,11 @@
 #include <linux/atomic.h>
 #include <media/v4l2-ctrls.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "uvcvideo.h"
 
 #define UVC_CTRL_DATA_CURRENT	0
@@ -2450,6 +2455,10 @@ static int uvc_ctrl_init_chain(struct uvc_video_chain *chain)
 
 		entity->controls = kcalloc(ncontrols, sizeof(*ctrl),
 					   GFP_KERNEL);
+		{
+			typeof((*ctrl)) __uncontained_tmp130;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp130;
+		}
 		if (entity->controls == NULL)
 			return -ENOMEM;
 		entity->ncontrols = ncontrols;

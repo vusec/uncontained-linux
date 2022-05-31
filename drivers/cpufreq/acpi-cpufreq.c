@@ -33,6 +33,11 @@
 #include <asm/cpufeature.h>
 #include <asm/cpu_device_id.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_AUTHOR("Paul Diefenbaugh, Dominik Brodowski");
 MODULE_DESCRIPTION("ACPI Processor P-States Driver");
 MODULE_LICENSE("GPL");
@@ -795,6 +800,10 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
 
 	freq_table = kcalloc(perf->state_count + 1, sizeof(*freq_table),
 			     GFP_KERNEL);
+	{
+		typeof((*freq_table)) __uncontained_tmp51;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (!freq_table) {
 		result = -ENOMEM;
 		goto err_unreg;

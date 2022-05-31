@@ -44,6 +44,11 @@
 #include <linux/if_ether.h>
 #include <linux/etherdevice.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mlx4.h"
 #include "fw.h"
 #include "mlx4_stats.h"
@@ -507,6 +512,10 @@ int mlx4_init_resource_tracker(struct mlx4_dev *dev)
 	priv->mfunc.master.res_tracker.slave_list =
 		kcalloc(dev->num_slaves, sizeof(struct slave_list),
 			GFP_KERNEL);
+	{
+		struct slave_list __uncontained_tmp184;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp184;
+	}
 	if (!priv->mfunc.master.res_tracker.slave_list)
 		return -ENOMEM;
 
@@ -531,15 +540,25 @@ int mlx4_init_resource_tracker(struct mlx4_dev *dev)
 		res_alloc->guaranteed = kmalloc_array(dev->persist->num_vfs + 1,
 						      sizeof(int),
 						      GFP_KERNEL);
-		if (i == RES_MAC || i == RES_VLAN)
+		if (i == RES_MAC || i == RES_VLAN) {
 			res_alloc->allocated =
 				kcalloc(MLX4_MAX_PORTS *
 						(dev->persist->num_vfs + 1),
 					sizeof(int), GFP_KERNEL);
-		else
+			{
+				int __uncontained_tmp185;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp185;
+			}
+		}
+		else {
 			res_alloc->allocated =
 				kcalloc(dev->persist->num_vfs + 1,
 					sizeof(int), GFP_KERNEL);
+			{
+				int __uncontained_tmp186;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp186;
+			}
+		}
 		/* Reduce the sink counter */
 		if (i == RES_COUNTER)
 			res_alloc->res_free = dev->caps.max_counters - 1;
@@ -1286,6 +1305,10 @@ static int add_res_range(struct mlx4_dev *dev, int slave, u64 base, int count,
 	struct rb_root *root = &tracker->res_tree[type];
 
 	res_arr = kcalloc(count, sizeof(*res_arr), GFP_KERNEL);
+	{
+		typeof((*res_arr)) __uncontained_tmp187;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp187;
+	}
 	if (!res_arr)
 		return -ENOMEM;
 

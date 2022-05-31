@@ -29,6 +29,11 @@
 
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dm_services.h"
 #include "include/gpio_interface.h"
 #include "include/gpio_service_interface.h"
@@ -93,6 +98,10 @@ struct gpio_service *dal_gpio_service_create(
 				service->busyness[index_of_id] =
 					kcalloc(number_of_bits, sizeof(char),
 						GFP_KERNEL);
+				{
+					char __uncontained_tmp59;
+					__uncontained_kcalloc = (unsigned long)&__uncontained_tmp59;
+				}
 
 				if (!service->busyness[index_of_id]) {
 					BREAK_TO_DEBUGGER();

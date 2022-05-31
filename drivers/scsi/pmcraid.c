@@ -39,6 +39,11 @@
 #include <scsi/scsi_cmnd.h>
 #include <scsi/scsicam.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "pmcraid.h"
 
 /*
@@ -4832,6 +4837,10 @@ static int pmcraid_allocate_config_buffers(struct pmcraid_instance *pinstance)
 			kcalloc(PMCRAID_MAX_RESOURCES,
 				sizeof(struct pmcraid_resource_entry),
 				GFP_KERNEL);
+	{
+		struct pmcraid_resource_entry __uncontained_tmp240;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp240;
+	}
 
 	if (NULL == pinstance->res_entries) {
 		pmcraid_err("failed to allocate memory for resource table\n");

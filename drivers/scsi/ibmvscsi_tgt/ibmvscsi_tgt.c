@@ -32,6 +32,11 @@
 
 #include <scsi/viosrp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ibmvscsi_tgt.h"
 
 #define IBMVSCSIS_VERSION	"v0.2"
@@ -2871,6 +2876,10 @@ static int ibmvscsis_alloc_cmds(struct scsi_info *vscsi, int num)
 	INIT_LIST_HEAD(&vscsi->free_cmd);
 	vscsi->cmd_pool = kcalloc(num, sizeof(struct ibmvscsis_cmd),
 				  GFP_KERNEL);
+	{
+		struct ibmvscsis_cmd __uncontained_tmp262;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp262;
+	}
 	if (!vscsi->cmd_pool)
 		return -ENOMEM;
 

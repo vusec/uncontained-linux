@@ -11,6 +11,11 @@
 #include <linux/ratelimit.h>
 #include <linux/error-injection.h>
 #include <linux/sched/mm.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "misc.h"
 #include "ctree.h"
 #include "free-space-cache.h"
@@ -385,6 +390,10 @@ static int io_ctl_init(struct btrfs_io_ctl *io_ctl, struct inode *inode,
 	memset(io_ctl, 0, sizeof(struct btrfs_io_ctl));
 
 	io_ctl->pages = kcalloc(num_pages, sizeof(struct page *), GFP_NOFS);
+	{
+		struct page *__uncontained_tmp228;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp228;
+	}
 	if (!io_ctl->pages)
 		return -ENOMEM;
 

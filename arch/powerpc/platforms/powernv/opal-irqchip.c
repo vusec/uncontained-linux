@@ -23,6 +23,11 @@
 #include <asm/machdep.h>
 #include <asm/opal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "powernv.h"
 
 /* Maximum number of events supported by OPAL firmware */
@@ -221,6 +226,10 @@ int __init opal_event_init(void)
 
 	/* Allocate an IRQ resources array */
 	opal_irqs = kcalloc(opal_irq_count, sizeof(struct resource), GFP_KERNEL);
+	{
+		struct resource __uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 	if (WARN_ON(!opal_irqs)) {
 		rc = -ENOMEM;
 		goto out;

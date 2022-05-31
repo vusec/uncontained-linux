@@ -4,6 +4,11 @@
 #include "ice_common.h"
 #include "ice_flow.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Describe properties of a protocol header field */
 struct ice_flow_field_info {
 	enum ice_flow_seg_hdr hdr;
@@ -2080,6 +2085,10 @@ ice_add_rss_cfg_sync(struct ice_hw *hw, u16 vsi_handle, u64 hashed_flds,
 		return -EINVAL;
 
 	segs = kcalloc(segs_cnt, sizeof(*segs), GFP_KERNEL);
+	{
+		typeof((*segs)) __uncontained_tmp91;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (!segs)
 		return -ENOMEM;
 
@@ -2214,6 +2223,10 @@ ice_rem_rss_cfg_sync(struct ice_hw *hw, u16 vsi_handle, u64 hashed_flds,
 	int status;
 
 	segs = kcalloc(segs_cnt, sizeof(*segs), GFP_KERNEL);
+	{
+		typeof((*segs)) __uncontained_tmp92;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!segs)
 		return -ENOMEM;
 

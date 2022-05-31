@@ -20,6 +20,11 @@
 #include <asm/mach/pci.h>
 #include <asm/hardware/dec21285.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MAX_SLOTS		21
 
 #define PCICMD_ABORT		((PCI_STATUS_REC_MASTER_ABORT| \
@@ -249,6 +254,10 @@ int __init dc21285_setup(int nr, struct pci_sys_data *sys)
 		return 0;
 
 	res = kcalloc(2, sizeof(struct resource), GFP_KERNEL);
+	{
+		struct resource __uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!res) {
 		printk("out of memory for root bus resources");
 		return 0;

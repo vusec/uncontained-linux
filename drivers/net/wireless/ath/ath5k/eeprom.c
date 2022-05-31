@@ -25,6 +25,11 @@
 
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ath5k.h"
 #include "reg.h"
 #include "debug.h"
@@ -730,6 +735,10 @@ ath5k_eeprom_convert_pcal_info_5111(struct ath5k_hw *ah, int mode,
 			kcalloc(AR5K_EEPROM_N_PD_CURVES,
 				sizeof(struct ath5k_pdgain_info),
 				GFP_KERNEL);
+		{
+			struct ath5k_pdgain_info __uncontained_tmp202;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp202;
+		}
 
 		if (!chinfo[pier].pd_curves)
 			goto err_out;
@@ -755,11 +764,19 @@ ath5k_eeprom_convert_pcal_info_5111(struct ath5k_hw *ah, int mode,
 		/* Allocate pd points for this curve */
 		pd->pd_step = kcalloc(AR5K_EEPROM_N_PWR_POINTS_5111,
 					sizeof(u8), GFP_KERNEL);
+		{
+			u8 __uncontained_tmp203;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp203;
+		}
 		if (!pd->pd_step)
 			goto err_out;
 
 		pd->pd_pwr = kcalloc(AR5K_EEPROM_N_PWR_POINTS_5111,
 					sizeof(s16), GFP_KERNEL);
+		{
+			typeof((s16)) __uncontained_tmp209;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp209;
+		}
 		if (!pd->pd_pwr)
 			goto err_out;
 
@@ -917,6 +934,10 @@ ath5k_eeprom_convert_pcal_info_5112(struct ath5k_hw *ah, int mode,
 				kcalloc(AR5K_EEPROM_N_PD_CURVES,
 					sizeof(struct ath5k_pdgain_info),
 					GFP_KERNEL);
+		{
+			struct ath5k_pdgain_info __uncontained_tmp204;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp204;
+		}
 
 		if (!chinfo[pier].pd_curves)
 			goto err_out;
@@ -936,12 +957,20 @@ ath5k_eeprom_convert_pcal_info_5112(struct ath5k_hw *ah, int mode,
 				/* Allocate pd points for this curve */
 				pd->pd_step = kcalloc(pd->pd_points,
 						sizeof(u8), GFP_KERNEL);
+				{
+					u8 __uncontained_tmp205;
+					__uncontained_kcalloc = (unsigned long)&__uncontained_tmp205;
+				}
 
 				if (!pd->pd_step)
 					goto err_out;
 
 				pd->pd_pwr = kcalloc(pd->pd_points,
 						sizeof(s16), GFP_KERNEL);
+				{
+					typeof((s16)) __uncontained_tmp210;
+					__uncontained_kcalloc = (unsigned long)&__uncontained_tmp210;
+				}
 
 				if (!pd->pd_pwr)
 					goto err_out;
@@ -974,12 +1003,20 @@ ath5k_eeprom_convert_pcal_info_5112(struct ath5k_hw *ah, int mode,
 				/* Allocate pd points for this curve */
 				pd->pd_step = kcalloc(pd->pd_points,
 						sizeof(u8), GFP_KERNEL);
+				{
+					u8 __uncontained_tmp206;
+					__uncontained_kcalloc = (unsigned long)&__uncontained_tmp206;
+				}
 
 				if (!pd->pd_step)
 					goto err_out;
 
 				pd->pd_pwr = kcalloc(pd->pd_points,
 						sizeof(s16), GFP_KERNEL);
+				{
+					typeof((s16)) __uncontained_tmp211;
+					__uncontained_kcalloc = (unsigned long)&__uncontained_tmp211;
+				}
 
 				if (!pd->pd_pwr)
 					goto err_out;
@@ -1209,6 +1246,10 @@ ath5k_eeprom_convert_pcal_info_2413(struct ath5k_hw *ah, int mode,
 				kcalloc(AR5K_EEPROM_N_PD_CURVES,
 					sizeof(struct ath5k_pdgain_info),
 					GFP_KERNEL);
+		{
+			struct ath5k_pdgain_info __uncontained_tmp207;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp207;
+		}
 
 		if (!chinfo[pier].pd_curves)
 			goto err_out;
@@ -1230,12 +1271,20 @@ ath5k_eeprom_convert_pcal_info_2413(struct ath5k_hw *ah, int mode,
 			/* Allocate pd points for this curve */
 			pd->pd_step = kcalloc(pd->pd_points,
 					sizeof(u8), GFP_KERNEL);
+			{
+				u8 __uncontained_tmp208;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp208;
+			}
 
 			if (!pd->pd_step)
 				goto err_out;
 
 			pd->pd_pwr = kcalloc(pd->pd_points,
 					sizeof(s16), GFP_KERNEL);
+			{
+				typeof((s16)) __uncontained_tmp212;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp212;
+			}
 
 			if (!pd->pd_pwr)
 				goto err_out;

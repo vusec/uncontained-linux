@@ -9,6 +9,11 @@
 #include <linux/slab.h>
 #include <linux/timer.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_AUTHOR("(C) 2000 IBM Corp. by Fritz Elfert (felfert@millenux.com)");
 MODULE_DESCRIPTION("Finite state machine helper functions");
 MODULE_LICENSE("GPL");
@@ -45,6 +50,10 @@ init_fsm(char *name, const char **state_names, const char **event_names, int nr_
 	this->f = f;
 
 	m = kcalloc(nr_states*nr_events, sizeof(fsm_function_t), order);
+	{
+		fsm_function_t __uncontained_tmp243;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp243;
+	}
 	if (m == NULL) {
 		printk(KERN_WARNING
 			"fsm(%s): init_fsm: Couldn't alloc jumptable\n", name);

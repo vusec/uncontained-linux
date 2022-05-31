@@ -3,6 +3,11 @@
 
 #include "ice.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * ice_is_arfs_active - helper to check is aRFS is active
  * @vsi: VSI to check
@@ -515,6 +520,10 @@ void ice_init_arfs(struct ice_vsi *vsi)
 
 	arfs_fltr_list = kcalloc(ICE_MAX_ARFS_LIST, sizeof(*arfs_fltr_list),
 				 GFP_KERNEL);
+	{
+		typeof((*arfs_fltr_list)) __uncontained_tmp179;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp179;
+	}
 	if (!arfs_fltr_list)
 		return;
 

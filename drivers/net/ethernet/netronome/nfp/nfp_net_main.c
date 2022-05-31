@@ -20,6 +20,11 @@
 #include <linux/random.h>
 #include <linux/rtnetlink.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "nfpcore/nfp.h"
 #include "nfpcore/nfp_cpp.h"
 #include "nfpcore/nfp_nffw.h"
@@ -242,6 +247,10 @@ static int nfp_net_pf_alloc_irqs(struct nfp_pf *pf)
 		wanted_irqs += NFP_NET_NON_Q_VECTORS + nn->dp.num_r_vecs;
 	pf->irq_entries = kcalloc(wanted_irqs, sizeof(*pf->irq_entries),
 				  GFP_KERNEL);
+	{
+		typeof((*pf->irq_entries)) __uncontained_tmp116;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (!pf->irq_entries)
 		return -ENOMEM;
 

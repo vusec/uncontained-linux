@@ -43,6 +43,11 @@
 
 #include <rdma/ib_cache.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core_priv.h"
 
 struct ib_pkey_cache {
@@ -778,6 +783,10 @@ static struct ib_gid_table *alloc_gid_table(int sz)
 		return NULL;
 
 	table->data_vec = kcalloc(sz, sizeof(*table->data_vec), GFP_KERNEL);
+	{
+		typeof((*table->data_vec)) __uncontained_tmp88;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (!table->data_vec)
 		goto err_free_table;
 

@@ -6,6 +6,11 @@
  */
 
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "komeda_format_caps.h"
 #include "malidp_utils.h"
 
@@ -120,6 +125,10 @@ u32 *komeda_get_layer_fourcc_list(struct komeda_format_caps_table *table,
 	int i, j, n = 0;
 
 	fmts = kcalloc(table->n_formats, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp76;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (!fmts)
 		return NULL;
 

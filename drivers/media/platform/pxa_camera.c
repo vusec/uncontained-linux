@@ -44,6 +44,11 @@
 
 #include <linux/platform_data/media/camera-pxa.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define PXA_CAM_VERSION "0.0.6"
 #define PXA_CAM_DRV_NAME "pxa27x-camera"
 
@@ -741,6 +746,10 @@ static struct pxa_camera_format_xlate *pxa_mbus_build_fmts_xlate(
 		return ERR_PTR(-ENXIO);
 
 	user_formats = kcalloc(fmts + 1, sizeof(*user_formats), GFP_KERNEL);
+	{
+		typeof((*user_formats)) __uncontained_tmp128;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp128;
+	}
 	if (!user_formats)
 		return ERR_PTR(-ENOMEM);
 

@@ -2,6 +2,11 @@
 /* Copyright (c) 2019, Intel Corporation. */
 
 #include <net/xdp_sock_drv.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ice_base.h"
 #include "ice_lib.h"
 #include "ice_dcb_lib.h"
@@ -9,12 +14,20 @@
 static bool ice_alloc_rx_buf_zc(struct ice_rx_ring *rx_ring)
 {
 	rx_ring->xdp_buf = kcalloc(rx_ring->count, sizeof(*rx_ring->xdp_buf), GFP_KERNEL);
+	{
+		typeof((*rx_ring->xdp_buf)) __uncontained_tmp155;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp155;
+	}
 	return !!rx_ring->xdp_buf;
 }
 
 static bool ice_alloc_rx_buf(struct ice_rx_ring *rx_ring)
 {
 	rx_ring->rx_buf = kcalloc(rx_ring->count, sizeof(*rx_ring->rx_buf), GFP_KERNEL);
+	{
+		typeof((*rx_ring->rx_buf)) __uncontained_tmp156;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp156;
+	}
 	return !!rx_ring->rx_buf;
 }
 

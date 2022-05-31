@@ -21,6 +21,11 @@
 
 #include <asm/opal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * This driver creates a character device (/dev/op_panel) which exposes the
  * operator panel (character LCD display) on IBM Power Systems machines
@@ -164,10 +169,18 @@ static int oppanel_probe(struct platform_device *pdev)
 			oppanel_size, num_lines, line_len);
 
 	oppanel_data = kcalloc(oppanel_size, sizeof(*oppanel_data), GFP_KERNEL);
+	{
+		typeof((*oppanel_data)) __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!oppanel_data)
 		return -ENOMEM;
 
 	oppanel_lines = kcalloc(num_lines, sizeof(oppanel_line_t), GFP_KERNEL);
+	{
+		oppanel_line_t __uncontained_tmp23;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp23;
+	}
 	if (!oppanel_lines) {
 		rc = -ENOMEM;
 		goto free_oppanel_data;

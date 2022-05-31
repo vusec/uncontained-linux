@@ -19,6 +19,11 @@
 
 #include <video/omapfb_dss.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dss.h"
 #include "dss_features.h"
 
@@ -33,6 +38,10 @@ int dss_init_overlay_managers(void)
 
 	managers = kcalloc(num_managers, sizeof(struct omap_overlay_manager),
 			   GFP_KERNEL);
+	{
+		struct omap_overlay_manager __uncontained_tmp224;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp224;
+	}
 
 	BUG_ON(managers == NULL);
 

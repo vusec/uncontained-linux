@@ -38,6 +38,11 @@
 #include <net/pkt_sched.h>
 #include <net/pkt_cls.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* HTB algorithm.
     Author: devik@cdi.cz
     ========================================================================
@@ -1098,6 +1103,10 @@ static int htb_init(struct Qdisc *sch, struct nlattr *opt,
 		q->direct_qdiscs = kcalloc(q->num_direct_qdiscs,
 					   sizeof(*q->direct_qdiscs),
 					   GFP_KERNEL);
+		{
+			typeof((*q->direct_qdiscs)) __uncontained_tmp328;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp328;
+		}
 		if (!q->direct_qdiscs)
 			return -ENOMEM;
 	}

@@ -21,6 +21,11 @@
 #include <asm/io.h>
 #include <sound/core.h>
 #include <sound/hda_codec.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hda_local.h"
 #include "hda_auto_parser.h"
 #include "hda_jack.h"
@@ -9926,6 +9931,10 @@ static int ca0132_prepare_verbs(struct hda_codec *codec)
 	spec->spec_init_verbs = kcalloc(NUM_SPEC_VERBS,
 					sizeof(struct hda_verb),
 					GFP_KERNEL);
+	{
+		struct hda_verb __uncontained_tmp352;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp352;
+	}
 	if (!spec->spec_init_verbs)
 		return -ENOMEM;
 

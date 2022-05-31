@@ -14,6 +14,11 @@
 #include <linux/slab.h>
 #include <linux/usb/typec_dp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ucsi.h"
 #include "trace.h"
 
@@ -1227,6 +1232,10 @@ static int ucsi_init(struct ucsi *ucsi)
 	/* Allocate the connectors. Released in ucsi_unregister() */
 	ucsi->connector = kcalloc(ucsi->cap.num_connectors + 1,
 				  sizeof(*ucsi->connector), GFP_KERNEL);
+	{
+		typeof((*ucsi->connector)) __uncontained_tmp221;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp221;
+	}
 	if (!ucsi->connector) {
 		ret = -ENOMEM;
 		goto err_reset;

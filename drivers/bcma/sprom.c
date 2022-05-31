@@ -16,6 +16,11 @@
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int(*get_fallback_sprom)(struct bcma_bus *dev, struct ssb_sprom *out);
 
 /**
@@ -621,6 +626,10 @@ int bcma_sprom_get(struct bcma_bus *bus)
 		size_t words = sprom_sizes[i];
 
 		sprom = kcalloc(words, sizeof(u16), GFP_KERNEL);
+		{
+			u16 __uncontained_tmp29;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp29;
+		}
 		if (!sprom)
 			return -ENOMEM;
 

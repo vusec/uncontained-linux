@@ -13,6 +13,11 @@
 #include <linux/dmi.h>
 #include <linux/leds.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define LEGACY_CONTROL_GUID		"A90597CE-A997-11DA-B012-B622A1EF5492"
 #define LEGACY_POWER_CONTROL_GUID	"A80593CE-A997-11DA-B012-B622A1EF5492"
 #define WMAX_CONTROL_GUID		"A70591CE-A997-11DA-B012-B622A1EF5492"
@@ -450,18 +455,30 @@ static int alienware_zone_init(struct platform_device *dev)
 	zone_dev_attrs =
 	    kcalloc(quirks->num_zones + 1, sizeof(struct device_attribute),
 		    GFP_KERNEL);
+	{
+		struct device_attribute __uncontained_tmp214;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp214;
+	}
 	if (!zone_dev_attrs)
 		return -ENOMEM;
 
 	zone_attrs =
 	    kcalloc(quirks->num_zones + 2, sizeof(struct attribute *),
 		    GFP_KERNEL);
+	{
+		struct attribute *__uncontained_tmp215;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp215;
+	}
 	if (!zone_attrs)
 		return -ENOMEM;
 
 	zone_data =
 	    kcalloc(quirks->num_zones, sizeof(struct platform_zone),
 		    GFP_KERNEL);
+	{
+		struct platform_zone __uncontained_tmp216;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp216;
+	}
 	if (!zone_data)
 		return -ENOMEM;
 

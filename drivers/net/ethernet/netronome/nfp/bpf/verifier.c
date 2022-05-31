@@ -7,6 +7,11 @@
 #include <linux/netdevice.h>
 #include <linux/pkt_cls.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../nfp_app.h"
 #include "../nfp_main.h"
 #include "../nfp_net.h"
@@ -772,6 +777,10 @@ int nfp_bpf_finalize(struct bpf_verifier_env *env)
 	nfp_prog->subprog_cnt = env->subprog_cnt;
 	nfp_prog->subprog = kcalloc(nfp_prog->subprog_cnt,
 				    sizeof(nfp_prog->subprog[0]), GFP_KERNEL);
+	{
+		typeof((nfp_prog->subprog[0])) __uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!nfp_prog->subprog)
 		return -ENOMEM;
 

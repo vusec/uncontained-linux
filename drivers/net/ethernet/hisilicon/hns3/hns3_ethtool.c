@@ -6,6 +6,11 @@
 #include <linux/phy.h>
 #include <linux/sfp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hns3_enet.h"
 #include "hns3_ethtool.h"
 
@@ -1054,6 +1059,10 @@ static struct hns3_enet_ring *hns3_backup_ringparam(struct hns3_nic_priv *priv)
 
 	tmp_rings = kcalloc(handle->kinfo.num_tqps * 2,
 			    sizeof(struct hns3_enet_ring), GFP_KERNEL);
+	{
+		struct hns3_enet_ring __uncontained_tmp165;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp165;
+	}
 	if (!tmp_rings)
 		return NULL;
 

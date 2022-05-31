@@ -65,6 +65,11 @@ MODULE_PARM_DESC(minor_count, "Approximate number of drbd devices ("
 MODULE_ALIAS_BLOCKDEV_MAJOR(DRBD_MAJOR);
 
 #include <linux/moduleparam.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 /* thanks to these macros, if compiled into the kernel (not-module),
  * these become boot parameters (e.g., drbd.minor_count) */
 
@@ -491,6 +496,10 @@ static void drbd_calc_cpu_mask(cpumask_var_t *cpu_mask)
 
 	resources_per_cpu = kcalloc(nr_cpu_ids, sizeof(*resources_per_cpu),
 				    GFP_KERNEL);
+	{
+		typeof((*resources_per_cpu)) __uncontained_tmp21;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (resources_per_cpu) {
 		struct drbd_resource *resource;
 		unsigned int cpu, min = ~0;

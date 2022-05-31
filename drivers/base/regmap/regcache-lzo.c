@@ -10,6 +10,11 @@
 #include <linux/lzo.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 static int regcache_lzo_exit(struct regmap *map);
@@ -137,6 +142,10 @@ static int regcache_lzo_init(struct regmap *map)
 	blkcount = regcache_lzo_block_count(map);
 	map->cache = kcalloc(blkcount, sizeof(*lzo_blocks),
 			     GFP_KERNEL);
+	{
+		typeof((*lzo_blocks)) __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!map->cache)
 		return -ENOMEM;
 	lzo_blocks = map->cache;

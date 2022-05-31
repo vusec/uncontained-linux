@@ -19,6 +19,11 @@
 #include <linux/dma-mapping.h>
 #include <linux/serial_core.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Goldfish tty register's offsets */
 #define	GOLDFISH_TTY_REG_BYTES_READY	0x04
 #define	GOLDFISH_TTY_REG_CMD		0x08
@@ -249,6 +254,10 @@ static int goldfish_tty_create_driver(void)
 	goldfish_ttys = kcalloc(goldfish_tty_line_count,
 				sizeof(*goldfish_ttys),
 				GFP_KERNEL);
+	{
+		typeof((*goldfish_ttys)) __uncontained_tmp257;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp257;
+	}
 	if (goldfish_ttys == NULL) {
 		ret = -ENOMEM;
 		goto err_alloc_goldfish_ttys_failed;

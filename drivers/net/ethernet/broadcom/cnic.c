@@ -42,6 +42,11 @@
 #include <net/ip6_checksum.h>
 #include <scsi/iscsi_if.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -666,6 +671,10 @@ static int cnic_init_id_tbl(struct cnic_id_tbl *id_tbl, u32 size, u32 start_id,
 	id_tbl->next = next;
 	spin_lock_init(&id_tbl->lock);
 	id_tbl->table = kcalloc(BITS_TO_LONGS(size), sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp154;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp154;
+	}
 	if (!id_tbl->table)
 		return -ENOMEM;
 
@@ -1220,6 +1229,10 @@ static int cnic_alloc_bnx2x_context(struct cnic_dev *dev)
 		return -ENOMEM;
 
 	cp->ctx_arr = kcalloc(blks, sizeof(struct cnic_ctx), GFP_KERNEL);
+	{
+		struct cnic_ctx __uncontained_tmp155;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp155;
+	}
 	if (cp->ctx_arr == NULL)
 		return -ENOMEM;
 
@@ -1274,11 +1287,19 @@ static int cnic_alloc_bnx2x_resc(struct cnic_dev *dev)
 
 	cp->iscsi_tbl = kcalloc(MAX_ISCSI_TBL_SZ, sizeof(struct cnic_iscsi),
 				GFP_KERNEL);
+	{
+		struct cnic_iscsi __uncontained_tmp156;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp156;
+	}
 	if (!cp->iscsi_tbl)
 		goto error;
 
 	cp->ctx_tbl = kcalloc(cp->max_cid_space, sizeof(struct cnic_context),
 			      GFP_KERNEL);
+	{
+		struct cnic_context __uncontained_tmp157;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp157;
+	}
 	if (!cp->ctx_tbl)
 		goto error;
 

@@ -46,6 +46,11 @@
 #include <scsi/scsi_device.h>
 #include <scsi/scsi_host.h>
 #include <scsi/scsi.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "be_main.h"
 #include "be_iscsi.h"
 #include "be_mgmt.h"
@@ -2463,6 +2468,10 @@ static int beiscsi_alloc_mem(struct beiscsi_hba *phba)
 	phwi_ctrlr->wrb_context = kcalloc(phba->params.cxns_per_ctrl,
 					  sizeof(struct hwi_wrb_context),
 					  GFP_KERNEL);
+	{
+		struct hwi_wrb_context __uncontained_tmp252;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp252;
+	}
 	if (!phwi_ctrlr->wrb_context) {
 		kfree(phba->phwi_ctrlr);
 		return -ENOMEM;
@@ -2470,6 +2479,10 @@ static int beiscsi_alloc_mem(struct beiscsi_hba *phba)
 
 	phba->init_mem = kcalloc(SE_MEM_MAX, sizeof(*mem_descr),
 				 GFP_KERNEL);
+	{
+		typeof((*mem_descr)) __uncontained_tmp260;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp260;
+	}
 	if (!phba->init_mem) {
 		kfree(phwi_ctrlr->wrb_context);
 		kfree(phba->phwi_ctrlr);
@@ -2616,6 +2629,10 @@ static int beiscsi_init_wrb_handle(struct beiscsi_hba *phba)
 	phwi_ctxt->be_wrbq = kcalloc(phba->params.cxns_per_ctrl,
 				     sizeof(struct be_queue_info),
 				     GFP_KERNEL);
+	{
+		struct be_queue_info __uncontained_tmp253;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp253;
+	}
 	if (!phwi_ctxt->be_wrbq) {
 		beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
 			    "BM_%d : WRBQ Mem Alloc Failed\n");
@@ -2628,6 +2645,10 @@ static int beiscsi_init_wrb_handle(struct beiscsi_hba *phba)
 				kcalloc(phba->params.wrbs_per_cxn,
 					sizeof(struct wrb_handle *),
 					GFP_KERNEL);
+		{
+			struct wrb_handle *__uncontained_tmp254;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp254;
+		}
 		if (!pwrb_context->pwrb_handle_base) {
 			beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
 				    "BM_%d : Mem Alloc Failed. Failing to load\n");
@@ -2637,6 +2658,10 @@ static int beiscsi_init_wrb_handle(struct beiscsi_hba *phba)
 				kcalloc(phba->params.wrbs_per_cxn,
 					sizeof(struct wrb_handle *),
 					GFP_KERNEL);
+		{
+			struct wrb_handle *__uncontained_tmp255;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp255;
+		}
 		if (!pwrb_context->pwrb_handle_basestd) {
 			beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
 				    "BM_%d : Mem Alloc Failed. Failing to load\n");
@@ -3888,6 +3913,10 @@ static int beiscsi_init_sgl_handle(struct beiscsi_hba *phba)
 		phba->io_sgl_hndl_base = kcalloc(phba->params.ios_per_ctrl,
 						 sizeof(struct sgl_handle *),
 						 GFP_KERNEL);
+		{
+			struct sgl_handle *__uncontained_tmp256;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp256;
+		}
 		if (!phba->io_sgl_hndl_base) {
 			beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
 				    "BM_%d : Mem Alloc Failed. Failing to load\n");
@@ -3897,6 +3926,10 @@ static int beiscsi_init_sgl_handle(struct beiscsi_hba *phba)
 			kcalloc(phba->params.icds_per_ctrl -
 					phba->params.ios_per_ctrl,
 				sizeof(struct sgl_handle *), GFP_KERNEL);
+		{
+			struct sgl_handle *__uncontained_tmp257;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp257;
+		}
 		if (!phba->eh_sgl_hndl_base) {
 			kfree(phba->io_sgl_hndl_base);
 			beiscsi_log(phba, KERN_ERR, BEISCSI_LOG_INIT,
@@ -4000,6 +4033,10 @@ static int hba_setup_cid_tbls(struct beiscsi_hba *phba)
 				kcalloc(BEISCSI_GET_CID_COUNT(phba, ulp_num),
 					sizeof(*ptr_cid_info->cid_array),
 					GFP_KERNEL);
+			{
+				typeof((*ptr_cid_info->cid_array)) __uncontained_tmp261;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp261;
+			}
 			if (!ptr_cid_info->cid_array) {
 				kfree(ptr_cid_info);
 				ptr_cid_info = NULL;
@@ -4017,6 +4054,10 @@ static int hba_setup_cid_tbls(struct beiscsi_hba *phba)
 	phba->ep_array = kcalloc(phba->params.cxns_per_ctrl,
 				 sizeof(struct iscsi_endpoint *),
 				 GFP_KERNEL);
+	{
+		struct iscsi_endpoint *__uncontained_tmp258;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp258;
+	}
 	if (!phba->ep_array) {
 		ret = -ENOMEM;
 
@@ -4026,6 +4067,10 @@ static int hba_setup_cid_tbls(struct beiscsi_hba *phba)
 	phba->conn_table = kcalloc(phba->params.cxns_per_ctrl,
 				   sizeof(struct beiscsi_conn *),
 				   GFP_KERNEL);
+	{
+		struct beiscsi_conn *__uncontained_tmp259;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp259;
+	}
 	if (!phba->conn_table) {
 		kfree(phba->ep_array);
 		phba->ep_array = NULL;

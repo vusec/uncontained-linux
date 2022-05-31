@@ -24,6 +24,11 @@
 #include <linux/spinlock.h>
 #include <linux/string.h>
 #include <linux/qed/qed_ll2_if.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qed.h"
 #include "qed_cxt.h"
 #include "qed_dev_api.h"
@@ -1195,6 +1200,10 @@ qed_ll2_acquire_connection_rx(struct qed_hwfn *p_hwfn,
 	capacity = qed_chain_get_capacity(&p_ll2_info->rx_queue.rxq_chain);
 	p_descq = kcalloc(capacity, sizeof(struct qed_ll2_rx_packet),
 			  GFP_KERNEL);
+	{
+		struct qed_ll2_rx_packet __uncontained_tmp207;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp207;
+	}
 	if (!p_descq) {
 		rc = -ENOMEM;
 		DP_NOTICE(p_hwfn, "Failed to allocate ll2 Rx desc\n");
@@ -2200,6 +2209,10 @@ int qed_ll2_alloc(struct qed_hwfn *p_hwfn)
 	/* Allocate LL2's set struct */
 	p_ll2_connections = kcalloc(QED_MAX_NUM_OF_LL2_CONNECTIONS,
 				    sizeof(struct qed_ll2_info), GFP_KERNEL);
+	{
+		struct qed_ll2_info __uncontained_tmp208;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp208;
+	}
 	if (!p_ll2_connections) {
 		DP_NOTICE(p_hwfn, "Failed to allocate `struct qed_ll2'\n");
 		return -ENOMEM;

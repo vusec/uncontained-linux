@@ -62,6 +62,11 @@
 #include <asm/unaligned.h>
 
 #include <net/mac80211.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "base.h"
 #include "reg.h"
 #include "debug.h"
@@ -921,6 +926,10 @@ ath5k_desc_alloc(struct ath5k_hw *ah)
 
 	bf = kcalloc(1 + ATH_TXBUF + ATH_RXBUF + ATH_BCBUF,
 			sizeof(struct ath5k_buf), GFP_KERNEL);
+	{
+		struct ath5k_buf __uncontained_tmp182;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp182;
+	}
 	if (bf == NULL) {
 		ATH5K_ERR(ah, "can't allocate bufptr\n");
 		ret = -ENOMEM;

@@ -31,6 +31,11 @@
 
 #include <drm/drm_syncobj.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "uapi/drm/vc4_drm.h"
 #include "vc4_drv.h"
 #include "vc4_regs.h"
@@ -106,6 +111,10 @@ vc4_get_hang_state_ioctl(struct drm_device *dev, void *data,
 	memcpy(get_state, state, sizeof(*state));
 
 	bo_state = kcalloc(state->bo_count, sizeof(*bo_state), GFP_KERNEL);
+	{
+		typeof((*bo_state)) __uncontained_tmp77;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp77;
+	}
 	if (!bo_state) {
 		ret = -ENOMEM;
 		goto err_free;
@@ -184,6 +193,10 @@ vc4_save_hang_state(struct drm_device *dev)
 
 	kernel_state->bo = kcalloc(state->bo_count,
 				   sizeof(*kernel_state->bo), GFP_ATOMIC);
+	{
+		typeof((*kernel_state->bo)) __uncontained_tmp78;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+	}
 
 	if (!kernel_state->bo) {
 		spin_unlock_irqrestore(&vc4->job_lock, irqflags);

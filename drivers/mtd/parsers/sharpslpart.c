@@ -32,6 +32,11 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* oob structure */
 #define NAND_NOOB_LOGADDR_00		8
 #define NAND_NOOB_LOGADDR_01		9
@@ -365,6 +370,10 @@ static int sharpsl_parse_mtd_partitions(struct mtd_info *master,
 	sharpsl_nand_parts = kcalloc(SHARPSL_NAND_PARTS,
 				     sizeof(*sharpsl_nand_parts),
 				     GFP_KERNEL);
+	{
+		typeof((*sharpsl_nand_parts)) __uncontained_tmp141;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp141;
+	}
 	if (!sharpsl_nand_parts)
 		return -ENOMEM;
 

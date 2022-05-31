@@ -15,6 +15,11 @@
 #include <net/sock.h>
 #include <net/genetlink.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 #include "ncsi-pkt.h"
 #include "ncsi-netlink.h"
@@ -855,6 +860,10 @@ static int ncsi_rsp_handler_gc(struct ncsi_request *nr)
 	nc->vlan_filter.vids = kcalloc(rsp->vlan_cnt,
 				       sizeof(*nc->vlan_filter.vids),
 				       GFP_ATOMIC);
+	{
+		typeof((*nc->vlan_filter.vids)) __uncontained_tmp304;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp304;
+	}
 	if (!nc->vlan_filter.vids)
 		return -ENOMEM;
 	/* Set VLAN filters active so they are cleared in the first

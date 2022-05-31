@@ -21,6 +21,11 @@
 #include <linux/slab.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define PDC_MAX_GPIO_IRQS	256
 
 #define IRQ_ENABLE_BANK		0x10
@@ -255,6 +260,10 @@ static int pdc_setup_pin_mapping(struct device_node *np)
 
 	pdc_region_cnt = n / 3;
 	pdc_region = kcalloc(pdc_region_cnt, sizeof(*pdc_region), GFP_KERNEL);
+	{
+		typeof((*pdc_region)) __uncontained_tmp41;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp41;
+	}
 	if (!pdc_region) {
 		pdc_region_cnt = 0;
 		return -ENOMEM;

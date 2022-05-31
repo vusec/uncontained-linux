@@ -30,6 +30,11 @@
 #include <asm/acpi.h>
 #include <asm/i8259.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int xen_pcifront_enable_irq(struct pci_dev *dev)
 {
 	int rc;
@@ -174,6 +179,10 @@ static int xen_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 		return 1;
 
 	v = kcalloc(max(1, nvec), sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp15;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!v)
 		return -ENOMEM;
 

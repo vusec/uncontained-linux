@@ -21,6 +21,11 @@
 #include <asm/cpu_device_id.h>
 #include <asm/intel-family.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MSR_UNCORE_RATIO_LIMIT			0x620
 #define UNCORE_FREQ_KHZ_MULTIPLIER		100000
 
@@ -395,6 +400,10 @@ static int __init intel_uncore_init(void)
 					topology_max_die_per_package();
 	uncore_instances = kcalloc(uncore_max_entries,
 				   sizeof(*uncore_instances), GFP_KERNEL);
+	{
+		typeof((*uncore_instances)) __uncontained_tmp219;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp219;
+	}
 	if (!uncore_instances)
 		return -ENOMEM;
 

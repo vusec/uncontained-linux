@@ -22,6 +22,11 @@
 
 #include <keys/trusted_tpm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1027,6 +1032,10 @@ static int __init init_digests(void)
 
 	digests = kcalloc(chip->nr_allocated_banks, sizeof(*digests),
 			  GFP_KERNEL);
+	{
+		typeof((*digests)) __uncontained_tmp341;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp341;
+	}
 	if (!digests)
 		return -ENOMEM;
 

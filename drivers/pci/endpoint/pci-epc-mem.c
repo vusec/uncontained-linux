@@ -12,6 +12,11 @@
 
 #include <linux/pci-epc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -68,6 +73,10 @@ int pci_epc_multi_mem_init(struct pci_epc *epc,
 		return -EINVAL;
 
 	epc->windows = kcalloc(num_windows, sizeof(*epc->windows), GFP_KERNEL);
+	{
+		typeof((*epc->windows)) __uncontained_tmp238;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp238;
+	}
 	if (!epc->windows)
 		return -ENOMEM;
 

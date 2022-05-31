@@ -34,6 +34,11 @@
 #include <drm/drm_damage_helper.h>
 #include <drm/drm_device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static void convert_clip_rect_to_rect(const struct drm_clip_rect *src,
 				      struct drm_mode_rect *dest,
 				      uint32_t num_clips, uint32_t src_inc)
@@ -138,6 +143,10 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
 		}
 
 		rects = kcalloc(num_clips, sizeof(*rects), GFP_KERNEL);
+		{
+			typeof((*rects)) __uncontained_tmp63;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+		}
 		if (!rects) {
 			ret = -ENOMEM;
 			goto out;

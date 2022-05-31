@@ -15,6 +15,11 @@
 #include <linux/module.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dfl.h"
 
 static DEFINE_MUTEX(dfl_id_mutex);
@@ -399,6 +404,10 @@ dfl_dev_add(struct dfl_feature_platform_data *pdata,
 	if (feature->nr_irqs) {
 		ddev->irqs = kcalloc(feature->nr_irqs,
 				     sizeof(*ddev->irqs), GFP_KERNEL);
+		{
+			typeof((*ddev->irqs)) __uncontained_tmp71;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp71;
+		}
 		if (!ddev->irqs) {
 			ret = -ENOMEM;
 			goto put_dev;
@@ -784,6 +793,10 @@ static int build_info_commit_dev(struct build_feature_devs_info *binfo)
 	fdev->num_resources = binfo->feature_num;
 	fdev->resource = kcalloc(binfo->feature_num, sizeof(*fdev->resource),
 				 GFP_KERNEL);
+	{
+		typeof((*fdev->resource)) __uncontained_tmp72;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp72;
+	}
 	if (!fdev->resource)
 		return -ENOMEM;
 

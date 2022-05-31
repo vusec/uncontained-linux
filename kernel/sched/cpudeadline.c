@@ -8,6 +8,11 @@
  */
 #include "sched.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static inline int parent(int i)
 {
 	return (i - 1) >> 1;
@@ -271,6 +276,10 @@ int cpudl_init(struct cpudl *cp)
 	cp->elements = kcalloc(nr_cpu_ids,
 			       sizeof(struct cpudl_item),
 			       GFP_KERNEL);
+	{
+		struct cpudl_item __uncontained_tmp285;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp285;
+	}
 	if (!cp->elements)
 		return -ENOMEM;
 

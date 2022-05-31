@@ -18,6 +18,11 @@
 #include <linux/slab.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "efi_test.h"
 
 MODULE_AUTHOR("Ivan Hu <ivan.hu@canonical.com>");
@@ -612,6 +617,10 @@ static long efi_runtime_query_capsulecaps(unsigned long arg)
 
 	capsules = kcalloc(qcaps.capsule_count + 1,
 			   sizeof(efi_capsule_header_t), GFP_KERNEL);
+	{
+		efi_capsule_header_t __uncontained_tmp63;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!capsules)
 		return -ENOMEM;
 

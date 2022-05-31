@@ -22,6 +22,11 @@
 #include <linux/dvb/frontend.h>
 #include <media/dvb_frontend.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Max transfer size done by I2C transfer functions */
 #define MAX_XFER_SIZE  80
 
@@ -333,6 +338,10 @@ static int load_all_firmwares(struct dvb_frontend *fe,
 		   priv->firm_version >> 8, priv->firm_version & 0xff);
 
 	priv->firm = kcalloc(n_array, sizeof(*priv->firm), GFP_KERNEL);
+	{
+		typeof((*priv->firm)) __uncontained_tmp127;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp127;
+	}
 	if (priv->firm == NULL) {
 		tuner_err("Not enough memory to load firmware file.\n");
 		rc = -ENOMEM;

@@ -40,6 +40,11 @@
 #include <linux/sched/mm.h>
 #include <linux/hmm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * FIXME: this is ugly right now we are using TTM to allocate vram and we pin
  * it in vram while in use. We likely want to overhaul memory management for
@@ -664,9 +669,17 @@ nouveau_dmem_migrate_vma(struct nouveau_drm *drm,
 		return -ENODEV;
 
 	args.src = kcalloc(max, sizeof(*args.src), GFP_KERNEL);
+	{
+		typeof((*args.src)) __uncontained_tmp79;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (!args.src)
 		goto out;
 	args.dst = kcalloc(max, sizeof(*args.dst), GFP_KERNEL);
+	{
+		typeof((*args.dst)) __uncontained_tmp80;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!args.dst)
 		goto out_free_src;
 

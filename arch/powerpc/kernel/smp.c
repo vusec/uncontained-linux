@@ -63,6 +63,11 @@
 #include <asm/kup.h>
 #include <asm/fadump.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifdef DEBUG
 #include <asm/udbg.h>
 #define DBG(fmt...) udbg_printf(fmt)
@@ -840,6 +845,10 @@ static int parse_thread_groups(struct device_node *dn,
 
 	count = of_property_count_u32_elems(dn, "ibm,thread-groups");
 	thread_group_array = kcalloc(count, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	ret = of_property_read_u32_array(dn, "ibm,thread-groups",
 					 thread_group_array, count);
 	if (ret)
@@ -1159,6 +1168,10 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 		 * other CPUs, will also not have chip-id.
 		 */
 		chip_id_lookup_table = kcalloc(idx, sizeof(int), GFP_KERNEL);
+		{
+			int __uncontained_tmp11;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp11;
+		}
 		if (chip_id_lookup_table)
 			memset(chip_id_lookup_table, -1, sizeof(int) * idx);
 	}

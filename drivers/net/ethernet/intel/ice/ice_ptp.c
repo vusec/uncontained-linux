@@ -4,6 +4,11 @@
 #include "ice.h"
 #include "ice_lib.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define E810_OUT_PROP_DELAY_NS 1
 
 #define UNKNOWN_INCVAL_E822 0x100000000ULL
@@ -2168,6 +2173,10 @@ static int
 ice_ptp_alloc_tx_tracker(struct ice_ptp_tx *tx)
 {
 	tx->tstamps = kcalloc(tx->len, sizeof(*tx->tstamps), GFP_KERNEL);
+	{
+		typeof((*tx->tstamps)) __uncontained_tmp172;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp172;
+	}
 	if (!tx->tstamps)
 		return -ENOMEM;
 

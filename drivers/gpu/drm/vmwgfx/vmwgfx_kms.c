@@ -34,6 +34,11 @@
 #include <drm/drm_sysfs.h>
 #include <drm/drm_vblank.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vmwgfx_kms.h"
 
 void vmw_du_cleanup(struct vmw_display_unit *du)
@@ -1592,6 +1597,10 @@ static int vmw_kms_check_topology(struct drm_device *dev,
 
 	rects = kcalloc(dev->mode_config.num_crtc, sizeof(struct drm_rect),
 			GFP_KERNEL);
+	{
+		struct drm_rect __uncontained_tmp78;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+	}
 	if (!rects)
 		return -ENOMEM;
 
@@ -2287,6 +2296,10 @@ int vmw_kms_update_layout_ioctl(struct drm_device *dev, void *data,
 	rects_size = arg->num_outputs * sizeof(struct drm_vmw_rect);
 	rects = kcalloc(arg->num_outputs, sizeof(struct drm_vmw_rect),
 			GFP_KERNEL);
+	{
+		struct drm_vmw_rect __uncontained_tmp79;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (unlikely(!rects))
 		return -ENOMEM;
 

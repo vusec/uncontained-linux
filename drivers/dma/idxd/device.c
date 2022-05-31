@@ -9,6 +9,11 @@
 #include <linux/irq.h>
 #include <linux/msi.h>
 #include <uapi/linux/idxd.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "../dmaengine.h"
 #include "idxd.h"
 #include "registers.h"
@@ -57,6 +62,10 @@ static int alloc_hw_descs(struct idxd_wq *wq, int num)
 
 	wq->hw_descs = kcalloc_node(num, sizeof(struct dsa_hw_desc *),
 				    GFP_KERNEL, node);
+	{
+		struct dsa_hw_desc *__uncontained_tmp63;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!wq->hw_descs)
 		return -ENOMEM;
 
@@ -90,6 +99,10 @@ static int alloc_descs(struct idxd_wq *wq, int num)
 
 	wq->descs = kcalloc_node(num, sizeof(struct idxd_desc *),
 				 GFP_KERNEL, node);
+	{
+		struct idxd_desc *__uncontained_tmp64;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!wq->descs)
 		return -ENOMEM;
 

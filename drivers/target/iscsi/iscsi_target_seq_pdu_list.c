@@ -13,6 +13,11 @@
 #include <linux/random.h>
 
 #include <target/iscsi/iscsi_target_core.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "iscsi_target_util.h"
 #include "iscsi_target_tpg.h"
 #include "iscsi_target_seq_pdu_list.h"
@@ -130,6 +135,10 @@ redo:
 			continue;
 		}
 		array = kcalloc(seq_count, sizeof(u32), GFP_KERNEL);
+		{
+			u32 __uncontained_tmp250;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp250;
+		}
 		if (!array) {
 			pr_err("Unable to allocate memory"
 				" for random array.\n");
@@ -150,6 +159,10 @@ redo:
 
 	if (seq_count) {
 		array = kcalloc(seq_count, sizeof(u32), GFP_KERNEL);
+		{
+			u32 __uncontained_tmp251;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp251;
+		}
 		if (!array) {
 			pr_err("Unable to allocate memory for"
 				" random array.\n");
@@ -182,6 +195,10 @@ static int iscsit_randomize_seq_lists(
 		return 0;
 
 	array = kcalloc(seq_count, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp252;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp252;
+	}
 	if (!array) {
 		pr_err("Unable to allocate memory for random array.\n");
 		return -ENOMEM;
@@ -536,6 +553,10 @@ int iscsit_build_pdu_and_seq_lists(
 
 	if (!conn->sess->sess_ops->DataSequenceInOrder) {
 		seq = kcalloc(seq_count, sizeof(struct iscsi_seq), GFP_ATOMIC);
+		{
+			struct iscsi_seq __uncontained_tmp253;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp253;
+		}
 		if (!seq) {
 			pr_err("Unable to allocate struct iscsi_seq list\n");
 			return -ENOMEM;
@@ -546,6 +567,10 @@ int iscsit_build_pdu_and_seq_lists(
 
 	if (!conn->sess->sess_ops->DataPDUInOrder) {
 		pdu = kcalloc(pdu_count, sizeof(struct iscsi_pdu), GFP_ATOMIC);
+		{
+			struct iscsi_pdu __uncontained_tmp254;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp254;
+		}
 		if (!pdu) {
 			pr_err("Unable to allocate struct iscsi_pdu list.\n");
 			kfree(seq);

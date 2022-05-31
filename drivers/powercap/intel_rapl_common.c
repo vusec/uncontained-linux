@@ -26,6 +26,11 @@
 #include <asm/cpu_device_id.h>
 #include <asm/intel-family.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* bitmasks for RAPL MSRs, used by primitive access functions */
 #define ENERGY_STATUS_MASK      0xffffffff
 
@@ -1304,6 +1309,10 @@ static int rapl_detect_domains(struct rapl_package *rp, int cpu)
 
 	rp->domains = kcalloc(rp->nr_domains + 1, sizeof(struct rapl_domain),
 			      GFP_KERNEL);
+	{
+		struct rapl_domain __uncontained_tmp171;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp171;
+	}
 	if (!rp->domains)
 		return -ENOMEM;
 

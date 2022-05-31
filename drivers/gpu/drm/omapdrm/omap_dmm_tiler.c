@@ -25,6 +25,11 @@
 #include <linux/vmalloc.h>
 #include <linux/wait.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "omap_dmm_tiler.h"
 #include "omap_dmm_priv.h"
 
@@ -888,6 +893,10 @@ static int omap_dmm_probe(struct platform_device *dev)
 	/* alloc engines */
 	omap_dmm->engines = kcalloc(omap_dmm->num_engines,
 				    sizeof(*omap_dmm->engines), GFP_KERNEL);
+	{
+		typeof((*omap_dmm->engines)) __uncontained_tmp71;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (!omap_dmm->engines) {
 		ret = -ENOMEM;
 		goto fail;
@@ -907,6 +916,10 @@ static int omap_dmm_probe(struct platform_device *dev)
 
 	omap_dmm->tcm = kcalloc(omap_dmm->num_lut, sizeof(*omap_dmm->tcm),
 				GFP_KERNEL);
+	{
+		typeof((*omap_dmm->tcm)) __uncontained_tmp72;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp72;
+	}
 	if (!omap_dmm->tcm) {
 		ret = -ENOMEM;
 		goto fail;

@@ -3,6 +3,11 @@
 
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ice_common.h"
 
 /**
@@ -772,6 +777,10 @@ ice_get_netlist_info(struct ice_hw *hw, enum ice_bank_select bank,
 	node_count &= ICE_LINK_TOPO_NODE_COUNT_M;
 
 	id_blk = kcalloc(ICE_NETLIST_ID_BLK_SIZE, sizeof(*id_blk), GFP_KERNEL);
+	{
+		typeof((*id_blk)) __uncontained_tmp157;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp157;
+	}
 	if (!id_blk)
 		return -ENOMEM;
 

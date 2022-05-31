@@ -17,6 +17,11 @@
 #include <linux/rwsem.h>
 #include <linux/slab.h>
 #include <uapi/linux/uleds.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "leds.h"
 
 DECLARE_RWSEM(leds_list_lock);
@@ -329,6 +334,10 @@ u32 *led_get_default_pattern(struct led_classdev *led_cdev, unsigned int *size)
 		return NULL;
 
 	pattern = kcalloc(count, sizeof(*pattern), GFP_KERNEL);
+	{
+		typeof((*pattern)) __uncontained_tmp120;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (!pattern)
 		return NULL;
 

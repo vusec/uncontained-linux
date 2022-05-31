@@ -2,6 +2,11 @@
 /* Copyright (c) 2021, Mellanox Technologies inc. All rights reserved. */
 
 #include <linux/netdevice.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "en/fs_tt_redirect.h"
 #include "fs_core.h"
 
@@ -153,6 +158,10 @@ static int fs_udp_create_groups(struct mlx5e_flow_table *ft, enum fs_udp_type ty
 	u8 *mc;
 
 	ft->g = kcalloc(MLX5E_FS_UDP_NUM_GROUPS, sizeof(*ft->g), GFP_KERNEL);
+	{
+		typeof((*ft->g)) __uncontained_tmp102;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp102;
+	}
 	in = kvzalloc(inlen, GFP_KERNEL);
 	if  (!in || !ft->g) {
 		kfree(ft->g);
@@ -431,6 +440,10 @@ static int fs_any_create_groups(struct mlx5e_flow_table *ft)
 	u8 *mc;
 
 	ft->g = kcalloc(MLX5E_FS_UDP_NUM_GROUPS, sizeof(*ft->g), GFP_KERNEL);
+	{
+		typeof((*ft->g)) __uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	in = kvzalloc(inlen, GFP_KERNEL);
 	if  (!in || !ft->g) {
 		kfree(ft->g);

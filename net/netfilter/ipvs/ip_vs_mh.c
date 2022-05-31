@@ -32,6 +32,11 @@ https://www.usenix.org/system/files/conference/nsdi16/nsdi16-paper-eisenbud.pdf
 #include <linux/bitops.h>
 #include <linux/gcd.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define IP_VS_SVC_F_SCHED_MH_FALLBACK	IP_VS_SVC_F_SCHED1 /* MH fallback */
 #define IP_VS_SVC_F_SCHED_MH_PORT	IP_VS_SVC_F_SCHED2 /* MH use port */
 
@@ -176,6 +181,10 @@ static int ip_vs_mh_populate(struct ip_vs_mh_state *s,
 
 	table = kcalloc(BITS_TO_LONGS(IP_VS_MH_TAB_SIZE),
 			sizeof(unsigned long), GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp273;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp273;
+	}
 	if (!table)
 		return -ENOMEM;
 
@@ -298,6 +307,10 @@ static int ip_vs_mh_reassign(struct ip_vs_mh_state *s,
 		s->dest_setup = kcalloc(svc->num_dests,
 					sizeof(struct ip_vs_mh_dest_setup),
 					GFP_KERNEL);
+		{
+			struct ip_vs_mh_dest_setup __uncontained_tmp274;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp274;
+		}
 		if (!s->dest_setup)
 			return -ENOMEM;
 	}
@@ -391,6 +404,10 @@ static int ip_vs_mh_init_svc(struct ip_vs_service *svc)
 
 	s->lookup = kcalloc(IP_VS_MH_TAB_SIZE, sizeof(struct ip_vs_mh_lookup),
 			    GFP_KERNEL);
+	{
+		struct ip_vs_mh_lookup __uncontained_tmp275;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp275;
+	}
 	if (!s->lookup) {
 		kfree(s);
 		return -ENOMEM;

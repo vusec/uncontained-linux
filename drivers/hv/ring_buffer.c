@@ -20,6 +20,11 @@
 #include <linux/io.h>
 #include <asm/mshyperv.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hyperv_vmbus.h"
 
 #define VMBUS_PKT_TRAILER	8
@@ -202,6 +207,10 @@ int hv_ringbuffer_init(struct hv_ring_buffer_info *ring_info,
 
 		pfns_wraparound = kcalloc(page_cnt * 2 - 1,
 			sizeof(unsigned long), GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp103;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+		}
 		if (!pfns_wraparound)
 			return -ENOMEM;
 
@@ -223,6 +232,10 @@ int hv_ringbuffer_init(struct hv_ring_buffer_info *ring_info,
 		pages_wraparound = kcalloc(page_cnt * 2 - 1,
 					   sizeof(struct page *),
 					   GFP_KERNEL);
+		{
+			struct page *__uncontained_tmp104;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+		}
 		if (!pages_wraparound)
 			return -ENOMEM;
 

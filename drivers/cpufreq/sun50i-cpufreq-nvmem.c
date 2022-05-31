@@ -17,6 +17,11 @@
 #include <linux/pm_opp.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MAX_NAME_LEN	7
 
 #define NVMEM_MASK	0x7
@@ -94,6 +99,10 @@ static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
 
 	opp_tables = kcalloc(num_possible_cpus(), sizeof(*opp_tables),
 			     GFP_KERNEL);
+	{
+		typeof((*opp_tables)) __uncontained_tmp55;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp55;
+	}
 	if (!opp_tables)
 		return -ENOMEM;
 

@@ -2,6 +2,11 @@
 /* Copyright (c) 2015 - 2021 Intel Corporation */
 #include "main.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -920,10 +925,18 @@ static enum irdma_status_code irdma_create_cqp(struct irdma_pci_f *rf)
 	int i;
 
 	cqp->cqp_requests = kcalloc(sqsize, sizeof(*cqp->cqp_requests), GFP_KERNEL);
+	{
+		typeof((*cqp->cqp_requests)) __uncontained_tmp96;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!cqp->cqp_requests)
 		return IRDMA_ERR_NO_MEMORY;
 
 	cqp->scratch_array = kcalloc(sqsize, sizeof(*cqp->scratch_array), GFP_KERNEL);
+	{
+		typeof((*cqp->scratch_array)) __uncontained_tmp97;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!cqp->scratch_array) {
 		kfree(cqp->cqp_requests);
 		return IRDMA_ERR_NO_MEMORY;
@@ -1224,6 +1237,10 @@ static enum irdma_status_code irdma_setup_ceq_0(struct irdma_pci_f *rf)
 
 	num_ceqs = min(rf->msix_count, rf->sc_dev.hmc_fpm_misc.max_ceqs);
 	rf->ceqlist = kcalloc(num_ceqs, sizeof(*rf->ceqlist), GFP_KERNEL);
+	{
+		typeof((*rf->ceqlist)) __uncontained_tmp98;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp98;
+	}
 	if (!rf->ceqlist) {
 		status = IRDMA_ERR_NO_MEMORY;
 		goto exit;
@@ -1996,6 +2013,10 @@ u32 irdma_initialize_hw_rsrc(struct irdma_pci_f *rf)
 		rf->allocated_ws_nodes =
 			kcalloc(BITS_TO_LONGS(IRDMA_MAX_WS_NODES),
 				sizeof(unsigned long), GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp95;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+		}
 		if (!rf->allocated_ws_nodes)
 			return -ENOMEM;
 

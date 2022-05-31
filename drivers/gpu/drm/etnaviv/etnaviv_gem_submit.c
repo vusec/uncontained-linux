@@ -17,6 +17,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "etnaviv_cmdbuf.h"
 #include "etnaviv_drv.h"
 #include "etnaviv_gpu.h"
@@ -53,6 +58,10 @@ static struct etnaviv_gem_submit *submit_create(struct drm_device *dev,
 
 	submit->pmrs = kcalloc(nr_pmrs, sizeof(struct etnaviv_perfmon_request),
 			       GFP_KERNEL);
+	{
+		struct etnaviv_perfmon_request __uncontained_tmp71;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (!submit->pmrs) {
 		kfree(submit);
 		return NULL;

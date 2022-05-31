@@ -20,6 +20,11 @@
 #include <linux/slab.h>
 #include <crypto/hash.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ima.h"
 
 /* minimum file size for ahash use */
@@ -145,6 +150,10 @@ int __init ima_init_crypto(void)
 
 	ima_algo_array = kcalloc(NR_BANKS(ima_tpm_chip) + ima_extra_slots,
 				 sizeof(*ima_algo_array), GFP_KERNEL);
+	{
+		typeof((*ima_algo_array)) __uncontained_tmp302;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp302;
+	}
 	if (!ima_algo_array) {
 		rc = -ENOMEM;
 		goto out;

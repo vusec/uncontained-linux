@@ -46,6 +46,11 @@
 #include <linux/uaccess.h>
 #include <linux/nospec.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 #define KIOCB_KEY		0
@@ -517,6 +522,10 @@ static int aio_setup_ring(struct kioctx *ctx, unsigned int nr_events)
 	if (nr_pages > AIO_RING_PAGES) {
 		ctx->ring_pages = kcalloc(nr_pages, sizeof(struct page *),
 					  GFP_KERNEL);
+		{
+			struct page *__uncontained_tmp318;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp318;
+		}
 		if (!ctx->ring_pages) {
 			put_aio_ring_file(ctx);
 			return -ENOMEM;

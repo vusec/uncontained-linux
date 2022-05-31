@@ -9,6 +9,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 enum dr_action_domain {
 	DR_ACTION_DOMAIN_NIC_INGRESS,
 	DR_ACTION_DOMAIN_NIC_EGRESS,
@@ -873,6 +878,10 @@ mlx5dr_action_create_mult_dest_tbl(struct mlx5dr_domain *dmn,
 	}
 
 	hw_dests = kcalloc(num_of_dests, sizeof(*hw_dests), GFP_KERNEL);
+	{
+		typeof((*hw_dests)) __uncontained_tmp172;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp172;
+	}
 	if (!hw_dests)
 		return NULL;
 
@@ -880,6 +889,10 @@ mlx5dr_action_create_mult_dest_tbl(struct mlx5dr_domain *dmn,
 		goto free_hw_dests;
 
 	ref_actions = kcalloc(ref_act_cnt, sizeof(*ref_actions), GFP_KERNEL);
+	{
+		typeof((*ref_actions)) __uncontained_tmp173;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp173;
+	}
 	if (!ref_actions)
 		goto free_hw_dests;
 

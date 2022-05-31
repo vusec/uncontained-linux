@@ -9,6 +9,11 @@
 #include <linux/mlx5/driver.h>
 #include <linux/mlx5/vport.h>
 #include <linux/mlx5/eq.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #ifdef CONFIG_RFS_ACCEL
 #include <linux/cpu_rmap.h>
 #endif
@@ -815,6 +820,10 @@ static int comp_irqs_request(struct mlx5_core_dev *dev)
 
 	ncomp_eqs = table->num_comp_eqs;
 	table->comp_irqs = kcalloc(ncomp_eqs, sizeof(*table->comp_irqs), GFP_KERNEL);
+	{
+		typeof((*table->comp_irqs)) __uncontained_tmp172;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp172;
+	}
 	if (!table->comp_irqs)
 		return -ENOMEM;
 	if (mlx5_core_is_sf(dev)) {
@@ -825,6 +834,10 @@ static int comp_irqs_request(struct mlx5_core_dev *dev)
 	}
 
 	cpus = kcalloc(ncomp_eqs, sizeof(*cpus), GFP_KERNEL);
+	{
+		typeof((*cpus)) __uncontained_tmp173;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp173;
+	}
 	if (!cpus) {
 		ret = -ENOMEM;
 		goto free_irqs;

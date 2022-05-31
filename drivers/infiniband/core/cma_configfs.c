@@ -35,6 +35,11 @@
 #include <rdma/ib_verbs.h>
 #include <rdma/rdma_cm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core_priv.h"
 #include "cma_priv.h"
 
@@ -213,6 +218,10 @@ static int make_cma_ports(struct cma_dev_group *cma_dev_group,
 	ports_num = ibdev->phys_port_cnt;
 	ports = kcalloc(ports_num, sizeof(*cma_dev_group->ports),
 			GFP_KERNEL);
+	{
+		typeof((*cma_dev_group->ports)) __uncontained_tmp89;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp89;
+	}
 
 	if (!ports)
 		return -ENOMEM;

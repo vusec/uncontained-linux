@@ -42,6 +42,11 @@
 #include <xen/interface/memory.h>
 #include <xen/balloon.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 typedef void (*xen_gfn_fn_t)(unsigned long gfn, void *data);
 
 /* Break down the pages in 4KB chunk and call fn for each gfn */
@@ -224,10 +229,18 @@ int __init xen_xlate_map_ballooned_pages(xen_pfn_t **gfns, void **virt,
 	BUG_ON(nr_grant_frames == 0);
 	nr_pages = DIV_ROUND_UP(nr_grant_frames, XEN_PFN_PER_PAGE);
 	pages = kcalloc(nr_pages, sizeof(pages[0]), GFP_KERNEL);
+	{
+		typeof((pages[0])) __uncontained_tmp308;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp308;
+	}
 	if (!pages)
 		return -ENOMEM;
 
 	pfns = kcalloc(nr_grant_frames, sizeof(pfns[0]), GFP_KERNEL);
+	{
+		typeof((pfns[0])) __uncontained_tmp309;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp309;
+	}
 	if (!pfns) {
 		kfree(pages);
 		return -ENOMEM;

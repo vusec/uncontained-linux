@@ -18,6 +18,11 @@
 #include <linux/iommu.h>
 #include <uapi/linux/idxd.h>
 #include <linux/dmaengine.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "../dmaengine.h"
 #include "registers.h"
 #include "idxd.h"
@@ -148,6 +153,10 @@ static int idxd_setup_wqs(struct idxd_device *idxd)
 
 	idxd->wqs = kcalloc_node(idxd->max_wqs, sizeof(struct idxd_wq *),
 				 GFP_KERNEL, dev_to_node(dev));
+	{
+		struct idxd_wq *__uncontained_tmp46;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!idxd->wqs)
 		return -ENOMEM;
 
@@ -208,6 +217,10 @@ static int idxd_setup_engines(struct idxd_device *idxd)
 
 	idxd->engines = kcalloc_node(idxd->max_engines, sizeof(struct idxd_engine *),
 				     GFP_KERNEL, dev_to_node(dev));
+	{
+		struct idxd_engine *__uncontained_tmp47;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!idxd->engines)
 		return -ENOMEM;
 
@@ -255,6 +268,10 @@ static int idxd_setup_groups(struct idxd_device *idxd)
 
 	idxd->groups = kcalloc_node(idxd->max_groups, sizeof(struct idxd_group *),
 				    GFP_KERNEL, dev_to_node(dev));
+	{
+		struct idxd_group *__uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!idxd->groups)
 		return -ENOMEM;
 

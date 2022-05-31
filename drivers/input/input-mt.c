@@ -9,6 +9,11 @@
 #include <linux/export.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define TRKID_SGN	((TRKID_MAX + 1) >> 1)
 
 static void copy_abs(struct input_dev *dev, unsigned int dst, unsigned int src)
@@ -81,6 +86,10 @@ int input_mt_init_slots(struct input_dev *dev, unsigned int num_slots,
 	if (flags & INPUT_MT_TRACK) {
 		unsigned int n2 = num_slots * num_slots;
 		mt->red = kcalloc(n2, sizeof(*mt->red), GFP_KERNEL);
+		{
+			typeof((*mt->red)) __uncontained_tmp121;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+		}
 		if (!mt->red)
 			goto err_mem;
 	}

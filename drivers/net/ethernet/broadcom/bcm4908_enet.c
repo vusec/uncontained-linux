@@ -14,6 +14,11 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "bcm4908_enet.h"
 #include "unimac.h"
 
@@ -171,6 +176,10 @@ static int bcm4908_dma_alloc_buf_descs(struct bcm4908_enet *enet,
 	}
 
 	ring->slots = kcalloc(ring->length, sizeof(*ring->slots), GFP_KERNEL);
+	{
+		typeof((*ring->slots)) __uncontained_tmp143;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp143;
+	}
 	if (!ring->slots)
 		goto err_free_buf_descs;
 

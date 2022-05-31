@@ -26,6 +26,11 @@
 #include <asm/numa.h>
 #include <asm/cpu.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static struct ia64_cpu *sysfs_cpus;
 
 void arch_fix_phys_package_id(int num, u32 slot)
@@ -81,6 +86,10 @@ static int __init topology_init(void)
 #endif
 
 	sysfs_cpus = kcalloc(NR_CPUS, sizeof(struct ia64_cpu), GFP_KERNEL);
+	{
+		struct ia64_cpu __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!sysfs_cpus)
 		panic("kzalloc in topology_init failed - NR_CPUS too big?");
 
@@ -317,6 +326,10 @@ static int cpu_cache_sysfs_init(unsigned int cpu)
 
 	this_cache=kcalloc(unique_caches, sizeof(struct cache_info),
 			   GFP_KERNEL);
+	{
+		struct cache_info __uncontained_tmp5;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (this_cache == NULL)
 		return -ENOMEM;
 

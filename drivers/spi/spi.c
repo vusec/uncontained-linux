@@ -37,6 +37,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/spi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -827,6 +832,10 @@ int spi_register_board_info(struct spi_board_info const *info, unsigned n)
 		return 0;
 
 	bi = kcalloc(n, sizeof(*bi), GFP_KERNEL);
+	{
+		typeof((*bi)) __uncontained_tmp246;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp246;
+	}
 	if (!bi)
 		return -ENOMEM;
 

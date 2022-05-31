@@ -23,6 +23,11 @@
 #include <asm/extmem.h>
 #include <asm/io.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DCSSBLK_NAME "dcssblk"
 #define DCSSBLK_MINORS_PER_DISK 1
 #define DCSSBLK_PARM_LEN 400
@@ -240,6 +245,10 @@ dcssblk_is_continuous(struct dcssblk_dev_info *dev_info)
 	sort_list = kcalloc(dev_info->num_of_segments,
 			    sizeof(struct segment_info),
 			    GFP_KERNEL);
+	{
+		struct segment_info __uncontained_tmp241;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp241;
+	}
 	if (sort_list == NULL)
 		return -ENOMEM;
 	i = 0;

@@ -13,6 +13,11 @@
 #include <linux/pinctrl/pinmux.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "../core.h"
 #include "pinctrl-mxs.h"
 
@@ -90,6 +95,10 @@ static int mxs_dt_node_to_map(struct pinctrl_dev *pctldev,
 		new_num = 2;
 
 	new_map = kcalloc(new_num, sizeof(*new_map), GFP_KERNEL);
+	{
+		typeof((*new_map)) __uncontained_tmp237;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp237;
+	}
 	if (!new_map)
 		return -ENOMEM;
 

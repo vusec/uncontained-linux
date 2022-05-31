@@ -60,6 +60,11 @@
 #include <scsi/scsi_transport.h>
 #include <scsi/scsi_dbg.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2442,6 +2447,10 @@ mptsas_sas_io_unit_pg0(MPT_ADAPTER *ioc, struct mptsas_portinfo *port_info)
 	port_info->num_phys = buffer->NumPhys;
 	port_info->phy_info = kcalloc(port_info->num_phys,
 		sizeof(struct mptsas_phyinfo), GFP_KERNEL);
+	{
+		struct mptsas_phyinfo __uncontained_tmp131;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp131;
+	}
 	if (!port_info->phy_info) {
 		error = -ENOMEM;
 		goto out_free_consistent;
@@ -2733,6 +2742,10 @@ mptsas_sas_expander_pg0(MPT_ADAPTER *ioc, struct mptsas_portinfo *port_info,
 	port_info->num_phys = (buffer->NumPhys) ? buffer->NumPhys : 1;
 	port_info->phy_info = kcalloc(port_info->num_phys,
 		sizeof(struct mptsas_phyinfo), GFP_KERNEL);
+	{
+		struct mptsas_phyinfo __uncontained_tmp132;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (!port_info->phy_info) {
 		error = -ENOMEM;
 		goto out_free_consistent;
@@ -3466,6 +3479,10 @@ mptsas_expander_event_add(MPT_ADAPTER *ioc,
 	    expander_data->NumPhys : 1;
 	port_info->phy_info = kcalloc(port_info->num_phys,
 	    sizeof(struct mptsas_phyinfo), GFP_KERNEL);
+	{
+		struct mptsas_phyinfo __uncontained_tmp133;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+	}
 	BUG_ON(!port_info->phy_info);
 	memcpy(&sas_address, &expander_data->SASAddress, sizeof(__le64));
 	for (i = 0; i < port_info->num_phys; i++) {
@@ -5317,6 +5334,10 @@ mptsas_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	 * (with size equal to req_depth*PtrSz!)
 	 */
 	ioc->ScsiLookup = kcalloc(ioc->req_depth, sizeof(void *), GFP_ATOMIC);
+	{
+		void *__uncontained_tmp134;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp134;
+	}
 	if (!ioc->ScsiLookup) {
 		error = -ENOMEM;
 		spin_unlock_irqrestore(&ioc->FreeQlock, flags);

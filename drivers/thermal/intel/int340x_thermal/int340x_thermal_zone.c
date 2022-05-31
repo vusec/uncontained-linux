@@ -9,6 +9,11 @@
 #include <linux/acpi.h>
 #include <linux/thermal.h>
 #include <linux/units.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "int340x_thermal_zone.h"
 
 static int int340x_thermal_get_zone_temp(struct thermal_zone_device *zone,
@@ -243,6 +248,10 @@ struct int34x_thermal_zone *int340x_thermal_zone_add(struct acpi_device *adev,
 			kcalloc(trip_cnt,
 				sizeof(*int34x_thermal_zone->aux_trips),
 				GFP_KERNEL);
+		{
+			typeof((*int34x_thermal_zone->aux_trips)) __uncontained_tmp273;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp273;
+		}
 		if (!int34x_thermal_zone->aux_trips) {
 			ret = -ENOMEM;
 			goto err_trip_alloc;

@@ -45,6 +45,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Driver Information */
 #define DRIVER_AUTHOR "Jarod Wilson <jarod@redhat.com>"
 #define DRIVER_AUTHOR2 "The Dweller, Stephen Cox"
@@ -588,6 +593,10 @@ static void redrat3_get_firmware_rev(struct redrat3_dev *rr3)
 	char *buffer;
 
 	buffer = kcalloc(RR3_FW_VERSION_LEN + 1, sizeof(*buffer), GFP_KERNEL);
+	{
+		typeof((*buffer)) __uncontained_tmp129;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp129;
+	}
 	if (!buffer)
 		return;
 
@@ -780,6 +789,10 @@ static int redrat3_transmit_ir(struct rc_dev *rcdev, unsigned *txbuf,
 	sample_lens = kcalloc(RR3_DRIVER_MAXLENS,
 			      sizeof(*sample_lens),
 			      GFP_KERNEL);
+	{
+		typeof((*sample_lens)) __uncontained_tmp130;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp130;
+	}
 	if (!sample_lens)
 		return -ENOMEM;
 

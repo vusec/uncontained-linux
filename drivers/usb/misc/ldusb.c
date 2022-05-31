@@ -29,6 +29,11 @@
 #include <linux/usb.h>
 #include <linux/poll.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Define these values to match your devices */
 #define USB_VENDOR_ID_LD		0x0f11	/* USB Vendor ID of LD Didactic GmbH */
 #define USB_DEVICE_ID_LD_CASSY		0x1000	/* USB Product ID of CASSY-S modules with 8 bytes endpoint size */
@@ -698,6 +703,10 @@ static int ld_usb_probe(struct usb_interface *intf, const struct usb_device_id *
 	dev->ring_buffer = kcalloc(ring_buffer_size,
 			sizeof(size_t) + dev->interrupt_in_endpoint_size,
 			GFP_KERNEL);
+	{
+		size_t __uncontained_tmp266;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp266;
+	}
 	if (!dev->ring_buffer)
 		goto error;
 	dev->interrupt_in_buffer = kmalloc(dev->interrupt_in_endpoint_size, GFP_KERNEL);

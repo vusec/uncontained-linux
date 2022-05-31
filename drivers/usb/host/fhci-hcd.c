@@ -29,6 +29,11 @@
 #include <linux/slab.h>
 #include <soc/fsl/qe/qe.h>
 #include <asm/fsl_gtm.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "fhci.h"
 
 void fhci_start_sof_timer(struct fhci_hcd *fhci)
@@ -432,6 +437,10 @@ static int fhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
 
 	/* allocate the private part of the URB */
 	urb_priv->tds = kcalloc(size, sizeof(*urb_priv->tds), mem_flags);
+	{
+		typeof((*urb_priv->tds)) __uncontained_tmp212;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp212;
+	}
 	if (!urb_priv->tds) {
 		kfree(urb_priv);
 		return -ENOMEM;

@@ -7,6 +7,11 @@
 
 #include <linux/delay.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ff.h"
 
 #define FORMER_REG_SYNC_STATUS		0x0000801c0000ull
@@ -98,6 +103,10 @@ static int former_switch_fetching_mode(struct snd_ff *ff, bool enable)
 		count = max(count, ff->spec->pcm_playback_channels[i]);
 
 	reg = kcalloc(count, sizeof(__le32), GFP_KERNEL);
+	{
+		__le32 __uncontained_tmp319;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp319;
+	}
 	if (!reg)
 		return -ENOMEM;
 

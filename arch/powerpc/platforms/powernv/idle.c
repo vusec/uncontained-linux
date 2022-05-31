@@ -24,6 +24,11 @@
 #include <asm/runlatch.h>
 #include <asm/dbell.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "powernv.h"
 #include "subcore.h"
 
@@ -1336,9 +1341,25 @@ static int __init pnv_parse_cpuidle_dt(void)
 
 	pnv_idle_states = kcalloc(nr_idle_states, sizeof(*pnv_idle_states),
 				  GFP_KERNEL);
+	{
+		typeof((*pnv_idle_states)) __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	temp_u32 = kcalloc(nr_idle_states, sizeof(u32),  GFP_KERNEL);
+	{
+		u32 __uncontained_tmp14;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+	}
 	temp_u64 = kcalloc(nr_idle_states, sizeof(u64),  GFP_KERNEL);
+	{
+		u64 __uncontained_tmp15;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp15;
+	}
 	temp_string = kcalloc(nr_idle_states, sizeof(char *),  GFP_KERNEL);
+	{
+		char *__uncontained_tmp16;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+	}
 
 	if (!(pnv_idle_states && temp_u32 && temp_u64 && temp_string)) {
 		pr_err("Could not allocate memory for dt parsing\n");

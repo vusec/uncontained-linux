@@ -59,6 +59,11 @@
 
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifdef CONFIG_DRM_AMD_DC
 #include "amdgpu_dm_irq.h"
 #endif
@@ -451,6 +456,10 @@ int amdgpu_irq_add_id(struct amdgpu_device *adev,
 			kcalloc(AMDGPU_MAX_IRQ_SRC_ID,
 				sizeof(struct amdgpu_irq_src *),
 				GFP_KERNEL);
+		{
+			struct amdgpu_irq_src *__uncontained_tmp46;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+		}
 		if (!adev->irq.client[client_id].sources)
 			return -ENOMEM;
 	}
@@ -463,6 +472,10 @@ int amdgpu_irq_add_id(struct amdgpu_device *adev,
 
 		types = kcalloc(source->num_types, sizeof(atomic_t),
 				GFP_KERNEL);
+		{
+			atomic_t __uncontained_tmp47;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+		}
 		if (!types)
 			return -ENOMEM;
 

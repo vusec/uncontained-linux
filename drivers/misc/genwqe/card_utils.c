@@ -29,6 +29,11 @@
 #include <linux/delay.h>
 #include <linux/pgtable.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "genwqe_driver.h"
 #include "card_base.h"
 #include "card_ddcb.h"
@@ -568,6 +573,14 @@ int genwqe_user_vmap(struct genwqe_dev *cd, struct dma_mapping *m, void *uaddr,
 	m->page_list = kcalloc(m->nr_pages,
 			       sizeof(struct page *) + sizeof(dma_addr_t),
 			       GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp138;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp138;
+	}
+	{
+		dma_addr_t __uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!m->page_list) {
 		dev_err(&pci_dev->dev, "err: alloc page_list failed\n");
 		m->nr_pages = 0;

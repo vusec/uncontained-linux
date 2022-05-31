@@ -67,6 +67,11 @@
 
 #include <linux/kvm_dirty_ring.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Worst case buffer size needed for holding an integer. */
 #define ITOA_MAX_LEN 12
 
@@ -979,6 +984,10 @@ static int kvm_create_vm_debugfs(struct kvm *kvm, int fd)
 	kvm->debugfs_stat_data = kcalloc(kvm_debugfs_num_entries,
 					 sizeof(*kvm->debugfs_stat_data),
 					 GFP_KERNEL_ACCOUNT);
+	{
+		typeof((*kvm->debugfs_stat_data)) __uncontained_tmp324;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp324;
+	}
 	if (!kvm->debugfs_stat_data)
 		return -ENOMEM;
 

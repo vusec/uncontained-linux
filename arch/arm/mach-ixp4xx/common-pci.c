@@ -31,6 +31,11 @@
 #include <asm/mach/pci.h>
 #include <mach/hardware.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 /*
  * IXP4xx PCI read function is dependent on whether we are 
@@ -418,6 +423,10 @@ int ixp4xx_setup(int nr, struct pci_sys_data *sys)
 		return 0;
 
 	res = kcalloc(2, sizeof(*res), GFP_KERNEL);
+	{
+		typeof((*res)) __uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (res == NULL) {
 		/* 
 		 * If we're out of memory this early, something is wrong,

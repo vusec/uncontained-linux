@@ -31,6 +31,11 @@
  */
 
 #include <linux/dmapool.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hns_roce_common.h"
 #include "hns_roce_device.h"
 #include "hns_roce_cmd.h"
@@ -212,6 +217,10 @@ int hns_roce_cmd_use_events(struct hns_roce_dev *hr_dev)
 
 	hr_cmd->context =
 		kcalloc(hr_cmd->max_cmds, sizeof(*hr_cmd->context), GFP_KERNEL);
+	{
+		typeof((*hr_cmd->context)) __uncontained_tmp104;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!hr_cmd->context) {
 		hr_dev->cmd_mod = 0;
 		return -ENOMEM;

@@ -13,7 +13,12 @@
 #include <linux/sizes.h>
 #include <linux/slab.h>
 #include <linux/string.h>
-#include <linux/dma-direct.h> /* for bus_dma_region */
+#include <linux/dma-direct.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/ /* for bus_dma_region */
 
 #include "of_private.h"
 
@@ -967,6 +972,10 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
 		num_ranges++;
 
 	r = kcalloc(num_ranges + 1, sizeof(*r), GFP_KERNEL);
+	{
+		typeof((*r)) __uncontained_tmp211;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp211;
+	}
 	if (!r) {
 		ret = -ENOMEM;
 		goto out;

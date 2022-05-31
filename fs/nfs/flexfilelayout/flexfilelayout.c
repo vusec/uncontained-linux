@@ -15,6 +15,11 @@
 
 #include <linux/sunrpc/metrics.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "flexfilelayout.h"
 #include "../nfs4session.h"
 #include "../nfs4idmap.h"
@@ -458,6 +463,10 @@ ff_layout_alloc_lseg(struct pnfs_layout_hdr *lh,
 		fls->mirror_array[i]->fh_versions =
 			kcalloc(fh_count, sizeof(struct nfs_fh),
 				gfp_flags);
+		{
+			struct nfs_fh __uncontained_tmp289;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp289;
+		}
 		if (fls->mirror_array[i]->fh_versions == NULL) {
 			rc = -ENOMEM;
 			goto out_err_free;

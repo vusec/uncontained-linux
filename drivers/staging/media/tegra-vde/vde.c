@@ -23,6 +23,11 @@
 #include <soc/tegra/common.h>
 #include <soc/tegra/pmc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "uapi.h"
 #include "vde.h"
 
@@ -829,6 +834,10 @@ static int tegra_vde_ioctl_decode_h264(struct tegra_vde *vde,
 
 	dpb_frames = kcalloc(ctx.dpb_frames_nb, sizeof(*dpb_frames),
 			     GFP_KERNEL);
+	{
+		typeof((*dpb_frames)) __uncontained_tmp282;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp282;
+	}
 	if (!dpb_frames) {
 		ret = -ENOMEM;
 		goto free_frames;

@@ -17,6 +17,11 @@
 #include <linux/rbtree.h>
 #include <linux/random.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gfs2.h"
 #include "incore.h"
 #include "glock.h"
@@ -763,6 +768,10 @@ static int compute_bitstructs(struct gfs2_rgrpd *rgd)
 		return -EINVAL;
 
 	rgd->rd_bits = kcalloc(length, sizeof(struct gfs2_bitmap), GFP_NOFS);
+	{
+		struct gfs2_bitmap __uncontained_tmp285;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp285;
+	}
 	if (!rgd->rd_bits)
 		return -ENOMEM;
 
@@ -2700,6 +2709,10 @@ void gfs2_rlist_add(struct gfs2_inode *ip, struct gfs2_rgrp_list *rlist,
 
 		tmp = kcalloc(new_space, sizeof(struct gfs2_rgrpd *),
 			      GFP_NOFS | __GFP_NOFAIL);
+		{
+			struct gfs2_rgrpd *__uncontained_tmp286;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp286;
+		}
 
 		if (rlist->rl_rgd) {
 			memcpy(tmp, rlist->rl_rgd,

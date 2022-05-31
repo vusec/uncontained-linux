@@ -24,6 +24,11 @@
 #include <linux/time64.h>
 #include <linux/debugfs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ccu-div.h"
 
 #define CCU_DIV_CTL			0x00
@@ -426,6 +431,10 @@ static void ccu_div_var_debug_init(struct clk_hw *hw, struct dentry *dentry)
 		!!(div->features & CCU_DIV_RESET_DOMAIN);
 
 	bits = kcalloc(num, sizeof(*bits), GFP_KERNEL);
+	{
+		typeof((*bits)) __uncontained_tmp22;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!bits)
 		return;
 

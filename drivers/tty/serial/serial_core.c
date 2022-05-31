@@ -29,6 +29,11 @@
 #include <linux/irq.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * This is used to lock changes in serial line configuration.
  */
@@ -2542,6 +2547,10 @@ int uart_register_driver(struct uart_driver *drv)
 	 * we have a large number of ports to handle.
 	 */
 	drv->state = kcalloc(drv->nr, sizeof(struct uart_state), GFP_KERNEL);
+	{
+		struct uart_state __uncontained_tmp216;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp216;
+	}
 	if (!drv->state)
 		goto out;
 
@@ -2914,6 +2923,10 @@ int uart_add_one_port(struct uart_driver *drv, struct uart_port *uport)
 
 	uport->tty_groups = kcalloc(num_groups, sizeof(*uport->tty_groups),
 				    GFP_KERNEL);
+	{
+		typeof((*uport->tty_groups)) __uncontained_tmp217;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp217;
+	}
 	if (!uport->tty_groups) {
 		ret = -ENOMEM;
 		goto out;

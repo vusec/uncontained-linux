@@ -71,6 +71,11 @@
 
 #include <linux/cacheflush.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "binder_internal.h"
 #include "binder_trace.h"
 
@@ -5207,6 +5212,10 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 		target_procs = kcalloc(target_procs_count,
 				       sizeof(struct binder_proc *),
 				       GFP_KERNEL);
+		{
+			struct binder_proc *__uncontained_tmp26;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp26;
+		}
 
 		if (!target_procs) {
 			mutex_unlock(&binder_procs_lock);

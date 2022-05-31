@@ -44,6 +44,11 @@
 #include <net/ip.h>
 #include <net/arp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int rose_ndevs = 10;
 
 int sysctl_rose_restart_request_timeout = ROSE_DEFAULT_T0;
@@ -1511,6 +1516,10 @@ static int __init rose_proto_init(void)
 
 	dev_rose = kcalloc(rose_ndevs, sizeof(struct net_device *),
 			   GFP_KERNEL);
+	{
+		struct net_device *__uncontained_tmp307;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp307;
+	}
 	if (dev_rose == NULL) {
 		printk(KERN_ERR "ROSE: rose_proto_init - unable to allocate device structure\n");
 		rc = -ENOMEM;

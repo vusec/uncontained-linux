@@ -9,6 +9,11 @@
 #include <linux/rtnetlink.h>
 #include <net/cfg80211.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1304,6 +1309,10 @@ static int ieee80211_chsw_switch_vifs(struct ieee80211_local *local,
 	lockdep_assert_held(&local->chanctx_mtx);
 
 	vif_chsw = kcalloc(n_vifs, sizeof(vif_chsw[0]), GFP_KERNEL);
+	{
+		typeof((vif_chsw[0])) __uncontained_tmp320;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp320;
+	}
 	if (!vif_chsw)
 		return -ENOMEM;
 

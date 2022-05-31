@@ -31,6 +31,11 @@
 #include <drm/amdgpu_drm.h>
 #include <drm/drm_edid.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dm_services.h"
 #include "amdgpu.h"
 #include "dc.h"
@@ -535,6 +540,10 @@ bool dm_helpers_submit_i2c(
 	}
 
 	msgs = kcalloc(num, sizeof(struct i2c_msg), GFP_KERNEL);
+	{
+		struct i2c_msg __uncontained_tmp56;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp56;
+	}
 
 	if (!msgs)
 		return false;

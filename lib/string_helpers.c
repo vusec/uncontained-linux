@@ -19,6 +19,11 @@
 #include <linux/string.h>
 #include <linux/string_helpers.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * string_get_size - get the size in the specified units
  * @size:	The size to be converted in blocks
@@ -693,6 +698,10 @@ char **kasprintf_strarray(gfp_t gfp, const char *prefix, size_t n)
 	size_t i;
 
 	names = kcalloc(n + 1, sizeof(char *), gfp);
+	{
+		char *__uncontained_tmp313;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp313;
+	}
 	if (!names)
 		return NULL;
 
