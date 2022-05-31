@@ -2988,7 +2988,7 @@ static struct r1conf *setup_conf(struct mddev *mddev)
 	conf->nr_pending = kcalloc(BARRIER_BUCKETS_NR,
 				   sizeof(atomic_t), GFP_KERNEL);
 	{
-		typeof((atomic_t)) __uncontained_tmp123;
+		atomic_t __uncontained_tmp123;
 		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp123;
 	}
 	if (!conf->nr_pending)
@@ -2997,7 +2997,7 @@ static struct r1conf *setup_conf(struct mddev *mddev)
 	conf->nr_waiting = kcalloc(BARRIER_BUCKETS_NR,
 				   sizeof(atomic_t), GFP_KERNEL);
 	{
-		typeof((atomic_t)) __uncontained_tmp124;
+		atomic_t __uncontained_tmp124;
 		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp124;
 	}
 	if (!conf->nr_waiting)
@@ -3006,7 +3006,7 @@ static struct r1conf *setup_conf(struct mddev *mddev)
 	conf->nr_queued = kcalloc(BARRIER_BUCKETS_NR,
 				  sizeof(atomic_t), GFP_KERNEL);
 	{
-		typeof((atomic_t)) __uncontained_tmp125;
+		atomic_t __uncontained_tmp125;
 		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp125;
 	}
 	if (!conf->nr_queued)
@@ -3015,7 +3015,7 @@ static struct r1conf *setup_conf(struct mddev *mddev)
 	conf->barrier = kcalloc(BARRIER_BUCKETS_NR,
 				sizeof(atomic_t), GFP_KERNEL);
 	{
-		typeof((atomic_t)) __uncontained_tmp126;
+		atomic_t __uncontained_tmp126;
 		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp126;
 	}
 	if (!conf->barrier)

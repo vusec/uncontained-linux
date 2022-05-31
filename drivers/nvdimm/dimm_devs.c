@@ -155,8 +155,8 @@ int nvdimm_set_config_data(struct nvdimm_drvdata *ndd, size_t offset,
 	max_cmd_size = min_t(u32, len, ndd->nsarea.max_xfer);
 	cmd = kvzalloc(max_cmd_size + sizeof(*cmd) + sizeof(u32), GFP_KERNEL);
 	{
-		typeof((u32)) __uncontained_tmp75;
-		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp75;
+		u32 __uncontained_tmp73;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp73;
 	}
 	{
 		typeof((*cmd)) __uncontained_tmp76;
