@@ -29,6 +29,11 @@
 #include <linux/fileattr.h>
 #include <linux/fsverity.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1600,6 +1605,10 @@ static int defrag_one_range(struct btrfs_inode *inode, u64 start, u32 len,
 	ASSERT(IS_ALIGNED(start, sectorsize) && IS_ALIGNED(len, sectorsize));
 
 	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
+	{
+		struct page *__uncontained_tmp280;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp280;
+	}
 	if (!pages)
 		return -ENOMEM;
 

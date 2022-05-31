@@ -18,6 +18,11 @@
 #include <linux/memstick.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRIVER_NAME "mspro_block"
 
 static int major;
@@ -978,6 +983,10 @@ static int mspro_block_read_attributes(struct memstick_dev *card)
 	msb->attr_group.attrs = kcalloc(attr_count + 1,
 					sizeof(*msb->attr_group.attrs),
 					GFP_KERNEL);
+	{
+		typeof((*msb->attr_group.attrs)) __uncontained_tmp133;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+	}
 	if (!msb->attr_group.attrs) {
 		rc = -ENOMEM;
 		goto out_free_attr;

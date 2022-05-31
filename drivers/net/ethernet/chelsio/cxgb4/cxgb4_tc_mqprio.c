@@ -5,6 +5,11 @@
 #include "cxgb4_tc_mqprio.h"
 #include "sched.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int cxgb4_mqprio_validate(struct net_device *dev,
 				 struct tc_mqprio_qopt_offload *mqprio)
 {
@@ -102,6 +107,10 @@ static int cxgb4_init_eosw_txq(struct net_device *dev,
 
 	ring = kcalloc(CXGB4_EOSW_TXQ_DEFAULT_DESC_NUM,
 		       sizeof(*ring), GFP_KERNEL);
+	{
+		typeof((*ring)) __uncontained_tmp157;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp157;
+	}
 	if (!ring)
 		return -ENOMEM;
 
@@ -160,12 +169,20 @@ static int cxgb4_mqprio_alloc_hw_resources(struct net_device *dev)
 		adap->sge.eohw_rxq = kcalloc(adap->sge.eoqsets,
 					     sizeof(struct sge_ofld_rxq),
 					     GFP_KERNEL);
+		{
+			struct sge_ofld_rxq __uncontained_tmp155;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp155;
+		}
 		if (!adap->sge.eohw_rxq)
 			return -ENOMEM;
 
 		adap->sge.eohw_txq = kcalloc(adap->sge.eoqsets,
 					     sizeof(struct sge_eohw_txq),
 					     GFP_KERNEL);
+		{
+			struct sge_eohw_txq __uncontained_tmp156;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp156;
+		}
 		if (!adap->sge.eohw_txq) {
 			kfree(adap->sge.eohw_rxq);
 			return -ENOMEM;
@@ -663,6 +680,10 @@ int cxgb4_init_tc_mqprio(struct adapter *adap)
 
 	tc_port_mqprio = kcalloc(adap->params.nports, sizeof(*tc_port_mqprio),
 				 GFP_KERNEL);
+	{
+		typeof((*tc_port_mqprio)) __uncontained_tmp158;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp158;
+	}
 	if (!tc_port_mqprio) {
 		ret = -ENOMEM;
 		goto out_free_mqprio;
@@ -675,6 +696,10 @@ int cxgb4_init_tc_mqprio(struct adapter *adap)
 		port_mqprio = &tc_mqprio->port_mqprio[i];
 		eosw_txq = kcalloc(adap->tids.neotids, sizeof(*eosw_txq),
 				   GFP_KERNEL);
+		{
+			typeof((*eosw_txq)) __uncontained_tmp159;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp159;
+		}
 		if (!eosw_txq) {
 			ret = -ENOMEM;
 			goto out_free_ports;

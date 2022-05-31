@@ -16,6 +16,11 @@
 #include <linux/of_net.h>
 #include <net/devlink.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dsa_priv.h"
 
 static DEFINE_MUTEX(dsa2_mutex);
@@ -1102,6 +1107,10 @@ static int dsa_tree_setup_lags(struct dsa_switch_tree *dst)
 		return 0;
 
 	dst->lags = kcalloc(len, sizeof(*dst->lags), GFP_KERNEL);
+	{
+		typeof((*dst->lags)) __uncontained_tmp320;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp320;
+	}
 	if (!dst->lags)
 		return -ENOMEM;
 

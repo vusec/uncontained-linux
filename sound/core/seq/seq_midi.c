@@ -25,6 +25,11 @@ Possible options for midisynth module:
 #include <sound/seq_midi_event.h>
 #include <sound/initval.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_AUTHOR("Frank van de Pol <fvdpol@coil.demon.nl>, Jaroslav Kysela <perex@perex.cz>");
 MODULE_DESCRIPTION("Advanced Linux Sound Architecture sequencer MIDI synth.");
 MODULE_LICENSE("GPL");
@@ -322,6 +327,10 @@ snd_seq_midisynth_probe(struct device *_dev)
 	}
 
 	msynth = kcalloc(ports, sizeof(struct seq_midisynth), GFP_KERNEL);
+	{
+		struct seq_midisynth __uncontained_tmp306;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp306;
+	}
 	port = kmalloc(sizeof(*port), GFP_KERNEL);
 	if (msynth == NULL || port == NULL)
 		goto __nomem;

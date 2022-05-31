@@ -10,6 +10,11 @@
 #include <linux/nfs4.h>
 #include <linux/nfs_xdr.h>
 #include <linux/nfs_fs.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "nfs4_fs.h"
 #include "nfs42.h"
 #include "iostat.h"
@@ -1297,6 +1302,10 @@ static ssize_t _nfs42_proc_listxattrs(struct inode *inode, void *buf,
 	np = xdrlen / PAGE_SIZE + 1;
 
 	pages = kcalloc(np, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp239;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp239;
+	}
 	if (!pages)
 		goto out_free_scratch;
 	for (i = 0; i < np; i++) {

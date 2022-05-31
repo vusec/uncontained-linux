@@ -5,6 +5,11 @@
 
 #include <linux/delay.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -415,6 +420,10 @@ int init_send_contexts(struct hfi1_devdata *dd)
 	dd->send_contexts = kcalloc(dd->num_send_contexts,
 				    sizeof(struct send_context_info),
 				    GFP_KERNEL);
+	{
+		struct send_context_info __uncontained_tmp96;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!dd->send_contexts || !dd->hw_to_sw) {
 		kfree(dd->hw_to_sw);
 		kfree(dd->send_contexts);
@@ -818,6 +827,10 @@ struct send_context *sc_alloc(struct hfi1_devdata *dd, int type,
 		sc->sr = kcalloc_node(sc->sr_size,
 				      sizeof(union pio_shadow_ring),
 				      GFP_KERNEL, numa);
+		{
+			union pio_shadow_ring __uncontained_tmp98;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp98;
+		}
 		if (!sc->sr) {
 			sc_free(sc);
 			return NULL;
@@ -2012,6 +2025,10 @@ int init_pervl_scs(struct hfi1_devdata *dd)
 	dd->kernel_send_context = kcalloc_node(dd->num_send_contexts,
 					       sizeof(struct send_context *),
 					       GFP_KERNEL, dd->node);
+	{
+		struct send_context *__uncontained_tmp99;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
+	}
 	if (!dd->kernel_send_context)
 		goto freesc15;
 
@@ -2093,6 +2110,10 @@ int init_credit_return(struct hfi1_devdata *dd)
 		node_affinity.num_possible_nodes,
 		sizeof(struct credit_return_base),
 		GFP_KERNEL);
+	{
+		struct credit_return_base __uncontained_tmp97;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!dd->cr_base) {
 		ret = -ENOMEM;
 		goto done;

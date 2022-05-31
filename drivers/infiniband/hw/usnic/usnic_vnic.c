@@ -34,6 +34,11 @@
 #include <linux/module.h>
 #include <linux/pci.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "usnic_ib.h"
 #include "vnic_resource.h"
 #include "usnic_log.h"
@@ -246,6 +251,10 @@ usnic_vnic_get_resources(struct usnic_vnic *vnic, enum usnic_vnic_res_type type,
 
 	if (cnt > 0) {
 		ret->res = kcalloc(cnt, sizeof(*(ret->res)), GFP_ATOMIC);
+		{
+			typeof((*(ret->res))) __uncontained_tmp116;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+		}
 		if (!ret->res) {
 			kfree(ret);
 			return ERR_PTR(-ENOMEM);
@@ -313,6 +322,10 @@ static int usnic_vnic_alloc_res_chunk(struct usnic_vnic *vnic,
 
 	chunk->cnt = chunk->free_cnt = cnt;
 	chunk->res = kcalloc(cnt, sizeof(*(chunk->res)), GFP_KERNEL);
+	{
+		typeof((*(chunk->res))) __uncontained_tmp117;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!chunk->res)
 		return -ENOMEM;
 

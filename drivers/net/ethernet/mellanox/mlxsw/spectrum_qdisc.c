@@ -7,6 +7,11 @@
 #include <net/pkt_cls.h>
 #include <net/red.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "spectrum.h"
 #include "spectrum_span.h"
 #include "reg.h"
@@ -368,6 +373,10 @@ static int mlxsw_sp_qdisc_create(struct mlxsw_sp_port *mlxsw_sp_port,
 		mlxsw_sp_qdisc->qdiscs = kcalloc(ops->num_classes,
 						 sizeof(*mlxsw_sp_qdisc->qdiscs),
 						 GFP_KERNEL);
+		{
+			typeof((*mlxsw_sp_qdisc->qdiscs)) __uncontained_tmp179;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp179;
+		}
 		if (!mlxsw_sp_qdisc->qdiscs)
 			return -ENOMEM;
 

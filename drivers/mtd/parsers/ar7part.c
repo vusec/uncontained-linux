@@ -16,6 +16,11 @@
 
 #include <uapi/linux/magic.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define AR7_PARTS	4
 #define ROOT_OFFSET	0xe0000
 
@@ -42,6 +47,10 @@ static int create_mtd_partitions(struct mtd_info *master,
 	struct mtd_partition *ar7_parts;
 
 	ar7_parts = kcalloc(AR7_PARTS, sizeof(*ar7_parts), GFP_KERNEL);
+	{
+		typeof((*ar7_parts)) __uncontained_tmp60;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!ar7_parts)
 		return -ENOMEM;
 	ar7_parts[0].name = "loader";

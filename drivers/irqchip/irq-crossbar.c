@@ -13,6 +13,11 @@
 #include <linux/of_irq.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define IRQ_FREE	-1
 #define IRQ_RESERVED	-2
 #define IRQ_SKIP	-3
@@ -223,6 +228,10 @@ static int __init crossbar_of_init(struct device_node *node)
 		goto err_base;
 	}
 	cb->irq_map = kcalloc(max, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp114;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!cb->irq_map)
 		goto err_base;
 
@@ -269,6 +278,10 @@ static int __init crossbar_of_init(struct device_node *node)
 
 
 	cb->register_offsets = kcalloc(max, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!cb->register_offsets)
 		goto err_irq_map;
 

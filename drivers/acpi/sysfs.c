@@ -11,6 +11,11 @@
 #include <linux/kernel.h>
 #include <linux/moduleparam.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 #ifdef CONFIG_ACPI_DEBUG
@@ -836,10 +841,18 @@ void acpi_irq_stats_init(void)
 	num_counters = num_gpes + ACPI_NUM_FIXED_EVENTS + NUM_COUNTERS_EXTRA;
 
 	all_attrs = kcalloc(num_counters + 1, sizeof(*all_attrs), GFP_KERNEL);
+	{
+		typeof((*all_attrs)) __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (all_attrs == NULL)
 		return;
 
 	all_counters = kcalloc(num_counters, sizeof(*all_counters), GFP_KERNEL);
+	{
+		typeof((*all_counters)) __uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (all_counters == NULL)
 		goto fail;
 
@@ -848,6 +861,10 @@ void acpi_irq_stats_init(void)
 		goto fail;
 
 	counter_attrs = kcalloc(num_counters, sizeof(*counter_attrs), GFP_KERNEL);
+	{
+		typeof((*counter_attrs)) __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (counter_attrs == NULL)
 		goto fail;
 

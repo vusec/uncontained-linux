@@ -18,6 +18,11 @@
 #include <linux/seq_file.h> /* for seq_printf */
 #include <linux/lru_cache.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_AUTHOR("Philipp Reisner <phil@linbit.com>, "
 	      "Lars Ellenberg <lars@linbit.com>");
 MODULE_DESCRIPTION("lru_cache - Track sets of hot objects");
@@ -106,9 +111,17 @@ struct lru_cache *lc_create(const char *name, struct kmem_cache *cache,
 		return NULL;
 
 	slot = kcalloc(e_count, sizeof(struct hlist_head), GFP_KERNEL);
+	{
+		struct hlist_head __uncontained_tmp299;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp299;
+	}
 	if (!slot)
 		goto out_fail;
 	element = kcalloc(e_count, sizeof(struct lc_element *), GFP_KERNEL);
+	{
+		struct lc_element *__uncontained_tmp300;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp300;
+	}
 	if (!element)
 		goto out_fail;
 

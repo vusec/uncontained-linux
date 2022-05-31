@@ -15,6 +15,11 @@
 #include <linux/seq_file.h>
 #include <linux/posix_acl_xattr.h>
 #include <linux/exportfs.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "overlayfs.h"
 
 MODULE_AUTHOR("Miklos Szeredi <miklos@szeredi.hu>");
@@ -1679,6 +1684,10 @@ static int ovl_get_layers(struct super_block *sb, struct ovl_fs *ofs,
 
 	err = -ENOMEM;
 	ofs->fs = kcalloc(numlower + 1, sizeof(struct ovl_sb), GFP_KERNEL);
+	{
+		struct ovl_sb __uncontained_tmp244;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp244;
+	}
 	if (ofs->fs == NULL)
 		goto out;
 
@@ -1805,6 +1814,10 @@ static struct ovl_entry *ovl_get_lowerstack(struct super_block *sb,
 	}
 
 	stack = kcalloc(numlower, sizeof(struct path), GFP_KERNEL);
+	{
+		struct path __uncontained_tmp245;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp245;
+	}
 	if (!stack)
 		return ERR_PTR(-ENOMEM);
 
@@ -2023,6 +2036,10 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
 
 	err = -ENOMEM;
 	layers = kcalloc(numlower + 1, sizeof(struct ovl_layer), GFP_KERNEL);
+	{
+		struct ovl_layer __uncontained_tmp246;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp246;
+	}
 	if (!layers)
 		goto out_err;
 

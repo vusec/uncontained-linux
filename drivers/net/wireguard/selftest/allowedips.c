@@ -267,6 +267,10 @@ static __init bool randomized_test(void)
 	horrible_allowedips_init(&h);
 
 	peers = kcalloc(NUM_PEERS, sizeof(*peers), GFP_KERNEL);
+	{
+		typeof((*peers)) __uncontained_tmp214;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp214;
+	}
 	if (unlikely(!peers)) {
 		pr_err("allowedips random self-test malloc: FAIL\n");
 		goto free;

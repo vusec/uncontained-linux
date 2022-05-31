@@ -22,6 +22,11 @@
 #include <asm/apic.h>
 #include <asm/cpu_device_id.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../perf_event.h"
 
 /*
@@ -6199,6 +6204,10 @@ __init int intel_pmu_init(void)
 		x86_pmu.hybrid_pmu = kcalloc(X86_HYBRID_NUM_PMUS,
 					     sizeof(struct x86_hybrid_pmu),
 					     GFP_KERNEL);
+		{
+			struct x86_hybrid_pmu __uncontained_tmp22;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+		}
 		if (!x86_pmu.hybrid_pmu)
 			return -ENOMEM;
 		static_branch_enable(&perf_is_hybrid);

@@ -25,6 +25,11 @@
 #include <drm/drm_of.h>
 #include <drm/drm_simple_kms_helper.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mtk_disp_drv.h"
 #include "mtk_dpi_regs.h"
 #include "mtk_drm_ddp_comp.h"
@@ -567,6 +572,10 @@ static u32 *mtk_dpi_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
 
 	output_fmts = kcalloc(dpi->conf->num_output_fmts, sizeof(*output_fmts),
 			     GFP_KERNEL);
+	{
+		typeof((*output_fmts)) __uncontained_tmp74;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (!output_fmts)
 		return NULL;
 

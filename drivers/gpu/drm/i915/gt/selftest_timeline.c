@@ -5,6 +5,11 @@
 
 #include <linux/prime_numbers.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "intel_context.h"
 #include "intel_engine_heartbeat.h"
 #include "intel_engine_pm.h"
@@ -169,6 +174,10 @@ static int mock_hwsp_freelist(void *arg)
 	state.max = PAGE_SIZE / sizeof(*state.history);
 	state.count = 0;
 	state.history = kcalloc(state.max, sizeof(*state.history), GFP_KERNEL);
+	{
+		typeof((*state.history)) __uncontained_tmp88;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (!state.history) {
 		err = -ENOMEM;
 		goto err_put;

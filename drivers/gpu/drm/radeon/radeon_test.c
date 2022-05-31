@@ -24,6 +24,11 @@
  */
 
 #include <drm/radeon_drm.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "radeon_reg.h"
 #include "radeon.h"
 
@@ -61,6 +66,10 @@ static void radeon_do_test_moves(struct radeon_device *rdev, int flag)
 	n /= size;
 
 	gtt_obj = kcalloc(n, sizeof(*gtt_obj), GFP_KERNEL);
+	{
+		typeof((*gtt_obj)) __uncontained_tmp92;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!gtt_obj) {
 		DRM_ERROR("Failed to allocate %d pointers\n", n);
 		r = 1;

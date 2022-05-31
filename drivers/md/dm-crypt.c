@@ -42,6 +42,11 @@
 
 #include <linux/device-mapper.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dm-audit.h"
 
 #define DM_MSG_PREFIX "crypt"
@@ -2287,6 +2292,10 @@ static int crypt_alloc_tfms_skcipher(struct crypt_config *cc, char *ciphermode)
 	cc->cipher_tfm.tfms = kcalloc(cc->tfms_count,
 				      sizeof(struct crypto_skcipher *),
 				      GFP_KERNEL);
+	{
+		struct crypto_skcipher *__uncontained_tmp121;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+	}
 	if (!cc->cipher_tfm.tfms)
 		return -ENOMEM;
 

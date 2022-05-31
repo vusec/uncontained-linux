@@ -21,6 +21,11 @@
 #include <linux/uio.h>
 #include <linux/writeback.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1224,6 +1229,10 @@ static struct pstore_zone **psz_init_zones(enum pstore_type_id type,
 
 	c = total_size / record_size;
 	zones = kcalloc(c, sizeof(*zones), GFP_KERNEL);
+	{
+		typeof((*zones)) __uncontained_tmp295;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp295;
+	}
 	if (!zones) {
 		pr_err("allocate for zones %s failed\n", name);
 		return ERR_PTR(-ENOMEM);

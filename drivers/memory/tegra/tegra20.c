@@ -12,6 +12,11 @@
 
 #include <dt-bindings/memory/tegra20-mc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mc.h"
 
 #define MC_STAT_CONTROL				0x90
@@ -615,6 +620,10 @@ static int tegra20_mc_stats_show(struct seq_file *s, void *unused)
 	unsigned int i;
 
 	stats = kcalloc(mc->soc->num_clients + 1, sizeof(*stats), GFP_KERNEL);
+	{
+		typeof((*stats)) __uncontained_tmp130;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp130;
+	}
 	if (!stats)
 		return -ENOMEM;
 

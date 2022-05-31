@@ -25,6 +25,11 @@
 #include <rdma/rdma_cm.h>
 #include <linux/nvme-rdma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -222,6 +227,10 @@ static struct nvme_rdma_qe *nvme_rdma_alloc_ring(struct ib_device *ibdev,
 	int i;
 
 	ring = kcalloc(ib_queue_size, sizeof(struct nvme_rdma_qe), GFP_KERNEL);
+	{
+		struct nvme_rdma_qe __uncontained_tmp197;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp197;
+	}
 	if (!ring)
 		return NULL;
 
@@ -2410,6 +2419,10 @@ static struct nvme_ctrl *nvme_rdma_create_ctrl(struct device *dev,
 	ret = -ENOMEM;
 	ctrl->queues = kcalloc(ctrl->ctrl.queue_count, sizeof(*ctrl->queues),
 				GFP_KERNEL);
+	{
+		typeof((*ctrl->queues)) __uncontained_tmp198;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp198;
+	}
 	if (!ctrl->queues)
 		goto out_free_ctrl;
 

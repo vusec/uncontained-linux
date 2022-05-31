@@ -16,6 +16,11 @@
 #include <sound/control.h>
 #include <sound/soc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -327,6 +332,10 @@ static int sigma_fw_load_samplerates(struct sigmadsp *sigmadsp,
 		return -EINVAL;
 
 	rates = kcalloc(num_rates, sizeof(*rates), GFP_KERNEL);
+	{
+		typeof((*rates)) __uncontained_tmp318;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp318;
+	}
 	if (!rates)
 		return -ENOMEM;
 

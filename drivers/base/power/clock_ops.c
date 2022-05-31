@@ -18,6 +18,11 @@
 #include <linux/pm_domain.h>
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifdef CONFIG_PM_CLK
 
 enum pce_status {
@@ -316,6 +321,10 @@ int of_pm_clk_add_clks(struct device *dev)
 		return -ENODEV;
 
 	clks = kcalloc(count, sizeof(*clks), GFP_KERNEL);
+	{
+		typeof((*clks)) __uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	if (!clks)
 		return -ENOMEM;
 

@@ -74,6 +74,11 @@
 #include <linux/uaccess.h>
 
 #include <video/mach64.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "atyfb.h"
 #include "ati_ids.h"
 
@@ -2976,6 +2981,10 @@ static int atyfb_setup_sparc(struct pci_dev *pdev, struct fb_info *info,
 	j = i + 4;
 
 	par->mmap_map = kcalloc(j, sizeof(*par->mmap_map), GFP_ATOMIC);
+	{
+		typeof((*par->mmap_map)) __uncontained_tmp314;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp314;
+	}
 	if (!par->mmap_map) {
 		PRINTKE("atyfb_setup_sparc() can't alloc mmap_map\n");
 		return -ENOMEM;

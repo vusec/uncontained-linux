@@ -87,6 +87,11 @@ MODULE_PARM_DESC(int_timeout_rx, "RX timeout value");
 #include <asm/sibyte/sb1250_mac.h>
 #include <asm/sibyte/sb1250_dma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #if defined(CONFIG_SIBYTE_BCM1x55) || defined(CONFIG_SIBYTE_BCM1x80)
 #define UNIT_INT(n)		(K_BCM1480_INT_MAC_0 + ((n) * 2))
 #elif defined(CONFIG_SIBYTE_SB1250) || defined(CONFIG_SIBYTE_BCM112X)
@@ -625,6 +630,10 @@ static void sbdma_initctx(struct sbmacdma *d, struct sbmac_softc *s, int chan,
 	d->sbdma_dscrtable_unaligned = kcalloc(d->sbdma_maxdescr + 1,
 					       sizeof(*d->sbdma_dscrtable),
 					       GFP_KERNEL);
+	{
+		typeof((*d->sbdma_dscrtable)) __uncontained_tmp148;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+	}
 
 	/*
 	 * The descriptor table must be aligned to at least 16 bytes or the
@@ -644,6 +653,10 @@ static void sbdma_initctx(struct sbmacdma *d, struct sbmac_softc *s, int chan,
 
 	d->sbdma_ctxtable = kcalloc(d->sbdma_maxdescr,
 				    sizeof(*d->sbdma_ctxtable), GFP_KERNEL);
+	{
+		typeof((*d->sbdma_ctxtable)) __uncontained_tmp149;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp149;
+	}
 
 #ifdef CONFIG_SBMAC_COALESCE
 	/*

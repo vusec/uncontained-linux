@@ -19,6 +19,11 @@
 #include <linux/of_address.h>
 #include <linux/syscore_ops.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "common.h"
 
 /*
@@ -126,6 +131,10 @@ void __init mvebu_coreclk_setup(struct device_node *np,
 
 	clk_data.clks = kcalloc(clk_data.clk_num, sizeof(*clk_data.clks),
 				GFP_KERNEL);
+	{
+		typeof((*clk_data.clks)) __uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (WARN_ON(!clk_data.clks)) {
 		iounmap(base);
 		return;
@@ -270,6 +279,10 @@ void __init mvebu_clk_gating_setup(struct device_node *np,
 	ctrl->num_gates = n;
 	ctrl->gates = kcalloc(ctrl->num_gates, sizeof(*ctrl->gates),
 			      GFP_KERNEL);
+	{
+		typeof((*ctrl->gates)) __uncontained_tmp32;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+	}
 	if (WARN_ON(!ctrl->gates))
 		goto gates_out;
 

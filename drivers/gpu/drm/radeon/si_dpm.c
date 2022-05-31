@@ -25,6 +25,11 @@
 #include <linux/pci.h>
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "atom.h"
 #include "evergreen.h"
 #include "r600_dpm.h"
@@ -6820,6 +6825,10 @@ static int si_parse_power_table(struct radeon_device *rdev)
 	rdev->pm.dpm.ps = kcalloc(state_array->ucNumEntries,
 				  sizeof(struct radeon_ps),
 				  GFP_KERNEL);
+	{
+		struct radeon_ps __uncontained_tmp93;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!rdev->pm.dpm.ps)
 		return -ENOMEM;
 	power_state_offset = (u8 *)state_array->states;
@@ -6941,6 +6950,10 @@ int si_dpm_init(struct radeon_device *rdev)
 		kcalloc(4,
 			sizeof(struct radeon_clock_voltage_dependency_entry),
 			GFP_KERNEL);
+	{
+		struct radeon_clock_voltage_dependency_entry __uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!rdev->pm.dpm.dyn_state.vddc_dependency_on_dispclk.entries) {
 		r600_free_extended_power_table(rdev);
 		return -ENOMEM;

@@ -18,6 +18,11 @@
 
 #include <linux/dma/idma64.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "idma64.h"
 
 /* For now we support only two channels */
@@ -193,6 +198,10 @@ static struct idma64_desc *idma64_alloc_desc(unsigned int ndesc)
 		return NULL;
 
 	desc->hw = kcalloc(ndesc, sizeof(*desc->hw), GFP_NOWAIT);
+	{
+		typeof((*desc->hw)) __uncontained_tmp45;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!desc->hw) {
 		kfree(desc);
 		return NULL;

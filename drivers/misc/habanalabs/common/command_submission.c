@@ -11,6 +11,11 @@
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define HL_CS_FLAGS_TYPE_MASK	(HL_CS_FLAGS_SIGNAL | HL_CS_FLAGS_WAIT | \
 				HL_CS_FLAGS_COLLECTIVE_WAIT)
 
@@ -835,9 +840,18 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
 
 	cs->jobs_in_queue_cnt = kcalloc(hdev->asic_prop.max_queues,
 			sizeof(*cs->jobs_in_queue_cnt), GFP_ATOMIC);
-	if (!cs->jobs_in_queue_cnt)
+	{
+		typeof((*cs->jobs_in_queue_cnt)) __uncontained_tmp55;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp55;
+	}
+	if (!cs->jobs_in_queue_cnt) {
 		cs->jobs_in_queue_cnt = kcalloc(hdev->asic_prop.max_queues,
 				sizeof(*cs->jobs_in_queue_cnt), GFP_KERNEL);
+		{
+			typeof((*cs->jobs_in_queue_cnt)) __uncontained_tmp56;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp56;
+		}
+	}
 
 	if (!cs->jobs_in_queue_cnt) {
 		atomic64_inc(&ctx->cs_counters.out_of_mem_drop_cnt);

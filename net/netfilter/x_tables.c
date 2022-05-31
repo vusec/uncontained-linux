@@ -32,6 +32,11 @@
 #include <linux/netfilter_ipv6/ip6_tables.h>
 #include <linux/netfilter_arp/arp_tables.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1771,6 +1776,10 @@ xt_hook_ops_alloc(const struct xt_table *table, nf_hookfn *fn)
 		return ERR_PTR(-EINVAL);
 
 	ops = kcalloc(num_hooks, sizeof(*ops), GFP_KERNEL);
+	{
+		typeof((*ops)) __uncontained_tmp306;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp306;
+	}
 	if (ops == NULL)
 		return ERR_PTR(-ENOMEM);
 
@@ -2018,6 +2027,10 @@ static int __init xt_init(void)
 	}
 
 	xt = kcalloc(NFPROTO_NUMPROTO, sizeof(struct xt_af), GFP_KERNEL);
+	{
+		struct xt_af __uncontained_tmp305;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp305;
+	}
 	if (!xt)
 		return -ENOMEM;
 

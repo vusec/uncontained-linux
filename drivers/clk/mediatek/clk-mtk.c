@@ -16,6 +16,11 @@
 #include <linux/device.h>
 #include <linux/of_device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk-mtk.h"
 #include "clk-gate.h"
 
@@ -29,6 +34,10 @@ struct clk_onecell_data *mtk_alloc_clk_data(unsigned int clk_num)
 		return NULL;
 
 	clk_data->clks = kcalloc(clk_num, sizeof(*clk_data->clks), GFP_KERNEL);
+	{
+		typeof((*clk_data->clks)) __uncontained_tmp29;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!clk_data->clks)
 		goto err_out;
 

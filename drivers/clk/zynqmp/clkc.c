@@ -15,6 +15,11 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk-zynqmp.h"
 
 #define MAX_PARENT			100
@@ -753,6 +758,10 @@ static int zynqmp_clk_setup(struct device_node *np)
 		return -ENOMEM;
 
 	clock = kcalloc(clock_max_idx, sizeof(*clock), GFP_KERNEL);
+	{
+		typeof((*clock)) __uncontained_tmp40;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!clock) {
 		kfree(zynqmp_data);
 		return -ENOMEM;

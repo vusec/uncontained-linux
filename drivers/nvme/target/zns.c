@@ -6,6 +6,11 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 #include <linux/nvme.h>
 #include <linux/blkdev.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "nvmet.h"
 
 /*
@@ -398,6 +403,10 @@ static u16 nvmet_bdev_zone_mgmt_emulate_all(struct nvmet_req *req)
 
 	d.zbitmap = kcalloc_node(BITS_TO_LONGS(nr_zones), sizeof(*(d.zbitmap)),
 				 GFP_NOIO, q->node);
+	{
+		typeof((*(d.zbitmap))) __uncontained_tmp199;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp199;
+	}
 	if (!d.zbitmap) {
 		ret = -ENOMEM;
 		goto out;

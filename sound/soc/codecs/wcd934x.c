@@ -20,6 +20,11 @@
 #include <sound/soc.h>
 #include <sound/soc-dapm.h>
 #include <sound/tlv.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "wcd-clsh-v2.h"
 #include "wcd-mbhc-v2.h"
 
@@ -1758,6 +1763,10 @@ static int wcd934x_slim_set_hw_params(struct wcd934x_codec *wcd,
 	}
 
 	cfg->chs = kcalloc(cfg->ch_count, sizeof(unsigned int), GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp353;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp353;
+	}
 	if (!cfg->chs)
 		return -ENOMEM;
 

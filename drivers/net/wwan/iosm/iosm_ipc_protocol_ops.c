@@ -6,6 +6,11 @@
 #include "iosm_ipc_protocol.h"
 #include "iosm_ipc_protocol_ops.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Get the next free message element.*/
 static union ipc_mem_msg_entry *
 ipc_protocol_free_msg_get(struct iosm_protocol *ipc_protocol, int *index)
@@ -70,6 +75,10 @@ static int ipc_protocol_msg_prepipe_open(struct iosm_protocol *ipc_protocol,
 	 * re-calculate the start and end addresses.
 	 */
 	skbr = kcalloc(pipe->nr_of_entries, sizeof(*skbr), GFP_ATOMIC);
+	{
+		typeof((*skbr)) __uncontained_tmp233;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp233;
+	}
 	if (!skbr)
 		return -ENOMEM;
 

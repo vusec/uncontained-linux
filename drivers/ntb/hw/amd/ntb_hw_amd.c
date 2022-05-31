@@ -59,6 +59,11 @@
 #include <linux/slab.h>
 #include <linux/ntb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ntb_hw_amd.h"
 
 #define NTB_NAME	"ntb_hw_amd"
@@ -721,11 +726,19 @@ static int ndev_init_isr(struct amd_ntb_dev *ndev,
 	/* Try to set up msix irq */
 	ndev->vec = kcalloc_node(msix_max, sizeof(*ndev->vec),
 				 GFP_KERNEL, node);
+	{
+		typeof((*ndev->vec)) __uncontained_tmp209;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp209;
+	}
 	if (!ndev->vec)
 		goto err_msix_vec_alloc;
 
 	ndev->msix = kcalloc_node(msix_max, sizeof(*ndev->msix),
 				  GFP_KERNEL, node);
+	{
+		typeof((*ndev->msix)) __uncontained_tmp210;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp210;
+	}
 	if (!ndev->msix)
 		goto err_msix_alloc;
 

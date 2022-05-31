@@ -12,6 +12,11 @@
 #include <asm/isc.h>
 #include <asm/airq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static enum {FLOATING, DIRECTED} irq_delivery;
 
 #define	SIC_IRQ_MODE_ALL		0
@@ -425,6 +430,10 @@ static int __init zpci_directed_irq_init(void)
 
 	zpci_ibv = kcalloc(num_possible_cpus(), sizeof(*zpci_ibv),
 			   GFP_KERNEL);
+	{
+		typeof((*zpci_ibv)) __uncontained_tmp21;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!zpci_ibv)
 		return -ENOMEM;
 
@@ -450,6 +459,10 @@ static int __init zpci_directed_irq_init(void)
 static int __init zpci_floating_irq_init(void)
 {
 	zpci_ibv = kcalloc(ZPCI_NR_DEVICES, sizeof(*zpci_ibv), GFP_KERNEL);
+	{
+		typeof((*zpci_ibv)) __uncontained_tmp22;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp22;
+	}
 	if (!zpci_ibv)
 		return -ENOMEM;
 

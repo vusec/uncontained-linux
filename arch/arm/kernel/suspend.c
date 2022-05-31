@@ -13,6 +13,11 @@
 #include <asm/suspend.h>
 #include <asm/tlbflush.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 extern int __cpu_suspend(unsigned long, int (*)(unsigned long), u32 cpuid);
 extern void cpu_resume_mmu(void);
 
@@ -111,6 +116,10 @@ static int cpu_suspend_alloc_sp(void)
 	void *ctx_ptr;
 	/* ctx_ptr is an array of physical addresses */
 	ctx_ptr = kcalloc(mpidr_hash_size(), sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 
 	if (WARN_ON(!ctx_ptr))
 		return -ENOMEM;

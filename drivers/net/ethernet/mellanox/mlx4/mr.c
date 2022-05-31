@@ -40,6 +40,11 @@
 
 #include <linux/mlx4/cmd.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mlx4.h"
 #include "icm.h"
 
@@ -108,8 +113,16 @@ static int mlx4_buddy_init(struct mlx4_buddy *buddy, int max_order)
 
 	buddy->bits = kcalloc(buddy->max_order + 1, sizeof(long *),
 			      GFP_KERNEL);
+	{
+		long *__uncontained_tmp178;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp178;
+	}
 	buddy->num_free = kcalloc(buddy->max_order + 1, sizeof(*buddy->num_free),
 				  GFP_KERNEL);
+	{
+		typeof((*buddy->num_free)) __uncontained_tmp179;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp179;
+	}
 	if (!buddy->bits || !buddy->num_free)
 		goto err_out;
 
@@ -795,6 +808,10 @@ int mlx4_buf_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
 	int i;
 
 	page_list = kcalloc(buf->npages, sizeof(*page_list), GFP_KERNEL);
+	{
+		typeof((*page_list)) __uncontained_tmp180;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp180;
+	}
 	if (!page_list)
 		return -ENOMEM;
 

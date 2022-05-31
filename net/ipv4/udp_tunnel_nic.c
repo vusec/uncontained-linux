@@ -9,6 +9,11 @@
 #include <net/udp_tunnel.h>
 #include <net/vxlan.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 enum udp_tunnel_nic_table_entry_flags {
 	UDP_TUNNEL_NIC_ENTRY_ADD	= BIT(0),
 	UDP_TUNNEL_NIC_ENTRY_DEL	= BIT(1),
@@ -736,6 +741,10 @@ udp_tunnel_nic_alloc(const struct udp_tunnel_nic_info *info,
 	for (i = 0; i < n_tables; i++) {
 		utn->entries[i] = kcalloc(info->tables[i].n_entries,
 					  sizeof(*utn->entries[i]), GFP_KERNEL);
+		{
+			typeof((*utn->entries[i])) __uncontained_tmp319;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp319;
+		}
 		if (!utn->entries[i])
 			goto err_free_prev_entries;
 	}

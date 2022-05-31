@@ -11,6 +11,11 @@
 #include <linux/sched/task.h>
 #include <linux/pid_namespace.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cma_priv.h"
 #include "restrack.h"
 
@@ -26,6 +31,10 @@ int rdma_restrack_init(struct ib_device *dev)
 	int i;
 
 	dev->res = kcalloc(RDMA_RESTRACK_MAX, sizeof(*rt), GFP_KERNEL);
+	{
+		typeof((*rt)) __uncontained_tmp93;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!dev->res)
 		return -ENOMEM;
 

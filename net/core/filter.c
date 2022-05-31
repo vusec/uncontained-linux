@@ -79,6 +79,11 @@
 #include <net/tls.h>
 #include <net/xdp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static const struct bpf_func_proto *
 bpf_sk_base_func_proto(enum bpf_func_id func_id);
 
@@ -573,6 +578,10 @@ static int bpf_convert_filter(struct sock_filter *prog, int len,
 		first_insn = new_prog->insnsi;
 		addrs = kcalloc(len, sizeof(*addrs),
 				GFP_KERNEL | __GFP_NOWARN);
+		{
+			typeof((*addrs)) __uncontained_tmp337;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp337;
+		}
 		if (!addrs)
 			return -ENOMEM;
 	}

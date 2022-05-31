@@ -11,6 +11,11 @@
 #include <net/checksum.h>
 #include <net/ip6_checksum.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mana.h"
 
 /* Microsoft Azure Network Adapter (MANA) functions */
@@ -393,6 +398,10 @@ static int mana_init_port_context(struct mana_port_context *apc)
 {
 	apc->rxqs = kcalloc(apc->num_queues, sizeof(struct mana_rxq *),
 			    GFP_KERNEL);
+	{
+		struct mana_rxq *__uncontained_tmp168;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp168;
+	}
 
 	return !apc->rxqs ? -ENOMEM : 0;
 }
@@ -730,6 +739,10 @@ static int mana_create_eq(struct mana_context *ac)
 
 	ac->eqs = kcalloc(gc->max_num_queues, sizeof(struct mana_eq),
 			  GFP_KERNEL);
+	{
+		struct mana_eq __uncontained_tmp169;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp169;
+	}
 	if (!ac->eqs)
 		return -ENOMEM;
 
@@ -1264,6 +1277,10 @@ static int mana_create_txq(struct mana_port_context *apc,
 
 	apc->tx_qp = kcalloc(apc->num_queues, sizeof(struct mana_tx_qp),
 			     GFP_KERNEL);
+	{
+		struct mana_tx_qp __uncontained_tmp170;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp170;
+	}
 	if (!apc->tx_qp)
 		return -ENOMEM;
 

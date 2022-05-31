@@ -22,6 +22,11 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "remoteproc_internal.h"
 
 #define HOLD_BOOT		0
@@ -164,6 +169,10 @@ static int stm32_rproc_of_memory_translations(struct platform_device *pdev,
 	if (!p_mems)
 		return -ENOMEM;
 	mem_range = kcalloc(cnt, sizeof(*mem_range), GFP_KERNEL);
+	{
+		typeof((*mem_range)) __uncontained_tmp174;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp174;
+	}
 	if (!mem_range)
 		return -ENOMEM;
 

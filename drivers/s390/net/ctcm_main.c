@@ -50,6 +50,11 @@
 
 #include <asm/idals.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ctcm_fsms.h"
 #include "ctcm_main.h"
 
@@ -1336,6 +1341,10 @@ static int add_channel(struct ccw_device *cdev, enum ctcm_channel_types type,
 		ccw_num = 8;
 
 	ch->ccw = kcalloc(ccw_num, sizeof(struct ccw1), GFP_KERNEL | GFP_DMA);
+	{
+					struct ccw1 __uncontained_tmp260;
+					__uncontained_kcalloc = (unsigned long)&__uncontained_tmp260;
+	}
 	if (ch->ccw == NULL)
 					goto nomem_return;
 

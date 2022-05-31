@@ -19,6 +19,11 @@
 #include <asm/machdep.h>
 #include <asm/opal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 enum opal_async_token_state {
 	ASYNC_TOKEN_UNALLOCATED = 0,
 	ASYNC_TOKEN_ALLOCATED,
@@ -267,6 +272,10 @@ int __init opal_async_comp_init(void)
 	opal_max_async_tokens = be32_to_cpup(async);
 	opal_async_tokens = kcalloc(opal_max_async_tokens,
 			sizeof(*opal_async_tokens), GFP_KERNEL);
+	{
+		typeof((*opal_async_tokens)) __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!opal_async_tokens) {
 		err = -ENOMEM;
 		goto out_opal_node;

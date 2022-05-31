@@ -18,6 +18,11 @@
 
 #include <cluster/masklog.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1423,6 +1428,10 @@ static int __ocfs2_recovery_thread(void *arg)
 
 	if (quota_enabled) {
 		rm_quota = kcalloc(osb->max_slots, sizeof(int), GFP_NOFS);
+		{
+			int __uncontained_tmp275;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp275;
+		}
 		if (!rm_quota) {
 			status = -ENOMEM;
 			goto bail;

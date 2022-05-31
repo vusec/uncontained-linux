@@ -31,6 +31,11 @@
 #define CREATE_TRACE_POINTS
 #include <asm/trace/zcrypt.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "zcrypt_api.h"
 #include "zcrypt_debug.h"
 
@@ -1038,6 +1043,10 @@ static long _zcrypt_send_ep11_cprb(bool userspace, struct ap_perms *perms,
 		struct ep11_target_dev __user *uptr;
 
 		targets = kcalloc(target_num, sizeof(*targets), GFP_KERNEL);
+		{
+			typeof((*targets)) __uncontained_tmp201;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp201;
+		}
 		if (!targets) {
 			func_code = 0;
 			rc = -ENOMEM;
@@ -1641,6 +1650,10 @@ static long zcrypt_unlocked_ioctl(struct file *filp, unsigned int cmd,
 		u32 *reqcnt;
 
 		reqcnt = kcalloc(AP_DEVICES, sizeof(u32), GFP_KERNEL);
+		{
+			u32 __uncontained_tmp200;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp200;
+		}
 		if (!reqcnt)
 			return -ENOMEM;
 		zcrypt_perdev_reqcnt(reqcnt, AP_DEVICES);

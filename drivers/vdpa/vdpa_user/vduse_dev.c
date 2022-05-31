@@ -28,6 +28,11 @@
 #include <uapi/linux/virtio_blk.h>
 #include <linux/mod_devicetable.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "iova_domain.h"
 
 #define DRV_AUTHOR   "Yongji Xie <xieyongji@bytedance.com>"
@@ -1327,6 +1332,10 @@ static int vduse_create_dev(struct vduse_dev_config *config,
 	dev->vq_align = config->vq_align;
 	dev->vq_num = config->vq_num;
 	dev->vqs = kcalloc(dev->vq_num, sizeof(*dev->vqs), GFP_KERNEL);
+	{
+		typeof((*dev->vqs)) __uncontained_tmp266;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp266;
+	}
 	if (!dev->vqs)
 		goto err_vqs;
 

@@ -11,6 +11,11 @@
 #include <asm/xen/hypervisor.h>
 #include <asm/xen/hypercall.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int xen_unmap_device_mmio(const struct resource *resources,
 				 unsigned int count)
 {
@@ -60,8 +65,20 @@ static int xen_map_device_mmio(const struct resource *resources,
 			continue;
 
 		gpfns = kcalloc(nr, sizeof(xen_pfn_t), GFP_KERNEL);
+		{
+			xen_pfn_t __uncontained_tmp254;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp254;
+		}
 		idxs = kcalloc(nr, sizeof(xen_ulong_t), GFP_KERNEL);
+		{
+			xen_ulong_t __uncontained_tmp255;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp255;
+		}
 		errs = kcalloc(nr, sizeof(int), GFP_KERNEL);
+		{
+			int __uncontained_tmp256;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp256;
+		}
 		if (!gpfns || !idxs || !errs) {
 			kfree(gpfns);
 			kfree(idxs);

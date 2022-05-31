@@ -35,6 +35,11 @@
 #include "gvt.h"
 #include "i915_pvinfo.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 void populate_pvinfo_page(struct intel_vgpu *vgpu)
 {
 	struct drm_i915_private *i915 = vgpu->gvt->gt->i915;
@@ -128,6 +133,10 @@ int intel_gvt_init_vgpu_types(struct intel_gvt *gvt)
 
 	gvt->types = kcalloc(num_types, sizeof(struct intel_vgpu_type),
 			     GFP_KERNEL);
+	{
+		struct intel_vgpu_type __uncontained_tmp69;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!gvt->types)
 		return -ENOMEM;
 

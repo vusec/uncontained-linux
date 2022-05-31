@@ -11,6 +11,11 @@
 
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2044,6 +2049,10 @@ static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
 	INIT_LIST_HEAD(&hpb->lh_pre_req_free);
 
 	hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req), GFP_KERNEL);
+	{
+		struct ufshpb_req __uncontained_tmp278;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp278;
+	}
 	hpb->throttle_pre_req = qd;
 	hpb->num_inflight_pre_req = 0;
 

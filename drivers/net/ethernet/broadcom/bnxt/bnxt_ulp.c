@@ -20,6 +20,11 @@
 #include <asm/byteorder.h>
 #include <linux/bitmap.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "bnxt_hsi.h"
 #include "bnxt.h"
 #include "bnxt_hwrm.h"
@@ -409,6 +414,10 @@ void bnxt_ulp_irq_restart(struct bnxt *bp, int err)
 		if (!err) {
 			ent = kcalloc(ulp->msix_requested, sizeof(*ent),
 				      GFP_KERNEL);
+			{
+				typeof((*ent)) __uncontained_tmp152;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp152;
+			}
 			if (!ent)
 				return;
 			bnxt_fill_msix_vecs(bp, ent);

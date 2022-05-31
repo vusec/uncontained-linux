@@ -23,6 +23,11 @@
 
 #include "amdgpu_ras.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int amdgpu_umc_do_page_retirement(struct amdgpu_device *adev,
 		void *ras_error_status,
 		struct amdgpu_iv_entry *entry,
@@ -45,6 +50,10 @@ static int amdgpu_umc_do_page_retirement(struct amdgpu_device *adev,
 			err_data->err_addr =
 				kcalloc(adev->umc.max_ras_err_cnt_per_query,
 					sizeof(struct eeprom_table_record), GFP_KERNEL);
+			{
+				struct eeprom_table_record __uncontained_tmp77;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp77;
+			}
 
 			/* still call query_ras_error_address to clear error status
 			 * even NOMEM error is encountered
@@ -69,6 +78,10 @@ static int amdgpu_umc_do_page_retirement(struct amdgpu_device *adev,
 			err_data->err_addr =
 				kcalloc(adev->umc.max_ras_err_cnt_per_query,
 					sizeof(struct eeprom_table_record), GFP_KERNEL);
+			{
+				struct eeprom_table_record __uncontained_tmp78;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+			}
 
 			/* still call query_ras_error_address to clear error status
 			 * even NOMEM error is encountered

@@ -25,6 +25,11 @@
 #include <linux/dmi.h>
 #include <linux/wmi.h>
 #include <acpi/video.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "dell-smbios.h"
 #include "dell-wmi-descriptor.h"
 #include "dell-wmi-privacy.h"
@@ -554,6 +559,10 @@ static void handle_dmi_entry(const struct dmi_header *dm, void *opaque)
 	}
 
 	keymap = kcalloc(hotkey_num, sizeof(struct key_entry), GFP_KERNEL);
+	{
+		struct key_entry __uncontained_tmp217;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp217;
+	}
 	if (!keymap) {
 		results->err = -ENOMEM;
 		return;
@@ -630,6 +639,10 @@ static int dell_wmi_input_setup(struct wmi_device *wdev)
 			 ARRAY_SIZE(dell_wmi_keymap_type_0012) +
 			 1,
 			 sizeof(struct key_entry), GFP_KERNEL);
+	{
+		struct key_entry __uncontained_tmp218;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp218;
+	}
 	if (!keymap) {
 		kfree(dmi_results.keymap);
 		err = -ENOMEM;

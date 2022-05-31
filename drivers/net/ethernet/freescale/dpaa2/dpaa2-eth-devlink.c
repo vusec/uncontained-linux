@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
 #include "dpaa2-eth.h"
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 /* Copyright 2020 NXP
  */
 
@@ -263,6 +268,10 @@ int dpaa2_eth_dl_traps_register(struct dpaa2_eth_priv *priv)
 	dpaa2_eth_trap_data->trap_items_arr = kcalloc(ARRAY_SIZE(dpaa2_eth_traps_arr),
 						      sizeof(struct dpaa2_eth_trap_item),
 						      GFP_KERNEL);
+	{
+		struct dpaa2_eth_trap_item __uncontained_tmp80;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (!dpaa2_eth_trap_data->trap_items_arr) {
 		err = -ENOMEM;
 		goto trap_data_free;

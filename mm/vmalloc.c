@@ -43,6 +43,11 @@
 #include <asm/tlbflush.h>
 #include <asm/shmparam.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -3697,7 +3702,15 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
 	}
 
 	vms = kcalloc(nr_vms, sizeof(vms[0]), GFP_KERNEL);
+	{
+		typeof((vms[0])) __uncontained_tmp317;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp317;
+	}
 	vas = kcalloc(nr_vms, sizeof(vas[0]), GFP_KERNEL);
+	{
+		typeof((vas[0])) __uncontained_tmp318;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp318;
+	}
 	if (!vas || !vms)
 		goto err_free2;
 

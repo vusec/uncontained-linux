@@ -16,6 +16,11 @@
 #include <linux/slab.h>
 #include <linux/mtd/partitions.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ofpart_bcm4908.h"
 #include "ofpart_linksys_ns.h"
 
@@ -95,6 +100,10 @@ static int parse_fixed_partitions(struct mtd_info *master,
 		return 0;
 
 	parts = kcalloc(nr_parts, sizeof(*parts), GFP_KERNEL);
+	{
+		typeof((*parts)) __uncontained_tmp138;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp138;
+	}
 	if (!parts)
 		return -ENOMEM;
 
@@ -211,6 +220,10 @@ static int parse_ofoldpart_partitions(struct mtd_info *master,
 	nr_parts = plen / sizeof(part[0]);
 
 	parts = kcalloc(nr_parts, sizeof(*parts), GFP_KERNEL);
+	{
+		typeof((*parts)) __uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!parts)
 		return -ENOMEM;
 

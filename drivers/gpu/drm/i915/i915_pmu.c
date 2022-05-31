@@ -6,6 +6,11 @@
 
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gt/intel_engine.h"
 #include "gt/intel_engine_pm.h"
 #include "gt/intel_engine_user.h"
@@ -937,15 +942,27 @@ create_event_attributes(struct i915_pmu *pmu)
 
 	/* Allocate attribute objects and table. */
 	i915_attr = kcalloc(count, sizeof(*i915_attr), GFP_KERNEL);
+	{
+		typeof((*i915_attr)) __uncontained_tmp71;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp71;
+	}
 	if (!i915_attr)
 		goto err_alloc;
 
 	pmu_attr = kcalloc(count, sizeof(*pmu_attr), GFP_KERNEL);
+	{
+		typeof((*pmu_attr)) __uncontained_tmp72;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp72;
+	}
 	if (!pmu_attr)
 		goto err_alloc;
 
 	/* Max one pointer of each attribute type plus a termination entry. */
 	attr = kcalloc(count * 2 + 1, sizeof(*attr), GFP_KERNEL);
+	{
+		typeof((*attr)) __uncontained_tmp73;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp73;
+	}
 	if (!attr)
 		goto err_alloc;
 

@@ -20,6 +20,11 @@
 #include <linux/prefetch.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "bnad.h"
 #include "bna.h"
 #include "cna.h"
@@ -1347,6 +1352,10 @@ bnad_mem_alloc(struct bnad *bnad,
 
 	mem_info->mdl = kcalloc(mem_info->num, sizeof(struct bna_mem_descr),
 				GFP_KERNEL);
+	{
+		struct bna_mem_descr __uncontained_tmp150;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp150;
+	}
 	if (mem_info->mdl == NULL)
 		return -ENOMEM;
 
@@ -1461,6 +1470,10 @@ bnad_txrx_irq_alloc(struct bnad *bnad, enum bnad_intr_source src,
 		intr_info->idl = kcalloc(intr_info->num,
 					sizeof(struct bna_intr_descr),
 					GFP_KERNEL);
+		{
+			struct bna_intr_descr __uncontained_tmp151;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp151;
+		}
 		if (!intr_info->idl)
 			return -ENOMEM;
 
@@ -1487,6 +1500,10 @@ bnad_txrx_irq_alloc(struct bnad *bnad, enum bnad_intr_source src,
 		intr_info->idl = kcalloc(intr_info->num,
 					sizeof(struct bna_intr_descr),
 					GFP_KERNEL);
+		{
+			struct bna_intr_descr __uncontained_tmp152;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp152;
+		}
 		if (!intr_info->idl)
 			return -ENOMEM;
 
@@ -2641,6 +2658,10 @@ bnad_enable_msix(struct bnad *bnad)
 
 	bnad->msix_table =
 		kcalloc(bnad->msix_num, sizeof(struct msix_entry), GFP_KERNEL);
+	{
+		struct msix_entry __uncontained_tmp153;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp153;
+	}
 
 	if (!bnad->msix_table)
 		goto intx_mode;

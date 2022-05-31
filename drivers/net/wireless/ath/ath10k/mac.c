@@ -14,6 +14,11 @@
 #include <linux/of.h>
 #include <linux/bitfield.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -8842,6 +8847,10 @@ ath10k_mac_op_change_chanctx(struct ieee80211_hw *hw,
 
 		arg.vifs = kcalloc(arg.n_vifs, sizeof(arg.vifs[0]),
 				   GFP_KERNEL);
+		{
+			typeof((arg.vifs[0])) __uncontained_tmp215;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp215;
+		}
 		if (!arg.vifs)
 			goto radar;
 

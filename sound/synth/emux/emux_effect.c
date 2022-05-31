@@ -11,6 +11,11 @@
 #include "emux_voice.h"
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifdef SNDRV_EMUX_USE_RAW_EFFECT
 /*
  * effects table
@@ -275,6 +280,10 @@ snd_emux_create_effect(struct snd_emux_port *p)
 	int i;
 	p->effect = kcalloc(p->chset.max_channels,
 			    sizeof(struct snd_emux_effect_table), GFP_KERNEL);
+	{
+		struct snd_emux_effect_table __uncontained_tmp321;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp321;
+	}
 	if (p->effect) {
 		for (i = 0; i < p->chset.max_channels; i++)
 			p->chset.channels[i].private = p->effect + i;

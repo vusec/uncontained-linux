@@ -26,6 +26,11 @@
 #include <asm/firmware.h>
 #include <asm/pasemi_dma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "pasemi_mac.h"
 
 /* We have our own align, since ppc64 in general has it at 0 because
@@ -383,6 +388,10 @@ static int pasemi_mac_setup_rx_resources(const struct net_device *dev)
 	ring->ring_info = kcalloc(RX_RING_SIZE,
 				  sizeof(struct pasemi_mac_buffer),
 				  GFP_KERNEL);
+	{
+		struct pasemi_mac_buffer __uncontained_tmp205;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp205;
+	}
 
 	if (!ring->ring_info)
 		goto out_ring_info;
@@ -467,6 +476,10 @@ pasemi_mac_setup_tx_resources(const struct net_device *dev)
 	ring->ring_info = kcalloc(TX_RING_SIZE,
 				  sizeof(struct pasemi_mac_buffer),
 				  GFP_KERNEL);
+	{
+		struct pasemi_mac_buffer __uncontained_tmp206;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp206;
+	}
 	if (!ring->ring_info)
 		goto out_ring_info;
 

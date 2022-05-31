@@ -14,6 +14,11 @@
 #include <drm/drm_syncobj.h>
 #include <uapi/drm/v3d_drm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "v3d_drv.h"
 #include "v3d_regs.h"
 #include "v3d_trace.h"
@@ -900,6 +905,10 @@ v3d_submit_tfu_ioctl(struct drm_device *dev, void *data,
 
 	job->base.bo = kcalloc(ARRAY_SIZE(args->bo_handles),
 			       sizeof(*job->base.bo), GFP_KERNEL);
+	{
+		typeof((*job->base.bo)) __uncontained_tmp82;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!job->base.bo) {
 		ret = -ENOMEM;
 		goto fail;

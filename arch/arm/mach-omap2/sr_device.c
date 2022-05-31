@@ -20,6 +20,11 @@
 #include <linux/slab.h>
 #include <linux/io.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "soc.h"
 #include "omap_device.h"
 #include "voltage.h"
@@ -42,6 +47,10 @@ static void __init sr_set_nvalues(struct omap_volt_data *volt_data,
 		count++;
 
 	nvalue_table = kcalloc(count, sizeof(*nvalue_table), GFP_KERNEL);
+	{
+		typeof((*nvalue_table)) __uncontained_tmp1;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!nvalue_table)
 		return;
 

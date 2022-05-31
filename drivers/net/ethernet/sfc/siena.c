@@ -11,6 +11,11 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/random.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "net_driver.h"
 #include "bitfield.h"
 #include "efx.h"
@@ -919,6 +924,10 @@ static int siena_mtd_probe(struct efx_nic *efx)
 		return rc;
 
 	parts = kcalloc(hweight32(nvram_types), sizeof(*parts), GFP_KERNEL);
+	{
+		typeof((*parts)) __uncontained_tmp131;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp131;
+	}
 	if (!parts)
 		return -ENOMEM;
 

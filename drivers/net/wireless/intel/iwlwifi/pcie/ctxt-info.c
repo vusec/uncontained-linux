@@ -9,6 +9,11 @@
 #include "internal.h"
 #include "iwl-prph.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static void *_iwl_pcie_ctxt_info_dma_alloc_coherent(struct iwl_trans *trans,
 						    size_t size,
 						    dma_addr_t *phys,
@@ -100,9 +105,17 @@ int iwl_pcie_init_fw_sec(struct iwl_trans *trans,
 	paging_cnt = iwl_pcie_get_num_sections(fw, lmac_cnt + umac_cnt + 2);
 
 	dram->fw = kcalloc(umac_cnt + lmac_cnt, sizeof(*dram->fw), GFP_KERNEL);
+	{
+		typeof((*dram->fw)) __uncontained_tmp151;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp151;
+	}
 	if (!dram->fw)
 		return -ENOMEM;
 	dram->paging = kcalloc(paging_cnt, sizeof(*dram->paging), GFP_KERNEL);
+	{
+		typeof((*dram->paging)) __uncontained_tmp152;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp152;
+	}
 	if (!dram->paging)
 		return -ENOMEM;
 

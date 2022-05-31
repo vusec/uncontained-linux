@@ -27,6 +27,11 @@
 #include <asm/msr.h>
 #include <asm/trace/irq_vectors.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 #define NR_BLOCKS         5
@@ -1344,6 +1349,10 @@ int mce_threshold_create_device(unsigned int cpu)
 
 	numbanks = this_cpu_read(mce_num_banks);
 	bp = kcalloc(numbanks, sizeof(*bp), GFP_KERNEL);
+	{
+		typeof((*bp)) __uncontained_tmp11;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp11;
+	}
 	if (!bp)
 		return -ENOMEM;
 

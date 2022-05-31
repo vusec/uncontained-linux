@@ -14,6 +14,11 @@
 #include <linux/fs.h>
 #include <linux/kernel.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -672,6 +677,10 @@ int wnd_init(struct wnd_bitmap *wnd, struct super_block *sb, size_t nbits)
 		wnd->bits_last = wbits;
 
 	wnd->free_bits = kcalloc(wnd->nwnd, sizeof(u16), GFP_NOFS);
+	{
+		u16 __uncontained_tmp290;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp290;
+	}
 	if (!wnd->free_bits)
 		return -ENOMEM;
 

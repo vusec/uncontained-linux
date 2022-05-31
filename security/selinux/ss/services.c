@@ -50,6 +50,11 @@
 #include <linux/lsm_hooks.h>
 #include <net/netlabel.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "flask.h"
 #include "avc.h"
 #include "avc_ss.h"
@@ -115,6 +120,10 @@ static int selinux_set_mapping(struct policydb *pol,
 
 	/* Allocate space for the class records, plus one for class zero */
 	out_map->mapping = kcalloc(++i, sizeof(*out_map->mapping), GFP_ATOMIC);
+	{
+		typeof((*out_map->mapping)) __uncontained_tmp337;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp337;
+	}
 	if (!out_map->mapping)
 		return -ENOMEM;
 
@@ -2769,6 +2778,10 @@ int security_get_user_sids(struct selinux_state *state,
 		return 0;
 
 	mysids = kcalloc(maxnel, sizeof(*mysids), GFP_KERNEL);
+	{
+		typeof((*mysids)) __uncontained_tmp338;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp338;
+	}
 	if (!mysids)
 		return -ENOMEM;
 
@@ -2816,6 +2829,10 @@ retry:
 				rc = -ENOMEM;
 				maxnel += SIDS_NEL;
 				mysids2 = kcalloc(maxnel, sizeof(*mysids2), GFP_ATOMIC);
+				{
+					typeof((*mysids2)) __uncontained_tmp339;
+					__uncontained_kcalloc = (unsigned long)&__uncontained_tmp339;
+				}
 				if (!mysids2)
 					goto out_unlock;
 				memcpy(mysids2, mysids, mynel * sizeof(*mysids2));
@@ -2835,6 +2852,10 @@ out_unlock:
 
 	rc = -ENOMEM;
 	mysids2 = kcalloc(mynel, sizeof(*mysids2), GFP_KERNEL);
+	{
+		typeof((*mysids2)) __uncontained_tmp340;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp340;
+	}
 	if (!mysids2) {
 		kfree(mysids);
 		return rc;
@@ -3041,11 +3062,19 @@ int security_get_bools(struct selinux_policy *policy,
 
 	rc = -ENOMEM;
 	*names = kcalloc(*len, sizeof(char *), GFP_ATOMIC);
+	{
+		char *__uncontained_tmp335;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp335;
+	}
 	if (!*names)
 		goto err;
 
 	rc = -ENOMEM;
 	*values = kcalloc(*len, sizeof(int), GFP_ATOMIC);
+	{
+		int __uncontained_tmp336;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp336;
+	}
 	if (!*values)
 		goto err;
 
@@ -3416,6 +3445,10 @@ int security_get_classes(struct selinux_policy *policy,
 	rc = -ENOMEM;
 	*nclasses = policydb->p_classes.nprim;
 	*classes = kcalloc(*nclasses, sizeof(**classes), GFP_ATOMIC);
+	{
+		typeof((**classes)) __uncontained_tmp341;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp341;
+	}
 	if (!*classes)
 		goto out;
 
@@ -3465,6 +3498,10 @@ int security_get_permissions(struct selinux_policy *policy,
 	rc = -ENOMEM;
 	*nperms = match->permissions.nprim;
 	*perms = kcalloc(*nperms, sizeof(**perms), GFP_ATOMIC);
+	{
+		typeof((**perms)) __uncontained_tmp342;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp342;
+	}
 	if (!*perms)
 		goto out;
 

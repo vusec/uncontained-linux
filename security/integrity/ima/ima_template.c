@@ -10,6 +10,11 @@
  */
 
 #include <linux/rculist.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ima.h"
 #include "ima_template_lib.h"
 
@@ -362,6 +367,10 @@ static int ima_restore_template_data(struct ima_template_desc *template_desc,
 
 	digests = kcalloc(NR_BANKS(ima_tpm_chip) + ima_extra_slots,
 			  sizeof(*digests), GFP_NOFS);
+	{
+		typeof((*digests)) __uncontained_tmp340;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp340;
+	}
 	if (!digests) {
 		kfree(*entry);
 		return -ENOMEM;

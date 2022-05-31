@@ -8,6 +8,11 @@
 
 #include "dell-wmi-sysman.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 get_instance_id(enumeration);
 
 static ssize_t current_value_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
@@ -120,6 +125,10 @@ int alloc_enum_data(void)
 		get_instance_count(DELL_WMI_BIOS_ENUMERATION_ATTRIBUTE_GUID);
 	wmi_priv.enumeration_data = kcalloc(wmi_priv.enumeration_instances_count,
 					sizeof(struct enumeration_data), GFP_KERNEL);
+	{
+		struct enumeration_data __uncontained_tmp252;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp252;
+	}
 	if (!wmi_priv.enumeration_data) {
 		wmi_priv.enumeration_instances_count = 0;
 		ret = -ENOMEM;

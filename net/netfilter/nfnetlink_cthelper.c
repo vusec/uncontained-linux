@@ -26,6 +26,11 @@
 #include <linux/netfilter/nfnetlink_conntrack.h>
 #include <linux/netfilter/nfnetlink_cthelper.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Pablo Neira Ayuso <pablo@netfilter.org>");
 MODULE_DESCRIPTION("nfnl_cthelper: User-space connection tracking helpers");
@@ -191,6 +196,10 @@ nfnl_cthelper_parse_expect_policy(struct nf_conntrack_helper *helper,
 	expect_policy = kcalloc(class_max,
 				sizeof(struct nf_conntrack_expect_policy),
 				GFP_KERNEL);
+	{
+		struct nf_conntrack_expect_policy __uncontained_tmp244;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp244;
+	}
 	if (expect_policy == NULL)
 		return -ENOMEM;
 

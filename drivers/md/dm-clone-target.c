@@ -29,6 +29,11 @@
 #include <linux/backing-dev.h>
 #include <linux/device-mapper.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1758,6 +1763,10 @@ static int copy_ctr_args(struct clone *clone, int argc, const char **argv, char 
 	const char **copy;
 
 	copy = kcalloc(argc, sizeof(*copy), GFP_KERNEL);
+	{
+		typeof((*copy)) __uncontained_tmp112;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (!copy)
 		goto error;
 

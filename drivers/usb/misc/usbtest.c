@@ -11,6 +11,11 @@
 #include <linux/timer.h>
 #include <linux/usb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SIMPLE_IO_TIMEOUT	10000	/* in milliseconds */
 
 /*-------------------------------------------------------------------------*/
@@ -1222,6 +1227,10 @@ test_ctrl_queue(struct usbtest_dev *dev, struct usbtest_param_32 *param)
 	 * controls which subtests run (more tests than sglen) or rerun.
 	 */
 	urb = kcalloc(param->sglen, sizeof(struct urb *), GFP_KERNEL);
+	{
+		struct urb *__uncontained_tmp262;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp262;
+	}
 	if (!urb)
 		return -ENOMEM;
 	for (i = 0; i < param->sglen; i++) {
@@ -1573,6 +1582,10 @@ static int unlink_queued(struct usbtest_dev *dev, int pipe, unsigned num,
 
 	/* Allocate and init the urbs we'll queue */
 	ctx.urbs = kcalloc(num, sizeof(struct urb *), GFP_KERNEL);
+	{
+		struct urb *__uncontained_tmp263;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp263;
+	}
 	if (!ctx.urbs)
 		goto free_buf;
 	for (i = 0; i < num; i++) {
@@ -2052,6 +2065,10 @@ test_queue(struct usbtest_dev *dev, struct usbtest_param_32 *param,
 		return -EINVAL;
 
 	urbs = kcalloc(param->sglen, sizeof(*urbs), GFP_KERNEL);
+	{
+		typeof((*urbs)) __uncontained_tmp264;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp264;
+	}
 	if (!urbs)
 		return -ENOMEM;
 

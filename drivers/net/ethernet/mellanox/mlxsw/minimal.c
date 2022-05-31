@@ -10,6 +10,11 @@
 #include <linux/mod_devicetable.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "core_env.h"
 #include "i2c.h"
@@ -331,6 +336,10 @@ static int mlxsw_m_ports_create(struct mlxsw_m *mlxsw_m)
 
 	mlxsw_m->ports = kcalloc(max_ports, sizeof(*mlxsw_m->ports),
 				 GFP_KERNEL);
+	{
+		typeof((*mlxsw_m->ports)) __uncontained_tmp175;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp175;
+	}
 	if (!mlxsw_m->ports)
 		return -ENOMEM;
 

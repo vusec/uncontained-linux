@@ -24,6 +24,11 @@
 #include <asm/time.h>
 #include <asm/uasm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static bool threads_disabled;
 static DECLARE_BITMAP(core_power, NR_CPUS);
 
@@ -172,6 +177,10 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
 	ncores = mips_cps_numcores(0);
 	mips_cps_core_bootcfg = kcalloc(ncores, sizeof(*mips_cps_core_bootcfg),
 					GFP_KERNEL);
+	{
+		typeof((*mips_cps_core_bootcfg)) __uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (!mips_cps_core_bootcfg) {
 		pr_err("Failed to allocate boot config for %u cores\n", ncores);
 		goto err_out;
@@ -183,6 +192,10 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
 		mips_cps_core_bootcfg[c].vpe_config = kcalloc(core_vpes,
 				sizeof(*mips_cps_core_bootcfg[c].vpe_config),
 				GFP_KERNEL);
+		{
+			typeof((*mips_cps_core_bootcfg[c].vpe_config)) __uncontained_tmp5;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+		}
 		if (!mips_cps_core_bootcfg[c].vpe_config) {
 			pr_err("Failed to allocate %u VPE boot configs\n",
 			       core_vpes);

@@ -9,6 +9,11 @@
 #include <linux/module.h>
 #include <linux/dma-mapping.h>
 #include <linux/platform_device.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "mmpfb.h"
 
 static int var_to_pixfmt(struct fb_var_screeninfo *var)
@@ -480,6 +485,10 @@ static int modes_setup(struct mmpfb_info *fbi)
 	/* put videomode list to info structure */
 	videomodes = kcalloc(videomode_num, sizeof(struct fb_videomode),
 			     GFP_KERNEL);
+	{
+		struct fb_videomode __uncontained_tmp268;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp268;
+	}
 	if (!videomodes)
 		return -ENOMEM;
 

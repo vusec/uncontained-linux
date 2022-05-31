@@ -21,6 +21,11 @@
 #include <linux/skbuff.h>
 #include <net/mac80211.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -911,6 +916,10 @@ il_init_channel_map(struct il_priv *il)
 	il->channel_info =
 	    kcalloc(il->channel_count, sizeof(struct il_channel_info),
 		    GFP_KERNEL);
+	{
+		struct il_channel_info __uncontained_tmp230;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp230;
+	}
 	if (!il->channel_info) {
 		IL_ERR("Could not allocate channel_info\n");
 		il->channel_count = 0;
@@ -2974,6 +2983,10 @@ il_tx_queue_alloc(struct il_priv *il, struct il_tx_queue *txq, u32 id)
 		txq->skbs = kcalloc(TFD_QUEUE_SIZE_MAX,
 				    sizeof(struct sk_buff *),
 				    GFP_KERNEL);
+		{
+			struct sk_buff *__uncontained_tmp231;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp231;
+		}
 		if (!txq->skbs) {
 			IL_ERR("Fail to alloc skbs\n");
 			goto error;
@@ -3027,8 +3040,16 @@ il_tx_queue_init(struct il_priv *il, u32 txq_id)
 
 	txq->meta =
 	    kcalloc(actual_slots, sizeof(struct il_cmd_meta), GFP_KERNEL);
+	{
+		struct il_cmd_meta __uncontained_tmp232;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp232;
+	}
 	txq->cmd =
 	    kcalloc(actual_slots, sizeof(struct il_device_cmd *), GFP_KERNEL);
+	{
+		struct il_device_cmd *__uncontained_tmp233;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp233;
+	}
 
 	if (!txq->meta || !txq->cmd)
 		goto out_free_arrays;
@@ -3437,6 +3458,10 @@ il_init_geos(struct il_priv *il)
 	channels =
 	    kcalloc(il->channel_count, sizeof(struct ieee80211_channel),
 		    GFP_KERNEL);
+	{
+		struct ieee80211_channel __uncontained_tmp234;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp234;
+	}
 	if (!channels)
 		return -ENOMEM;
 
@@ -4636,11 +4661,16 @@ EXPORT_SYMBOL(il_mac_remove_interface);
 int
 il_alloc_txq_mem(struct il_priv *il)
 {
-	if (!il->txq)
+	if (!il->txq) {
 		il->txq =
 		    kcalloc(il->cfg->num_of_queues,
 			    sizeof(struct il_tx_queue),
 			    GFP_KERNEL);
+		{
+			struct il_tx_queue __uncontained_tmp235;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp235;
+		}
+	}
 	if (!il->txq) {
 		IL_ERR("Not enough memory for txq\n");
 		return -ENOMEM;

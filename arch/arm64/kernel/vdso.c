@@ -29,6 +29,11 @@
 #include <asm/signal32.h>
 #include <asm/vdso.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 extern char vdso_start[], vdso_end[];
 extern char vdso32_start[], vdso32_end[];
 
@@ -105,6 +110,10 @@ static int __init __vdso_init(enum vdso_abi abi)
 	vdso_pagelist = kcalloc(vdso_info[abi].vdso_pages,
 				sizeof(struct page *),
 				GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp3;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (vdso_pagelist == NULL)
 		return -ENOMEM;
 

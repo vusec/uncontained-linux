@@ -18,6 +18,11 @@
 #include <linux/module.h>
 #include <scsi/srp.h>
 #include <target/target_core_base.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "libsrp.h"
 #include "ibmvscsi_tgt.h"
 
@@ -28,9 +33,17 @@ static int srp_iu_pool_alloc(struct srp_queue *q, size_t max,
 	int i;
 
 	q->pool = kcalloc(max, sizeof(struct iu_entry *), GFP_KERNEL);
+	{
+		struct iu_entry *__uncontained_tmp247;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp247;
+	}
 	if (!q->pool)
 		return -ENOMEM;
 	q->items = kcalloc(max, sizeof(struct iu_entry), GFP_KERNEL);
+	{
+		struct iu_entry __uncontained_tmp248;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp248;
+	}
 	if (!q->items)
 		goto free_pool;
 
@@ -62,6 +75,10 @@ static struct srp_buf **srp_ring_alloc(struct device *dev,
 	int i;
 
 	ring = kcalloc(max, sizeof(struct srp_buf *), GFP_KERNEL);
+	{
+		struct srp_buf *__uncontained_tmp249;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp249;
+	}
 	if (!ring)
 		return NULL;
 

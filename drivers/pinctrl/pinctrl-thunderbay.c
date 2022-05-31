@@ -25,6 +25,11 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "pinconf.h"
 #include "pinctrl-utils.h"
@@ -825,6 +830,10 @@ static int thunderbay_build_functions(struct thunderbay_pinctrl *tpc)
 	tpc->nfuncs = 0;
 	thunderbay_funcs = kcalloc(tpc->soc->npins * 8,
 				   sizeof(*thunderbay_funcs), GFP_KERNEL);
+	{
+		typeof((*thunderbay_funcs)) __uncontained_tmp196;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp196;
+	}
 	if (!thunderbay_funcs)
 		return -ENOMEM;
 

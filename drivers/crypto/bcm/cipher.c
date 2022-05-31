@@ -34,6 +34,11 @@
 #include <crypto/sha2.h>
 #include <crypto/sha3.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -148,6 +153,10 @@ spu_skcipher_rx_sg_create(struct brcm_message *mssg,
 
 	mssg->spu.dst = kcalloc(rx_frag_num, sizeof(struct scatterlist),
 				rctx->gfp);
+	{
+		struct scatterlist __uncontained_tmp46;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!mssg->spu.dst)
 		return -ENOMEM;
 
@@ -212,6 +221,10 @@ spu_skcipher_tx_sg_create(struct brcm_message *mssg,
 
 	mssg->spu.src = kcalloc(tx_frag_num, sizeof(struct scatterlist),
 				rctx->gfp);
+	{
+		struct scatterlist __uncontained_tmp47;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (unlikely(!mssg->spu.src))
 		return -ENOMEM;
 
@@ -539,6 +552,10 @@ spu_ahash_rx_sg_create(struct brcm_message *mssg,
 
 	mssg->spu.dst = kcalloc(rx_frag_num, sizeof(struct scatterlist),
 				rctx->gfp);
+	{
+		struct scatterlist __uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!mssg->spu.dst)
 		return -ENOMEM;
 
@@ -594,6 +611,10 @@ spu_ahash_tx_sg_create(struct brcm_message *mssg,
 
 	mssg->spu.src = kcalloc(tx_frag_num, sizeof(struct scatterlist),
 				rctx->gfp);
+	{
+		struct scatterlist __uncontained_tmp49;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (!mssg->spu.src)
 		return -ENOMEM;
 
@@ -1084,6 +1105,10 @@ static int spu_aead_rx_sg_create(struct brcm_message *mssg,
 
 	mssg->spu.dst = kcalloc(rx_frag_num, sizeof(struct scatterlist),
 				rctx->gfp);
+	{
+		struct scatterlist __uncontained_tmp50;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!mssg->spu.dst)
 		return -ENOMEM;
 
@@ -1186,6 +1211,10 @@ static int spu_aead_tx_sg_create(struct brcm_message *mssg,
 
 	mssg->spu.src = kcalloc(tx_frag_num, sizeof(struct scatterlist),
 				rctx->gfp);
+	{
+		struct scatterlist __uncontained_tmp51;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (!mssg->spu.src)
 		return -ENOMEM;
 

@@ -12,6 +12,11 @@
 #include <drm/drm_lease.h>
 #include <drm/drm_print.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "drm_crtc_internal.h"
 #include "drm_internal.h"
 
@@ -385,6 +390,10 @@ static int fill_object_idr(struct drm_device *dev,
 
 	objects = kcalloc(object_count, sizeof(struct drm_mode_object *),
 			  GFP_KERNEL);
+	{
+		struct drm_mode_object *__uncontained_tmp64;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp64;
+	}
 	if (!objects)
 		return -ENOMEM;
 

@@ -14,6 +14,11 @@
 #include <linux/property.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "class.h"
 #include "mux.h"
 
@@ -223,6 +228,10 @@ static void *typec_mux_match(struct fwnode_handle *fwnode, const char *id,
 		return NULL;
 
 	val = kcalloc(nval, sizeof(*val), GFP_KERNEL);
+	{
+		typeof((*val)) __uncontained_tmp298;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp298;
+	}
 	if (!val)
 		return ERR_PTR(-ENOMEM);
 

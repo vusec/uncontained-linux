@@ -18,6 +18,11 @@
 #include <net/tcp.h>
 #include <net/udp.h>
 #include <net/tc_act/tc_gact.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "stmmac.h"
 
 struct stmmachdr {
@@ -1105,12 +1110,20 @@ static int stmmac_test_rxp(struct stmmac_priv *priv)
 	}
 
 	actions = kcalloc(nk, sizeof(*actions), GFP_KERNEL);
+	{
+		typeof((*actions)) __uncontained_tmp132;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (!actions) {
 		ret = -ENOMEM;
 		goto cleanup_exts;
 	}
 
 	act = kcalloc(nk, sizeof(*act), GFP_KERNEL);
+	{
+		typeof((*act)) __uncontained_tmp133;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+	}
 	if (!act) {
 		ret = -ENOMEM;
 		goto cleanup_actions;

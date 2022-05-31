@@ -32,6 +32,11 @@
 #include "hwmgr.h"
 #include <linux/power_supply.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define WIDTH_4K 3840
 
 void amdgpu_dpm_print_class_info(u32 class, u32 class2)
@@ -405,6 +410,10 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
 				kcalloc(psl->ucNumEntries,
 					sizeof(struct amdgpu_phase_shedding_limits_entry),
 					GFP_KERNEL);
+			{
+				struct amdgpu_phase_shedding_limits_entry __uncontained_tmp60;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+			}
 			if (!adev->pm.dpm.dyn_state.phase_shedding_limits_table.entries) {
 				amdgpu_free_extended_power_table(adev);
 				return -ENOMEM;

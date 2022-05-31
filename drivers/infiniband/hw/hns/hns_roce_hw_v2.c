@@ -42,6 +42,11 @@
 #include <rdma/ib_umem.h>
 #include <rdma/uverbs_ioctl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hnae3.h"
 #include "hns_roce_common.h"
 #include "hns_roce_device.h"
@@ -6131,6 +6136,10 @@ static int hns_roce_v2_init_eq_table(struct hns_roce_dev *hr_dev)
 	irq_num = eq_num + other_num;
 
 	eq_table->eq = kcalloc(eq_num, sizeof(*eq_table->eq), GFP_KERNEL);
+	{
+		typeof((*eq_table->eq)) __uncontained_tmp101;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!eq_table->eq)
 		return -ENOMEM;
 

@@ -21,6 +21,11 @@
 #include <linux/of.h>
 #include <linux/rtc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cm33xx.h"
 #include "common.h"
 #include "control.h"
@@ -412,6 +417,10 @@ static int __init amx3_idle_init(struct device_node *cpu_node, int cpu)
 	}
 
 	idle_states = kcalloc(state_count, sizeof(*idle_states), GFP_KERNEL);
+	{
+		typeof((*idle_states)) __uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!idle_states)
 		return -ENOMEM;
 

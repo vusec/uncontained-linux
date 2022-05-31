@@ -19,6 +19,11 @@
 #include <linux/bitops.h>
 #include <linux/dma-mapping.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hidma_mgmt.h"
 
 #define HIDMA_QOS_N_OFFSET		0x700
@@ -354,6 +359,10 @@ static int __init hidma_mgmt_of_populate_channels(struct device_node *np)
 
 	/* allocate a resource array */
 	res = kcalloc(3, sizeof(*res), GFP_KERNEL);
+	{
+		typeof((*res)) __uncontained_tmp37;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp37;
+	}
 	if (!res)
 		return -ENOMEM;
 

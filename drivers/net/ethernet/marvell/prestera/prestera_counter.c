@@ -6,6 +6,11 @@
 #include "prestera_acl.h"
 #include "prestera_counter.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define COUNTER_POLL_TIME	(msecs_to_jiffies(1000))
 #define COUNTER_RESCHED_TIME	(msecs_to_jiffies(50))
 #define COUNTER_BULK_SIZE	(256)
@@ -159,6 +164,10 @@ prestera_counter_block_get(struct prestera_counter *counter, u32 client)
 
 	block->stats = kcalloc(block->num_counters,
 			       sizeof(*block->stats), GFP_KERNEL);
+	{
+		typeof((*block->stats)) __uncontained_tmp180;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp180;
+	}
 	if (!block->stats) {
 		err = -ENOMEM;
 		goto err_stats;
@@ -167,6 +176,10 @@ prestera_counter_block_get(struct prestera_counter *counter, u32 client)
 	block->counter_flag = kcalloc(block->num_counters,
 				      sizeof(*block->counter_flag),
 				      GFP_KERNEL);
+	{
+		typeof((*block->counter_flag)) __uncontained_tmp181;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp181;
+	}
 	if (!block->counter_flag) {
 		err = -ENOMEM;
 		goto err_flag;

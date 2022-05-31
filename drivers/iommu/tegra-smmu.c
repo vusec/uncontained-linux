@@ -19,6 +19,11 @@
 #include <soc/tegra/ahb.h>
 #include <soc/tegra/mc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct tegra_smmu_group {
 	struct list_head list;
 	struct tegra_smmu *smmu;
@@ -297,6 +302,10 @@ static struct iommu_domain *tegra_smmu_domain_alloc(unsigned type)
 	}
 
 	as->count = kcalloc(SMMU_NUM_PDE, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp116;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (!as->count) {
 		__free_page(as->pd);
 		kfree(as);
@@ -304,6 +313,10 @@ static struct iommu_domain *tegra_smmu_domain_alloc(unsigned type)
 	}
 
 	as->pts = kcalloc(SMMU_NUM_PDE, sizeof(*as->pts), GFP_KERNEL);
+	{
+		typeof((*as->pts)) __uncontained_tmp117;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!as->pts) {
 		kfree(as->count);
 		__free_page(as->pd);

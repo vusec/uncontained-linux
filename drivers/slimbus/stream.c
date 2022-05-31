@@ -7,6 +7,11 @@
 #include <linux/list.h>
 #include <linux/slimbus.h>
 #include <uapi/sound/asound.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "slimbus.h"
 
 /**
@@ -213,6 +218,10 @@ int slim_stream_prepare(struct slim_stream_runtime *rt,
 
 	num_ports = hweight32(cfg->port_mask);
 	rt->ports = kcalloc(num_ports, sizeof(*port), GFP_KERNEL);
+	{
+		typeof((*port)) __uncontained_tmp243;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp243;
+	}
 	if (!rt->ports)
 		return -ENOMEM;
 

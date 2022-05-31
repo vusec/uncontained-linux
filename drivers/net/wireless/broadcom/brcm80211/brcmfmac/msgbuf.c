@@ -15,6 +15,11 @@
 #include <brcmu_utils.h>
 #include <brcmu_wifi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "debug.h"
 #include "proto.h"
@@ -299,6 +304,10 @@ brcmf_msgbuf_init_pktids(u32 nr_array_entries,
 	struct brcmf_msgbuf_pktids *pktids;
 
 	array = kcalloc(nr_array_entries, sizeof(*array), GFP_KERNEL);
+	{
+		typeof((*array)) __uncontained_tmp181;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp181;
+	}
 	if (!array)
 		return NULL;
 
@@ -1565,6 +1574,10 @@ int brcmf_proto_msgbuf_attach(struct brcmf_pub *drvr)
 	msgbuf->flowring_dma_handle =
 		kcalloc(msgbuf->max_flowrings,
 			sizeof(*msgbuf->flowring_dma_handle), GFP_KERNEL);
+	{
+		typeof((*msgbuf->flowring_dma_handle)) __uncontained_tmp182;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp182;
+	}
 	if (!msgbuf->flowring_dma_handle)
 		goto fail;
 

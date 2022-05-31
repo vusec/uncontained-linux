@@ -25,6 +25,11 @@
 #include <asm/processor.h>
 #include <asm/mce.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "edac_module.h"
 
 /* Static vars */
@@ -770,6 +775,10 @@ static struct sbridge_dev *alloc_sbridge_dev(int seg, u8 bus, enum domain dom,
 	sbridge_dev->pdev = kcalloc(table->n_devs_per_imc,
 				    sizeof(*sbridge_dev->pdev),
 				    GFP_KERNEL);
+	{
+		typeof((*sbridge_dev->pdev)) __uncontained_tmp65;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp65;
+	}
 	if (!sbridge_dev->pdev) {
 		kfree(sbridge_dev);
 		return NULL;

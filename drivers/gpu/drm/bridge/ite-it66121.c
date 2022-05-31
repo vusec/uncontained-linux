@@ -27,6 +27,11 @@
 #include <drm/drm_print.h>
 #include <drm/drm_probe_helper.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define IT66121_VENDOR_ID0_REG			0x00
 #define IT66121_VENDOR_ID1_REG			0x01
 #define IT66121_DEVICE_ID0_REG			0x02
@@ -623,6 +628,10 @@ static u32 *it66121_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
 
 	output_fmts = kcalloc(MAX_OUTPUT_SEL_FORMATS, sizeof(*output_fmts),
 			      GFP_KERNEL);
+	{
+		typeof((*output_fmts)) __uncontained_tmp60;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!output_fmts)
 		return NULL;
 
@@ -649,6 +658,10 @@ static u32 *it66121_bridge_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
 
 	input_fmts = kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts),
 			     GFP_KERNEL);
+	{
+		typeof((*input_fmts)) __uncontained_tmp61;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!input_fmts)
 		return NULL;
 

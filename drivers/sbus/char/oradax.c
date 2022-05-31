@@ -32,6 +32,11 @@
 #include <asm/mdesc.h>
 #include <asm/oradax.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Driver for Oracle Data Analytics Accelerator");
 
@@ -650,6 +655,10 @@ static int dax_open(struct inode *inode, struct file *f)
 
 	ctx->ccb_buf = kcalloc(DAX_MAX_CCBS, sizeof(struct dax_ccb),
 			       GFP_KERNEL);
+	{
+		struct dax_ccb __uncontained_tmp204;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp204;
+	}
 	if (ctx->ccb_buf == NULL)
 		goto done;
 

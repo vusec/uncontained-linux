@@ -29,6 +29,11 @@
 
 #include <asm/debug.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DEBUG_PROLOG_ENTRY -1
 
 #define ALL_AREAS 0 /* copy all debug areas */
@@ -229,9 +234,17 @@ static debug_info_t *debug_info_alloc(const char *name, int pages_per_area,
 	if (!rc)
 		goto fail_malloc_rc;
 	rc->active_entries = kcalloc(nr_areas, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!rc->active_entries)
 		goto fail_malloc_active_entries;
 	rc->active_pages = kcalloc(nr_areas, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp20;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!rc->active_pages)
 		goto fail_malloc_active_pages;
 	if ((mode == ALL_AREAS) && (pages_per_area != 0)) {

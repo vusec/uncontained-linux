@@ -20,6 +20,11 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../dmaengine.h"
 
 /* DMA descriptor control */
@@ -1003,6 +1008,10 @@ int shdma_init(struct device *dev, struct shdma_dev *sdev,
 		return -EINVAL;
 
 	sdev->schan = kcalloc(chan_num, sizeof(*sdev->schan), GFP_KERNEL);
+	{
+		typeof((*sdev->schan)) __uncontained_tmp63;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp63;
+	}
 	if (!sdev->schan)
 		return -ENOMEM;
 

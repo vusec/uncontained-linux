@@ -14,6 +14,11 @@
 #include <linux/clk.h>
 #include <linux/of.h>
 #include <linux/pm_runtime.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "slimbus.h"
 
 /* Manager registers */
@@ -535,6 +540,10 @@ static int qcom_slim_probe(struct platform_device *pdev)
 	ctrl->rx.sl_sz = SLIM_MSGQ_BUF_LEN;
 	ctrl->wr_comp = kcalloc(QCOM_TX_MSGS, sizeof(struct completion *),
 				GFP_KERNEL);
+	{
+		struct completion *__uncontained_tmp279;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp279;
+	}
 	if (!ctrl->wr_comp)
 		return -ENOMEM;
 

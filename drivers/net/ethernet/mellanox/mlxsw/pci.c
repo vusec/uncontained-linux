@@ -15,6 +15,11 @@
 #include <linux/log2.h>
 #include <linux/string.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "pci_hw.h"
 #include "pci.h"
 #include "core.h"
@@ -921,6 +926,10 @@ static int mlxsw_pci_queue_init(struct mlxsw_pci *mlxsw_pci, char *mbox,
 		return -ENOMEM;
 
 	q->elem_info = kcalloc(q->count, sizeof(*q->elem_info), GFP_KERNEL);
+	{
+		typeof((*q->elem_info)) __uncontained_tmp197;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp197;
+	}
 	if (!q->elem_info) {
 		err = -ENOMEM;
 		goto err_elem_info_alloc;
@@ -973,6 +982,10 @@ static int mlxsw_pci_queue_group_init(struct mlxsw_pci *mlxsw_pci, char *mbox,
 
 	queue_group = mlxsw_pci_queue_type_group_get(mlxsw_pci, q_ops->type);
 	queue_group->q = kcalloc(num_qs, sizeof(*queue_group->q), GFP_KERNEL);
+	{
+		typeof((*queue_group->q)) __uncontained_tmp198;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp198;
+	}
 	if (!queue_group->q)
 		return -ENOMEM;
 
@@ -1320,6 +1333,10 @@ static int mlxsw_pci_fw_area_init(struct mlxsw_pci *mlxsw_pci, char *mbox,
 
 	mlxsw_pci->fw_area.items = kcalloc(num_pages, sizeof(*mem_item),
 					   GFP_KERNEL);
+	{
+		typeof((*mem_item)) __uncontained_tmp199;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp199;
+	}
 	if (!mlxsw_pci->fw_area.items)
 		return -ENOMEM;
 	mlxsw_pci->fw_area.count = num_pages;

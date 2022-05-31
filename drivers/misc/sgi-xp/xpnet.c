@@ -25,6 +25,11 @@
 #include <linux/module.h>
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "xp.h"
 
 /*
@@ -525,6 +530,10 @@ xpnet_init(void)
 	xpnet_broadcast_partitions = kcalloc(BITS_TO_LONGS(xp_max_npartitions),
 					     sizeof(long),
 					     GFP_KERNEL);
+	{
+		long __uncontained_tmp137;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp137;
+	}
 	if (xpnet_broadcast_partitions == NULL)
 		return -ENOMEM;
 

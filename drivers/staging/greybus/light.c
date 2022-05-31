@@ -14,6 +14,11 @@
 #include <linux/greybus.h>
 #include <media/v4l2-flash-led-class.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define NAMES_MAX	32
 
 struct gb_channel {
@@ -288,6 +293,10 @@ static int channel_attr_groups_set(struct gb_channel *channel,
 
 	/* Set attributes based in the channel flags */
 	channel->attrs = kcalloc(size + 1, sizeof(*channel->attrs), GFP_KERNEL);
+	{
+		typeof((*channel->attrs)) __uncontained_tmp230;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp230;
+	}
 	if (!channel->attrs)
 		return -ENOMEM;
 	channel->attr_group = kzalloc(sizeof(*channel->attr_group), GFP_KERNEL);
@@ -295,6 +304,10 @@ static int channel_attr_groups_set(struct gb_channel *channel,
 		return -ENOMEM;
 	channel->attr_groups = kcalloc(2, sizeof(*channel->attr_groups),
 				       GFP_KERNEL);
+	{
+		typeof((*channel->attr_groups)) __uncontained_tmp231;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp231;
+	}
 	if (!channel->attr_groups)
 		return -ENOMEM;
 
@@ -1029,6 +1042,10 @@ static int gb_lights_light_config(struct gb_lights *glights, u8 id)
 		return -ENOMEM;
 	light->channels = kcalloc(light->channels_count,
 				  sizeof(struct gb_channel), GFP_KERNEL);
+	{
+		struct gb_channel __uncontained_tmp228;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp228;
+	}
 	if (!light->channels)
 		return -ENOMEM;
 
@@ -1166,6 +1183,10 @@ static int gb_lights_create_all(struct gb_lights *glights)
 
 	glights->lights = kcalloc(glights->lights_count,
 				  sizeof(struct gb_light), GFP_KERNEL);
+	{
+		struct gb_light __uncontained_tmp229;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp229;
+	}
 	if (!glights->lights) {
 		ret = -ENOMEM;
 		goto out;

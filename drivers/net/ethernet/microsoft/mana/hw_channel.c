@@ -9,6 +9,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int mana_hwc_get_msg_index(struct hw_channel_context *hwc, u16 *msg_id)
 {
 	struct gdma_resource *r = &hwc->inflight_msg_res;
@@ -366,6 +371,10 @@ static int mana_hwc_create_cq(struct hw_channel_context *hwc, u16 q_depth,
 	hwc_cq->gdma_cq = cq;
 
 	comp_buf = kcalloc(q_depth, sizeof(*comp_buf), GFP_KERNEL);
+	{
+		typeof((*comp_buf)) __uncontained_tmp194;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp194;
+	}
 	if (!comp_buf) {
 		err = -ENOMEM;
 		goto out;
@@ -580,6 +589,10 @@ static int mana_hwc_test_channel(struct hw_channel_context *hwc, u16 q_depth,
 	}
 
 	ctx = kcalloc(q_depth, sizeof(*ctx), GFP_KERNEL);
+	{
+		typeof((*ctx)) __uncontained_tmp195;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp195;
+	}
 	if (!ctx)
 		return -ENOMEM;
 

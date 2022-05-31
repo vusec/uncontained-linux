@@ -8,6 +8,11 @@
 #include "mds_client.h"
 #include <linux/ceph/decode.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* unused map expires after 5 minutes */
 #define CEPH_SNAPID_MAP_TIMEOUT	(5 * 60 * HZ)
 
@@ -441,6 +446,10 @@ static int dup_array(u64 **dst, __le64 *src, u32 num)
 	kfree(*dst);
 	if (num) {
 		*dst = kcalloc(num, sizeof(u64), GFP_NOFS);
+		{
+			u64 __uncontained_tmp277;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp277;
+		}
 		if (!*dst)
 			return -ENOMEM;
 		for (i = 0; i < num; i++)

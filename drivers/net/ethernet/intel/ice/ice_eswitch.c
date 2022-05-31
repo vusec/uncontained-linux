@@ -9,6 +9,11 @@
 #include "ice_devlink.h"
 #include "ice_tc_lib.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * ice_eswitch_add_vf_mac_rule - add adv rule with VF's MAC
  * @pf: pointer to PF struct
@@ -29,6 +34,10 @@ ice_eswitch_add_vf_mac_rule(struct ice_pf *pf, struct ice_vf *vf, const u8 *mac)
 	int err;
 
 	list = kcalloc(lkups_cnt, sizeof(*list), GFP_ATOMIC);
+	{
+		typeof((*list)) __uncontained_tmp157;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp157;
+	}
 	if (!list)
 		return -ENOMEM;
 

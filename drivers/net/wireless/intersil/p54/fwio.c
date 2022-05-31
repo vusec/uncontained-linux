@@ -20,6 +20,11 @@
 
 #include <net/mac80211.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "p54.h"
 #include "eeprom.h"
 #include "lmac.h"
@@ -176,6 +181,10 @@ int p54_parse_firmware(struct ieee80211_hw *dev, const struct firmware *fw)
 		priv->used_rxkeys = kcalloc(BITS_TO_LONGS(priv->rx_keycache_size),
 					    sizeof(long),
 					    GFP_KERNEL);
+		{
+			long __uncontained_tmp227;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp227;
+		}
 
 		if (!priv->used_rxkeys)
 			return -ENOMEM;

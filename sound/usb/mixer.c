@@ -44,6 +44,11 @@
 #include <sound/info.h>
 #include <sound/tlv.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "usbaudio.h"
 #include "mixer.h"
 #include "helper.h"
@@ -2774,6 +2779,10 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
 	}
 
 	namelist = kcalloc(desc->bNrInPins, sizeof(char *), GFP_KERNEL);
+	{
+		char *__uncontained_tmp353;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp353;
+	}
 	if (!namelist) {
 		err = -ENOMEM;
 		goto error_cval;
@@ -3566,6 +3575,10 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif)
 	mixer->ignore_ctl_error = !!(chip->quirk_flags & QUIRK_FLAG_IGNORE_CTL_ERROR);
 	mixer->id_elems = kcalloc(MAX_ID_ELEMS, sizeof(*mixer->id_elems),
 				  GFP_KERNEL);
+	{
+		typeof((*mixer->id_elems)) __uncontained_tmp354;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp354;
+	}
 	if (!mixer->id_elems) {
 		kfree(mixer);
 		return -ENOMEM;

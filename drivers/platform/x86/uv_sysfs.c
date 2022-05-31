@@ -16,6 +16,11 @@
 #include <asm/uv/uv_hub.h>
 #include <asm/uv/uv_geo.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -247,6 +252,10 @@ static int uv_hubs_init(void)
 	}
 
 	uv_hubs = kcalloc(uv_bios_obj_cnt, sizeof(*uv_hubs), GFP_KERNEL);
+	{
+		typeof((*uv_hubs)) __uncontained_tmp244;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp244;
+	}
 	if (!uv_hubs) {
 		ret = -ENOMEM;
 		goto err_enum_objs;
@@ -373,6 +382,10 @@ static int uv_ports_init(void)
 	int j = 0, k = 0, ret, sz;
 
 	port_buf = kcalloc(uv_bios_obj_cnt, sizeof(*port_buf), GFP_KERNEL);
+	{
+		typeof((*port_buf)) __uncontained_tmp245;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp245;
+	}
 	if (!port_buf)
 		return -ENOMEM;
 
@@ -398,6 +411,10 @@ static int uv_ports_init(void)
 	for (j = 0; j < uv_bios_obj_cnt; j++) {
 		uv_hubs[j]->ports = kcalloc(hub_buf[j].ports,
 					   sizeof(*uv_hubs[j]->ports), GFP_KERNEL);
+		{
+			typeof((*uv_hubs[j]->ports)) __uncontained_tmp246;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp246;
+		}
 		if (!uv_hubs[j]->ports) {
 			ret = -ENOMEM;
 			j--;
@@ -684,6 +701,10 @@ static int pci_topology_init(void)
 
 			uv_pci_objs = kcalloc(num_pci_lines,
 					     sizeof(*uv_pci_objs), GFP_KERNEL);
+			{
+				typeof((*uv_pci_objs)) __uncontained_tmp247;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp247;
+			}
 			if (!uv_pci_objs) {
 				kfree(pci_top_str);
 				ret = -ENOMEM;

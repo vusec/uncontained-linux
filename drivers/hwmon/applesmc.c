@@ -34,6 +34,11 @@
 #include <linux/err.h>
 #include <linux/bits.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* data port used by Apple SMC */
 #define APPLESMC_DATA_PORT	0x300
 /* command/status port used by Apple SMC */
@@ -544,6 +549,10 @@ static int applesmc_init_index(struct applesmc_registers *s)
 		return 0;
 
 	s->index = kcalloc(s->temp_count, sizeof(s->index[0]), GFP_KERNEL);
+	{
+		typeof((s->index[0])) __uncontained_tmp86;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp86;
+	}
 	if (!s->index)
 		return -ENOMEM;
 
@@ -585,8 +594,13 @@ static int applesmc_init_smcreg_try(void)
 	}
 	s->key_count = count;
 
-	if (!s->cache)
+	if (!s->cache) {
 		s->cache = kcalloc(s->key_count, sizeof(*s->cache), GFP_KERNEL);
+		{
+			typeof((*s->cache)) __uncontained_tmp87;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+		}
+	}
 	if (!s->cache)
 		return -ENOMEM;
 
@@ -1142,6 +1156,10 @@ static int applesmc_create_nodes(struct applesmc_node_group *groups, int num)
 
 	for (grp = groups; grp->format; grp++) {
 		grp->nodes = kcalloc(num + 1, sizeof(*node), GFP_KERNEL);
+		{
+			typeof((*node)) __uncontained_tmp88;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp88;
+		}
 		if (!grp->nodes) {
 			ret = -ENOMEM;
 			goto out;

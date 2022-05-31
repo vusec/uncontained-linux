@@ -33,6 +33,11 @@
 
 #include <linux/vmalloc.h>
 #include <rdma/ib_umem.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hns_roce_device.h"
 
 void hns_roce_buf_free(struct hns_roce_dev *hr_dev, struct hns_roce_buf *buf)
@@ -94,6 +99,10 @@ struct hns_roce_buf *hns_roce_buf_alloc(struct hns_roce_dev *hr_dev, u32 size,
 	}
 
 	trunks = kcalloc(ntrunk, sizeof(*trunks), gfp_flags);
+	{
+		typeof((*trunks)) __uncontained_tmp100;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (!trunks) {
 		kfree(buf);
 		return ERR_PTR(-ENOMEM);

@@ -11,6 +11,11 @@
 #include <linux/spinlock.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "security.h"
 #include "conditional.h"
 #include "services.h"
@@ -339,6 +344,10 @@ static int cond_read_av_list(struct policydb *p, void *fp,
 		return 0;
 
 	list->nodes = kcalloc(len, sizeof(*list->nodes), GFP_KERNEL);
+	{
+		typeof((*list->nodes)) __uncontained_tmp342;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp342;
+	}
 	if (!list->nodes)
 		return -ENOMEM;
 
@@ -388,6 +397,10 @@ static int cond_read_node(struct policydb *p, struct cond_node *node, void *fp)
 	/* expr */
 	len = le32_to_cpu(buf[1]);
 	node->expr.nodes = kcalloc(len, sizeof(*node->expr.nodes), GFP_KERNEL);
+	{
+		typeof((*node->expr.nodes)) __uncontained_tmp343;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp343;
+	}
 	if (!node->expr.nodes)
 		return -ENOMEM;
 
@@ -426,6 +439,10 @@ int cond_read_list(struct policydb *p, void *fp)
 	len = le32_to_cpu(buf[0]);
 
 	p->cond_list = kcalloc(len, sizeof(*p->cond_list), GFP_KERNEL);
+	{
+		typeof((*p->cond_list)) __uncontained_tmp344;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp344;
+	}
 	if (!p->cond_list)
 		return -ENOMEM;
 
@@ -610,6 +627,10 @@ static int cond_dup_av_list(struct cond_av_list *new,
 	memset(new, 0, sizeof(*new));
 
 	new->nodes = kcalloc(orig->len, sizeof(*new->nodes), GFP_KERNEL);
+	{
+		typeof((*new->nodes)) __uncontained_tmp345;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp345;
+	}
 	if (!new->nodes)
 		return -ENOMEM;
 
@@ -639,6 +660,10 @@ static int duplicate_policydb_cond_list(struct policydb *newp,
 	newp->cond_list = kcalloc(origp->cond_list_len,
 				sizeof(*newp->cond_list),
 				GFP_KERNEL);
+	{
+		typeof((*newp->cond_list)) __uncontained_tmp346;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp346;
+	}
 	if (!newp->cond_list)
 		goto error;
 

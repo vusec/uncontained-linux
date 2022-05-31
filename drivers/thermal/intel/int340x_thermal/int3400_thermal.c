@@ -10,6 +10,11 @@
 #include <linux/platform_device.h>
 #include <linux/acpi.h>
 #include <linux/thermal.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "acpi_thermal_rel.h"
 
 #define INT3400_THERMAL_TABLE_CHANGED 0x83
@@ -370,6 +375,10 @@ static int evaluate_odvp(struct int3400_thermal_priv *priv)
 		priv->odvp_attrs = kcalloc(priv->odvp_count,
 					   sizeof(struct odvp_attr),
 					   GFP_KERNEL);
+		{
+			struct odvp_attr __uncontained_tmp250;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp250;
+		}
 		if (!priv->odvp_attrs) {
 			ret = -ENOMEM;
 			goto out_err;

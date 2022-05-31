@@ -15,6 +15,11 @@
 #include <linux/delay.h>
 #include <linux/io-64-nonatomic-hi-lo.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vfio_fsl_mc_private.h"
 
 static struct fsl_mc_driver vfio_fsl_mc_driver;
@@ -29,6 +34,10 @@ static int vfio_fsl_mc_open_device(struct vfio_device *core_vdev)
 
 	vdev->regions = kcalloc(count, sizeof(struct vfio_fsl_mc_region),
 				GFP_KERNEL);
+	{
+		struct vfio_fsl_mc_region __uncontained_tmp300;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp300;
+	}
 	if (!vdev->regions)
 		return -ENOMEM;
 

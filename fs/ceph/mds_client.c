@@ -23,6 +23,11 @@
 #include <linux/ceph/auth.h>
 #include <linux/ceph/debugfs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define RECONNECT_MAX_SIZE (INT_MAX - PAGE_SIZE)
 
 /*
@@ -722,6 +727,10 @@ static struct ceph_mds_session *register_session(struct ceph_mds_client *mdsc,
 
 		dout("%s: realloc to %d\n", __func__, newmax);
 		sa = kcalloc(newmax, sizeof(void *), GFP_NOFS);
+		{
+			void *__uncontained_tmp263;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp263;
+		}
 		if (!sa)
 			goto fail_realloc;
 		if (mdsc->sessions) {

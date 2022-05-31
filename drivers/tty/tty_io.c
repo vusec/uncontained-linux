@@ -108,6 +108,11 @@
 
 #include <linux/kmod.h>
 #include <linux/nsproxy.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "tty.h"
 
 #undef TTY_DEBUG_HANGUP
@@ -3337,8 +3342,16 @@ struct tty_driver *__tty_alloc_driver(unsigned int lines, struct module *owner,
 	if (!(flags & TTY_DRIVER_DEVPTS_MEM)) {
 		driver->ttys = kcalloc(lines, sizeof(*driver->ttys),
 				GFP_KERNEL);
+		{
+			typeof((*driver->ttys)) __uncontained_tmp303;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp303;
+		}
 		driver->termios = kcalloc(lines, sizeof(*driver->termios),
 				GFP_KERNEL);
+		{
+			typeof((*driver->termios)) __uncontained_tmp304;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp304;
+		}
 		if (!driver->ttys || !driver->termios) {
 			err = -ENOMEM;
 			goto err_free_all;
@@ -3348,6 +3361,10 @@ struct tty_driver *__tty_alloc_driver(unsigned int lines, struct module *owner,
 	if (!(flags & TTY_DRIVER_DYNAMIC_ALLOC)) {
 		driver->ports = kcalloc(lines, sizeof(*driver->ports),
 				GFP_KERNEL);
+		{
+			typeof((*driver->ports)) __uncontained_tmp305;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp305;
+		}
 		if (!driver->ports) {
 			err = -ENOMEM;
 			goto err_free_all;
@@ -3356,6 +3373,10 @@ struct tty_driver *__tty_alloc_driver(unsigned int lines, struct module *owner,
 	}
 
 	driver->cdevs = kcalloc(cdevs, sizeof(*driver->cdevs), GFP_KERNEL);
+	{
+		typeof((*driver->cdevs)) __uncontained_tmp306;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp306;
+	}
 	if (!driver->cdevs) {
 		err = -ENOMEM;
 		goto err_free_all;

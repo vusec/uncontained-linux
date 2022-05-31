@@ -12,6 +12,11 @@
 #include <linux/vmalloc.h>
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "e1000.h"
 
 enum { NETDEV_STATS, E1000_STATS };
@@ -1188,6 +1193,10 @@ static int e1000_setup_desc_rings(struct e1000_adapter *adapter)
 
 	tx_ring->buffer_info = kcalloc(tx_ring->count,
 				       sizeof(struct e1000_buffer), GFP_KERNEL);
+	{
+		struct e1000_buffer __uncontained_tmp151;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp151;
+	}
 	if (!tx_ring->buffer_info) {
 		ret_val = 1;
 		goto err_nomem;
@@ -1249,6 +1258,10 @@ static int e1000_setup_desc_rings(struct e1000_adapter *adapter)
 
 	rx_ring->buffer_info = kcalloc(rx_ring->count,
 				       sizeof(struct e1000_buffer), GFP_KERNEL);
+	{
+		struct e1000_buffer __uncontained_tmp152;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp152;
+	}
 	if (!rx_ring->buffer_info) {
 		ret_val = 5;
 		goto err_nomem;

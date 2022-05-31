@@ -15,6 +15,11 @@
 #include <linux/regmap.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 struct regmap_irq_chip_data {
@@ -671,6 +676,10 @@ int regmap_add_irq_chip_fwnode(struct fwnode_handle *fwnode,
 		d->main_status_buf = kcalloc(chip->num_main_regs,
 					     sizeof(unsigned int),
 					     GFP_KERNEL);
+		{
+			unsigned int __uncontained_tmp28;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp28;
+		}
 
 		if (!d->main_status_buf)
 			goto err_alloc;
@@ -678,22 +687,38 @@ int regmap_add_irq_chip_fwnode(struct fwnode_handle *fwnode,
 
 	d->status_buf = kcalloc(chip->num_regs, sizeof(unsigned int),
 				GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp29;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp29;
+	}
 	if (!d->status_buf)
 		goto err_alloc;
 
 	d->mask_buf = kcalloc(chip->num_regs, sizeof(unsigned int),
 			      GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp30;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp30;
+	}
 	if (!d->mask_buf)
 		goto err_alloc;
 
 	d->mask_buf_def = kcalloc(chip->num_regs, sizeof(unsigned int),
 				  GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 	if (!d->mask_buf_def)
 		goto err_alloc;
 
 	if (chip->wake_base) {
 		d->wake_buf = kcalloc(chip->num_regs, sizeof(unsigned int),
 				      GFP_KERNEL);
+		{
+			unsigned int __uncontained_tmp32;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp32;
+		}
 		if (!d->wake_buf)
 			goto err_alloc;
 	}
@@ -702,11 +727,19 @@ int regmap_add_irq_chip_fwnode(struct fwnode_handle *fwnode,
 	if (num_type_reg) {
 		d->type_buf_def = kcalloc(num_type_reg,
 					  sizeof(unsigned int), GFP_KERNEL);
+		{
+			unsigned int __uncontained_tmp33;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+		}
 		if (!d->type_buf_def)
 			goto err_alloc;
 
 		d->type_buf = kcalloc(num_type_reg, sizeof(unsigned int),
 				      GFP_KERNEL);
+		{
+			unsigned int __uncontained_tmp34;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp34;
+		}
 		if (!d->type_buf)
 			goto err_alloc;
 	}
@@ -717,6 +750,10 @@ int regmap_add_irq_chip_fwnode(struct fwnode_handle *fwnode,
 		 */
 		d->virt_buf = kcalloc(chip->num_virt_regs, sizeof(*d->virt_buf),
 				      GFP_KERNEL);
+		{
+			typeof((*d->virt_buf)) __uncontained_tmp36;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp36;
+		}
 		if (!d->virt_buf)
 			goto err_alloc;
 
@@ -724,6 +761,10 @@ int regmap_add_irq_chip_fwnode(struct fwnode_handle *fwnode,
 			d->virt_buf[i] = kcalloc(chip->num_regs,
 						 sizeof(unsigned int),
 						 GFP_KERNEL);
+			{
+				unsigned int __uncontained_tmp35;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+			}
 			if (!d->virt_buf[i])
 				goto err_alloc;
 		}

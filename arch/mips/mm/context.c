@@ -4,6 +4,11 @@
 #include <linux/percpu.h>
 #include <linux/spinlock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static DEFINE_RAW_SPINLOCK(cpu_mmid_lock);
 
 static atomic64_t mmid_version;
@@ -279,6 +284,10 @@ static int mmid_init(void)
 	atomic64_set(&mmid_version, asid_first_version(0));
 	mmid_map = kcalloc(BITS_TO_LONGS(num_mmids), sizeof(*mmid_map),
 			   GFP_KERNEL);
+	{
+		typeof((*mmid_map)) __uncontained_tmp8;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp8;
+	}
 	if (!mmid_map)
 		panic("Failed to allocate bitmap for %u MMIDs\n", num_mmids);
 

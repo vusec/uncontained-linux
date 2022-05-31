@@ -8,6 +8,11 @@
 
 #include "dell-wmi-sysman.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 enum po_properties {IS_PASS_SET = 1, MIN_PASS_LEN, MAX_PASS_LEN};
 
 get_instance_id(po);
@@ -143,6 +148,10 @@ int alloc_po_data(void)
 
 	wmi_priv.po_instances_count = get_instance_count(DELL_WMI_BIOS_PASSOBJ_ATTRIBUTE_GUID);
 	wmi_priv.po_data = kcalloc(wmi_priv.po_instances_count, sizeof(struct po_data), GFP_KERNEL);
+	{
+		struct po_data __uncontained_tmp197;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp197;
+	}
 	if (!wmi_priv.po_data) {
 		wmi_priv.po_instances_count = 0;
 		ret = -ENOMEM;

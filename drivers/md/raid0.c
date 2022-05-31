@@ -16,6 +16,11 @@
 #include <linux/slab.h>
 #include <trace/events/block.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -164,6 +169,10 @@ static int create_strip_zones(struct mddev *mddev, struct r0conf **private_conf)
 	conf->strip_zone = kcalloc(conf->nr_strip_zones,
 				   sizeof(struct strip_zone),
 				   GFP_KERNEL);
+	{
+		struct strip_zone __uncontained_tmp120;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (!conf->strip_zone)
 		goto abort;
 	conf->devlist = kzalloc(array3_size(sizeof(struct md_rdev *),

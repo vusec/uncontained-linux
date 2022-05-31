@@ -18,6 +18,11 @@
 #include <linux/exportfs.h>
 #include <linux/sunrpc/svc_xprt.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "nfsd.h"
 #include "nfsfh.h"
 #include "netns.h"
@@ -466,6 +471,10 @@ fsloc_parse(char **mesg, char *buf, struct nfsd4_fs_locations *fsloc)
 	fsloc->locations = kcalloc(fsloc->locations_count,
 				   sizeof(struct nfsd4_fs_location),
 				   GFP_KERNEL);
+	{
+		struct nfsd4_fs_location __uncontained_tmp316;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp316;
+	}
 	if (!fsloc->locations)
 		return -ENOMEM;
 	for (i=0; i < fsloc->locations_count; i++) {

@@ -10,6 +10,11 @@
 #include <linux/regmap.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "pll.h"
 
 #define CLK_PLL_1M	1000000
@@ -105,6 +110,10 @@ static unsigned long _sprd_pll_recalc_rate(const struct sprd_pll *pll,
 	u16 k1, k2;
 
 	cfg = kcalloc(regs_num, sizeof(*cfg), GFP_KERNEL);
+	{
+		typeof((*cfg)) __uncontained_tmp42;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp42;
+	}
 	if (!cfg)
 		return parent_rate;
 
@@ -156,6 +165,10 @@ static int _sprd_pll_set_rate(const struct sprd_pll *pll,
 	u64 tmp, refin, fvco = rate;
 
 	cfg = kcalloc(regs_num, sizeof(*cfg), GFP_KERNEL);
+	{
+		typeof((*cfg)) __uncontained_tmp43;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp43;
+	}
 	if (!cfg)
 		return -ENOMEM;
 

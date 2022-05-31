@@ -7,6 +7,11 @@
 
 #include "motu.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define	READY_TIMEOUT_MS	200
 
 #define ISOC_COMM_CONTROL_OFFSET		0x0b00
@@ -188,6 +193,10 @@ int snd_motu_stream_reserve_duplex(struct snd_motu *motu, unsigned int rate,
 		motu->cache.size = motu->tx_stream.syt_interval * frames_per_buffer;
 		motu->cache.event_offsets = kcalloc(motu->cache.size, sizeof(*motu->cache.event_offsets),
 						  GFP_KERNEL);
+		{
+			typeof((*motu->cache.event_offsets)) __uncontained_tmp348;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp348;
+		}
 		if (!motu->cache.event_offsets) {
 			fw_iso_resources_free(&motu->tx_resources);
 			fw_iso_resources_free(&motu->rx_resources);

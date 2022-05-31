@@ -21,6 +21,11 @@
 #include <net/nexthop.h>
 #include <net/arp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rocker.h"
 #include "rocker_tlv.h"
 
@@ -1174,6 +1179,10 @@ static int ofdpa_group_l2_fan_out(struct ofdpa_port *ofdpa_port,
 	entry->group_count = group_count;
 
 	entry->group_ids = kcalloc(group_count, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp218;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp218;
+	}
 	if (!entry->group_ids) {
 		kfree(entry);
 		return -ENOMEM;
@@ -1453,6 +1462,10 @@ static int ofdpa_port_vlan_flood_group(struct ofdpa_port *ofdpa_port,
 	int i;
 
 	group_ids = kcalloc(port_count, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp219;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp219;
+	}
 	if (!group_ids)
 		return -ENOMEM;
 

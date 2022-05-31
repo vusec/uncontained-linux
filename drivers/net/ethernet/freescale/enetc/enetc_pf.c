@@ -9,6 +9,11 @@
 #include <linux/of_mdio.h>
 #include <linux/of_net.h>
 #include <linux/pcs-lynx.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "enetc_ierb.h"
 #include "enetc_pf.h"
 
@@ -672,6 +677,10 @@ static int enetc_sriov_configure(struct pci_dev *pdev, int num_vfs)
 
 		pf->vf_state = kcalloc(num_vfs, sizeof(struct enetc_vf_state),
 				       GFP_KERNEL);
+		{
+			struct enetc_vf_state __uncontained_tmp81;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+		}
 		if (!pf->vf_state) {
 			pf->num_vfs = 0;
 			return -ENOMEM;
@@ -1142,6 +1151,10 @@ static int enetc_init_port_rss_memory(struct enetc_si *si)
 		return 0;
 
 	rss_table = kcalloc(num_rss, sizeof(*rss_table), GFP_KERNEL);
+	{
+		typeof((*rss_table)) __uncontained_tmp82;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!rss_table)
 		return -ENOMEM;
 

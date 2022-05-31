@@ -17,6 +17,11 @@
 #include <linux/uuid.h>
 #include <linux/workqueue.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -369,6 +374,10 @@ static int tb_xdp_properties_request(struct tb_ctl *ctl, u64 route,
 			}
 
 			data = kcalloc(data_len, sizeof(u32), GFP_KERNEL);
+			{
+				u32 __uncontained_tmp276;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp276;
+			}
 			if (!data) {
 				ret = -ENOMEM;
 				goto err;
@@ -557,6 +566,10 @@ static void update_property_block(struct tb_xdomain *xd)
 
 		block_len = ret;
 		block = kcalloc(block_len, sizeof(*block), GFP_KERNEL);
+		{
+			typeof((*block)) __uncontained_tmp277;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp277;
+		}
 		if (!block) {
 			tb_property_free_dir(dir);
 			goto out_unlock;

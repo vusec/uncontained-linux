@@ -8,6 +8,11 @@
 #include <linux/of.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "clk.h"
 
 #define CCM_CCDR			0x4
@@ -173,6 +178,10 @@ void imx_register_uart_clocks(unsigned int clk_count)
 		int i;
 
 		imx_uart_clocks = kcalloc(clk_count, sizeof(struct clk *), GFP_KERNEL);
+		{
+			struct clk *__uncontained_tmp41;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp41;
+		}
 
 		if (!of_stdout)
 			return;

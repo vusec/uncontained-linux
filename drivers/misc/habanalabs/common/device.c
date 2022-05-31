@@ -13,6 +13,11 @@
 #include <linux/pci.h>
 #include <linux/hwmon.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 enum hl_device_status hl_device_status(struct hl_device *hdev)
 {
 	enum hl_device_status status;
@@ -387,6 +392,10 @@ static int device_early_init(struct hl_device *hdev)
 		hdev->cq_wq = kcalloc(hdev->asic_prop.completion_queues_count,
 				sizeof(*hdev->cq_wq),
 				GFP_KERNEL);
+		{
+			typeof((*hdev->cq_wq)) __uncontained_tmp119;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+		}
 		if (!hdev->cq_wq) {
 			rc = -ENOMEM;
 			goto asid_fini;
@@ -1367,6 +1376,10 @@ int hl_device_init(struct hl_device *hdev, struct class *hclass)
 		hdev->user_interrupt = kcalloc(user_interrupt_cnt,
 				sizeof(*hdev->user_interrupt),
 				GFP_KERNEL);
+		{
+			typeof((*hdev->user_interrupt)) __uncontained_tmp120;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+		}
 
 		if (!hdev->user_interrupt) {
 			rc = -ENOMEM;
@@ -1408,6 +1421,10 @@ int hl_device_init(struct hl_device *hdev, struct class *hclass)
 		hdev->completion_queue = kcalloc(cq_cnt,
 				sizeof(*hdev->completion_queue),
 				GFP_KERNEL);
+		{
+			typeof((*hdev->completion_queue)) __uncontained_tmp121;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+		}
 
 		if (!hdev->completion_queue) {
 			dev_err(hdev->dev,

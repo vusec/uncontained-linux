@@ -48,6 +48,11 @@
 #include "qedr.h"
 #include "verbs.h"
 #include <rdma/qedr-abi.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qedr_roce_cm.h"
 
 void qedr_inc_sw_gsi_cons(struct qedr_qp_hwq_info *info)
@@ -341,10 +346,18 @@ int qedr_create_gsi_qp(struct qedr_dev *dev, struct ib_qp_init_attr *attrs,
 
 	qp->rqe_wr_id = kcalloc(qp->rq.max_wr, sizeof(*qp->rqe_wr_id),
 				GFP_KERNEL);
+	{
+		typeof((*qp->rqe_wr_id)) __uncontained_tmp109;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp109;
+	}
 	if (!qp->rqe_wr_id)
 		goto err;
 	qp->wqe_wr_id = kcalloc(qp->sq.max_wr, sizeof(*qp->wqe_wr_id),
 				GFP_KERNEL);
+	{
+		typeof((*qp->wqe_wr_id)) __uncontained_tmp110;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (!qp->wqe_wr_id)
 		goto err;
 

@@ -14,6 +14,11 @@
 #include <linux/err.h>
 #include <linux/spinlock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk.h"
 
 #define div_mask(width)	((1 << (width)) - 1)
@@ -118,6 +123,10 @@ struct clk *hi6220_register_clkdiv(struct device *dev, const char *name,
 	min_div = 1;
 
 	table = kcalloc(max_div + 1, sizeof(*table), GFP_KERNEL);
+	{
+		typeof((*table)) __uncontained_tmp40;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!table) {
 		kfree(div);
 		return ERR_PTR(-ENOMEM);

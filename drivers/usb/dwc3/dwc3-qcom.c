@@ -21,6 +21,11 @@
 #include <linux/reset.h>
 #include <linux/iopoll.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 
 /* USB QSCRATCH Hardware registers */
@@ -598,6 +603,10 @@ static int dwc3_qcom_acpi_register_core(struct platform_device *pdev)
 	qcom->dwc3->dev.coherent_dma_mask = dev->coherent_dma_mask;
 
 	child_res = kcalloc(2, sizeof(*child_res), GFP_KERNEL);
+	{
+		typeof((*child_res)) __uncontained_tmp245;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp245;
+	}
 	if (!child_res) {
 		platform_device_put(qcom->dwc3);
 		return -ENOMEM;

@@ -28,6 +28,11 @@
 #include <linux/hugetlb.h>
 #include <asm/kvm_ppc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "e500.h"
 #include "trace_booke.h"
 #include "timing.h"
@@ -793,12 +798,20 @@ int kvm_vcpu_ioctl_config_tlb(struct kvm_vcpu *vcpu,
 	}
 
 	privs[0] = kcalloc(params.tlb_sizes[0], sizeof(*privs[0]), GFP_KERNEL);
+	{
+		typeof((*privs[0])) __uncontained_tmp7;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (!privs[0]) {
 		ret = -ENOMEM;
 		goto put_pages;
 	}
 
 	privs[1] = kcalloc(params.tlb_sizes[1], sizeof(*privs[1]), GFP_KERNEL);
+	{
+		typeof((*privs[1])) __uncontained_tmp8;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp8;
+	}
 	if (!privs[1]) {
 		ret = -ENOMEM;
 		goto free_privs_first;
@@ -807,6 +820,10 @@ int kvm_vcpu_ioctl_config_tlb(struct kvm_vcpu *vcpu,
 	g2h_bitmap = kcalloc(params.tlb_sizes[1],
 			     sizeof(*g2h_bitmap),
 			     GFP_KERNEL);
+	{
+		typeof((*g2h_bitmap)) __uncontained_tmp9;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp9;
+	}
 	if (!g2h_bitmap) {
 		ret = -ENOMEM;
 		goto free_privs_second;
@@ -925,18 +942,30 @@ int kvmppc_e500_tlb_init(struct kvmppc_vcpu_e500 *vcpu_e500)
 	vcpu_e500->gtlb_priv[0] = kcalloc(vcpu_e500->gtlb_params[0].entries,
 					  sizeof(struct tlbe_ref),
 					  GFP_KERNEL);
+	{
+		struct tlbe_ref __uncontained_tmp5;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp5;
+	}
 	if (!vcpu_e500->gtlb_priv[0])
 		goto free_vcpu;
 
 	vcpu_e500->gtlb_priv[1] = kcalloc(vcpu_e500->gtlb_params[1].entries,
 					  sizeof(struct tlbe_ref),
 					  GFP_KERNEL);
+	{
+		struct tlbe_ref __uncontained_tmp6;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!vcpu_e500->gtlb_priv[1])
 		goto free_vcpu;
 
 	vcpu_e500->g2h_tlb1_map = kcalloc(vcpu_e500->gtlb_params[1].entries,
 					  sizeof(*vcpu_e500->g2h_tlb1_map),
 					  GFP_KERNEL);
+	{
+		typeof((*vcpu_e500->g2h_tlb1_map)) __uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!vcpu_e500->g2h_tlb1_map)
 		goto free_vcpu;
 

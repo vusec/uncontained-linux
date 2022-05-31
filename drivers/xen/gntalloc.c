@@ -70,6 +70,11 @@
 #include <xen/gntalloc.h>
 #include <xen/events.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int limit = 1024;
 module_param(limit, int, 0644);
 MODULE_PARM_DESC(limit, "Maximum number of grants that may be allocated by "
@@ -284,6 +289,10 @@ static long gntalloc_ioctl_alloc(struct gntalloc_file_private_data *priv,
 	}
 
 	gref_ids = kcalloc(op.count, sizeof(gref_ids[0]), GFP_KERNEL);
+	{
+		typeof((gref_ids[0])) __uncontained_tmp269;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp269;
+	}
 	if (!gref_ids) {
 		rc = -ENOMEM;
 		goto out;

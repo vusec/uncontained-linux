@@ -45,6 +45,11 @@
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_tcq.h>
 #include <scsi/scsi_dbg.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "megaraid_sas_fusion.h"
 #include "megaraid_sas.h"
 
@@ -4460,6 +4465,10 @@ int megasas_alloc_cmds(struct megasas_instance *instance)
 	 * commands.
 	 */
 	instance->cmd_list = kcalloc(max_cmd, sizeof(struct megasas_cmd*), GFP_KERNEL);
+	{
+		struct megasas_cmd *__uncontained_tmp269;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp269;
+	}
 
 	if (!instance->cmd_list) {
 		dev_printk(KERN_DEBUG, &instance->pdev->dev, "out of memory\n");
@@ -6370,6 +6379,10 @@ static int megasas_init_fw(struct megasas_instance *instance)
 			kcalloc(MAX_LOGICAL_DRIVES_EXT,
 				sizeof(struct LD_STREAM_DETECT *),
 				GFP_KERNEL);
+		{
+			struct LD_STREAM_DETECT *__uncontained_tmp270;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp270;
+		}
 		if (!fusion->stream_detect_by_ld) {
 			dev_err(&instance->pdev->dev,
 				"unable to allocate stream detection for pool of LDs\n");
@@ -7139,6 +7152,10 @@ static int megasas_alloc_ctrl_mem(struct megasas_instance *instance)
 {
 	instance->reply_map = kcalloc(nr_cpu_ids, sizeof(unsigned int),
 				      GFP_KERNEL);
+	{
+		unsigned int __uncontained_tmp271;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp271;
+	}
 	if (!instance->reply_map)
 		return -ENOMEM;
 

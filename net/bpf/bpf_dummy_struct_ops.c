@@ -7,6 +7,11 @@
 #include <linux/bpf.h>
 #include <linux/btf.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 extern struct bpf_struct_ops bpf_bpf_dummy_ops;
 
 /* A common type for test_N with return value in bpf_dummy_ops */
@@ -93,6 +98,10 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
 		return PTR_ERR(args);
 
 	tprogs = kcalloc(BPF_TRAMP_MAX, sizeof(*tprogs), GFP_KERNEL);
+	{
+		typeof((*tprogs)) __uncontained_tmp319;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp319;
+	}
 	if (!tprogs) {
 		err = -ENOMEM;
 		goto out;

@@ -40,6 +40,11 @@
 #include <linux/isdn/capiutil.h>
 #include <linux/isdn/capicmd.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "kcapi.h"
 
 MODULE_DESCRIPTION("CAPI4Linux: kernel CAPI layer and /dev/capi20 interface");
@@ -1266,6 +1271,10 @@ static int __init capinc_tty_init(void)
 
 	capiminors = kcalloc(capi_ttyminors, sizeof(struct capiminor *),
 			     GFP_KERNEL);
+	{
+		struct capiminor *__uncontained_tmp116;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (!capiminors)
 		return -ENOMEM;
 

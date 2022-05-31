@@ -36,6 +36,11 @@
 #include <asm/pci_clp.h>
 #include <asm/pci_dma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "pci_bus.h"
 #include "pci_iov.h"
 
@@ -1055,11 +1060,19 @@ static int zpci_mem_init(void)
 
 	zpci_iomap_start = kcalloc(ZPCI_IOMAP_ENTRIES,
 				   sizeof(*zpci_iomap_start), GFP_KERNEL);
+	{
+		typeof((*zpci_iomap_start)) __uncontained_tmp20;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp20;
+	}
 	if (!zpci_iomap_start)
 		goto error_iomap;
 
 	zpci_iomap_bitmap = kcalloc(BITS_TO_LONGS(ZPCI_IOMAP_ENTRIES),
 				    sizeof(*zpci_iomap_bitmap), GFP_KERNEL);
+	{
+		typeof((*zpci_iomap_bitmap)) __uncontained_tmp21;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp21;
+	}
 	if (!zpci_iomap_bitmap)
 		goto error_iomap_bitmap;
 

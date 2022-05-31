@@ -19,6 +19,11 @@
 #include <linux/if_vlan.h>
 
 #include <bcm63xx_dev_enet.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "bcm63xx_enet.h"
 
 static char bcm_enet_driver_name[] = "bcm63xx_enet";
@@ -983,6 +988,10 @@ static int bcm_enet_open(struct net_device *dev)
 
 	priv->tx_skb = kcalloc(priv->tx_ring_size, sizeof(struct sk_buff *),
 			       GFP_KERNEL);
+	{
+		struct sk_buff *__uncontained_tmp145;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp145;
+	}
 	if (!priv->tx_skb) {
 		ret = -ENOMEM;
 		goto out_free_tx_ring;
@@ -996,6 +1005,10 @@ static int bcm_enet_open(struct net_device *dev)
 	/* init & fill rx ring with buffers */
 	priv->rx_buf = kcalloc(priv->rx_ring_size, sizeof(void *),
 			       GFP_KERNEL);
+	{
+		void *__uncontained_tmp146;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp146;
+	}
 	if (!priv->rx_buf) {
 		ret = -ENOMEM;
 		goto out_free_tx_skb;
@@ -2153,6 +2166,10 @@ static int bcm_enetsw_open(struct net_device *dev)
 
 	priv->tx_skb = kcalloc(priv->tx_ring_size, sizeof(struct sk_buff *),
 			       GFP_KERNEL);
+	{
+		struct sk_buff *__uncontained_tmp147;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp147;
+	}
 	if (!priv->tx_skb) {
 		dev_err(kdev, "cannot allocate tx skb queue\n");
 		ret = -ENOMEM;
@@ -2167,6 +2184,10 @@ static int bcm_enetsw_open(struct net_device *dev)
 	/* init & fill rx ring with buffers */
 	priv->rx_buf = kcalloc(priv->rx_ring_size, sizeof(void *),
 			       GFP_KERNEL);
+	{
+		void *__uncontained_tmp148;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (!priv->rx_buf) {
 		dev_err(kdev, "cannot allocate rx buffer queue\n");
 		ret = -ENOMEM;

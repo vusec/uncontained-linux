@@ -17,6 +17,11 @@
 #include <linux/export.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "opp.h"
 
 #ifdef CONFIG_CPU_FREQ
@@ -53,6 +58,10 @@ int dev_pm_opp_init_cpufreq_table(struct device *dev,
 		return max_opps ? max_opps : -ENODATA;
 
 	freq_table = kcalloc((max_opps + 1), sizeof(*freq_table), GFP_KERNEL);
+	{
+		typeof((*freq_table)) __uncontained_tmp160;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp160;
+	}
 	if (!freq_table)
 		return -ENOMEM;
 

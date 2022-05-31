@@ -25,6 +25,11 @@
 #include <linux/refcount.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../virt-dma.h"
 
 #define MTK_CQDMA_USEC_POLL		10
@@ -505,6 +510,10 @@ mtk_cqdma_prep_dma_memcpy(struct dma_chan *c, dma_addr_t dest,
 	 */
 	nr_vd = DIV_ROUND_UP(len, MTK_CQDMA_MAX_LEN);
 	cvd = kcalloc(nr_vd, sizeof(*cvd), GFP_NOWAIT);
+	{
+		typeof((*cvd)) __uncontained_tmp44;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!cvd)
 		return NULL;
 

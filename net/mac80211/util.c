@@ -25,6 +25,11 @@
 #include <net/cfg80211.h>
 #include <net/rtnetlink.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ieee80211_i.h"
 #include "driver-ops.h"
 #include "rate.h"
@@ -2281,6 +2286,10 @@ static int ieee80211_reconfig_nan(struct ieee80211_sub_if_data *sdata)
 	funcs = kcalloc(sdata->local->hw.max_nan_de_entries + 1,
 			sizeof(*funcs),
 			GFP_KERNEL);
+	{
+		typeof((*funcs)) __uncontained_tmp272;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp272;
+	}
 	if (!funcs)
 		return -ENOMEM;
 

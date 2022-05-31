@@ -30,6 +30,11 @@
 #include <linux/uaccess.h>
 #include <asm/ioctls.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 /*
@@ -806,6 +811,10 @@ struct pipe_inode_info *alloc_pipe_info(void)
 
 	pipe->bufs = kcalloc(pipe_bufs, sizeof(struct pipe_buffer),
 			     GFP_KERNEL_ACCOUNT);
+	{
+		struct pipe_buffer __uncontained_tmp320;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp320;
+	}
 
 	if (pipe->bufs) {
 		init_waitqueue_head(&pipe->rd_wait);
@@ -1266,6 +1275,10 @@ int pipe_resize_ring(struct pipe_inode_info *pipe, unsigned int nr_slots)
 
 	bufs = kcalloc(nr_slots, sizeof(*bufs),
 		       GFP_KERNEL_ACCOUNT | __GFP_NOWARN);
+	{
+		typeof((*bufs)) __uncontained_tmp321;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp321;
+	}
 	if (unlikely(!bufs))
 		return -ENOMEM;
 

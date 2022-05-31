@@ -21,6 +21,11 @@
 #include <linux/of_platform.h>
 #include <linux/platform_device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 const struct of_device_id of_default_bus_match_table[] = {
 	{ .compatible = "simple-bus", },
 	{ .compatible = "simple-mfd", },
@@ -129,6 +134,10 @@ struct platform_device *of_device_alloc(struct device_node *np,
 	/* Populate the resource table */
 	if (num_irq || num_reg) {
 		res = kcalloc(num_irq + num_reg, sizeof(*res), GFP_KERNEL);
+		{
+			typeof((*res)) __uncontained_tmp200;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp200;
+		}
 		if (!res) {
 			platform_device_put(dev);
 			return NULL;

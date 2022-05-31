@@ -37,6 +37,11 @@
 
 #include <dt-bindings/pinctrl/rockchip.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "pinconf.h"
 #include "pinctrl-rockchip.h"
@@ -306,6 +311,10 @@ static int rockchip_dt_node_to_map(struct pinctrl_dev *pctldev,
 	map_num += grp->npins;
 
 	new_map = kcalloc(map_num, sizeof(*new_map), GFP_KERNEL);
+	{
+		typeof((*new_map)) __uncontained_tmp238;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp238;
+	}
 	if (!new_map)
 		return -ENOMEM;
 

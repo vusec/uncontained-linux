@@ -6,6 +6,11 @@
 #include <linux/etherdevice.h>
 #include <linux/pci.h>
 #include <linux/module.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "net_driver.h"
 #include "ef10_sriov.h"
 #include "efx.h"
@@ -191,6 +196,10 @@ static int efx_ef10_sriov_alloc_vf_vswitching(struct efx_nic *efx)
 
 	nic_data->vf = kcalloc(efx->vf_count, sizeof(struct ef10_vf),
 			       GFP_KERNEL);
+	{
+		struct ef10_vf __uncontained_tmp178;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp178;
+	}
 	if (!nic_data->vf)
 		return -ENOMEM;
 

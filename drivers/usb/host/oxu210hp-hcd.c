@@ -32,6 +32,11 @@
 #include <linux/irq.h>
 #include <linux/platform_device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRIVER_VERSION "0.0.50"
 
 #define OXU_DEVICEID			0x00
@@ -1174,6 +1179,10 @@ static int ehci_mem_init(struct oxu_hcd *oxu, gfp_t flags)
 		oxu->qtd_used[i] = 0;
 
 	oxu->murb_pool = kcalloc(MURB_NUM, sizeof(struct oxu_murb), flags);
+	{
+		struct oxu_murb __uncontained_tmp279;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp279;
+	}
 	if (!oxu->murb_pool)
 		goto fail;
 
@@ -1192,6 +1201,10 @@ static int ehci_mem_init(struct oxu_hcd *oxu, gfp_t flags)
 
 	/* software shadow of hardware table */
 	oxu->pshadow = kcalloc(oxu->periodic_size, sizeof(void *), flags);
+	{
+		void *__uncontained_tmp280;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp280;
+	}
 	if (oxu->pshadow != NULL)
 		return 0;
 

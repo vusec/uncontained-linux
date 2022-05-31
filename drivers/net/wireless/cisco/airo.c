@@ -92,6 +92,11 @@ static struct pci_driver airo_driver = {
 
 /* Include Wireless Extension definition and check version - Jean II */
 #include <linux/wireless.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #define WIRELESS_SPY		/* enable iwspy support */
 
 #define CISCO_EXT		/* enable Cisco extensions */
@@ -2732,6 +2737,10 @@ static int airo_networks_allocate(struct airo_info *ai)
 
 	ai->networks = kcalloc(AIRO_MAX_NETWORK_COUNT, sizeof(BSSListElement),
 			       GFP_KERNEL);
+	{
+		BSSListElement __uncontained_tmp220;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp220;
+	}
 	if (!ai->networks) {
 		airo_print_warn("", "Out of memory allocating beacons");
 		return -ENOMEM;

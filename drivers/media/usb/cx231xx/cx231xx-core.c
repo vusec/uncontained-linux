@@ -17,6 +17,11 @@
 #include <media/v4l2-common.h>
 #include <media/tuner.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cx231xx-reg.h"
 
 /* #define ENABLE_DEBUG_ISOC_FRAMES */
@@ -1021,6 +1026,10 @@ int cx231xx_init_isoc(struct cx231xx *dev, int max_packets,
 
 	dev->video_mode.isoc_ctl.urb =
 	    kcalloc(num_bufs, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp131;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp131;
+	}
 	if (!dev->video_mode.isoc_ctl.urb) {
 		dev_err(dev->dev,
 			"cannot alloc memory for usb buffers\n");
@@ -1029,6 +1038,10 @@ int cx231xx_init_isoc(struct cx231xx *dev, int max_packets,
 
 	dev->video_mode.isoc_ctl.transfer_buffer =
 	    kcalloc(num_bufs, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp132;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp132;
+	}
 	if (!dev->video_mode.isoc_ctl.transfer_buffer) {
 		dev_err(dev->dev,
 			"cannot allocate memory for usbtransfer\n");
@@ -1155,6 +1168,10 @@ int cx231xx_init_bulk(struct cx231xx *dev, int max_packets,
 
 	dev->video_mode.bulk_ctl.urb =
 	    kcalloc(num_bufs, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp133;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+	}
 	if (!dev->video_mode.bulk_ctl.urb) {
 		dev_err(dev->dev,
 			"cannot alloc memory for usb buffers\n");
@@ -1163,6 +1180,10 @@ int cx231xx_init_bulk(struct cx231xx *dev, int max_packets,
 
 	dev->video_mode.bulk_ctl.transfer_buffer =
 	    kcalloc(num_bufs, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp134;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp134;
+	}
 	if (!dev->video_mode.bulk_ctl.transfer_buffer) {
 		dev_err(dev->dev,
 			"cannot allocate memory for usbtransfer\n");

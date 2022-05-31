@@ -32,6 +32,11 @@
 #include <linux/ethtool_netlink.h>
 #include <generated/utsrelease.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -803,6 +808,10 @@ static noinline_for_stack int ethtool_get_sset_info(struct net_device *dev,
 	info.cmd = ETHTOOL_GSSET_INFO;
 
 	info_buf = kcalloc(n_bits, sizeof(u32), GFP_USER);
+	{
+		u32 __uncontained_tmp314;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp314;
+	}
 	if (!info_buf)
 		return -ENOMEM;
 
@@ -1024,9 +1033,14 @@ static noinline_for_stack int ethtool_get_rxnfc(struct net_device *dev,
 
 	if (info.cmd == ETHTOOL_GRXCLSRLALL) {
 		if (info.rule_cnt > 0) {
-			if (info.rule_cnt <= KMALLOC_MAX_SIZE / sizeof(u32))
+			if (info.rule_cnt <= KMALLOC_MAX_SIZE / sizeof(u32)) {
 				rule_buf = kcalloc(info.rule_cnt, sizeof(u32),
 						   GFP_USER);
+				{
+					u32 __uncontained_tmp315;
+					__uncontained_kcalloc = (unsigned long)&__uncontained_tmp315;
+				}
+			}
 			if (!rule_buf)
 				return -ENOMEM;
 		}
@@ -1101,6 +1115,10 @@ static noinline_for_stack int ethtool_get_rxfh_indir(struct net_device *dev,
 		return user_size == 0 ? 0 : -EINVAL;
 
 	indir = kcalloc(dev_size, sizeof(indir[0]), GFP_USER);
+	{
+		typeof((indir[0])) __uncontained_tmp317;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp317;
+	}
 	if (!indir)
 		return -ENOMEM;
 
@@ -1145,6 +1163,10 @@ static noinline_for_stack int ethtool_set_rxfh_indir(struct net_device *dev,
 		return -EINVAL;
 
 	indir = kcalloc(dev_size, sizeof(indir[0]), GFP_USER);
+	{
+		typeof((indir[0])) __uncontained_tmp318;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp318;
+	}
 	if (!indir)
 		return -ENOMEM;
 
@@ -1915,6 +1937,10 @@ static int ethtool_self_test(struct net_device *dev, char __user *useraddr)
 
 	test.len = test_len;
 	data = kcalloc(test_len, sizeof(u64), GFP_USER);
+	{
+		u64 __uncontained_tmp316;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp316;
+	}
 	if (!data)
 		return -ENOMEM;
 

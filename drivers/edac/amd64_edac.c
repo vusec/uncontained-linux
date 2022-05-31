@@ -2,6 +2,11 @@
 #include "amd64_edac.h"
 #include <asm/amd_nb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static struct edac_pci_ctl_info *pci_ctl;
 
 /*
@@ -4097,6 +4102,10 @@ static int hw_info_get(struct amd64_pvt *pvt)
 
 	if (pvt->fam >= 0x17) {
 		pvt->umc = kcalloc(fam_type->max_mcs, sizeof(struct amd64_umc), GFP_KERNEL);
+		{
+			struct amd64_umc __uncontained_tmp49;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+		}
 		if (!pvt->umc)
 			return -ENOMEM;
 
@@ -4343,6 +4352,10 @@ static int __init amd64_edac_init(void)
 
 	err = -ENOMEM;
 	ecc_stngs = kcalloc(amd_nb_num(), sizeof(ecc_stngs[0]), GFP_KERNEL);
+	{
+		typeof((ecc_stngs[0])) __uncontained_tmp50;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!ecc_stngs)
 		goto err_free;
 

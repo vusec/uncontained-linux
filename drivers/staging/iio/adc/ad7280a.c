@@ -20,6 +20,11 @@
 #include <linux/iio/sysfs.h>
 #include <linux/iio/events.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ad7280a.h"
 
 /* Registers */
@@ -773,6 +778,10 @@ static irqreturn_t ad7280_event_handler(int irq, void *private)
 	int i, ret;
 
 	channels = kcalloc(st->scan_cnt, sizeof(*channels), GFP_KERNEL);
+	{
+		typeof((*channels)) __uncontained_tmp244;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp244;
+	}
 	if (!channels)
 		return IRQ_HANDLED;
 

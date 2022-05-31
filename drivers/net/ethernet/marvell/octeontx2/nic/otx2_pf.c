@@ -24,6 +24,11 @@
 #include "cn10k.h"
 #include <rvu_trace.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRV_NAME	"rvu_nicpf"
 #define DRV_STRING	"Marvell RVU NIC Physical Function Driver"
 
@@ -1559,6 +1564,10 @@ int otx2_open(struct net_device *netdev)
 	 */
 	pf->hw.cint_cnt = max(pf->hw.rx_queues, pf->hw.tx_queues);
 	qset->napi = kcalloc(pf->hw.cint_cnt, sizeof(*cq_poll), GFP_KERNEL);
+	{
+		typeof((*cq_poll)) __uncontained_tmp187;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp187;
+	}
 	if (!qset->napi)
 		return -ENOMEM;
 
@@ -1570,16 +1579,28 @@ int otx2_open(struct net_device *netdev)
 	err = -ENOMEM;
 	qset->cq = kcalloc(pf->qset.cq_cnt,
 			   sizeof(struct otx2_cq_queue), GFP_KERNEL);
+	{
+		struct otx2_cq_queue __uncontained_tmp184;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp184;
+	}
 	if (!qset->cq)
 		goto err_free_mem;
 
 	qset->sq = kcalloc(pf->hw.tot_tx_queues,
 			   sizeof(struct otx2_snd_queue), GFP_KERNEL);
+	{
+		struct otx2_snd_queue __uncontained_tmp185;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp185;
+	}
 	if (!qset->sq)
 		goto err_free_mem;
 
 	qset->rq = kcalloc(pf->hw.rx_queues,
 			   sizeof(struct otx2_rcv_queue), GFP_KERNEL);
+	{
+		struct otx2_rcv_queue __uncontained_tmp186;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp186;
+	}
 	if (!qset->rq)
 		goto err_free_mem;
 

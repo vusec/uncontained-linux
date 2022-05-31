@@ -23,6 +23,11 @@
 #include <linux/minmax.h>
 #include <acpi/processor.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * Include the apic definitions for x86 to have the APIC timer related defines
  * available also for UP (on SMP it gets magically included via linux/smp.h).
@@ -913,6 +918,10 @@ static int acpi_processor_evaluate_lpi(acpi_handle handle,
 	}
 
 	lpi_state = kcalloc(pkg_count, sizeof(*lpi_state), GFP_KERNEL);
+	{
+		typeof((*lpi_state)) __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!lpi_state) {
 		ret = -ENOMEM;
 		goto end;

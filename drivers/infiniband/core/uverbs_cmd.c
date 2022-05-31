@@ -43,6 +43,11 @@
 #include <rdma/uverbs_types.h>
 #include <rdma/uverbs_std_types.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2582,8 +2587,16 @@ struct ib_uflow_resources *flow_resources_alloc(size_t num_specs)
 
 	resources->counters =
 		kcalloc(num_specs, sizeof(*resources->counters), GFP_KERNEL);
+	{
+		typeof((*resources->counters)) __uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 	resources->collection =
 		kcalloc(num_specs, sizeof(*resources->collection), GFP_KERNEL);
+	{
+		typeof((*resources->collection)) __uncontained_tmp95;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+	}
 
 	if (!resources->counters || !resources->collection)
 		goto err;
@@ -3081,6 +3094,10 @@ static int ib_uverbs_ex_create_rwq_ind_table(struct uverbs_attr_bundle *attrs)
 	num_wq_handles = 1 << cmd.log_ind_tbl_size;
 	wqs_handles = kcalloc(num_wq_handles, sizeof(*wqs_handles),
 			      GFP_KERNEL);
+	{
+		typeof((*wqs_handles)) __uncontained_tmp96;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!wqs_handles)
 		return -ENOMEM;
 
@@ -3094,6 +3111,10 @@ static int ib_uverbs_ex_create_rwq_ind_table(struct uverbs_attr_bundle *attrs)
 		goto err_free;
 
 	wqs = kcalloc(num_wq_handles, sizeof(*wqs), GFP_KERNEL);
+	{
+		typeof((*wqs)) __uncontained_tmp97;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!wqs) {
 		err = -ENOMEM;
 		goto  err_free;

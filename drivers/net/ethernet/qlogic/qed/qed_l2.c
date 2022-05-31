@@ -28,6 +28,11 @@
 #include "qed_dev_api.h"
 #include <linux/qed/qed_eth_if.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -81,6 +86,10 @@ int qed_l2_alloc(struct qed_hwfn *p_hwfn)
 
 	pp_qids = kcalloc(p_l2_info->queues, sizeof(unsigned long *),
 			  GFP_KERNEL);
+	{
+		unsigned long *__uncontained_tmp199;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp199;
+	}
 	if (!pp_qids)
 		return -ENOMEM;
 	p_l2_info->pp_qid_usage = pp_qids;

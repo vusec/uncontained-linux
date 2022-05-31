@@ -29,6 +29,11 @@
 #include <linux/syscalls.h>
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2013,6 +2018,10 @@ static int amdgpu_ras_load_bad_pages(struct amdgpu_device *adev)
 		return 0;
 
 	bps = kcalloc(control->ras_num_recs, sizeof(*bps), GFP_KERNEL);
+	{
+		typeof((*bps)) __uncontained_tmp54;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!bps)
 		return -ENOMEM;
 

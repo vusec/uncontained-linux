@@ -84,6 +84,11 @@
 #include <asm/div64.h>
 #include <asm/irq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -692,6 +697,10 @@ static int init_shared_mem(struct s2io_nic *nic)
 
 		size = tx_cfg->fifo_len;
 		fifo->ufo_in_band_v = kcalloc(size, sizeof(u64), GFP_KERNEL);
+		{
+			u64 __uncontained_tmp171;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp171;
+		}
 		if (!fifo->ufo_in_band_v)
 			return -ENOMEM;
 		mem_allocated += (size * sizeof(u64));

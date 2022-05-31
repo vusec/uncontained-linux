@@ -4,6 +4,11 @@
  */
 #include "sja1105.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Since devlink regions have a fixed size and the static config has a variable
  * size, we need to calculate the maximum possible static config size by
  * creating a dummy config with all table entries populated to the max, and get
@@ -46,6 +51,10 @@ sja1105_region_static_config_snapshot(struct devlink *dl,
 	max_len = sja1105_static_config_get_max_size(priv);
 
 	*data = kcalloc(max_len, sizeof(u8), GFP_KERNEL);
+	{
+		u8 __uncontained_tmp143;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp143;
+	}
 	if (!*data)
 		return -ENOMEM;
 
@@ -84,6 +93,10 @@ static int sja1105_setup_devlink_regions(struct dsa_switch *ds)
 
 	priv->regions = kcalloc(num_regions, sizeof(struct devlink_region *),
 				GFP_KERNEL);
+	{
+		struct devlink_region *__uncontained_tmp144;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp144;
+	}
 	if (!priv->regions)
 		return -ENOMEM;
 

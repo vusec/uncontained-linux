@@ -10,6 +10,11 @@
 #include "mpi3mr.h"
 #include <linux/io-64-nonatomic-lo-hi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1712,6 +1717,10 @@ static int mpi3mr_alloc_op_reply_q_segments(struct mpi3mr_ioc *mrioc, u16 qidx)
 
 	op_reply_q->q_segments = kcalloc(op_reply_q->num_segments,
 	    sizeof(struct segments), GFP_KERNEL);
+	{
+		struct segments __uncontained_tmp235;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp235;
+	}
 	if (!op_reply_q->q_segments)
 		return -ENOMEM;
 
@@ -1770,6 +1779,10 @@ static int mpi3mr_alloc_op_req_q_segments(struct mpi3mr_ioc *mrioc, u16 qidx)
 
 	op_req_q->q_segments = kcalloc(op_req_q->num_segments,
 	    sizeof(struct segments), GFP_KERNEL);
+	{
+		struct segments __uncontained_tmp236;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp236;
+	}
 	if (!op_req_q->q_segments)
 		return -ENOMEM;
 
@@ -2055,6 +2068,10 @@ static int mpi3mr_create_op_queues(struct mpi3mr_ioc *mrioc)
 	if (!mrioc->req_qinfo) {
 		mrioc->req_qinfo = kcalloc(num_queues,
 		    sizeof(struct op_req_qinfo), GFP_KERNEL);
+		{
+			struct op_req_qinfo __uncontained_tmp237;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp237;
+		}
 		if (!mrioc->req_qinfo) {
 			retval = -1;
 			goto out_failed;

@@ -30,6 +30,11 @@
 
 #include <linux/uprobes.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define UINSNS_PER_PAGE			(PAGE_SIZE/UPROBE_XOL_SLOT_BYTES)
 #define MAX_UPROBE_XOL_SLOTS		UINSNS_PER_PAGE
 
@@ -1491,6 +1496,10 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
 
 	area->bitmap = kcalloc(BITS_TO_LONGS(UINSNS_PER_PAGE), sizeof(long),
 			       GFP_KERNEL);
+	{
+		long __uncontained_tmp250;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp250;
+	}
 	if (!area->bitmap)
 		goto free_area;
 

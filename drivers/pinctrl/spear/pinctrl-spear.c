@@ -25,6 +25,11 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "pinctrl-spear.h"
 
 #define DRIVER_NAME "spear-pinmux"
@@ -178,6 +183,10 @@ static int spear_pinctrl_dt_node_to_map(struct pinctrl_dev *pctldev,
 	}
 
 	*map = kcalloc(count, sizeof(**map), GFP_KERNEL);
+	{
+		typeof((**map)) __uncontained_tmp213;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp213;
+	}
 	if (!*map)
 		return -ENOMEM;
 

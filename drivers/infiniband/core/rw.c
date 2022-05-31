@@ -8,6 +8,11 @@
 #include <rdma/mr_pool.h>
 #include <rdma/rw.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 enum {
 	RDMA_RW_SINGLE_WR,
 	RDMA_RW_MULTI_WR,
@@ -131,6 +136,10 @@ static int rdma_rw_init_mr_wrs(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
 
 	ctx->nr_ops = DIV_ROUND_UP(sg_cnt, pages_per_mr);
 	ctx->reg = kcalloc(ctx->nr_ops, sizeof(*ctx->reg), GFP_KERNEL);
+	{
+		typeof((*ctx->reg)) __uncontained_tmp90;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (!ctx->reg) {
 		ret = -ENOMEM;
 		goto out;
@@ -207,6 +216,10 @@ static int rdma_rw_init_map_wrs(struct rdma_rw_ctx *ctx, struct ib_qp *qp,
 		goto out;
 
 	ctx->map.wrs = kcalloc(ctx->nr_ops, sizeof(*ctx->map.wrs), GFP_KERNEL);
+	{
+		typeof((*ctx->map.wrs)) __uncontained_tmp91;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (!ctx->map.wrs)
 		goto out_free_sges;
 

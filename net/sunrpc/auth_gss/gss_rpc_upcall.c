@@ -9,6 +9,11 @@
 #include <linux/un.h>
 
 #include <linux/sunrpc/svcauth.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "gss_rpc_upcall.h"
 
 #define GSSPROXY_SOCK_PATHNAME	"/var/run/gssproxy.sock"
@@ -214,6 +219,10 @@ static int gssp_alloc_receive_pages(struct gssx_arg_accept_sec_context *arg)
 
 	arg->npages = DIV_ROUND_UP(NGROUPS_MAX * 4, PAGE_SIZE);
 	arg->pages = kcalloc(arg->npages, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp249;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp249;
+	}
 	if (!arg->pages)
 		return -ENOMEM;
 	for (i = 0; i < arg->npages; i++) {

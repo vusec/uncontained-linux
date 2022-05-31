@@ -16,6 +16,11 @@
 #include <net/ipv6.h>
 #include <net/rtnetlink.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -546,6 +551,10 @@ static int hclge_mac_update_stats_complete(struct hclge_dev *hdev)
 	 * so GFP_ATOMIC is more suitalbe here
 	 */
 	desc = kcalloc(desc_num, sizeof(struct hclge_desc), GFP_ATOMIC);
+	{
+		struct hclge_desc __uncontained_tmp166;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp166;
+	}
 	if (!desc)
 		return -ENOMEM;
 
@@ -11928,6 +11937,10 @@ static int hclge_set_channels(struct hnae3_handle *handle, u32 new_tqps_num,
 	/* Reinitializes the rss indirect table according to the new RSS size */
 	rss_indir = kcalloc(ae_dev->dev_specs.rss_ind_tbl_size, sizeof(u32),
 			    GFP_KERNEL);
+	{
+		u32 __uncontained_tmp167;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp167;
+	}
 	if (!rss_indir)
 		return -ENOMEM;
 
@@ -11997,6 +12010,10 @@ static int hclge_get_32_bit_regs(struct hclge_dev *hdev, u32 regs_num,
 	cmd_num = DIV_ROUND_UP(regs_num + nodata_num,
 			       HCLGE_32_BIT_REG_RTN_DATANUM);
 	desc = kcalloc(cmd_num, sizeof(struct hclge_desc), GFP_KERNEL);
+	{
+		struct hclge_desc __uncontained_tmp168;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp168;
+	}
 	if (!desc)
 		return -ENOMEM;
 
@@ -12051,6 +12068,10 @@ static int hclge_get_64_bit_regs(struct hclge_dev *hdev, u32 regs_num,
 	cmd_num = DIV_ROUND_UP(regs_num + nodata_len,
 			       HCLGE_64_BIT_REG_RTN_DATANUM);
 	desc = kcalloc(cmd_num, sizeof(struct hclge_desc), GFP_KERNEL);
+	{
+		struct hclge_desc __uncontained_tmp169;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp169;
+	}
 	if (!desc)
 		return -ENOMEM;
 
@@ -12188,6 +12209,10 @@ static int hclge_get_dfx_reg_len(struct hclge_dev *hdev, int *len)
 	int ret;
 
 	bd_num_list = kcalloc(dfx_reg_type_num, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp170;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp170;
+	}
 	if (!bd_num_list)
 		return -ENOMEM;
 
@@ -12221,6 +12246,10 @@ static int hclge_get_dfx_reg(struct hclge_dev *hdev, void *data)
 	int ret;
 
 	bd_num_list = kcalloc(dfx_reg_type_num, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp171;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp171;
+	}
 	if (!bd_num_list)
 		return -ENOMEM;
 

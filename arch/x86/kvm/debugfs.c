@@ -6,6 +6,11 @@
  */
 #include <linux/kvm_host.h>
 #include <linux/debugfs.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "lapic.h"
 #include "mmu.h"
 #include "mmu/mmu_internal.h"
@@ -102,6 +107,10 @@ static int kvm_mmu_rmaps_stat_show(struct seq_file *m, void *v)
 	memset(log, 0, sizeof(log));
 	for (i = 0; i < KVM_NR_PAGE_SIZES; i++) {
 		log[i] = kcalloc(RMAP_LOG_SIZE, sizeof(unsigned int), GFP_KERNEL);
+		{
+			unsigned int __uncontained_tmp10;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+		}
 		if (!log[i])
 			goto out;
 	}

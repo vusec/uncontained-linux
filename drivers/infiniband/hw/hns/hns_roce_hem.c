@@ -35,6 +35,11 @@
 #include "hns_roce_hem.h"
 #include "hns_roce_common.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define HEM_INDEX_BUF			BIT(0)
 #define HEM_INDEX_L0			BIT(1)
 #define HEM_INDEX_L1			BIT(2)
@@ -795,6 +800,10 @@ int hns_roce_init_hem_table(struct hns_roce_dev *hr_dev,
 		num_hem = DIV_ROUND_UP(nobj, obj_per_chunk);
 
 		table->hem = kcalloc(num_hem, sizeof(*table->hem), GFP_KERNEL);
+		{
+			typeof((*table->hem)) __uncontained_tmp105;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+		}
 		if (!table->hem)
 			return -ENOMEM;
 	} else {
@@ -822,6 +831,10 @@ int hns_roce_init_hem_table(struct hns_roce_dev *hr_dev,
 
 		table->hem = kcalloc(num_hem, sizeof(*table->hem),
 					 GFP_KERNEL);
+		{
+			typeof((*table->hem)) __uncontained_tmp106;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp106;
+		}
 		if (!table->hem)
 			goto err_kcalloc_hem_buf;
 
@@ -832,12 +845,20 @@ int hns_roce_init_hem_table(struct hns_roce_dev *hr_dev,
 			table->bt_l1 = kcalloc(num_bt_l1,
 					       sizeof(*table->bt_l1),
 					       GFP_KERNEL);
+			{
+				typeof((*table->bt_l1)) __uncontained_tmp107;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp107;
+			}
 			if (!table->bt_l1)
 				goto err_kcalloc_bt_l1;
 
 			table->bt_l1_dma_addr = kcalloc(num_bt_l1,
 						 sizeof(*table->bt_l1_dma_addr),
 						 GFP_KERNEL);
+			{
+				typeof((*table->bt_l1_dma_addr)) __uncontained_tmp108;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp108;
+			}
 
 			if (!table->bt_l1_dma_addr)
 				goto err_kcalloc_l1_dma;
@@ -847,12 +868,20 @@ int hns_roce_init_hem_table(struct hns_roce_dev *hr_dev,
 			check_whether_bt_num_3(type, hop_num)) {
 			table->bt_l0 = kcalloc(num_bt_l0, sizeof(*table->bt_l0),
 					       GFP_KERNEL);
+			{
+				typeof((*table->bt_l0)) __uncontained_tmp109;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp109;
+			}
 			if (!table->bt_l0)
 				goto err_kcalloc_bt_l0;
 
 			table->bt_l0_dma_addr = kcalloc(num_bt_l0,
 						 sizeof(*table->bt_l0_dma_addr),
 						 GFP_KERNEL);
+			{
+				typeof((*table->bt_l0_dma_addr)) __uncontained_tmp110;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp110;
+			}
 			if (!table->bt_l0_dma_addr)
 				goto err_kcalloc_l0_dma;
 		}

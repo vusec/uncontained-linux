@@ -19,6 +19,11 @@
 #include <linux/slab.h>
 #include <uapi/misc/fastrpc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define ADSP_DOMAIN_ID (0)
 #define MDSP_DOMAIN_ID (1)
 #define SDSP_DOMAIN_ID (2)
@@ -459,12 +464,20 @@ static struct fastrpc_invoke_ctx *fastrpc_context_alloc(
 	if (ctx->nscalars) {
 		ctx->maps = kcalloc(ctx->nscalars,
 				    sizeof(*ctx->maps), GFP_KERNEL);
+		{
+			typeof((*ctx->maps)) __uncontained_tmp135;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp135;
+		}
 		if (!ctx->maps) {
 			kfree(ctx);
 			return ERR_PTR(-ENOMEM);
 		}
 		ctx->olaps = kcalloc(ctx->nscalars,
 				    sizeof(*ctx->olaps), GFP_KERNEL);
+		{
+			typeof((*ctx->olaps)) __uncontained_tmp136;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp136;
+		}
 		if (!ctx->olaps) {
 			kfree(ctx->maps);
 			kfree(ctx);
@@ -1037,6 +1050,10 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
 	u32 sc;
 
 	args = kcalloc(FASTRPC_CREATE_PROCESS_NARGS, sizeof(*args), GFP_KERNEL);
+	{
+		typeof((*args)) __uncontained_tmp137;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp137;
+	}
 	if (!args)
 		return -ENOMEM;
 
@@ -1333,6 +1350,10 @@ static int fastrpc_invoke(struct fastrpc_user *fl, char __user *argp)
 	nscalars = REMOTE_SCALARS_LENGTH(inv.sc);
 	if (nscalars) {
 		args = kcalloc(nscalars, sizeof(*args), GFP_KERNEL);
+		{
+			typeof((*args)) __uncontained_tmp138;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp138;
+		}
 		if (!args)
 			return -ENOMEM;
 

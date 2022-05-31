@@ -11,6 +11,11 @@
 #include <net/pkt_sched.h>
 #include <net/tso.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2032,6 +2037,10 @@ int enetc_alloc_si_resources(struct enetc_ndev_priv *priv)
 
 	priv->cls_rules = kcalloc(si->num_fs_entries, sizeof(*priv->cls_rules),
 				  GFP_KERNEL);
+	{
+		typeof((*priv->cls_rules)) __uncontained_tmp160;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp160;
+	}
 	if (!priv->cls_rules)
 		return -ENOMEM;
 

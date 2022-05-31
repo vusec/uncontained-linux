@@ -14,6 +14,11 @@
 #include <linux/dmapool.h>
 #include <linux/dma-mapping.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "xhci.h"
 #include "xhci-trace.h"
 #include "xhci-debugfs.h"
@@ -634,6 +639,10 @@ struct xhci_stream_info *xhci_alloc_stream_info(struct xhci_hcd *xhci,
 	stream_info->stream_rings = kcalloc_node(
 			num_streams, sizeof(struct xhci_ring *), mem_flags,
 			dev_to_node(dev));
+	{
+		struct xhci_ring *__uncontained_tmp213;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp213;
+	}
 	if (!stream_info->stream_rings)
 		goto cleanup_info;
 
@@ -1667,6 +1676,10 @@ static int scratchpad_alloc(struct xhci_hcd *xhci, gfp_t flags)
 
 	xhci->scratchpad->sp_buffers = kcalloc_node(num_sp, sizeof(void *),
 					flags, dev_to_node(dev));
+	{
+		void *__uncontained_tmp214;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp214;
+	}
 	if (!xhci->scratchpad->sp_buffers)
 		goto fail_sp3;
 
@@ -2178,6 +2191,10 @@ static void xhci_add_in_port(struct xhci_hcd *xhci, unsigned int num_ports,
 		port_cap->psi = kcalloc_node(port_cap->psi_count,
 					     sizeof(*port_cap->psi),
 					     GFP_KERNEL, dev_to_node(dev));
+		{
+			typeof((*port_cap->psi)) __uncontained_tmp215;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp215;
+		}
 		if (!port_cap->psi)
 			port_cap->psi_count = 0;
 
@@ -2250,6 +2267,10 @@ static void xhci_create_rhub_port_array(struct xhci_hcd *xhci,
 		return;
 	rhub->ports = kcalloc_node(rhub->num_ports, sizeof(*rhub->ports),
 			flags, dev_to_node(dev));
+	{
+		typeof((*rhub->ports)) __uncontained_tmp216;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp216;
+	}
 	if (!rhub->ports)
 		return;
 
@@ -2285,6 +2306,10 @@ static int xhci_setup_port_arrays(struct xhci_hcd *xhci, gfp_t flags)
 	num_ports = HCS_MAX_PORTS(xhci->hcs_params1);
 	xhci->hw_ports = kcalloc_node(num_ports, sizeof(*xhci->hw_ports),
 				flags, dev_to_node(dev));
+	{
+		typeof((*xhci->hw_ports)) __uncontained_tmp217;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp217;
+	}
 	if (!xhci->hw_ports)
 		return -ENOMEM;
 
@@ -2296,6 +2321,10 @@ static int xhci_setup_port_arrays(struct xhci_hcd *xhci, gfp_t flags)
 
 	xhci->rh_bw = kcalloc_node(num_ports, sizeof(*xhci->rh_bw), flags,
 				   dev_to_node(dev));
+	{
+		typeof((*xhci->rh_bw)) __uncontained_tmp218;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp218;
+	}
 	if (!xhci->rh_bw)
 		return -ENOMEM;
 	for (i = 0; i < num_ports; i++) {
@@ -2324,11 +2353,19 @@ static int xhci_setup_port_arrays(struct xhci_hcd *xhci, gfp_t flags)
 
 	xhci->ext_caps = kcalloc_node(cap_count, sizeof(*xhci->ext_caps),
 				flags, dev_to_node(dev));
+	{
+		typeof((*xhci->ext_caps)) __uncontained_tmp219;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp219;
+	}
 	if (!xhci->ext_caps)
 		return -ENOMEM;
 
 	xhci->port_caps = kcalloc_node(cap_count, sizeof(*xhci->port_caps),
 				flags, dev_to_node(dev));
+	{
+		typeof((*xhci->port_caps)) __uncontained_tmp220;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp220;
+	}
 	if (!xhci->port_caps)
 		return -ENOMEM;
 

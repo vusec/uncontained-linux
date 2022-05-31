@@ -32,6 +32,11 @@
 
 #include <drm/amdgpu_drm.h>
 #include <drm/drm_syncobj.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "amdgpu.h"
 #include "amdgpu_trace.h"
 #include "amdgpu_gmc.h"
@@ -1580,6 +1585,10 @@ static int amdgpu_cs_wait_any_fence(struct amdgpu_device *adev,
 
 	/* Prepare the fence array */
 	array = kcalloc(fence_count, sizeof(struct dma_fence *), GFP_KERNEL);
+	{
+		struct dma_fence *__uncontained_tmp45;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp45;
+	}
 
 	if (array == NULL)
 		return -ENOMEM;

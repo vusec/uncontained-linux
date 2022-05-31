@@ -7,6 +7,11 @@
 
 #include "check.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct lvm_rec {
 	char lvm_id[4]; /* "_LVM" */
 	char reserved4[16];
@@ -200,6 +205,10 @@ int aix_partition(struct parsed_partitions *state)
 		put_dev_sector(sect);
 	}
 	lvip = kcalloc(state->limit, sizeof(struct lv_info), GFP_KERNEL);
+	{
+		struct lv_info __uncontained_tmp13;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!lvip)
 		return 0;
 	if (numlvs && (d = read_part_sector(state, vgda_sector + 1, &sect))) {

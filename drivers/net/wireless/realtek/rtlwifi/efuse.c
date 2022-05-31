@@ -6,6 +6,11 @@
 #include "pci.h"
 #include <linux/export.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static const u8 PGPKT_DATA_SIZE = 8;
 static const int EFUSE_MAX_SIZE = 512;
 
@@ -223,11 +228,19 @@ void read_efuse(struct ieee80211_hw *hw, u16 _offset, u16 _size_byte, u8 *pbuf)
 	if (!efuse_tbl)
 		return;
 	efuse_word = kcalloc(EFUSE_MAX_WORD_UNIT, sizeof(u16 *), GFP_ATOMIC);
+	{
+		u16 *__uncontained_tmp192;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp192;
+	}
 	if (!efuse_word)
 		goto out;
 	for (i = 0; i < EFUSE_MAX_WORD_UNIT; i++) {
 		efuse_word[i] = kcalloc(efuse_max_section, sizeof(u16),
 					GFP_ATOMIC);
+		{
+			u16 __uncontained_tmp193;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp193;
+		}
 		if (!efuse_word[i])
 			goto done;
 	}

@@ -29,6 +29,11 @@
 #include <linux/slab.h>
 #include <linux/soc/qcom/smem.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MSM_ID_SMEM	137
 
 enum _msm_id {
@@ -318,6 +323,10 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
 	drv->names_opp_tables = kcalloc(num_possible_cpus(),
 				  sizeof(*drv->names_opp_tables),
 				  GFP_KERNEL);
+	{
+		typeof((*drv->names_opp_tables)) __uncontained_tmp38;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!drv->names_opp_tables) {
 		ret = -ENOMEM;
 		goto free_drv;
@@ -325,6 +334,10 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
 	drv->hw_opp_tables = kcalloc(num_possible_cpus(),
 				  sizeof(*drv->hw_opp_tables),
 				  GFP_KERNEL);
+	{
+		typeof((*drv->hw_opp_tables)) __uncontained_tmp39;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!drv->hw_opp_tables) {
 		ret = -ENOMEM;
 		goto free_opp_names;
@@ -333,6 +346,10 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
 	drv->genpd_opp_tables = kcalloc(num_possible_cpus(),
 					sizeof(*drv->genpd_opp_tables),
 					GFP_KERNEL);
+	{
+		typeof((*drv->genpd_opp_tables)) __uncontained_tmp40;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!drv->genpd_opp_tables) {
 		ret = -ENOMEM;
 		goto free_opp;

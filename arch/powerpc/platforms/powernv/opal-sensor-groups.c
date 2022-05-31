@@ -13,6 +13,11 @@
 
 #include <asm/opal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static DEFINE_MUTEX(sg_mutex);
 
 static struct kobject *sg_kobj;
@@ -169,6 +174,10 @@ void __init opal_sensor_groups_init(void)
 	}
 
 	sgs = kcalloc(of_get_child_count(sg), sizeof(*sgs), GFP_KERNEL);
+	{
+		typeof((*sgs)) __uncontained_tmp15;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!sgs)
 		return;
 
@@ -192,12 +201,20 @@ void __init opal_sensor_groups_init(void)
 
 		sgs[i].sgattrs = kcalloc(nr_attrs, sizeof(*sgs[i].sgattrs),
 					 GFP_KERNEL);
+		{
+			typeof((*sgs[i].sgattrs)) __uncontained_tmp16;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+		}
 		if (!sgs[i].sgattrs)
 			goto out_sgs_sgattrs;
 
 		sgs[i].sg.attrs = kcalloc(nr_attrs + 1,
 					  sizeof(*sgs[i].sg.attrs),
 					  GFP_KERNEL);
+		{
+			typeof((*sgs[i].sg.attrs)) __uncontained_tmp17;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+		}
 
 		if (!sgs[i].sg.attrs) {
 			kfree(sgs[i].sgattrs);

@@ -18,6 +18,11 @@
 #include <net/page_pool.h>
 #include <net/ip6_checksum.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define NETSEC_REG_SOFT_RST			0x104
 #define NETSEC_REG_COM_INIT			0x120
 
@@ -1261,6 +1266,10 @@ static int netsec_alloc_dring(struct netsec_priv *priv, enum ring_id id)
 		goto err;
 
 	dring->desc = kcalloc(DESC_NUM, sizeof(*dring->desc), GFP_KERNEL);
+	{
+		typeof((*dring->desc)) __uncontained_tmp197;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp197;
+	}
 	if (!dring->desc)
 		goto err;
 

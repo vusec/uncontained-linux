@@ -17,6 +17,11 @@
 #include <linux/etherdevice.h>
 #include <rdma/ib_verbs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int hfi1_netdev_setup_ctxt(struct hfi1_netdev_rx *rx,
 				  struct hfi1_ctxtdata *uctxt)
 {
@@ -193,6 +198,10 @@ static int hfi1_netdev_rxq_init(struct hfi1_netdev_rx *rx)
 	rx->num_rx_q = dd->num_netdev_contexts;
 	rx->rxq = kcalloc_node(rx->num_rx_q, sizeof(*rx->rxq),
 			       GFP_KERNEL, dd->node);
+	{
+		typeof((*rx->rxq)) __uncontained_tmp102;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp102;
+	}
 
 	if (!rx->rxq) {
 		dd_dev_err(dd, "Unable to allocate netdev queue data\n");

@@ -45,6 +45,11 @@
 #include <linux/etherdevice.h>
 #include <net/ip6_checksum.h>
 #include <linux/crc32.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "alx.h"
 #include "hw.h"
 #include "reg.h"
@@ -618,6 +623,10 @@ static int alx_alloc_tx_ring(struct alx_priv *alx, struct alx_tx_queue *txq,
 			     int offset)
 {
 	txq->bufs = kcalloc(txq->count, sizeof(struct alx_buffer), GFP_KERNEL);
+	{
+		struct alx_buffer __uncontained_tmp144;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp144;
+	}
 	if (!txq->bufs)
 		return -ENOMEM;
 
@@ -632,6 +641,10 @@ static int alx_alloc_rx_ring(struct alx_priv *alx, struct alx_rx_queue *rxq,
 			     int offset)
 {
 	rxq->bufs = kcalloc(rxq->count, sizeof(struct alx_buffer), GFP_KERNEL);
+	{
+		struct alx_buffer __uncontained_tmp145;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp145;
+	}
 	if (!rxq->bufs)
 		return -ENOMEM;
 

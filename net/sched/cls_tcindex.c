@@ -17,6 +17,11 @@
 #include <net/pkt_cls.h>
 #include <net/sch_generic.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * Passing parameters to the root seems to be done more awkwardly than really
  * necessary. At least, u32 doesn't seem to use such dirty hacks. To be
@@ -308,6 +313,10 @@ static int tcindex_alloc_perfect_hash(struct net *net, struct tcindex_data *cp)
 
 	cp->perfect = kcalloc(cp->hash, sizeof(struct tcindex_filter_result),
 			      GFP_KERNEL | __GFP_NOWARN);
+	{
+		struct tcindex_filter_result __uncontained_tmp326;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp326;
+	}
 	if (!cp->perfect)
 		return -ENOMEM;
 
@@ -446,6 +455,10 @@ tcindex_set_parms(struct net *net, struct tcf_proto *tp, unsigned long base,
 			hash = kcalloc(cp->hash,
 				       sizeof(struct tcindex_filter *),
 				       GFP_KERNEL);
+			{
+				struct tcindex_filter *__uncontained_tmp327;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp327;
+			}
 
 			if (!hash)
 				goto errout_alloc;

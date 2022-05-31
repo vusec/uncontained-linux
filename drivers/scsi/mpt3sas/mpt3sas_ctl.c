@@ -57,6 +57,11 @@
 #include <linux/io.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mpt3sas_base.h"
 #include "mpt3sas_ctl.h"
 
@@ -1260,6 +1265,10 @@ _ctl_eventenable(struct MPT3SAS_ADAPTER *ioc, void __user *arg)
 	ioc->aen_event_read_flag = 0;
 	ioc->event_log = kcalloc(MPT3SAS_CTL_EVENT_LOG_SIZE,
 	    sizeof(struct MPT3_IOCTL_EVENTS), GFP_KERNEL);
+	{
+		struct MPT3_IOCTL_EVENTS __uncontained_tmp210;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp210;
+	}
 	if (!ioc->event_log) {
 		pr_err("failure at %s:%d/%s()!\n",
 		    __FILE__, __LINE__, __func__);

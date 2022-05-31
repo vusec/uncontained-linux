@@ -35,6 +35,11 @@
 #include <linux/slab.h>
 #include <linux/usb.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define UCAN_DRIVER_NAME "ucan"
 #define UCAN_MAX_RX_URBS 8
 /* the CAN controller needs a while to enable/disable the bus */
@@ -332,6 +337,10 @@ static int ucan_alloc_context_array(struct ucan_priv *up)
 	up->context_array = kcalloc(up->device_info.tx_fifo,
 				    sizeof(*up->context_array),
 				    GFP_KERNEL);
+	{
+		typeof((*up->context_array)) __uncontained_tmp129;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp129;
+	}
 	if (!up->context_array) {
 		netdev_err(up->netdev,
 			   "Not enough memory to allocate tx contexts\n");

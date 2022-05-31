@@ -35,6 +35,11 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/cfi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* #define CMDSET0001_DISABLE_ERASE_SUSPEND_ON_WRITE */
 /* #define CMDSET0001_DISABLE_WRITE_SUSPEND */
 
@@ -613,6 +618,10 @@ static struct mtd_info *cfi_intelext_setup(struct mtd_info *mtd)
 	mtd->eraseregions = kcalloc(mtd->numeraseregions,
 				    sizeof(struct mtd_erase_region_info),
 				    GFP_KERNEL);
+	{
+		struct mtd_erase_region_info __uncontained_tmp140;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!mtd->eraseregions)
 		goto setup_err;
 

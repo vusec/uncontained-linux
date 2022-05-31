@@ -33,6 +33,11 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/mlx5/driver.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "mlx5_core.h"
 
 /* Scheduling element fw management */
@@ -188,6 +193,10 @@ static int mlx5_rl_table_get(struct mlx5_rl_table *table)
 
 	table->rl_entry = kcalloc(table->max_size, sizeof(struct mlx5_rl_entry),
 				  GFP_KERNEL);
+	{
+		struct mlx5_rl_entry __uncontained_tmp190;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp190;
+	}
 	if (!table->rl_entry)
 		return -ENOMEM;
 

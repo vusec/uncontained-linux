@@ -33,6 +33,11 @@
 #include <linux/pci.h>
 #include <linux/mlx5/driver.h>
 #include <linux/mlx5/vport.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "mlx5_core.h"
 #include "mlx5_irq.h"
 #include "eswitch.h"
@@ -277,6 +282,10 @@ int mlx5_sriov_init(struct mlx5_core_dev *dev)
 	sriov->max_vfs = mlx5_get_max_vfs(dev);
 	sriov->num_vfs = pci_num_vf(pdev);
 	sriov->vfs_ctx = kcalloc(total_vfs, sizeof(*sriov->vfs_ctx), GFP_KERNEL);
+	{
+		typeof((*sriov->vfs_ctx)) __uncontained_tmp193;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp193;
+	}
 	if (!sriov->vfs_ctx)
 		return -ENOMEM;
 

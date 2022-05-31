@@ -25,6 +25,11 @@
 #include <linux/topology.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Currently we support only two clusters */
 #define A15_CLUSTER	0
 #define A7_CLUSTER	1
@@ -254,6 +259,10 @@ static int merge_cluster_tables(void)
 		count += get_table_count(freq_table[i]);
 
 	table = kcalloc(count, sizeof(*table), GFP_KERNEL);
+	{
+		typeof((*table)) __uncontained_tmp57;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!table)
 		return -ENOMEM;
 

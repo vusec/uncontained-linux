@@ -41,6 +41,11 @@
 #include <net/arp.h>
 #include <linux/init.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int nr_ndevs = 4;
 
 int sysctl_netrom_default_path_quality            = NR_DEFAULT_QUAL;
@@ -1392,6 +1397,10 @@ static int __init nr_proto_init(void)
 	}
 
 	dev_nr = kcalloc(nr_ndevs, sizeof(struct net_device *), GFP_KERNEL);
+	{
+		struct net_device *__uncontained_tmp327;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp327;
+	}
 	if (!dev_nr) {
 		pr_err("NET/ROM: %s - unable to allocate device array\n",
 		       __func__);

@@ -22,6 +22,11 @@
 #include <linux/nfs_mount.h>
 #include <linux/export.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 #include "pnfs.h"
 #include "nfstrace.h"
@@ -901,6 +906,10 @@ int nfs_generic_pgio(struct nfs_pageio_descriptor *desc,
 		pg_array->pagevec = pg_array->page_array;
 	else {
 		pg_array->pagevec = kcalloc(pagecount, sizeof(struct page *), gfp_flags);
+		{
+			struct page *__uncontained_tmp271;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp271;
+		}
 		if (!pg_array->pagevec) {
 			pg_array->npages = 0;
 			nfs_pgio_error(hdr);

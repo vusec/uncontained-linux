@@ -33,6 +33,11 @@
 #include <linux/slab.h>
 #include <linux/uuid.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "common.h"
 
 #define FFA_DRIVER_VERSION	FFA_VERSION_1_0
@@ -309,6 +314,10 @@ ffa_partition_probe(const uuid_t *uuid, struct ffa_partition_info **buffer)
 		return count;
 
 	pbuf = kcalloc(count, sizeof(*pbuf), GFP_KERNEL);
+	{
+		typeof((*pbuf)) __uncontained_tmp51;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (!pbuf)
 		return -ENOMEM;
 

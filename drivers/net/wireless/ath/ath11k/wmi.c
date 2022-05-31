@@ -14,6 +14,11 @@
 #include <linux/time.h>
 #include <linux/of.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -241,6 +246,10 @@ ath11k_wmi_tlv_parse_alloc(struct ath11k_base *ab, const void *ptr,
 	int ret;
 
 	tb = kcalloc(WMI_TAG_MAX, sizeof(*tb), gfp);
+	{
+		typeof((*tb)) __uncontained_tmp178;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp178;
+	}
 	if (!tb)
 		return ERR_PTR(-ENOMEM);
 
@@ -4697,6 +4706,10 @@ static struct cur_reg_rule
 
 	reg_rule_ptr = kcalloc(num_reg_rules, sizeof(*reg_rule_ptr),
 			       GFP_ATOMIC);
+	{
+		typeof((*reg_rule_ptr)) __uncontained_tmp179;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp179;
+	}
 
 	if (!reg_rule_ptr)
 		return NULL;

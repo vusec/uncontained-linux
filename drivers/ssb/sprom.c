@@ -16,6 +16,11 @@
 #include <linux/ctype.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 static int(*get_fallback_sprom)(struct ssb_bus *dev, struct ssb_sprom *out);
 
@@ -73,6 +78,10 @@ ssize_t ssb_attr_sprom_show(struct ssb_bus *bus, char *buf,
 	size_t sprom_size_words = bus->sprom_size;
 
 	sprom = kcalloc(sprom_size_words, sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp242;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp242;
+	}
 	if (!sprom)
 		goto out;
 
@@ -107,6 +116,10 @@ ssize_t ssb_attr_sprom_store(struct ssb_bus *bus,
 	struct ssb_freeze_context freeze;
 
 	sprom = kcalloc(bus->sprom_size, sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp243;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp243;
+	}
 	if (!sprom)
 		goto out;
 	err = hex2sprom(sprom, buf, count, sprom_size_words);

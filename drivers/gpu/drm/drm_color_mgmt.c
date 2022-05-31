@@ -29,6 +29,11 @@
 #include <drm/drm_drv.h>
 #include <drm/drm_print.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "drm_crtc_internal.h"
 
 /**
@@ -209,6 +214,10 @@ int drm_mode_crtc_set_gamma_size(struct drm_crtc *crtc,
 
 	crtc->gamma_store = kcalloc(gamma_size, sizeof(uint16_t) * 3,
 				    GFP_KERNEL);
+	{
+		uint16_t __uncontained_tmp62;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!crtc->gamma_store) {
 		crtc->gamma_size = 0;
 		return -ENOMEM;

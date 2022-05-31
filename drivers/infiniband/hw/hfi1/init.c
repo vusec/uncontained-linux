@@ -16,6 +16,11 @@
 #include <linux/numa.h>
 #include <rdma/rdma_vt.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hfi.h"
 #include "device.h"
 #include "common.h"
@@ -136,6 +141,10 @@ int hfi1_create_kctxts(struct hfi1_devdata *dd)
 
 	dd->rcd = kcalloc_node(dd->num_rcv_contexts, sizeof(*dd->rcd),
 			       GFP_KERNEL, dd->node);
+	{
+		typeof((*dd->rcd)) __uncontained_tmp97;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!dd->rcd)
 		return -ENOMEM;
 
@@ -415,12 +424,20 @@ int hfi1_create_ctxtdata(struct hfi1_pportdata *ppd, int numa,
 			kcalloc_node(rcd->egrbufs.count,
 				     sizeof(*rcd->egrbufs.buffers),
 				     GFP_KERNEL, numa);
+		{
+			typeof((*rcd->egrbufs.buffers)) __uncontained_tmp98;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp98;
+		}
 		if (!rcd->egrbufs.buffers)
 			goto bail;
 		rcd->egrbufs.rcvtids =
 			kcalloc_node(rcd->egrbufs.count,
 				     sizeof(*rcd->egrbufs.rcvtids),
 				     GFP_KERNEL, numa);
+		{
+			typeof((*rcd->egrbufs.rcvtids)) __uncontained_tmp99;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
+		}
 		if (!rcd->egrbufs.rcvtids)
 			goto bail;
 		rcd->egrbufs.size = eager_buffer_size;

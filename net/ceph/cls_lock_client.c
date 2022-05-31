@@ -8,6 +8,11 @@
 #include <linux/ceph/decode.h>
 #include <linux/ceph/libceph.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * ceph_cls_lock - grab rados lock for object
  * @osdc: OSD client instance
@@ -301,6 +306,10 @@ static int decode_lockers(void **p, void *end, u8 *type, char **tag,
 
 	*num_lockers = ceph_decode_32(p);
 	*lockers = kcalloc(*num_lockers, sizeof(**lockers), GFP_NOIO);
+	{
+		typeof((**lockers)) __uncontained_tmp303;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp303;
+	}
 	if (!*lockers)
 		return -ENOMEM;
 

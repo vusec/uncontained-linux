@@ -27,6 +27,11 @@
 #include <nvif/driver.h>
 #include <nvif/ioctl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 int
 nvif_object_ioctl(struct nvif_object *object, void *data, u32 size, void **hack)
 {
@@ -83,6 +88,10 @@ nvif_object_sclass_get(struct nvif_object *object, struct nvif_sclass **psclass)
 	}
 
 	*psclass = kcalloc(args->sclass.count, sizeof(**psclass), GFP_KERNEL);
+	{
+		typeof((**psclass)) __uncontained_tmp81;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (*psclass) {
 		for (i = 0; i < args->sclass.count; i++) {
 			(*psclass)[i].oclass = args->sclass.oclass[i].oclass;

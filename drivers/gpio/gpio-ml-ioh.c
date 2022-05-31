@@ -10,6 +10,11 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define IOH_EDGE_FALLING	0
 #define IOH_EDGE_RISING		BIT(0)
 #define IOH_LEVEL_L		BIT(1)
@@ -429,6 +434,10 @@ static int ioh_gpio_probe(struct pci_dev *pdev,
 	}
 
 	chip_save = kcalloc(8, sizeof(*chip), GFP_KERNEL);
+	{
+		typeof((*chip)) __uncontained_tmp53;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp53;
+	}
 	if (chip_save == NULL) {
 		ret = -ENOMEM;
 		goto err_kzalloc;

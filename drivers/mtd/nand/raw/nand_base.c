@@ -45,6 +45,11 @@
 #include <linux/of_gpio.h>
 #include <linux/gpio/consumer.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internals.h"
 
 static int nand_pairing_dist3_get_info(struct mtd_info *mtd, int page,
@@ -5313,6 +5318,10 @@ static int of_get_nand_secure_regions(struct nand_chip *chip)
 	chip->nr_secure_regions = nr_elem / 2;
 	chip->secure_regions = kcalloc(chip->nr_secure_regions, sizeof(*chip->secure_regions),
 				       GFP_KERNEL);
+	{
+		typeof((*chip->secure_regions)) __uncontained_tmp142;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+	}
 	if (!chip->secure_regions)
 		return -ENOMEM;
 

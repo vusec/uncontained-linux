@@ -25,6 +25,11 @@
 #include <linux/slab.h>
 #include <linux/sys_soc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 
 static int sh_pfc_map_resources(struct sh_pfc *pfc,
@@ -966,6 +971,10 @@ static void __init sh_pfc_check_info(const struct sh_pfc_soc_info *info)
 
 	/* Check groups and functions */
 	refcnts = kcalloc(info->nr_groups, sizeof(*refcnts), GFP_KERNEL);
+	{
+		typeof((*refcnts)) __uncontained_tmp214;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp214;
+	}
 	if (!refcnts)
 		return;
 
@@ -1073,11 +1082,19 @@ static void __init sh_pfc_check_driver(const struct platform_driver *pdrv)
 
 	sh_pfc_regs = kcalloc(SH_PFC_MAX_REGS, sizeof(*sh_pfc_regs),
 			      GFP_KERNEL);
+	{
+		typeof((*sh_pfc_regs)) __uncontained_tmp215;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp215;
+	}
 	if (!sh_pfc_regs)
 		return;
 
 	sh_pfc_enums = kcalloc(SH_PFC_MAX_ENUMS, sizeof(*sh_pfc_enums),
 			      GFP_KERNEL);
+	{
+		typeof((*sh_pfc_enums)) __uncontained_tmp216;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp216;
+	}
 	if (!sh_pfc_enums)
 		goto free_regs;
 

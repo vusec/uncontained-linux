@@ -14,6 +14,11 @@
 #include <mach/generic.h>
 #include <mach/pxa3xx-regs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define HSS_104M	(0)
 #define HSS_156M	(1)
 #define HSS_208M	(2)
@@ -90,6 +95,10 @@ static int setup_freqs_table(struct cpufreq_policy *policy,
 	int i;
 
 	table = kcalloc(num + 1, sizeof(*table), GFP_KERNEL);
+	{
+		typeof((*table)) __uncontained_tmp53;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp53;
+	}
 	if (table == NULL)
 		return -ENOMEM;
 

@@ -53,6 +53,11 @@
 #include <linux/of_net.h>
 #include <linux/of_mdio.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static char mv643xx_eth_driver_name[] = "mv643xx_eth";
 static char mv643xx_eth_driver_version[] = "1.4";
 
@@ -1871,6 +1876,10 @@ static void mv643xx_eth_program_multicast_filter(struct net_device *dev)
 
 	/* Allocate both mc_spec and mc_other tables */
 	mc_spec = kcalloc(128, sizeof(u32), GFP_ATOMIC);
+	{
+		u32 __uncontained_tmp160;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp160;
+	}
 	if (!mc_spec)
 		goto promiscuous;
 	mc_other = &mc_spec[64];
@@ -1971,6 +1980,10 @@ static int rxq_init(struct mv643xx_eth_private *mp, int index)
 	rxq->rx_desc_area_size = size;
 	rxq->rx_skb = kcalloc(rxq->rx_ring_size, sizeof(*rxq->rx_skb),
 				    GFP_KERNEL);
+	{
+		typeof((*rxq->rx_skb)) __uncontained_tmp162;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp162;
+	}
 	if (rxq->rx_skb == NULL)
 		goto out_free;
 
@@ -2090,6 +2103,10 @@ static int txq_init(struct mv643xx_eth_private *mp, int index)
 
 	txq->tx_desc_mapping = kcalloc(txq->tx_ring_size, sizeof(char),
 				       GFP_KERNEL);
+	{
+		char __uncontained_tmp161;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp161;
+	}
 	if (!txq->tx_desc_mapping) {
 		ret = -ENOMEM;
 		goto err_free_desc_area;

@@ -9,6 +9,11 @@
 #include "ce.h"
 #include "debug.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * Support for Copy Engine hardware, which is mainly used for
  * communication between Host and Target over a PCIe interconnect.
@@ -1505,6 +1510,10 @@ static int ath10k_ce_alloc_shadow_base(struct ath10k *ar,
 	src_ring->shadow_base_unaligned = kcalloc(nentries,
 						  sizeof(struct ce_desc_64),
 						  GFP_KERNEL);
+	{
+		struct ce_desc_64 __uncontained_tmp201;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp201;
+	}
 	if (!src_ring->shadow_base_unaligned)
 		return -ENOMEM;
 

@@ -14,6 +14,11 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct mtk_sysirq_chip_data {
 	raw_spinlock_t lock;
 	u32 nr_intpol_bases;
@@ -149,6 +154,10 @@ static int __init mtk_sysirq_of_init(struct device_node *node,
 	chip_data->intpol_words = kcalloc(nr_intpol_bases,
 					  sizeof(*chip_data->intpol_words),
 					  GFP_KERNEL);
+	{
+		typeof((*chip_data->intpol_words)) __uncontained_tmp123;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (!chip_data->intpol_words) {
 		ret = -ENOMEM;
 		goto out_free_chip;
@@ -157,6 +166,10 @@ static int __init mtk_sysirq_of_init(struct device_node *node,
 	chip_data->intpol_bases = kcalloc(nr_intpol_bases,
 					  sizeof(*chip_data->intpol_bases),
 					  GFP_KERNEL);
+	{
+		typeof((*chip_data->intpol_bases)) __uncontained_tmp124;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (!chip_data->intpol_bases) {
 		ret = -ENOMEM;
 		goto out_free_intpol_words;
@@ -180,6 +193,10 @@ static int __init mtk_sysirq_of_init(struct device_node *node,
 	chip_data->intpol_idx = kcalloc(intpol_num,
 					sizeof(*chip_data->intpol_idx),
 					GFP_KERNEL);
+	{
+		typeof((*chip_data->intpol_idx)) __uncontained_tmp125;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (!chip_data->intpol_idx) {
 		ret = -ENOMEM;
 		goto out_free_intpol;
@@ -188,6 +205,10 @@ static int __init mtk_sysirq_of_init(struct device_node *node,
 	chip_data->which_word = kcalloc(intpol_num,
 					sizeof(*chip_data->which_word),
 					GFP_KERNEL);
+	{
+		typeof((*chip_data->which_word)) __uncontained_tmp126;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp126;
+	}
 	if (!chip_data->which_word) {
 		ret = -ENOMEM;
 		goto out_free_intpol_idx;

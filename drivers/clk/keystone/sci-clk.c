@@ -25,6 +25,11 @@
 #include <linux/bsearch.h>
 #include <linux/list_sort.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SCI_CLK_SSC_ENABLE		BIT(0)
 #define SCI_CLK_ALLOW_FREQ_CHANGE	BIT(1)
 #define SCI_CLK_INPUT_TERMINATION	BIT(2)
@@ -317,6 +322,10 @@ static int _sci_clk_build(struct sci_clk_provider *provider,
 	if (sci_clk->num_parents) {
 		parent_names = kcalloc(sci_clk->num_parents, sizeof(char *),
 				       GFP_KERNEL);
+		{
+			char *__uncontained_tmp42;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp42;
+		}
 
 		if (!parent_names) {
 			ret = -ENOMEM;

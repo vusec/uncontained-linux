@@ -19,6 +19,11 @@
 #include <sound/control.h>
 #include <sound/ac97_codec.h>
 #include <sound/asoundef.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ac97_id.h"
 #include "ac97_local.h"
 
@@ -443,6 +448,10 @@ int snd_ac97_pcm_assign(struct snd_ac97_bus *bus,
 	struct snd_ac97 *codec;
 
 	rpcms = kcalloc(pcms_count, sizeof(struct ac97_pcm), GFP_KERNEL);
+	{
+		struct ac97_pcm __uncontained_tmp287;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp287;
+	}
 	if (rpcms == NULL)
 		return -ENOMEM;
 	memset(avail_slots, 0, sizeof(avail_slots));

@@ -17,6 +17,11 @@
 #include <asm/smp_plat.h>
 #include <asm/suspend.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * This is allocated by cpu_suspend_init(), and used to store a pointer to
  * the 'struct sleep_stack_data' the contains a particular CPUs state.
@@ -152,6 +157,10 @@ static int __init cpu_suspend_init(void)
 	/* ctx_ptr is an array of physical addresses */
 	sleep_save_stash = kcalloc(mpidr_hash_size(), sizeof(*sleep_save_stash),
 				   GFP_KERNEL);
+	{
+		typeof((*sleep_save_stash)) __uncontained_tmp2;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp2;
+	}
 
 	if (WARN_ON(!sleep_save_stash))
 		return -ENOMEM;

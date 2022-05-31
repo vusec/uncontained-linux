@@ -71,6 +71,11 @@
 
 #include <trace/events/vmscan.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct cgroup_subsys memory_cgrp_subsys __read_mostly;
 EXPORT_SYMBOL(memory_cgrp_subsys);
 
@@ -2833,6 +2838,10 @@ int memcg_alloc_slab_cgroups(struct slab *slab, struct kmem_cache *s,
 	gfp &= ~OBJCGS_CLEAR_MASK;
 	vec = kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
 			   slab_nid(slab));
+	{
+		struct obj_cgroup *__uncontained_tmp335;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp335;
+	}
 	if (!vec)
 		return -ENOMEM;
 

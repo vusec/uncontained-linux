@@ -21,6 +21,11 @@
 #include <linux/pci.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vsec.h"
 
 /* Intel DVSEC offsets */
@@ -187,6 +192,10 @@ static int intel_vsec_add_dev(struct pci_dev *pdev, struct intel_vsec_header *he
 		return -ENOMEM;
 
 	res = kcalloc(header->num_entries, sizeof(*res), GFP_KERNEL);
+	{
+		typeof((*res)) __uncontained_tmp240;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp240;
+	}
 	if (!res) {
 		kfree(intel_vsec_dev);
 		return -ENOMEM;

@@ -9,6 +9,11 @@
 #include <linux/bpf_trace.h>
 #include <net/dsfield.h>
 #include <net/xdp.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ice_txrx_lib.h"
 #include "ice_lib.h"
 #include "ice.h"
@@ -492,6 +497,10 @@ int ice_setup_rx_ring(struct ice_rx_ring *rx_ring)
 	WARN_ON(rx_ring->rx_buf);
 	rx_ring->rx_buf =
 		kcalloc(rx_ring->count, sizeof(*rx_ring->rx_buf), GFP_KERNEL);
+	{
+		typeof((*rx_ring->rx_buf)) __uncontained_tmp159;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp159;
+	}
 	if (!rx_ring->rx_buf)
 		return -ENOMEM;
 

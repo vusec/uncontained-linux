@@ -56,6 +56,11 @@
 #include <linux/net_tstamp.h>
 #include <linux/prefetch.h>
 #include <linux/module.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "vxge-main.h"
 #include "vxge-reg.h"
 
@@ -2290,6 +2295,10 @@ start:
 
 	vdev->entries = kcalloc(vdev->intr_cnt, sizeof(struct msix_entry),
 				GFP_KERNEL);
+	{
+		struct msix_entry __uncontained_tmp202;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp202;
+	}
 	if (!vdev->entries) {
 		vxge_debug_init(VXGE_ERR,
 			"%s: memory allocation failed",
@@ -2301,6 +2310,10 @@ start:
 	vdev->vxge_entries = kcalloc(vdev->intr_cnt,
 				     sizeof(struct vxge_msix_entry),
 				     GFP_KERNEL);
+	{
+		struct vxge_msix_entry __uncontained_tmp203;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp203;
+	}
 	if (!vdev->vxge_entries) {
 		vxge_debug_init(VXGE_ERR, "%s: memory allocation failed",
 			VXGE_DRIVER_NAME);
@@ -3410,6 +3423,10 @@ static int vxge_device_register(struct __vxge_hw_device *hldev,
 	/* Allocate memory for vpath */
 	vdev->vpaths = kcalloc(no_of_vpath, sizeof(struct vxge_vpath),
 			       GFP_KERNEL);
+	{
+		struct vxge_vpath __uncontained_tmp204;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp204;
+	}
 	if (!vdev->vpaths) {
 		vxge_debug_init(VXGE_ERR,
 			"%s: vpath memory allocation failed",

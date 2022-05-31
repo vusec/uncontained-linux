@@ -14,6 +14,11 @@
 #include <linux/wait.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * constants
  */
@@ -39,6 +44,10 @@ snd_seq_oss_readq_new(struct seq_oss_devinfo *dp, int maxlen)
 		return NULL;
 
 	q->q = kcalloc(maxlen, sizeof(union evrec), GFP_KERNEL);
+	{
+		union evrec __uncontained_tmp316;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp316;
+	}
 	if (!q->q) {
 		kfree(q);
 		return NULL;

@@ -54,6 +54,11 @@
 #include <asm/unaligned.h>
 #include <asm/div64.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1953,7 +1958,15 @@ static void adjust_hpsa_scsi_table(struct ctlr_info *h,
 	spin_unlock_irqrestore(&h->reset_lock, flags);
 
 	added = kcalloc(HPSA_MAX_DEVICES, sizeof(*added), GFP_KERNEL);
+	{
+		typeof((*added)) __uncontained_tmp229;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp229;
+	}
 	removed = kcalloc(HPSA_MAX_DEVICES, sizeof(*removed), GFP_KERNEL);
+	{
+		typeof((*removed)) __uncontained_tmp230;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp230;
+	}
 
 	if (!added || !removed) {
 		dev_warn(&h->pdev->dev, "out of memory in "
@@ -2217,6 +2230,10 @@ static int hpsa_allocate_ioaccel2_sg_chain_blocks(struct ctlr_info *h)
 	h->ioaccel2_cmd_sg_list =
 		kcalloc(h->nr_cmds, sizeof(*h->ioaccel2_cmd_sg_list),
 					GFP_KERNEL);
+	{
+		typeof((*h->ioaccel2_cmd_sg_list)) __uncontained_tmp231;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp231;
+	}
 	if (!h->ioaccel2_cmd_sg_list)
 		return -ENOMEM;
 	for (i = 0; i < h->nr_cmds; i++) {
@@ -2257,6 +2274,10 @@ static int hpsa_alloc_sg_chain_blocks(struct ctlr_info *h)
 
 	h->cmd_sg_list = kcalloc(h->nr_cmds, sizeof(*h->cmd_sg_list),
 				 GFP_KERNEL);
+	{
+		typeof((*h->cmd_sg_list)) __uncontained_tmp232;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp232;
+	}
 	if (!h->cmd_sg_list)
 		return -ENOMEM;
 
@@ -4366,6 +4387,10 @@ static void hpsa_update_scsi_devices(struct ctlr_info *h)
 	bool physical_device;
 
 	currentsd = kcalloc(HPSA_MAX_DEVICES, sizeof(*currentsd), GFP_KERNEL);
+	{
+		typeof((*currentsd)) __uncontained_tmp233;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp233;
+	}
 	physdev_list = kzalloc(sizeof(*physdev_list), GFP_KERNEL);
 	logdev_list = kzalloc(sizeof(*logdev_list), GFP_KERNEL);
 	tmpdevice = kzalloc(sizeof(*tmpdevice), GFP_KERNEL);
@@ -6526,6 +6551,10 @@ static int hpsa_big_passthru_ioctl(struct ctlr_info *h,
 	if (ioc->buf_size > ioc->malloc_size * SG_ENTRIES_IN_CMD)
 		return -EINVAL;
 	buff = kcalloc(SG_ENTRIES_IN_CMD, sizeof(char *), GFP_KERNEL);
+	{
+		char *__uncontained_tmp227;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp227;
+	}
 	if (!buff) {
 		status = -ENOMEM;
 		goto cleanup1;
@@ -8069,6 +8098,10 @@ static int hpsa_alloc_cmd_pool(struct ctlr_info *h)
 	h->cmd_pool_bits = kcalloc(DIV_ROUND_UP(h->nr_cmds, BITS_PER_LONG),
 				   sizeof(unsigned long),
 				   GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp228;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp228;
+	}
 	h->cmd_pool = dma_alloc_coherent(&h->pdev->dev,
 		    h->nr_cmds * sizeof(*h->cmd_pool),
 		    &h->cmd_pool_dhandle, GFP_KERNEL);
@@ -8670,6 +8703,10 @@ static struct ctlr_info *hpda_alloc_ctlr_info(void)
 		return NULL;
 
 	h->reply_map = kcalloc(nr_cpu_ids, sizeof(*h->reply_map), GFP_KERNEL);
+	{
+		typeof((*h->reply_map)) __uncontained_tmp234;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp234;
+	}
 	if (!h->reply_map) {
 		kfree(h);
 		return NULL;

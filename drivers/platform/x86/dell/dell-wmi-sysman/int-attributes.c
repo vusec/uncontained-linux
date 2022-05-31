@@ -8,6 +8,11 @@
 
 #include "dell-wmi-sysman.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 enum int_properties {MIN_VALUE = 6, MAX_VALUE, SCALAR_INCR};
 
 get_instance_id(integer);
@@ -124,6 +129,10 @@ int alloc_int_data(void)
 	wmi_priv.integer_instances_count = get_instance_count(DELL_WMI_BIOS_INTEGER_ATTRIBUTE_GUID);
 	wmi_priv.integer_data = kcalloc(wmi_priv.integer_instances_count,
 					sizeof(struct integer_data), GFP_KERNEL);
+	{
+		struct integer_data __uncontained_tmp201;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp201;
+	}
 	if (!wmi_priv.integer_data) {
 		wmi_priv.integer_instances_count = 0;
 		ret = -ENOMEM;

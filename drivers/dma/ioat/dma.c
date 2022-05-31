@@ -20,6 +20,11 @@
 #include <linux/workqueue.h>
 #include <linux/prefetch.h>
 #include <linux/sizes.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "dma.h"
 #include "registers.h"
 #include "hw.h"
@@ -379,6 +384,10 @@ ioat_alloc_ring(struct dma_chan *c, int order, gfp_t flags)
 
 	/* allocate the array to hold the software ring */
 	ring = kcalloc(total_descs, sizeof(*ring), flags);
+	{
+		typeof((*ring)) __uncontained_tmp60;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!ring)
 		return NULL;
 

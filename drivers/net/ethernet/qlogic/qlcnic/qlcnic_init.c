@@ -7,6 +7,11 @@
 #include "qlcnic.h"
 #include "qlcnic_hw.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct crb_addr_pair {
 	u32 addr;
 	u32 data;
@@ -191,6 +196,10 @@ int qlcnic_alloc_sw_resources(struct qlcnic_adapter *adapter)
 
 	rds_ring = kcalloc(adapter->max_rds_rings,
 			   sizeof(struct qlcnic_host_rds_ring), GFP_KERNEL);
+	{
+		struct qlcnic_host_rds_ring __uncontained_tmp187;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp187;
+	}
 	if (rds_ring == NULL)
 		goto err_out;
 
@@ -455,6 +464,10 @@ int qlcnic_pinit_from_rom(struct qlcnic_adapter *adapter)
 	}
 
 	buf = kcalloc(n, sizeof(struct crb_addr_pair), GFP_KERNEL);
+	{
+		struct crb_addr_pair __uncontained_tmp188;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp188;
+	}
 	if (buf == NULL)
 		return -ENOMEM;
 

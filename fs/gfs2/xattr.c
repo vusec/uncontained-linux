@@ -13,6 +13,11 @@
 #include <linux/posix_acl_xattr.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gfs2.h"
 #include "incore.h"
 #include "acl.h"
@@ -464,6 +469,10 @@ static int gfs2_iter_unstuffed(struct gfs2_inode *ip, struct gfs2_ea_header *ea,
 	unsigned cp_size;
 
 	bh = kcalloc(nptrs, sizeof(struct buffer_head *), GFP_NOFS);
+	{
+		struct buffer_head *__uncontained_tmp281;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp281;
+	}
 	if (!bh)
 		return -ENOMEM;
 

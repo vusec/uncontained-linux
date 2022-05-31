@@ -37,6 +37,11 @@
 #include <linux/stat.h>
 
 #include <rdma/ib_mad.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 /*show_admin_alias_guid returns the administratively assigned value of that GUID.
  * Values returned in buf parameter string:
  *	0			- requests opensm to assign a value.
@@ -501,6 +506,10 @@ alloc_group_attrs(ssize_t (*show)(struct mlx4_port *,
 	int i;
 
 	tab_attr = kcalloc(1 + len, sizeof (struct attribute *), GFP_KERNEL);
+	{
+		struct attribute *__uncontained_tmp102;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (!tab_attr)
 		return NULL;
 

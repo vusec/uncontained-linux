@@ -18,6 +18,11 @@
 #include <rdma/ib_cm.h>
 #include <rdma/ib_verbs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_DESCRIPTION("RDMA Transport Server");
 MODULE_LICENSE("GPL");
 
@@ -144,6 +149,10 @@ static int rtrs_srv_alloc_ops_ids(struct rtrs_srv_path *srv_path)
 	srv_path->ops_ids = kcalloc(srv->queue_depth,
 				    sizeof(*srv_path->ops_ids),
 				    GFP_KERNEL);
+	{
+		typeof((*srv_path->ops_ids)) __uncontained_tmp114;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!srv_path->ops_ids)
 		goto err;
 
@@ -590,6 +599,10 @@ static int map_cont_bufs(struct rtrs_srv_path *srv_path)
 	}
 
 	srv_path->mrs = kcalloc(mrs_num, sizeof(*srv_path->mrs), GFP_KERNEL);
+	{
+		typeof((*srv_path->mrs)) __uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!srv_path->mrs)
 		return -ENOMEM;
 
@@ -820,6 +833,10 @@ static int process_info_req(struct rtrs_srv_con *con,
 		sizeof(srv_path->s.sessname));
 
 	rwr = kcalloc(srv_path->mrs_num, sizeof(*rwr), GFP_KERNEL);
+	{
+		typeof((*rwr)) __uncontained_tmp116;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (!rwr)
 		return -ENOMEM;
 
@@ -1407,6 +1424,10 @@ static struct rtrs_srv_sess *get_or_create_srv(struct rtrs_srv_ctx *ctx,
 
 	srv->chunks = kcalloc(srv->queue_depth, sizeof(*srv->chunks),
 			      GFP_KERNEL);
+	{
+		typeof((*srv->chunks)) __uncontained_tmp117;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!srv->chunks)
 		goto err_free_srv;
 
@@ -1760,11 +1781,19 @@ static struct rtrs_srv_path *__alloc_path(struct rtrs_srv_sess *srv,
 	srv_path->dma_addr = kcalloc(srv->queue_depth,
 				     sizeof(*srv_path->dma_addr),
 				     GFP_KERNEL);
+	{
+		typeof((*srv_path->dma_addr)) __uncontained_tmp118;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+	}
 	if (!srv_path->dma_addr)
 		goto err_free_stats;
 
 	srv_path->s.con = kcalloc(con_num, sizeof(*srv_path->s.con),
 				  GFP_KERNEL);
+	{
+		typeof((*srv_path->s.con)) __uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!srv_path->s.con)
 		goto err_free_dma_addr;
 

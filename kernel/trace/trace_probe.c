@@ -13,6 +13,11 @@
 
 #include "trace_probe.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #undef C
 #define C(a, b)		b
 
@@ -731,6 +736,10 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
 	ret = 0;
 	/* Shrink down the code buffer */
 	parg->code = kcalloc(code - tmp + 1, sizeof(*code), GFP_KERNEL);
+	{
+		typeof((*code)) __uncontained_tmp333;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp333;
+	}
 	if (!parg->code)
 		ret = -ENOMEM;
 	else

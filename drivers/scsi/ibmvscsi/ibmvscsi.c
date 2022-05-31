@@ -61,6 +61,11 @@
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_device.h>
 #include <scsi/scsi_transport_srp.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ibmvscsi.h"
 
 /* The values below are somewhat arbitrary default values, but 
@@ -448,6 +453,10 @@ static int initialize_event_pool(struct event_pool *pool,
 	pool->size = size;
 	pool->next = 0;
 	pool->events = kcalloc(pool->size, sizeof(*pool->events), GFP_KERNEL);
+	{
+		typeof((*pool->events)) __uncontained_tmp233;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp233;
+	}
 	if (!pool->events)
 		return -ENOMEM;
 

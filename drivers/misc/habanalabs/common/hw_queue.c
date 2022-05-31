@@ -9,6 +9,11 @@
 
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * hl_queue_add_ptr - add to pi or ci and checks if it wraps around
  *
@@ -1078,6 +1083,10 @@ int hl_hw_queues_create(struct hl_device *hdev)
 
 	hdev->kernel_queues = kcalloc(asic->max_queues,
 				sizeof(*hdev->kernel_queues), GFP_KERNEL);
+	{
+		typeof((*hdev->kernel_queues)) __uncontained_tmp138;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp138;
+	}
 
 	if (!hdev->kernel_queues) {
 		dev_err(hdev->dev, "Not enough memory for H/W queues\n");

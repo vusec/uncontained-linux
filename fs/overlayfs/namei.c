@@ -12,6 +12,11 @@
 #include <linux/ratelimit.h>
 #include <linux/mount.h>
 #include <linux/exportfs.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "overlayfs.h"
 
 struct ovl_lookup_data {
@@ -899,6 +904,10 @@ struct dentry *ovl_lookup(struct inode *dir, struct dentry *dentry,
 		err = -ENOMEM;
 		stack = kcalloc(ofs->numlayer - 1, sizeof(struct ovl_path),
 				GFP_KERNEL);
+		{
+			struct ovl_path __uncontained_tmp294;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp294;
+		}
 		if (!stack)
 			goto out_put_upper;
 	}

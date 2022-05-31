@@ -34,6 +34,11 @@
 
 #include <linux/ks8842.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "timberdale.h"
 
 #define DRIVER_NAME "timberdale"
@@ -696,6 +701,10 @@ static int timb_probe(struct pci_dev *dev,
 
 	msix_entries = kcalloc(TIMBERDALE_NR_IRQS, sizeof(*msix_entries),
 			       GFP_KERNEL);
+	{
+		typeof((*msix_entries)) __uncontained_tmp51;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp51;
+	}
 	if (!msix_entries)
 		goto err_config;
 

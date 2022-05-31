@@ -32,6 +32,11 @@
 #include <scsi/scsi_device.h>
 #include <scsi/scsi_tcq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vmw_pvscsi.h"
 
 #define PVSCSI_LINUX_DRIVER_DESC "VMware PVSCSI driver"
@@ -1480,6 +1485,10 @@ static int pvscsi_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 
 	adapter->cmd_map = kcalloc(adapter->req_depth,
 				   sizeof(struct pvscsi_ctx), GFP_KERNEL);
+	{
+		struct pvscsi_ctx __uncontained_tmp221;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp221;
+	}
 	if (!adapter->cmd_map) {
 		printk(KERN_ERR "vmw_pvscsi: failed to allocate memory.\n");
 		error = -ENOMEM;

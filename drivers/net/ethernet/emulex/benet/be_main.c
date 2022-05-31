@@ -21,6 +21,11 @@
 #include <net/busy_poll.h>
 #include <net/vxlan.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_DESCRIPTION(DRV_DESC);
 MODULE_AUTHOR("Emulex Corporation");
 MODULE_LICENSE("GPL");
@@ -4206,6 +4211,10 @@ static int be_vf_setup_init(struct be_adapter *adapter)
 
 	adapter->vf_cfg = kcalloc(adapter->num_vfs, sizeof(*vf_cfg),
 				  GFP_KERNEL);
+	{
+		typeof((*vf_cfg)) __uncontained_tmp148;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (!adapter->vf_cfg)
 		return -ENOMEM;
 
@@ -4680,16 +4689,28 @@ static int be_if_create(struct be_adapter *adapter)
 	/* alloc required memory for other filtering fields */
 	adapter->pmac_id = kcalloc(be_max_uc(adapter),
 				   sizeof(*adapter->pmac_id), GFP_KERNEL);
+	{
+		typeof((*adapter->pmac_id)) __uncontained_tmp149;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp149;
+	}
 	if (!adapter->pmac_id)
 		return -ENOMEM;
 
 	adapter->mc_list = kcalloc(be_max_mc(adapter),
 				   sizeof(*adapter->mc_list), GFP_KERNEL);
+	{
+		typeof((*adapter->mc_list)) __uncontained_tmp150;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp150;
+	}
 	if (!adapter->mc_list)
 		return -ENOMEM;
 
 	adapter->uc_list = kcalloc(be_max_uc(adapter),
 				   sizeof(*adapter->uc_list), GFP_KERNEL);
+	{
+		typeof((*adapter->uc_list)) __uncontained_tmp151;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp151;
+	}
 	if (!adapter->uc_list)
 		return -ENOMEM;
 

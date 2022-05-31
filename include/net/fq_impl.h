@@ -9,6 +9,11 @@
 
 #include <net/fq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* functions that are embedded into includer */
 
 
@@ -360,6 +365,10 @@ static int fq_init(struct fq *fq, int flows_cnt)
 
 	fq->flows_bitmap = kcalloc(BITS_TO_LONGS(fq->flows_cnt), sizeof(long),
 				   GFP_KERNEL);
+	{
+		long __uncontained_tmp325;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp325;
+	}
 	if (!fq->flows_bitmap) {
 		kvfree(fq->flows);
 		fq->flows = NULL;

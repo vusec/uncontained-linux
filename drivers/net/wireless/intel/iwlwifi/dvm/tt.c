@@ -13,6 +13,11 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <net/mac80211.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "iwl-io.h"
 #include "iwl-modparams.h"
 #include "iwl-debug.h"
@@ -609,10 +614,18 @@ void iwl_tt_initialize(struct iwl_priv *priv)
 		tt->restriction = kcalloc(IWL_TI_STATE_MAX,
 					  sizeof(struct iwl_tt_restriction),
 					  GFP_KERNEL);
+		{
+			struct iwl_tt_restriction __uncontained_tmp221;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp221;
+		}
 		tt->transaction = kcalloc(IWL_TI_STATE_MAX *
 					  (IWL_TI_STATE_MAX - 1),
 					  sizeof(struct iwl_tt_trans),
 					  GFP_KERNEL);
+		{
+			struct iwl_tt_trans __uncontained_tmp222;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp222;
+		}
 		if (!tt->restriction || !tt->transaction) {
 			IWL_ERR(priv, "Fallback to Legacy Throttling\n");
 			priv->thermal_throttle.advanced_tt = false;

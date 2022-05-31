@@ -7,6 +7,11 @@
 
 #include "dr_types.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 int mlx5dr_buddy_init(struct mlx5dr_icm_buddy_mem *buddy,
 		      unsigned int max_order)
 {
@@ -21,9 +26,17 @@ int mlx5dr_buddy_init(struct mlx5dr_icm_buddy_mem *buddy,
 	buddy->bitmap = kcalloc(buddy->max_order + 1,
 				sizeof(*buddy->bitmap),
 				GFP_KERNEL);
+	{
+		typeof((*buddy->bitmap)) __uncontained_tmp191;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp191;
+	}
 	buddy->num_free = kcalloc(buddy->max_order + 1,
 				  sizeof(*buddy->num_free),
 				  GFP_KERNEL);
+	{
+		typeof((*buddy->num_free)) __uncontained_tmp192;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp192;
+	}
 
 	if (!buddy->bitmap || !buddy->num_free)
 		goto err_free_all;

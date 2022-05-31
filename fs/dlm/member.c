@@ -18,6 +18,11 @@
 #include "midcomms.h"
 #include "lowcomms.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 int dlm_slots_version(struct dlm_header *h)
 {
 	if ((h->h_version & 0x0000FFFF) < DLM_HEADER_SLOTS)
@@ -217,6 +222,10 @@ int dlm_slots_assign(struct dlm_ls *ls, int *num_slots, int *slots_size,
 
 	array_size = max + need;
 	array = kcalloc(array_size, sizeof(*array), GFP_NOFS);
+	{
+		typeof((*array)) __uncontained_tmp264;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp264;
+	}
 	if (!array)
 		return -ENOMEM;
 
@@ -500,6 +509,10 @@ void dlm_lsop_recover_done(struct dlm_ls *ls)
 
 	num = ls->ls_num_nodes;
 	slots = kcalloc(num, sizeof(*slots), GFP_KERNEL);
+	{
+		typeof((*slots)) __uncontained_tmp265;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp265;
+	}
 	if (!slots)
 		return;
 

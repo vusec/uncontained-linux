@@ -96,6 +96,11 @@
 #include <asm/kvm_ppc.h>
 #include <asm/kvm_book3s_uvmem.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1196,6 +1201,10 @@ int kvmppc_uvmem_init(void)
 	pfn_last = pfn_first + (resource_size(res) >> PAGE_SHIFT);
 	kvmppc_uvmem_bitmap = kcalloc(BITS_TO_LONGS(pfn_last - pfn_first),
 				      sizeof(unsigned long), GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp12;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!kvmppc_uvmem_bitmap) {
 		ret = -ENOMEM;
 		goto out_unmap;

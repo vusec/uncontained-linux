@@ -18,6 +18,11 @@
 #include <linux/trace_events.h>
 #include <trace/events/mmflags.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "tracing_map.h"
 #include "trace_synth.h"
 
@@ -1610,6 +1615,10 @@ static int hist_trigger_elt_data_alloc(struct tracing_map_elt *elt)
 	size = STR_VAR_LEN_MAX;
 
 	elt_data->field_var_str = kcalloc(n_str, sizeof(char *), GFP_KERNEL);
+	{
+		char *__uncontained_tmp328;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp328;
+	}
 	if (!elt_data->field_var_str) {
 		hist_elt_data_free(elt_data);
 		return -EINVAL;

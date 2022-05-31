@@ -14,6 +14,11 @@
 #include <linux/uaccess.h>
 #include <linux/mm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dfl-afu.h"
 
 void afu_dma_region_init(struct dfl_feature_platform_data *pdata)
@@ -43,6 +48,10 @@ static int afu_dma_pin_pages(struct dfl_feature_platform_data *pdata,
 		return ret;
 
 	region->pages = kcalloc(npages, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp70;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!region->pages) {
 		ret = -ENOMEM;
 		goto unlock_vm;

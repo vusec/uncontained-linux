@@ -12,6 +12,11 @@
 #include <linux/vmalloc.h>
 #include <linux/highmem.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1400,6 +1405,10 @@ int sdma_init(struct hfi1_devdata *dd, u8 port)
 	/* alloc memory for array of send engines */
 	dd->per_sdma = kcalloc_node(num_engines, sizeof(*dd->per_sdma),
 				    GFP_KERNEL, dd->node);
+	{
+		typeof((*dd->per_sdma)) __uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!dd->per_sdma)
 		return ret;
 

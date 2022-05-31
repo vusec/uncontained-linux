@@ -47,6 +47,11 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "uhci-hcd.h"
 
 /*
@@ -605,6 +610,10 @@ static int uhci_start(struct usb_hcd *hcd)
 
 	uhci->frame_cpu = kcalloc(UHCI_NUMFRAMES, sizeof(*uhci->frame_cpu),
 			GFP_KERNEL);
+	{
+		typeof((*uhci->frame_cpu)) __uncontained_tmp309;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp309;
+	}
 	if (!uhci->frame_cpu)
 		goto err_alloc_frame_cpu;
 

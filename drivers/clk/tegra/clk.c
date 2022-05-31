@@ -18,6 +18,11 @@
 
 #include <soc/tegra/fuse.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk.h"
 
 /* Global data of Tegra CPU CAR ops */
@@ -214,6 +219,10 @@ static int tegra_clk_periph_ctx_init(int banks)
 {
 	periph_state_ctx = kcalloc(2 * banks, sizeof(*periph_state_ctx),
 				   GFP_KERNEL);
+	{
+		typeof((*periph_state_ctx)) __uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!periph_state_ctx)
 		return -ENOMEM;
 
@@ -230,12 +239,20 @@ struct clk ** __init tegra_clk_init(void __iomem *regs, int num, int banks)
 	periph_clk_enb_refcnt = kcalloc(32 * banks,
 					sizeof(*periph_clk_enb_refcnt),
 					GFP_KERNEL);
+	{
+		typeof((*periph_clk_enb_refcnt)) __uncontained_tmp49;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (!periph_clk_enb_refcnt)
 		return NULL;
 
 	periph_banks = banks;
 
 	clks = kcalloc(num, sizeof(struct clk *), GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp47;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!clks) {
 		kfree(periph_clk_enb_refcnt);
 		return NULL;
