@@ -171,7 +171,7 @@ xfs_efi_init(
 			((nextents - 1) * sizeof(xfs_extent_t)));
 		efip = kmem_zalloc(size, 0);
 		{
-			typeof((xfs_extent_t)) __uncontained_tmp87;
+			xfs_extent_t __uncontained_tmp87;
 			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp87;
 		}
 		{

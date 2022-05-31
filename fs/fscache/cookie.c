@@ -288,7 +288,7 @@ static int fscache_set_key(struct fscache_cookie *cookie,
 	if (index_key_len > sizeof(cookie->inline_key)) {
 		buf = kzalloc(buf_size, GFP_KERNEL);
 		{
-			typeof((__le32)) __uncontained_tmp86;
+			__le32 __uncontained_tmp86;
 			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp86;
 		}
 		if (!buf)

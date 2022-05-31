@@ -1474,7 +1474,7 @@ static int __init dmaengine_init_unmap_pool(void)
 		p->cache = kmem_cache_create(p->name, size, 0,
 					     SLAB_HWCACHE_ALIGN, NULL);
 		{
-			typeof((dma_addr_t)) __uncontained_tmp10;
+			dma_addr_t __uncontained_tmp10;
 			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp10;
 		}
 		{

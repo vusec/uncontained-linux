@@ -2691,7 +2691,7 @@ static int do_setlink(const struct sk_buff *skb,
 						  sizeof(*sa));
 		sa = kmalloc(len, GFP_KERNEL);
 		{
-			typeof((sa_family_t)) __uncontained_tmp90;
+			sa_family_t __uncontained_tmp90;
 			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp90;
 		}
 		{

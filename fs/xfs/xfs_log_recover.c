@@ -2184,7 +2184,7 @@ xlog_recover_add_to_trans(
 			kmem_zalloc(item->ri_total * sizeof(xfs_log_iovec_t),
 				    0);
 		{
-			typeof((xfs_log_iovec_t)) __uncontained_tmp169;
+			xfs_log_iovec_t __uncontained_tmp169;
 			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp169;
 		}
 	}

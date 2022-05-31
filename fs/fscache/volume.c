@@ -238,7 +238,7 @@ static struct fscache_volume *fscache_alloc_volume(const char *volume_key,
 	hlen = round_up(1 + klen + 1, sizeof(__le32));
 	key = kzalloc(hlen, GFP_KERNEL);
 	{
-		typeof((__le32)) __uncontained_tmp79;
+		__le32 __uncontained_tmp79;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp79;
 	}
 	if (!key)

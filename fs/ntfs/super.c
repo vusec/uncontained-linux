@@ -3094,7 +3094,7 @@ static int __init init_ntfs_fs(void)
 			sizeof(ntfs_index_context), 0 /* offset */,
 			SLAB_HWCACHE_ALIGN, NULL /* ctor */);
 	{
-		typeof((ntfs_index_context)) __uncontained_tmp146;
+		ntfs_index_context __uncontained_tmp146;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp146;
 	}
 	if (!ntfs_index_ctx_cache) {
@@ -3105,7 +3105,7 @@ static int __init init_ntfs_fs(void)
 			sizeof(ntfs_attr_search_ctx), 0 /* offset */,
 			SLAB_HWCACHE_ALIGN, NULL /* ctor */);
 	{
-		typeof((ntfs_attr_search_ctx)) __uncontained_tmp147;
+		ntfs_attr_search_ctx __uncontained_tmp147;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp147;
 	}
 	if (!ntfs_attr_ctx_cache) {
@@ -3130,7 +3130,7 @@ static int __init init_ntfs_fs(void)
 			sizeof(ntfs_inode), 0,
 			SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD, NULL);
 	{
-		typeof((ntfs_inode)) __uncontained_tmp148;
+		ntfs_inode __uncontained_tmp148;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp148;
 	}
 	if (!ntfs_inode_cache) {
@@ -3143,7 +3143,7 @@ static int __init init_ntfs_fs(void)
 			SLAB_HWCACHE_ALIGN|SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD|
 			SLAB_ACCOUNT, ntfs_big_inode_init_once);
 	{
-		typeof((big_ntfs_inode)) __uncontained_tmp149;
+		big_ntfs_inode __uncontained_tmp149;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp149;
 	}
 	if (!ntfs_big_inode_cache) {

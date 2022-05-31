@@ -933,7 +933,7 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
 	n = d->nr_stripes * sizeof(atomic_t);
 	d->stripe_sectors_dirty = kvzalloc(n, GFP_KERNEL);
 	{
-		typeof((atomic_t)) __uncontained_tmp27;
+		atomic_t __uncontained_tmp27;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp27;
 	}
 	if (!d->stripe_sectors_dirty)

@@ -136,11 +136,11 @@ static int ntfs_init_locked_inode(struct inode *vi, void *data)
 		i = na->name_len * sizeof(ntfschar);
 		ni->name = kmalloc(i + sizeof(ntfschar), GFP_ATOMIC);
 		{
-			typeof((ntfschar)) __uncontained_tmp85;
+			ntfschar __uncontained_tmp85;
 			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp85;
 		}
 		{
-			typeof((ntfschar)) __uncontained_tmp119;
+			ntfschar __uncontained_tmp119;
 			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp119;
 		}
 		if (!ni->name)
