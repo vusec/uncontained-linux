@@ -6,6 +6,11 @@
 
 /* this file is part of ehci-hcd.c */
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*-------------------------------------------------------------------------*/
 
 /*

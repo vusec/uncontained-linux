@@ -37,6 +37,11 @@
 #include <asm/barrier.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Registers */
 #define BPF_R0	regs[BPF_REG_0]
 #define BPF_R1	regs[BPF_REG_1]
@@ -2463,11 +2468,6 @@ EXPORT_SYMBOL(bpf_stats_enabled_key);
 /* All definitions of tracepoints related to BPF. */
 #define CREATE_TRACE_POINTS
 #include <linux/bpf_trace.h>
-
-#ifndef _UNCONTAINED_KCALLOC_H
-#define _UNCONTAINED_KCALLOC_H
-static volatile unsigned long __uncontained_kcalloc;
-#endif /*_UNCONTAINED_KCALLOC_H*/
 
 EXPORT_TRACEPOINT_SYMBOL_GPL(xdp_exception);
 EXPORT_TRACEPOINT_SYMBOL_GPL(xdp_bulk_tx);
