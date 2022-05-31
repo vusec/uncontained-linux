@@ -186,8 +186,9 @@ static inline bool rb_insert_count(struct rb_root *root, struct e_node *e)
 	size_t e_skey = e->start.key;
 
 	while (*p) {
+		parent = *p;
 		struct e_node *k =
-			rb_entry(parent = *p, struct e_node, count.node);
+			rb_entry(parent, struct e_node, count.node);
 
 		if (e_ckey > k->count.key) {
 			p = &(*p)->rb_left;
