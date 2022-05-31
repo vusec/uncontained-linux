@@ -16,6 +16,11 @@
 #include <linux/platform_device.h>
 #include <linux/of_pci.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MSI_IR0			0x000000
 #define MSI_INT0		0x800000
 #define IDX_PER_GROUP		8
@@ -278,6 +283,10 @@ static int xgene_msi_init_allocator(struct xgene_msi *xgene_msi)
 	xgene_msi->msi_groups = kcalloc(NR_HW_IRQS,
 					sizeof(struct xgene_msi_group),
 					GFP_KERNEL);
+	{
+		struct xgene_msi_group __uncontained_tmp162;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp162;
+	}
 	if (!xgene_msi->msi_groups)
 		return -ENOMEM;
 

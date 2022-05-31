@@ -12,6 +12,11 @@
 #include <drm/drm_file.h>
 #include <drm/drm_syncobj.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -564,6 +569,10 @@ static struct drm_syncobj **msm_parse_deps(struct msm_gem_submit *submit,
 
 	syncobjs = kcalloc(nr_in_syncobjs, sizeof(*syncobjs),
 	                   GFP_KERNEL | __GFP_NOWARN | __GFP_NORETRY);
+	{
+		typeof((*syncobjs)) __uncontained_tmp70;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp70;
+	}
 	if (!syncobjs)
 		return ERR_PTR(-ENOMEM);
 

@@ -22,6 +22,11 @@
 #include <linux/prefetch.h>
 #include <linux/sctp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1037,6 +1042,10 @@ static void igbvf_set_interrupt_capability(struct igbvf_adapter *adapter)
 	/* we allocate 3 vectors, 1 for Tx, 1 for Rx, one for PF messages */
 	adapter->msix_entries = kcalloc(3, sizeof(struct msix_entry),
 					GFP_KERNEL);
+	{
+		struct msix_entry __uncontained_tmp157;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp157;
+	}
 	if (adapter->msix_entries) {
 		for (i = 0; i < 3; i++)
 			adapter->msix_entries[i].entry = i;

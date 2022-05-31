@@ -25,6 +25,11 @@
 #include <scsi/scsi_cmnd.h>
 #include <scsi/scsi_device.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "usb.h"
 #include "transport.h"
 #include "protocol.h"
@@ -437,7 +442,15 @@ static int alauda_init_media(struct us_data *us)
 	num_zones = MEDIA_INFO(us).capacity >> (MEDIA_INFO(us).zoneshift
 		+ MEDIA_INFO(us).blockshift + MEDIA_INFO(us).pageshift);
 	MEDIA_INFO(us).pba_to_lba = kcalloc(num_zones, sizeof(u16*), GFP_NOIO);
+	{
+		u16 *__uncontained_tmp249;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp249;
+	}
 	MEDIA_INFO(us).lba_to_pba = kcalloc(num_zones, sizeof(u16*), GFP_NOIO);
+	{
+		u16 *__uncontained_tmp250;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp250;
+	}
 
 	if (alauda_reset_media(us) != USB_STOR_XFER_GOOD)
 		return USB_STOR_TRANSPORT_ERROR;

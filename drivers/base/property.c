@@ -17,6 +17,11 @@
 #include <linux/property.h>
 #include <linux/phy.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct fwnode_handle *dev_fwnode(struct device *dev)
 {
 	return IS_ENABLED(CONFIG_OF) && dev->of_node ?
@@ -435,6 +440,10 @@ int fwnode_property_match_string(const struct fwnode_handle *fwnode,
 		return -ENODATA;
 
 	values = kcalloc(nval, sizeof(*values), GFP_KERNEL);
+	{
+		typeof((*values)) __uncontained_tmp27;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp27;
+	}
 	if (!values)
 		return -ENOMEM;
 

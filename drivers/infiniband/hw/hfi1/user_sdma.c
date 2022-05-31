@@ -22,6 +22,11 @@
 #include <linux/vmalloc.h>
 #include <linux/string.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hfi.h"
 #include "sdma.h"
 #include "mmu_rb.h"
@@ -158,6 +163,10 @@ int hfi1_user_sdma_alloc_queues(struct hfi1_ctxtdata *uctxt,
 	pq->reqs = kcalloc(hfi1_sdma_comp_ring_size,
 			   sizeof(*pq->reqs),
 			   GFP_KERNEL);
+	{
+		typeof((*pq->reqs)) __uncontained_tmp100;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (!pq->reqs)
 		goto pq_reqs_nomem;
 
@@ -937,6 +946,10 @@ static int pin_sdma_pages(struct user_sdma_request *req,
 	struct hfi1_user_sdma_pkt_q *pq = req->pq;
 
 	pages = kcalloc(npages, sizeof(*pages), GFP_KERNEL);
+	{
+		typeof((*pages)) __uncontained_tmp101;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!pages)
 		return -ENOMEM;
 	memcpy(pages, node->pages, node->npages * sizeof(*pages));

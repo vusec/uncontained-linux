@@ -17,6 +17,11 @@
 #include <defs.h>
 #include <brcmu_wifi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -7062,6 +7067,10 @@ static int brcmf_setup_ifmodes(struct wiphy *wiphy, struct brcmf_if *ifp)
 
 	n_combos = 1 + !!(p2p && !rsdb) + !!mbss;
 	combo = kcalloc(n_combos, sizeof(*combo), GFP_KERNEL);
+	{
+		typeof((*combo)) __uncontained_tmp146;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp146;
+	}
 	if (!combo)
 		goto err;
 
@@ -7079,6 +7088,10 @@ static int brcmf_setup_ifmodes(struct wiphy *wiphy, struct brcmf_if *ifp)
 	i = 0;
 	n_limits = 1 + mon_flag + (p2p ? 2 : 0) + (rsdb || !p2p);
 	c0_limits = kcalloc(n_limits, sizeof(*c0_limits), GFP_KERNEL);
+	{
+		typeof((*c0_limits)) __uncontained_tmp147;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp147;
+	}
 	if (!c0_limits)
 		goto err;
 
@@ -7118,6 +7131,10 @@ static int brcmf_setup_ifmodes(struct wiphy *wiphy, struct brcmf_if *ifp)
 		c++;
 		i = 0;
 		p2p_limits = kcalloc(4, sizeof(*p2p_limits), GFP_KERNEL);
+		{
+			typeof((*p2p_limits)) __uncontained_tmp148;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+		}
 		if (!p2p_limits)
 			goto err;
 		p2p_limits[i].max = 1;
@@ -7140,6 +7157,10 @@ static int brcmf_setup_ifmodes(struct wiphy *wiphy, struct brcmf_if *ifp)
 		n_limits = 1 + mon_flag;
 		mbss_limits = kcalloc(n_limits, sizeof(*mbss_limits),
 				      GFP_KERNEL);
+		{
+			typeof((*mbss_limits)) __uncontained_tmp149;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp149;
+		}
 		if (!mbss_limits)
 			goto err;
 		mbss_limits[i].max = 4;

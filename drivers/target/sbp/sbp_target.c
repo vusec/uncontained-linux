@@ -25,6 +25,11 @@
 #include <target/target_core_fabric.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1849,6 +1854,10 @@ static int sbp_update_unit_directory(struct sbp_tport *tport)
 
 	/* allocate num_entries + 4 for the header and unique ID leaf */
 	data = kcalloc((num_entries + 4), sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp210;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp210;
+	}
 	if (!data)
 		return -ENOMEM;
 

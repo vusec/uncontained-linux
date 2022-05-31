@@ -28,6 +28,11 @@
 
 #include <prom.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static void alchemy_8250_pm(struct uart_port *port, unsigned int state,
 			    unsigned int old_state)
 {
@@ -197,6 +202,10 @@ static unsigned long alchemy_ehci_data[][2] __initdata = {
 static int __init _new_usbres(struct resource **r, struct platform_device **d)
 {
 	*r = kcalloc(2, sizeof(struct resource), GFP_KERNEL);
+	{
+		struct resource __uncontained_tmp3;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp3;
+	}
 	if (!*r)
 		return -ENOMEM;
 	*d = kzalloc(sizeof(struct platform_device), GFP_KERNEL);

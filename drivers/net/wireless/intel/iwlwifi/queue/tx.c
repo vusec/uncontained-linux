@@ -13,6 +13,11 @@
 #include "iwl-scd.h"
 #include <linux/dmapool.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * iwl_txq_update_byte_tbl - Set up entry in Tx byte-count array
  */
@@ -1039,6 +1044,10 @@ int iwl_txq_alloc(struct iwl_trans *trans, struct iwl_txq *txq, int slots_num,
 	txq->entries = kcalloc(slots_num,
 			       sizeof(struct iwl_pcie_txq_entry),
 			       GFP_KERNEL);
+	{
+		struct iwl_pcie_txq_entry __uncontained_tmp220;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp220;
+	}
 
 	if (!txq->entries)
 		goto error;

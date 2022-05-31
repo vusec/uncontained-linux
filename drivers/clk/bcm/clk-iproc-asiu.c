@@ -20,6 +20,11 @@
 #include <linux/of_address.h>
 #include <linux/delay.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk-iproc.h"
 
 struct iproc_asiu;
@@ -204,6 +209,10 @@ void __init iproc_asiu_setup(struct device_node *node,
 	asiu->clk_data->num = num_clks;
 
 	asiu->clks = kcalloc(num_clks, sizeof(*asiu->clks), GFP_KERNEL);
+	{
+		typeof((*asiu->clks)) __uncontained_tmp38;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (WARN_ON(!asiu->clks))
 		goto err_asiu_clks;
 

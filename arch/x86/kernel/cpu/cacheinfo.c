@@ -21,6 +21,11 @@
 #include <asm/amd_nb.h>
 #include <asm/smp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cpu.h"
 
 #define LVL_1_INST	1
@@ -544,6 +549,10 @@ static void init_amd_l3_attrs(void)
 		n += 1;
 
 	amd_l3_attrs = kcalloc(n, sizeof(*amd_l3_attrs), GFP_KERNEL);
+	{
+		typeof((*amd_l3_attrs)) __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!amd_l3_attrs)
 		return;
 

@@ -53,6 +53,11 @@
 #include <scsi/srp.h>
 #include <scsi/scsi_transport_srp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ib_srp.h"
 
 #define DRV_NAME	"ib_srp"
@@ -2266,10 +2271,18 @@ static int srp_alloc_iu_bufs(struct srp_rdma_ch *ch)
 
 	ch->rx_ring = kcalloc(target->queue_size, sizeof(*ch->rx_ring),
 			      GFP_KERNEL);
+	{
+		typeof((*ch->rx_ring)) __uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (!ch->rx_ring)
 		goto err_no_ring;
 	ch->tx_ring = kcalloc(target->queue_size, sizeof(*ch->tx_ring),
 			      GFP_KERNEL);
+	{
+		typeof((*ch->tx_ring)) __uncontained_tmp116;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp116;
+	}
 	if (!ch->tx_ring)
 		goto err_no_ring;
 
@@ -3766,6 +3779,10 @@ static ssize_t add_target_store(struct device *dev,
 
 	target->ch = kcalloc(target->ch_count, sizeof(*target->ch),
 			     GFP_KERNEL);
+	{
+		typeof((*target->ch)) __uncontained_tmp117;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!target->ch)
 		goto out;
 

@@ -15,6 +15,11 @@
 #include <linux/rtnetlink.h>
 #include <linux/iopoll.h>
 #include <linux/crc16.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "lan743x_main.h"
 #include "lan743x_ethtool.h"
 
@@ -1760,6 +1765,10 @@ static int lan743x_tx_ring_init(struct lan743x_tx *tx)
 	tx->ring_dma_ptr = dma_ptr;
 
 	cpu_ptr = kcalloc(tx->ring_size, sizeof(*tx->buffer_info), GFP_KERNEL);
+	{
+		typeof((*tx->buffer_info)) __uncontained_tmp200;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp200;
+	}
 	if (!cpu_ptr) {
 		ret = -ENOMEM;
 		goto cleanup;
@@ -2302,6 +2311,10 @@ static int lan743x_rx_ring_init(struct lan743x_rx *rx)
 
 	cpu_ptr = kcalloc(rx->ring_size, sizeof(*rx->buffer_info),
 			  GFP_KERNEL);
+	{
+		typeof((*rx->buffer_info)) __uncontained_tmp201;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp201;
+	}
 	if (!cpu_ptr) {
 		ret = -ENOMEM;
 		goto cleanup;

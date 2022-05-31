@@ -16,6 +16,11 @@
 #include <linux/fs.h>
 #include <linux/nd.h>
 #include <linux/backing-dev.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "btt.h"
 #include "nd.h"
 
@@ -539,6 +544,10 @@ static int btt_freelist_init(struct arena_info *arena)
 
 	arena->freelist = kcalloc(arena->nfree, sizeof(struct free_entry),
 					GFP_KERNEL);
+	{
+		struct free_entry __uncontained_tmp225;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp225;
+	}
 	if (!arena->freelist)
 		return -ENOMEM;
 
@@ -721,6 +730,10 @@ static int log_set_indices(struct arena_info *arena)
 static int btt_rtt_init(struct arena_info *arena)
 {
 	arena->rtt = kcalloc(arena->nfree, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp226;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp226;
+	}
 	if (arena->rtt == NULL)
 		return -ENOMEM;
 
@@ -733,6 +746,10 @@ static int btt_maplocks_init(struct arena_info *arena)
 
 	arena->map_locks = kcalloc(arena->nfree, sizeof(struct aligned_lock),
 				GFP_KERNEL);
+	{
+		struct aligned_lock __uncontained_tmp227;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp227;
+	}
 	if (!arena->map_locks)
 		return -ENOMEM;
 

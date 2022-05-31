@@ -10,6 +10,11 @@
 #include <linux/sched/mm.h>
 #include <linux/resource.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "siw.h"
 #include "siw_mem.h"
 
@@ -406,6 +411,10 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
 
 	umem->page_chunk =
 		kcalloc(num_chunks, sizeof(struct siw_page_chunk), GFP_KERNEL);
+	{
+		struct siw_page_chunk __uncontained_tmp107;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp107;
+	}
 	if (!umem->page_chunk) {
 		rv = -ENOMEM;
 		goto out_sem_up;
@@ -415,6 +424,10 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
 
 		umem->page_chunk[i].plist =
 			kcalloc(nents, sizeof(struct page *), GFP_KERNEL);
+		{
+			struct page *__uncontained_tmp108;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp108;
+		}
 		if (!umem->page_chunk[i].plist) {
 			rv = -ENOMEM;
 			goto out_sem_up;

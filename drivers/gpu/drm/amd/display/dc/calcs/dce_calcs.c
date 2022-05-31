@@ -25,6 +25,11 @@
 
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "resource.h"
 #include "dm_services.h"
 #include "dce_calcs.h"
@@ -123,18 +128,34 @@ static void calculate_bandwidth(
 	int32_t number_of_aligned_displays_with_no_margin = 0;
 
 	yclk = kcalloc(3, sizeof(*yclk), GFP_KERNEL);
+	{
+		typeof((*yclk)) __uncontained_tmp57;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp57;
+	}
 	if (!yclk)
 		return;
 
 	sclk = kcalloc(8, sizeof(*sclk), GFP_KERNEL);
+	{
+		typeof((*sclk)) __uncontained_tmp58;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!sclk)
 		goto free_yclk;
 
 	tiling_mode = kcalloc(maximum_number_of_surfaces, sizeof(*tiling_mode), GFP_KERNEL);
+	{
+		typeof((*tiling_mode)) __uncontained_tmp59;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!tiling_mode)
 		goto free_sclk;
 
 	surface_type = kcalloc(maximum_number_of_surfaces, sizeof(*surface_type), GFP_KERNEL);
+	{
+		typeof((*surface_type)) __uncontained_tmp60;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp60;
+	}
 	if (!surface_type)
 		goto free_tiling_mode;
 

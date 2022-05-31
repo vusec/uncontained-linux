@@ -46,6 +46,11 @@
 #include <rdma/rdma_counter.h>
 #include <rdma/ib_sysfs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct port_table_attribute {
 	struct ib_port_attribute attr;
 	char			name[8];
@@ -909,6 +914,10 @@ alloc_hw_stats_device(struct ib_device *ibdev)
 		goto err_free_stats;
 	data->group.attrs = kcalloc(stats->num_counters + 2,
 				    sizeof(*data->group.attrs), GFP_KERNEL);
+	{
+		typeof((*data->group.attrs)) __uncontained_tmp90;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (!data->group.attrs)
 		goto err_free_data;
 
@@ -1015,6 +1024,10 @@ alloc_hw_stats_port(struct ib_port *port, struct attribute_group *group)
 		goto err_free_stats;
 	group->attrs = kcalloc(stats->num_counters + 2,
 				    sizeof(*group->attrs), GFP_KERNEL);
+	{
+		typeof((*group->attrs)) __uncontained_tmp91;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (!group->attrs)
 		goto err_free_data;
 
@@ -1102,6 +1115,10 @@ alloc_port_table_group(const char *name, struct attribute_group *group,
 	int i;
 
 	attr_list = kcalloc(num + 1, sizeof(*attr_list), GFP_KERNEL);
+	{
+		typeof((*attr_list)) __uncontained_tmp92;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!attr_list)
 		return -ENOMEM;
 

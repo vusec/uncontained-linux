@@ -25,6 +25,11 @@
 #include <linux/parser.h>
 #include <linux/regulator/consumer.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static const struct fb_fix_screeninfo simplefb_fix = {
 	.id		= "simple",
 	.type		= FB_TYPE_PACKED_PIXELS,
@@ -217,6 +222,10 @@ static int simplefb_clocks_get(struct simplefb_par *par,
 		return 0;
 
 	par->clks = kcalloc(par->clk_count, sizeof(struct clk *), GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp283;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp283;
+	}
 	if (!par->clks)
 		return -ENOMEM;
 

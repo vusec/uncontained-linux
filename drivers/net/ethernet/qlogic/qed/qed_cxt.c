@@ -14,6 +14,11 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/string.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qed.h"
 #include "qed_cxt.h"
 #include "qed_dev_api.h"
@@ -847,6 +852,10 @@ static int qed_cxt_src_t2_alloc(struct qed_hwfn *p_hwfn)
 	/* allocate t2 */
 	p_t2->dma_mem = kcalloc(p_t2->num_pages, sizeof(struct phys_mem_desc),
 				GFP_KERNEL);
+	{
+		struct phys_mem_desc __uncontained_tmp183;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp183;
+	}
 	if (!p_t2->dma_mem) {
 		DP_NOTICE(p_hwfn, "Failed to allocate t2 table\n");
 		rc = -ENOMEM;
@@ -995,6 +1004,10 @@ static int qed_ilt_shadow_alloc(struct qed_hwfn *p_hwfn)
 	size = qed_cxt_ilt_shadow_size(clients);
 	p_mngr->ilt_shadow = kcalloc(size, sizeof(struct phys_mem_desc),
 				     GFP_KERNEL);
+	{
+		struct phys_mem_desc __uncontained_tmp184;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp184;
+	}
 	if (!p_mngr->ilt_shadow) {
 		rc = -ENOMEM;
 		goto ilt_shadow_fail;

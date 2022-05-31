@@ -20,6 +20,11 @@
 #include <asm/insn.h>
 #include <asm/set_memory.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "bpf_jit.h"
 
 #define TMP_REG_1 (MAX_BPF_JIT_REG + 0)
@@ -1044,6 +1049,10 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 	ctx.prog = prog;
 
 	ctx.offset = kcalloc(prog->len + 1, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp7;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp7;
+	}
 	if (ctx.offset == NULL) {
 		prog = orig_prog;
 		goto out_off;

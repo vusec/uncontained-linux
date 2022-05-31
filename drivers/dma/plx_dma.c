@@ -14,6 +14,11 @@
 #include <linux/module.h>
 #include <linux/pci.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_DESCRIPTION("PLX ExpressLane PEX PCI Switch DMA Engine");
 MODULE_VERSION("0.1");
 MODULE_LICENSE("GPL");
@@ -380,6 +385,10 @@ static int plx_dma_alloc_desc(struct plx_dma_dev *plxdev)
 
 	plxdev->desc_ring = kcalloc(PLX_DMA_RING_COUNT,
 				    sizeof(*plxdev->desc_ring), GFP_KERNEL);
+	{
+		typeof((*plxdev->desc_ring)) __uncontained_tmp62;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!plxdev->desc_ring)
 		return -ENOMEM;
 

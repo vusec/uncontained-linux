@@ -30,6 +30,11 @@
 #include <asm/cputype.h>
 #include <asm/topology.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * cpu capacity scale management
  */
@@ -93,6 +98,10 @@ static void __init parse_dt_topology(void)
 
 	__cpu_capacity = kcalloc(nr_cpu_ids, sizeof(*__cpu_capacity),
 				 GFP_NOWAIT);
+	{
+		typeof((*__cpu_capacity)) __uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 
 	for_each_possible_cpu(cpu) {
 		const __be32 *rate;

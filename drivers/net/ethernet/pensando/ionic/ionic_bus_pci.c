@@ -6,6 +6,11 @@
 #include <linux/etherdevice.h>
 #include <linux/pci.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ionic.h"
 #include "ionic_bus.h"
 #include "ionic_lif.h"
@@ -150,6 +155,10 @@ static int ionic_vf_alloc(struct ionic *ionic, int num_vfs)
 	down_write(&ionic->vf_op_lock);
 
 	ionic->vfs = kcalloc(num_vfs, sizeof(struct ionic_vf), GFP_KERNEL);
+	{
+		struct ionic_vf __uncontained_tmp117;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp117;
+	}
 	if (!ionic->vfs) {
 		err = -ENOMEM;
 		goto out;

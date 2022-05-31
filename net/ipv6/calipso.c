@@ -32,6 +32,11 @@
 #include <asm/unaligned.h>
 #include <linux/crc-ccitt.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Maximium size of the calipso option including
  * the two-byte TLV header.
  */
@@ -136,6 +141,10 @@ static int __init calipso_cache_init(void)
 	calipso_cache = kcalloc(CALIPSO_CACHE_BUCKETS,
 				sizeof(struct calipso_map_cache_bkt),
 				GFP_KERNEL);
+	{
+		struct calipso_map_cache_bkt __uncontained_tmp293;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp293;
+	}
 	if (!calipso_cache)
 		return -ENOMEM;
 

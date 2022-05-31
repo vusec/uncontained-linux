@@ -15,6 +15,11 @@
 #include <linux/nvme-fc-driver.h>
 #include <linux/nvme-fc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -555,6 +560,10 @@ nvmet_fc_alloc_ls_iodlist(struct nvmet_fc_tgtport *tgtport)
 
 	iod = kcalloc(NVMET_LS_CTX_COUNT, sizeof(struct nvmet_fc_ls_iod),
 			GFP_KERNEL);
+	{
+		struct nvmet_fc_ls_iod __uncontained_tmp194;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp194;
+	}
 	if (!iod)
 		return -ENOMEM;
 

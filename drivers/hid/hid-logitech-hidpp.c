@@ -24,6 +24,11 @@
 #include <linux/atomic.h>
 #include <linux/fixp-arith.h>
 #include <asm/unaligned.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "usbhid/usbhid.h"
 #include "hid-ids.h"
 
@@ -2587,6 +2592,10 @@ static int hidpp_ff_init(struct hidpp_device *hidpp,
 	if (!data)
 		return -ENOMEM;
 	data->effect_ids = kcalloc(num_slots, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp90;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp90;
+	}
 	if (!data->effect_ids) {
 		kfree(data);
 		return -ENOMEM;

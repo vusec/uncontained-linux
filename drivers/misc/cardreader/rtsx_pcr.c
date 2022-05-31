@@ -23,6 +23,11 @@
 #include <linux/pm.h>
 #include <linux/pm_runtime.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rtsx_pcr.h"
 #include "rts5261.h"
 #include "rts5228.h"
@@ -1483,6 +1488,10 @@ static int rtsx_pci_init_chip(struct rtsx_pcr *pcr)
 
 	pcr->slots = kcalloc(pcr->num_slots, sizeof(struct rtsx_slot),
 			GFP_KERNEL);
+	{
+		struct rtsx_slot __uncontained_tmp133;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp133;
+	}
 	if (!pcr->slots)
 		return -ENOMEM;
 

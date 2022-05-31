@@ -22,6 +22,11 @@
 #include <asm/debug.h>
 #include <asm/diag.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vmur.h"
 
 /*
@@ -220,6 +225,10 @@ static struct ccw1 *alloc_chan_prog(const char __user *ubuf, int rec_count,
 	 */
 	cpa = kcalloc(rec_count + 1, sizeof(struct ccw1),
 		      GFP_KERNEL | GFP_DMA);
+	{
+		struct ccw1 __uncontained_tmp175;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp175;
+	}
 	if (!cpa)
 		return ERR_PTR(-ENOMEM);
 

@@ -22,6 +22,11 @@
 #include <linux/crc-ccitt.h>
 #include <linux/export.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -171,6 +176,10 @@ static int p54_generate_band(struct ieee80211_hw *dev,
 	tmp->channels = kcalloc(list->band_channel_num[band],
 				sizeof(struct ieee80211_channel),
 				GFP_KERNEL);
+	{
+		struct ieee80211_channel __uncontained_tmp203;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp203;
+	}
 	if (!tmp->channels)
 		goto err_out;
 
@@ -354,6 +363,10 @@ static int p54_generate_channel_lists(struct ieee80211_hw *dev)
 	priv->chan_num = max_channel_num;
 	priv->survey = kcalloc(max_channel_num, sizeof(struct survey_info),
 			       GFP_KERNEL);
+	{
+		struct survey_info __uncontained_tmp204;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp204;
+	}
 	if (!priv->survey) {
 		ret = -ENOMEM;
 		goto free;
@@ -363,6 +376,10 @@ static int p54_generate_channel_lists(struct ieee80211_hw *dev)
 	list->channels = kcalloc(max_channel_num,
 				 sizeof(struct p54_channel_entry),
 				 GFP_KERNEL);
+	{
+		struct p54_channel_entry __uncontained_tmp205;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp205;
+	}
 	if (!list->channels) {
 		ret = -ENOMEM;
 		goto free;

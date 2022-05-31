@@ -21,6 +21,11 @@
 #include <linux/err.h>
 #include <linux/idr.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "of_private.h"
 
 /**
@@ -779,6 +784,10 @@ static int init_overlay_changeset(struct overlay_changeset *ovcs,
 	}
 
 	fragments = kcalloc(cnt, sizeof(*fragments), GFP_KERNEL);
+	{
+		typeof((*fragments)) __uncontained_tmp237;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp237;
+	}
 	if (!fragments) {
 		ret = -ENOMEM;
 		goto err_free_idr;

@@ -83,6 +83,11 @@
 #include <drm/drm_vblank.h>
 #include <drm/drm_audio_component.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1344,6 +1349,10 @@ static struct hpd_rx_irq_offload_work_queue *hpd_rx_irq_create_workqueue(struct 
 	struct hpd_rx_irq_offload_work_queue *hpd_rx_offload_wq = NULL;
 
 	hpd_rx_offload_wq = kcalloc(max_caps, sizeof(*hpd_rx_offload_wq), GFP_KERNEL);
+	{
+		typeof((*hpd_rx_offload_wq)) __uncontained_tmp80;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp80;
+	}
 
 	if (!hpd_rx_offload_wq)
 		return NULL;
@@ -8446,6 +8455,10 @@ static int amdgpu_dm_i2c_xfer(struct i2c_adapter *i2c_adap,
 	int result = -EIO;
 
 	cmd.payloads = kcalloc(num, sizeof(struct i2c_payload), GFP_KERNEL);
+	{
+		struct i2c_payload __uncontained_tmp79;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp79;
+	}
 
 	if (!cmd.payloads)
 		return result;

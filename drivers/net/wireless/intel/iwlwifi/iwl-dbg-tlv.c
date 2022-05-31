@@ -4,6 +4,11 @@
  */
 #include <linux/firmware.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -600,6 +605,10 @@ static int iwl_dbg_tlv_alloc_fragments(struct iwl_fw_runtime *fwrt,
 	frag_pages = DIV_ROUND_UP(remain_pages, num_frags);
 
 	fw_mon->frags = kcalloc(num_frags, sizeof(*fw_mon->frags), GFP_KERNEL);
+	{
+		typeof((*fw_mon->frags)) __uncontained_tmp223;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp223;
+	}
 	if (!fw_mon->frags)
 		return -ENOMEM;
 

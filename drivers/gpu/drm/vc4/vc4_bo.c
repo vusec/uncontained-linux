@@ -18,6 +18,11 @@
 
 #include <linux/dma-buf.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vc4_drv.h"
 #include "uapi/drm/vc4_drm.h"
 
@@ -962,6 +967,10 @@ int vc4_bo_cache_init(struct drm_device *dev)
 	 */
 	vc4->bo_labels = kcalloc(VC4_BO_TYPE_COUNT, sizeof(*vc4->bo_labels),
 				 GFP_KERNEL);
+	{
+		typeof((*vc4->bo_labels)) __uncontained_tmp76;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (!vc4->bo_labels)
 		return -ENOMEM;
 	vc4->num_labels = VC4_BO_TYPE_COUNT;

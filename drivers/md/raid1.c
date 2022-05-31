@@ -33,6 +33,11 @@
 
 #include <trace/events/block.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2982,21 +2987,37 @@ static struct r1conf *setup_conf(struct mddev *mddev)
 
 	conf->nr_pending = kcalloc(BARRIER_BUCKETS_NR,
 				   sizeof(atomic_t), GFP_KERNEL);
+	{
+		typeof((atomic_t)) __uncontained_tmp123;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (!conf->nr_pending)
 		goto abort;
 
 	conf->nr_waiting = kcalloc(BARRIER_BUCKETS_NR,
 				   sizeof(atomic_t), GFP_KERNEL);
+	{
+		typeof((atomic_t)) __uncontained_tmp124;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (!conf->nr_waiting)
 		goto abort;
 
 	conf->nr_queued = kcalloc(BARRIER_BUCKETS_NR,
 				  sizeof(atomic_t), GFP_KERNEL);
+	{
+		typeof((atomic_t)) __uncontained_tmp125;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (!conf->nr_queued)
 		goto abort;
 
 	conf->barrier = kcalloc(BARRIER_BUCKETS_NR,
 				sizeof(atomic_t), GFP_KERNEL);
+	{
+		typeof((atomic_t)) __uncontained_tmp126;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp126;
+	}
 	if (!conf->barrier)
 		goto abort;
 

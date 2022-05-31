@@ -16,6 +16,11 @@
 #include "cthardware.h"
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SRC_RESOURCE_NUM	256
 #define SRCIMP_RESOURCE_NUM	256
 
@@ -433,8 +438,13 @@ get_src_rsc(struct src_mgr *mgr, const struct src_desc *desc, struct src **rsrc)
 	}
 
 	/* Allocate mem for master src resource */
-	if (MEMRD == desc->mode)
+	if (MEMRD == desc->mode) {
 		src = kcalloc(desc->multi, sizeof(*src), GFP_KERNEL);
+		{
+			typeof((*src)) __uncontained_tmp313;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp313;
+		}
+	}
 	else
 		src = kzalloc(sizeof(*src), GFP_KERNEL);
 
@@ -676,6 +686,10 @@ static int srcimp_rsc_init(struct srcimp *srcimp,
 	/* Reserve memory for imapper nodes */
 	srcimp->imappers = kcalloc(desc->msr, sizeof(struct imapper),
 				   GFP_KERNEL);
+	{
+		struct imapper __uncontained_tmp312;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp312;
+	}
 	if (!srcimp->imappers) {
 		err = -ENOMEM;
 		goto error1;

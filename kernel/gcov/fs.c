@@ -28,6 +28,11 @@
 #include <linux/seq_file.h>
 #include <linux/mm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -488,6 +493,10 @@ static void add_links(struct gcov_node *node, struct dentry *parent)
 	for (num = 0; gcov_link[num].ext; num++)
 		/* Nothing. */;
 	node->links = kcalloc(num, sizeof(struct dentry *), GFP_KERNEL);
+	{
+		struct dentry *__uncontained_tmp300;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp300;
+	}
 	if (!node->links)
 		return;
 	for (i = 0; i < num; i++) {
@@ -741,6 +750,10 @@ static void add_info(struct gcov_node *node, struct gcov_info *info)
 	 * unloaded data sets and there's not enough memory for the array.
 	 */
 	loaded_info = kcalloc(num + 1, sizeof(struct gcov_info *), GFP_KERNEL);
+	{
+		struct gcov_info *__uncontained_tmp301;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp301;
+	}
 	if (!loaded_info) {
 		pr_warn("could not add '%s' (out of memory)\n",
 			gcov_info_filename(info));

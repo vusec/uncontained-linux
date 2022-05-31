@@ -8,6 +8,11 @@
 #include <linux/of.h>
 #include <linux/skbuff.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hnae.h"
 
 #define cls_to_ae_dev(dev) container_of(dev, struct hnae_ae_dev, cls_dev)
@@ -208,6 +213,10 @@ hnae_init_ring(struct hnae_queue *q, struct hnae_ring *ring, int flags)
 
 	ring->desc_cb = kcalloc(ring->desc_num, sizeof(ring->desc_cb[0]),
 			GFP_KERNEL);
+	{
+		typeof((ring->desc_cb[0])) __uncontained_tmp152;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp152;
+	}
 	if (!ring->desc_cb) {
 		ret = -ENOMEM;
 		goto out;

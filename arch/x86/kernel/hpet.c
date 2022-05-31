@@ -12,6 +12,11 @@
 #include <asm/time.h>
 #include <asm/mwait.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #undef  pr_fmt
 #define pr_fmt(fmt) "hpet: " fmt
 
@@ -1048,6 +1053,10 @@ int __init hpet_enable(void)
 		goto out_nohpet;
 
 	hc = kcalloc(channels, sizeof(*hc), GFP_KERNEL);
+	{
+		typeof((*hc)) __uncontained_tmp16;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+	}
 	if (!hc) {
 		pr_warn("Disabling HPET.\n");
 		goto out_nohpet;

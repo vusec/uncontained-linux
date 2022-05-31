@@ -14,6 +14,11 @@
 #include <linux/interrupt.h>
 #include <linux/clocksource.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "aq_nic.h"
 #include "aq_ptp.h"
 #include "aq_ring.h"
@@ -1140,6 +1145,10 @@ static void aq_ptp_gpio_init(struct ptp_clock_info *info,
 
 	info->pin_config = kcalloc(info->n_pins, sizeof(struct ptp_pin_desc),
 				   GFP_KERNEL);
+	{
+		struct ptp_pin_desc __uncontained_tmp62;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+	}
 
 	if (!info->pin_config)
 		return;

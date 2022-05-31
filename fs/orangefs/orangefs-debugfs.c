@@ -40,6 +40,11 @@
 
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "orangefs-debugfs.h"
 #include "protocol.h"
 #include "orangefs-kernel.h"
@@ -536,6 +541,10 @@ static int orangefs_prepare_cdm_array(char *debug_array_string)
 	}
 
 	cdm_array = kcalloc(cdm_element_count, sizeof(*cdm_array), GFP_KERNEL);
+	{
+		typeof((*cdm_array)) __uncontained_tmp243;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp243;
+	}
 	if (!cdm_array) {
 		rc = -ENOMEM;
 		goto out;

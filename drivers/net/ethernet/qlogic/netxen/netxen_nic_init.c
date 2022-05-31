@@ -10,6 +10,11 @@
 #include <linux/slab.h>
 #include <linux/if_vlan.h>
 #include <net/checksum.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "netxen_nic.h"
 #include "netxen_nic_hw.h"
 
@@ -204,6 +209,10 @@ int netxen_alloc_sw_resources(struct netxen_adapter *adapter)
 
 	rds_ring = kcalloc(adapter->max_rds_rings,
 			   sizeof(struct nx_host_rds_ring), GFP_KERNEL);
+	{
+		struct nx_host_rds_ring __uncontained_tmp197;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp197;
+	}
 	if (rds_ring == NULL)
 		goto err_out;
 
@@ -452,6 +461,10 @@ int netxen_pinit_from_rom(struct netxen_adapter *adapter)
 	}
 
 	buf = kcalloc(n, sizeof(struct crb_addr_pair), GFP_KERNEL);
+	{
+		struct crb_addr_pair __uncontained_tmp198;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp198;
+	}
 	if (buf == NULL)
 		return -ENOMEM;
 

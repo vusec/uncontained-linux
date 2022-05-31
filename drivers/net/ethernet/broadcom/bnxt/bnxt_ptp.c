@@ -14,6 +14,11 @@
 #include <linux/net_tstamp.h>
 #include <linux/timekeeping.h>
 #include <linux/ptp_classify.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "bnxt_hsi.h"
 #include "bnxt.h"
 #include "bnxt_hwrm.h"
@@ -675,6 +680,10 @@ static int bnxt_ptp_pps_init(struct bnxt *bp)
 	ptp_info->pin_config = kcalloc(ptp_info->n_pins,
 				       sizeof(*ptp_info->pin_config),
 				       GFP_KERNEL);
+	{
+		typeof((*ptp_info->pin_config)) __uncontained_tmp153;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp153;
+	}
 	if (!ptp_info->pin_config) {
 		hwrm_req_drop(bp, req);
 		return -ENOMEM;

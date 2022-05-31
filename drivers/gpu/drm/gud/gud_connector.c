@@ -18,6 +18,11 @@
 #include <drm/drm_simple_kms_helper.h>
 #include <drm/gud.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gud_internal.h"
 
 struct gud_connector {
@@ -480,6 +485,10 @@ static int gud_connector_add_properties(struct gud_device *gdrm, struct gud_conn
 	int ret;
 
 	properties = kcalloc(GUD_CONNECTOR_PROPERTIES_MAX_NUM, sizeof(*properties), GFP_KERNEL);
+	{
+		typeof((*properties)) __uncontained_tmp66;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!properties)
 		return -ENOMEM;
 
@@ -496,6 +505,10 @@ static int gud_connector_add_properties(struct gud_device *gdrm, struct gud_conn
 	ret = 0;
 
 	gconn->properties = kcalloc(num_properties, sizeof(*gconn->properties), GFP_KERNEL);
+	{
+		typeof((*gconn->properties)) __uncontained_tmp67;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!gconn->properties) {
 		ret = -ENOMEM;
 		goto out;

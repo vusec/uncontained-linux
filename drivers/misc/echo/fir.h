@@ -75,6 +75,10 @@ static inline const int16_t *fir16_create(struct fir16_state_t *fir,
 	fir->curr_pos = taps - 1;
 	fir->coeffs = coeffs;
 	fir->history = kcalloc(taps, sizeof(int16_t), GFP_KERNEL);
+	{
+		int16_t __uncontained_tmp52;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp52;
+	}
 	return fir->history;
 }
 
@@ -117,6 +121,10 @@ static inline const int16_t *fir32_create(struct fir32_state_t *fir,
 	fir->curr_pos = taps - 1;
 	fir->coeffs = coeffs;
 	fir->history = kcalloc(taps, sizeof(int16_t), GFP_KERNEL);
+	{
+		int16_t __uncontained_tmp53;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp53;
+	}
 	return fir->history;
 }
 

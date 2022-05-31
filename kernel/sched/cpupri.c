@@ -24,6 +24,11 @@
  */
 #include "sched.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * p->rt_priority   p->prio   newpri   cpupri
  *
@@ -288,6 +293,10 @@ int cpupri_init(struct cpupri *cp)
 	}
 
 	cp->cpu_to_pri = kcalloc(nr_cpu_ids, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp310;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp310;
+	}
 	if (!cp->cpu_to_pri)
 		goto cleanup;
 

@@ -9,6 +9,11 @@
 #include "ice_dcb_lib.h"
 #include "ice_devlink.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * ice_vsi_type_str - maps VSI type enum to string equivalents
  * @vsi_type: VSI type enum
@@ -3326,6 +3331,10 @@ int ice_vsi_rebuild(struct ice_vsi *vsi, bool init_vsi)
 
 	coalesce = kcalloc(vsi->num_q_vectors,
 			   sizeof(struct ice_coalesce_stored), GFP_KERNEL);
+	{
+		struct ice_coalesce_stored __uncontained_tmp158;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp158;
+	}
 	if (!coalesce)
 		return -ENOMEM;
 

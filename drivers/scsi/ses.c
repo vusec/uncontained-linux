@@ -20,6 +20,11 @@
 
 #include <scsi/scsi_transport_sas.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct ses_device {
 	unsigned char *page1;
 	unsigned char *page1_types;
@@ -746,6 +751,10 @@ static int ses_intf_add(struct device *cdev,
 	}
 page2_not_supported:
 	scomp = kcalloc(components, sizeof(struct ses_component), GFP_KERNEL);
+	{
+		struct ses_component __uncontained_tmp240;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp240;
+	}
 	if (!scomp)
 		goto err_free;
 

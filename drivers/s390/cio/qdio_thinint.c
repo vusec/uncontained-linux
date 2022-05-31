@@ -16,6 +16,11 @@
 #include <asm/airq.h>
 #include <asm/isc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cio.h"
 #include "ioasm.h"
 #include "qdio.h"
@@ -204,6 +209,10 @@ int __init qdio_thinint_init(void)
 
 	q_indicators = kcalloc(TIQDIO_NR_INDICATORS, sizeof(struct indicator_t),
 			       GFP_KERNEL);
+	{
+		struct indicator_t __uncontained_tmp199;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp199;
+	}
 	if (!q_indicators)
 		return -ENOMEM;
 

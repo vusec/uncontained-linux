@@ -38,6 +38,11 @@
 #include <rdma/rdma_cm.h>
 #include <rdma/rdma_netlink.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core_priv.h"
 #include "cma_priv.h"
 #include "restrack.h"
@@ -1961,6 +1966,10 @@ static int nldev_stat_set_counter_dynamic_doit(struct nlattr *tb[],
 
 	target = kcalloc(BITS_TO_LONGS(stats->num_counters),
 			 sizeof(*stats->is_disabled), GFP_KERNEL);
+	{
+		typeof((*stats->is_disabled)) __uncontained_tmp99;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
+	}
 	if (!target)
 		return -ENOMEM;
 

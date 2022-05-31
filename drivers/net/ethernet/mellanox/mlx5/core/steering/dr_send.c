@@ -3,6 +3,11 @@
 
 #include <linux/smp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -146,6 +151,10 @@ static struct mlx5dr_qp *dr_create_rc_qp(struct mlx5_core_dev *mdev,
 	dr_qp->sq.wqe_head = kcalloc(dr_qp->sq.wqe_cnt,
 				     sizeof(dr_qp->sq.wqe_head[0]),
 				     GFP_KERNEL);
+	{
+		typeof((dr_qp->sq.wqe_head[0])) __uncontained_tmp193;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp193;
+	}
 
 	if (!dr_qp->sq.wqe_head) {
 		mlx5_core_warn(mdev, "Can't allocate wqe head\n");

@@ -22,6 +22,11 @@
 
 #include <trace/events/thermal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SCALE_ERROR_MITIGATION	100
 
 /**
@@ -317,6 +322,10 @@ static int devfreq_cooling_gen_tables(struct devfreq_cooling_device *dfc,
 
 	dfc->freq_table = kcalloc(num_opps, sizeof(*dfc->freq_table),
 			     GFP_KERNEL);
+	{
+		typeof((*dfc->freq_table)) __uncontained_tmp211;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp211;
+	}
 	if (!dfc->freq_table)
 		return -ENOMEM;
 

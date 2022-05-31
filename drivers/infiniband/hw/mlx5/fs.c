@@ -26,6 +26,11 @@
 #define UVERBS_MODULE_NAME mlx5_ib
 #include <rdma/uverbs_named_ioctl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -937,6 +942,10 @@ int mlx5_ib_fs_add_op_fc(struct mlx5_ib_dev *dev, u32 port_num,
 	struct mlx5_flow_spec *spec;
 
 	spec = kcalloc(MAX_OPFC_RULES, sizeof(*spec), GFP_KERNEL);
+	{
+		typeof((*spec)) __uncontained_tmp107;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp107;
+	}
 	if (!spec)
 		return -ENOMEM;
 
@@ -1686,6 +1695,10 @@ static struct mlx5_ib_flow_handler *raw_fs_rule_add(
 		return ERR_PTR(-ENOMEM);
 
 	dst = kcalloc(2, sizeof(*dst), GFP_KERNEL);
+	{
+		typeof((*dst)) __uncontained_tmp108;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp108;
+	}
 	if (!dst)
 		return ERR_PTR(-ENOMEM);
 

@@ -24,6 +24,11 @@
 #include <linux/acpi.h>
 #include <acpi/processor.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_AUTHOR("Venkatesh Pallipadi");
 MODULE_DESCRIPTION("ACPI Processor P-States Driver");
 MODULE_LICENSE("GPL");
@@ -243,6 +248,10 @@ acpi_cpufreq_cpu_init (
 	freq_table = kcalloc(data->acpi_data.state_count + 1,
 	                           sizeof(*freq_table),
 	                           GFP_KERNEL);
+	{
+		typeof((*freq_table)) __uncontained_tmp52;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp52;
+	}
 	if (!freq_table) {
 		result = -ENOMEM;
 		goto err_unreg;

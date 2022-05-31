@@ -43,6 +43,11 @@
 
 #include <target/iscsi/iscsi_transport.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -993,6 +998,10 @@ static int iscsit_allocate_iovecs(struct iscsi_cmd *cmd)
 
 	iov_count += ISCSI_IOV_DATA_BUFFER;
 	cmd->iov_data = kcalloc(iov_count, sizeof(*cmd->iov_data), GFP_KERNEL);
+	{
+		typeof((*cmd->iov_data)) __uncontained_tmp207;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp207;
+	}
 	if (!cmd->iov_data)
 		return -ENOMEM;
 
@@ -3967,6 +3976,10 @@ static void iscsit_get_rx_pdu(struct iscsi_conn *conn)
 	struct kvec iov;
 
 	buffer = kcalloc(ISCSI_HDR_LEN, sizeof(*buffer), GFP_KERNEL);
+	{
+		typeof((*buffer)) __uncontained_tmp208;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp208;
+	}
 	if (!buffer)
 		return;
 

@@ -13,6 +13,11 @@
 #include <linux/interrupt.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "hfi.h"
 #include "trace.h"
 #include "mad.h"
@@ -12657,10 +12662,18 @@ static int init_cntrs(struct hfi1_devdata *dd)
 	/* allocate space for the counter values */
 	dd->cntrs = kcalloc(dd->ndevcntrs + num_driver_cntrs, sizeof(u64),
 			    GFP_KERNEL);
+	{
+		u64 __uncontained_tmp110;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp110;
+	}
 	if (!dd->cntrs)
 		goto bail;
 
 	dd->scntrs = kcalloc(dd->ndevcntrs, sizeof(u64), GFP_KERNEL);
+	{
+		u64 __uncontained_tmp111;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (!dd->scntrs)
 		goto bail;
 
@@ -12811,10 +12824,18 @@ static int init_cntrs(struct hfi1_devdata *dd)
 	ppd = (struct hfi1_pportdata *)(dd + 1);
 	for (i = 0; i < dd->num_pports; i++, ppd++) {
 		ppd->cntrs = kcalloc(dd->nportcntrs, sizeof(u64), GFP_KERNEL);
+		{
+			u64 __uncontained_tmp112;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+		}
 		if (!ppd->cntrs)
 			goto bail;
 
 		ppd->scntrs = kcalloc(dd->nportcntrs, sizeof(u64), GFP_KERNEL);
+		{
+			u64 __uncontained_tmp113;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+		}
 		if (!ppd->scntrs)
 			goto bail;
 	}

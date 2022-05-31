@@ -28,6 +28,11 @@
 #include "vmwgfx_drv.h"
 #include "vmwgfx_devcaps.h"
 #include <drm/vmwgfx_drm.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "vmwgfx_kms.h"
 
 int vmw_getparam_ioctl(struct drm_device *dev, void *data,
@@ -193,6 +198,10 @@ int vmw_present_ioctl(struct drm_device *dev, void *data,
 	}
 
 	clips = kcalloc(num_clips, sizeof(*clips), GFP_KERNEL);
+	{
+		typeof((*clips)) __uncontained_tmp79;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp79;
+	}
 	if (clips == NULL) {
 		DRM_ERROR("Failed to allocate clip rect list.\n");
 		ret = -ENOMEM;
@@ -270,6 +279,10 @@ int vmw_present_readback_ioctl(struct drm_device *dev, void *data,
 	}
 
 	clips = kcalloc(num_clips, sizeof(*clips), GFP_KERNEL);
+	{
+		typeof((*clips)) __uncontained_tmp80;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp80;
+	}
 	if (clips == NULL) {
 		DRM_ERROR("Failed to allocate clip rect list.\n");
 		ret = -ENOMEM;

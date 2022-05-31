@@ -35,6 +35,11 @@
 #include <asm/system_info.h>
 #include <xen/swiotlb-xen.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dma.h"
 #include "mm.h"
 
@@ -2067,6 +2072,10 @@ arm_iommu_create_mapping(struct bus_type *bus, dma_addr_t base, u64 size)
 	mapping->bitmap_size = bitmap_size;
 	mapping->bitmaps = kcalloc(extensions, sizeof(unsigned long *),
 				   GFP_KERNEL);
+	{
+		unsigned long *__uncontained_tmp1;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!mapping->bitmaps)
 		goto err2;
 

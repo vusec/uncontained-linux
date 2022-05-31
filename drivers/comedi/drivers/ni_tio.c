@@ -33,6 +33,11 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ni_tio_internal.h"
 
 /*
@@ -1795,8 +1800,16 @@ ni_gpct_device_construct(struct comedi_device *dev,
 
 	counter_dev->counters = kcalloc(num_counters, sizeof(*counter),
 					GFP_KERNEL);
+	{
+		typeof((*counter)) __uncontained_tmp37;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp37;
+	}
 	counter_dev->regs = kcalloc(counter_dev->num_chips,
 				    sizeof(*counter_dev->regs), GFP_KERNEL);
+	{
+		typeof((*counter_dev->regs)) __uncontained_tmp38;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!counter_dev->regs || !counter_dev->counters) {
 		kfree(counter_dev->regs);
 		kfree(counter_dev->counters);

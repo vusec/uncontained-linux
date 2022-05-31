@@ -15,6 +15,11 @@
 #include <linux/slab.h>
 #include <linux/nospec.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * constants
  */
@@ -235,6 +240,10 @@ snd_seq_oss_synth_setup(struct seq_oss_devinfo *dp)
 		info->nr_voices = rec->nr_voices;
 		if (info->nr_voices > 0) {
 			info->ch = kcalloc(info->nr_voices, sizeof(struct seq_oss_chinfo), GFP_KERNEL);
+			{
+				struct seq_oss_chinfo __uncontained_tmp284;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp284;
+			}
 			if (!info->ch) {
 				rec->oper.close(&info->arg);
 				module_put(rec->oper.owner);

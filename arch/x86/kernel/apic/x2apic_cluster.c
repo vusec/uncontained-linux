@@ -7,6 +7,11 @@
 
 #include <asm/apic.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "local.h"
 
 struct cluster_mask {
@@ -179,6 +184,10 @@ static int x2apic_cluster_probe(void)
 
 	slots = max_t(u32, L1_CACHE_BYTES/sizeof(u32), nr_cpu_ids);
 	x86_cpu_to_logical_apicid = kcalloc(slots, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp10;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp10;
+	}
 	if (!x86_cpu_to_logical_apicid)
 		return 0;
 

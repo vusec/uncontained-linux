@@ -19,6 +19,11 @@
 #include <linux/random.h>
 #include <linux/scatterlist.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "blk-cgroup.h"
 #include "blk-crypto-internal.h"
 
@@ -567,6 +572,10 @@ static int blk_crypto_fallback_init(void)
 	blk_crypto_keyslots = kcalloc(blk_crypto_num_keyslots,
 				      sizeof(blk_crypto_keyslots[0]),
 				      GFP_KERNEL);
+	{
+		typeof((blk_crypto_keyslots[0])) __uncontained_tmp17;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp17;
+	}
 	if (!blk_crypto_keyslots)
 		goto fail_free_wq;
 

@@ -17,6 +17,11 @@
 #include <net/tc_act/tc_vlan.h>
 #include <net/ipv6.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cn10k.h"
 #include "otx2_common.h"
 
@@ -67,6 +72,10 @@ int otx2_tc_alloc_ent_bitmap(struct otx2_nic *nic)
 	tc->tc_entries_bitmap =
 			kcalloc(BITS_TO_LONGS(nic->flow_cfg->max_flows),
 				sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp99;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
+	}
 	if (!tc->tc_entries_bitmap) {
 		netdev_err(nic->netdev,
 			   "Unable to alloc TC flow entries bitmap\n");

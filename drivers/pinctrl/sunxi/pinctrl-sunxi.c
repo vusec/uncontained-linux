@@ -33,6 +33,11 @@
 
 #include <dt-bindings/pinctrl/sun4i-a10.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "../core.h"
 #include "pinctrl-sunxi.h"
 
@@ -287,6 +292,10 @@ static unsigned long *sunxi_pctrl_build_pin_config(struct device_node *node,
 		return NULL;
 
 	pinconfig = kcalloc(configlen, sizeof(*pinconfig), GFP_KERNEL);
+	{
+		typeof((*pinconfig)) __uncontained_tmp241;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp241;
+	}
 	if (!pinconfig)
 		return ERR_PTR(-ENOMEM);
 
@@ -1238,6 +1247,10 @@ static int sunxi_pinctrl_build_state(struct platform_device *pdev)
 	pctl->functions = kcalloc(4 * pctl->ngroups + 4,
 				  sizeof(*pctl->functions),
 				  GFP_KERNEL);
+	{
+		typeof((*pctl->functions)) __uncontained_tmp242;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp242;
+	}
 	if (!pctl->functions)
 		return -ENOMEM;
 

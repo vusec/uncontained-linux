@@ -19,6 +19,11 @@
 #include <linux/virtio_config.h>
 #include <linux/virtio_i2c.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * struct virtio_i2c - virtio I2C data
  * @vdev: virtio device for this controller
@@ -139,6 +144,10 @@ static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
 	int count;
 
 	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
+	{
+		typeof((*reqs)) __uncontained_tmp87;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (!reqs)
 		return -ENOMEM;
 

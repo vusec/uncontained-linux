@@ -6,6 +6,11 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/dma-mapping.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "vt.h"
 #include "cq.h"
 #include "trace.h"
@@ -54,6 +59,10 @@ struct rvt_dev_info *rvt_alloc_device(size_t size, int nports)
 		return rdi;
 
 	rdi->ports = kcalloc(nports, sizeof(*rdi->ports), GFP_KERNEL);
+	{
+		typeof((*rdi->ports)) __uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!rdi->ports)
 		ib_dealloc_device(&rdi->ibdev);
 

@@ -8,6 +8,11 @@
 #include "sdma.h"
 #include "netdev.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * msix_initialize() - Calculate, request and configure MSIx IRQs
  * @dd: valid hfi1 devdata
@@ -40,6 +45,10 @@ int msix_initialize(struct hfi1_devdata *dd)
 
 	entries = kcalloc(total, sizeof(*dd->msix_info.msix_entries),
 			  GFP_KERNEL);
+	{
+		typeof((*dd->msix_info.msix_entries)) __uncontained_tmp101;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!entries) {
 		pci_free_irq_vectors(dd->pcidev);
 		return -ENOMEM;

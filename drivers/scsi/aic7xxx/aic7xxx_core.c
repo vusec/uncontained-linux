@@ -130,6 +130,11 @@ static const struct ahc_syncrate ahc_syncrates[] =
 /* Our Sequencer Program */
 #include "aic7xxx_seq.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**************************** Function Declarations ***************************/
 static void		ahc_force_renegotiation(struct ahc_softc *ahc,
 						struct ahc_devinfo *devinfo);
@@ -4740,6 +4745,10 @@ ahc_init_scbdata(struct ahc_softc *ahc)
 	/* Allocate SCB resources */
 	scb_data->scbarray = kcalloc(AHC_SCB_MAX_ALLOC, sizeof(struct scb),
 				     GFP_ATOMIC);
+	{
+		struct scb __uncontained_tmp230;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp230;
+	}
 	if (scb_data->scbarray == NULL)
 		return (ENOMEM);
 

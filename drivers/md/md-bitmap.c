@@ -30,6 +30,11 @@
 #include <linux/seq_file.h>
 #include <trace/events/block.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2132,6 +2137,10 @@ int md_bitmap_resize(struct bitmap *bitmap, sector_t blocks,
 	pages = DIV_ROUND_UP(chunks, PAGE_COUNTER_RATIO);
 
 	new_bp = kcalloc(pages, sizeof(*new_bp), GFP_KERNEL);
+	{
+		typeof((*new_bp)) __uncontained_tmp42;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp42;
+	}
 	ret = -ENOMEM;
 	if (!new_bp) {
 		md_bitmap_file_unmap(&store);

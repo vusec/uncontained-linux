@@ -11,6 +11,11 @@
 #include <linux/mod_devicetable.h>
 #include <linux/slab.h>
 #include <linux/soundwire/sdw.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "bus.h"
 
 #define SDW_STRM_RATE_GROUPING		1
@@ -245,6 +250,10 @@ static int sdw_get_group_count(struct sdw_bus *bus,
 	group->count = 0;
 	group->max_size = SDW_STRM_RATE_GROUPING;
 	group->rates = kcalloc(group->max_size, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp282;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp282;
+	}
 	if (!group->rates)
 		return -ENOMEM;
 
@@ -286,6 +295,10 @@ static int sdw_compute_port_params(struct sdw_bus *bus)
 		goto out;
 
 	params = kcalloc(group.count, sizeof(*params), GFP_KERNEL);
+	{
+		typeof((*params)) __uncontained_tmp283;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp283;
+	}
 	if (!params) {
 		ret = -ENOMEM;
 		goto out;

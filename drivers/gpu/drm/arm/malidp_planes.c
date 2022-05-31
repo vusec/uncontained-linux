@@ -19,6 +19,11 @@
 #include <drm/drm_plane_helper.h>
 #include <drm/drm_print.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "malidp_hw.h"
 #include "malidp_drv.h"
 
@@ -967,6 +972,10 @@ int malidp_de_planes_init(struct drm_device *drm)
 	}
 
 	formats = kcalloc(map->n_pixel_formats, sizeof(*formats), GFP_KERNEL);
+	{
+		typeof((*formats)) __uncontained_tmp62;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp62;
+	}
 	if (!formats) {
 		ret = -ENOMEM;
 		goto cleanup;

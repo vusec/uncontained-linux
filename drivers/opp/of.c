@@ -19,6 +19,11 @@
 #include <linux/export.h>
 #include <linux/energy_model.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "opp.h"
 
 /*
@@ -175,6 +180,10 @@ static void _opp_table_alloc_required_tables(struct opp_table *opp_table,
 
 	required_opp_tables = kcalloc(count, sizeof(*required_opp_tables),
 				      GFP_KERNEL);
+	{
+		typeof((*required_opp_tables)) __uncontained_tmp231;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp231;
+	}
 	if (!required_opp_tables)
 		goto put_np;
 
@@ -288,6 +297,10 @@ static int _of_opp_alloc_required_opps(struct opp_table *opp_table,
 		return 0;
 
 	required_opps = kcalloc(count, sizeof(*required_opps), GFP_KERNEL);
+	{
+		typeof((*required_opps)) __uncontained_tmp232;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp232;
+	}
 	if (!required_opps)
 		return -ENOMEM;
 
@@ -485,6 +498,10 @@ int dev_pm_opp_of_find_icc_paths(struct device *dev,
 
 	num_paths = count / 2;
 	paths = kcalloc(num_paths, sizeof(*paths), GFP_KERNEL);
+	{
+		typeof((*paths)) __uncontained_tmp233;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp233;
+	}
 	if (!paths)
 		return -ENOMEM;
 

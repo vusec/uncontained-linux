@@ -19,6 +19,11 @@
 #include <linux/uaccess.h>
 #include <uapi/linux/isst_if.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "isst_if_common.h"
 
 #define MSR_THREAD_ID_INFO	0x53
@@ -414,6 +419,10 @@ static int isst_if_cpu_info_init(void)
 	isst_cpu_info = kcalloc(num_possible_cpus(),
 				sizeof(*isst_cpu_info),
 				GFP_KERNEL);
+	{
+		typeof((*isst_cpu_info)) __uncontained_tmp243;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp243;
+	}
 	if (!isst_cpu_info)
 		return -ENOMEM;
 

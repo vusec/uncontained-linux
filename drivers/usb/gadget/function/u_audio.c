@@ -21,6 +21,11 @@
 #include <sound/tlv.h>
 #include <linux/usb/audio.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "u_audio.h"
 
 #define BUFF_SIZE_MAX	(PAGE_SIZE * 16)
@@ -1009,6 +1014,10 @@ int g_audio_setup(struct g_audio *g_audio, const char *pcm_name,
 		prm->reqs = kcalloc(params->req_number,
 				    sizeof(struct usb_request *),
 				    GFP_KERNEL);
+		{
+			struct usb_request *__uncontained_tmp246;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp246;
+		}
 		if (!prm->reqs) {
 			err = -ENOMEM;
 			goto fail;
@@ -1033,6 +1042,10 @@ int g_audio_setup(struct g_audio *g_audio, const char *pcm_name,
 		prm->reqs = kcalloc(params->req_number,
 				    sizeof(struct usb_request *),
 				    GFP_KERNEL);
+		{
+			struct usb_request *__uncontained_tmp247;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp247;
+		}
 		if (!prm->reqs) {
 			err = -ENOMEM;
 			goto fail;

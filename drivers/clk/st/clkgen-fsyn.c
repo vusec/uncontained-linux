@@ -14,6 +14,11 @@
 #include <linux/clk.h>
 #include <linux/clk-provider.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clkgen.h"
 
 /*
@@ -932,6 +937,10 @@ static void __init st_of_create_quadfs_fsynths(
 	clk_data->clk_num = QUADFS_MAX_CHAN;
 	clk_data->clks = kcalloc(QUADFS_MAX_CHAN, sizeof(struct clk *),
 				 GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp31;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp31;
+	}
 
 	if (!clk_data->clks) {
 		kfree(clk_data);

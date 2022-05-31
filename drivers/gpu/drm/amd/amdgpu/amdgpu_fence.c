@@ -37,6 +37,11 @@
 #include <linux/pm_runtime.h>
 
 #include <drm/drm_drv.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "amdgpu.h"
 #include "amdgpu_trace.h"
 
@@ -478,6 +483,10 @@ int amdgpu_fence_driver_init_ring(struct amdgpu_ring *ring,
 	spin_lock_init(&ring->fence_drv.lock);
 	ring->fence_drv.fences = kcalloc(num_hw_submission * 2, sizeof(void *),
 					 GFP_KERNEL);
+	{
+		void *__uncontained_tmp54;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!ring->fence_drv.fences)
 		return -ENOMEM;
 

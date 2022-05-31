@@ -15,6 +15,11 @@
 #include <linux/fips.h>
 #include <linux/module.h>
 #include <linux/time.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hpre.h"
 
 struct hpre_ctx;
@@ -374,6 +379,10 @@ static int hpre_ctx_set(struct hpre_ctx *ctx, struct hisi_qp *qp, int qlen)
 	hpre = container_of(ctx->qp->qm, struct hpre, qm);
 	ctx->hpre = hpre;
 	ctx->req_list = kcalloc(qlen, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp38;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp38;
+	}
 	if (!ctx->req_list)
 		return -ENOMEM;
 	ctx->key_sz = 0;

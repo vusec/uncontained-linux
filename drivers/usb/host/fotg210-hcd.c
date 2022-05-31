@@ -39,6 +39,11 @@
 #include <asm/irq.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRIVER_AUTHOR "Yuan-Hsin Chen"
 #define DRIVER_DESC "FOTG210 Host Controller (EHCI) Driver"
 static const char hcd_name[] = "fotg210_hcd";
@@ -1966,6 +1971,10 @@ static int fotg210_mem_init(struct fotg210_hcd *fotg210, gfp_t flags)
 	/* software shadow of hardware table */
 	fotg210->pshadow = kcalloc(fotg210->periodic_size, sizeof(void *),
 			flags);
+	{
+		void *__uncontained_tmp219;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp219;
+	}
 	if (fotg210->pshadow != NULL)
 		return 0;
 

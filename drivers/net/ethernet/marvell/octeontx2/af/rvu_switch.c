@@ -6,6 +6,11 @@
  */
 
 #include <linux/bitfield.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "rvu.h"
 
 static int rvu_switch_install_rx_rule(struct rvu *rvu, u16 pcifunc,
@@ -169,6 +174,10 @@ void rvu_switch_enable(struct rvu *rvu)
 
 	rswitch->entry2pcifunc = kcalloc(alloc_req.count, sizeof(u16),
 					 GFP_KERNEL);
+	{
+		u16 __uncontained_tmp98;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp98;
+	}
 	if (!rswitch->entry2pcifunc)
 		goto free_entries;
 

@@ -6,6 +6,11 @@
 #include <linux/firmware.h>
 #include <linux/mdio.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cxgb4.h"
 #include "t4_regs.h"
 #include "t4fw_api.h"
@@ -2250,6 +2255,10 @@ int cxgb4_init_ethtool_filters(struct adapter *adap)
 	eth_filter_info = kcalloc(adap->params.nports,
 				  sizeof(*eth_filter_info),
 				  GFP_KERNEL);
+	{
+		typeof((*eth_filter_info)) __uncontained_tmp147;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp147;
+	}
 	if (!eth_filter_info) {
 		ret = -ENOMEM;
 		goto free_eth_filter;
@@ -2273,6 +2282,10 @@ int cxgb4_init_ethtool_filters(struct adapter *adap)
 		eth_filter->port[i].bmap = kcalloc(BITS_TO_LONGS(nentries),
 						   sizeof(unsigned long),
 						   GFP_KERNEL);
+		{
+			unsigned long __uncontained_tmp146;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp146;
+		}
 		if (!eth_filter->port[i].bmap) {
 			ret = -ENOMEM;
 			goto free_eth_finfo;

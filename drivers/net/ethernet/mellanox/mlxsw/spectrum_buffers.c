@@ -8,6 +8,11 @@
 #include <linux/list.h>
 #include <linux/netlink.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "spectrum.h"
 #include "core.h"
 #include "port.h"
@@ -611,6 +616,10 @@ static int mlxsw_sp_sb_port_init(struct mlxsw_sp *mlxsw_sp,
 
 	pms = kcalloc(mlxsw_sp->sb_vals->pool_count, sizeof(*pms),
 		      GFP_KERNEL);
+	{
+		typeof((*pms)) __uncontained_tmp177;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp177;
+	}
 	if (!pms)
 		return -ENOMEM;
 	sb_port->pms = pms;
@@ -632,11 +641,19 @@ static int mlxsw_sp_sb_ports_init(struct mlxsw_sp *mlxsw_sp)
 	mlxsw_sp->sb->ports = kcalloc(max_ports,
 				      sizeof(struct mlxsw_sp_sb_port),
 				      GFP_KERNEL);
+	{
+		struct mlxsw_sp_sb_port __uncontained_tmp176;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp176;
+	}
 	if (!mlxsw_sp->sb->ports)
 		return -ENOMEM;
 
 	prs = kcalloc(mlxsw_sp->sb_vals->pool_count, sizeof(*prs),
 		      GFP_KERNEL);
+	{
+		typeof((*prs)) __uncontained_tmp178;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp178;
+	}
 	if (!prs) {
 		err = -ENOMEM;
 		goto err_alloc_prs;

@@ -3,6 +3,11 @@
 
 #include "i40e.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*********************notification routines***********************/
 
 /**
@@ -1223,6 +1228,10 @@ static void i40e_get_vlan_list_sync(struct i40e_vsi *vsi, u16 *num_vlans,
 	spin_lock_bh(&vsi->mac_filter_hash_lock);
 	*num_vlans = __i40e_getnum_vf_vsi_vlan_filters(vsi);
 	*vlan_list = kcalloc(*num_vlans, sizeof(**vlan_list), GFP_ATOMIC);
+	{
+		typeof((**vlan_list)) __uncontained_tmp155;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp155;
+	}
 	if (!(*vlan_list))
 		goto err;
 
@@ -1788,6 +1797,10 @@ int i40e_alloc_vfs(struct i40e_pf *pf, u16 num_alloc_vfs)
 	}
 	/* allocate memory */
 	vfs = kcalloc(num_alloc_vfs, sizeof(struct i40e_vf), GFP_KERNEL);
+	{
+		struct i40e_vf __uncontained_tmp154;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp154;
+	}
 	if (!vfs) {
 		ret = -ENOMEM;
 		goto err_alloc;

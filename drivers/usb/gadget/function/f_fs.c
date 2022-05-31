@@ -36,6 +36,11 @@
 #include <linux/poll.h>
 #include <linux/eventfd.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1908,6 +1913,10 @@ static int ffs_epfiles_create(struct ffs_data *ffs)
 
 	count = ffs->eps_count;
 	epfiles = kcalloc(count, sizeof(*epfiles), GFP_KERNEL);
+	{
+		typeof((*epfiles)) __uncontained_tmp257;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp257;
+	}
 	if (!epfiles)
 		return -ENOMEM;
 

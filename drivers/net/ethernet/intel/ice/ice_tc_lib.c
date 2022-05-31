@@ -7,6 +7,11 @@
 #include "ice_lib.h"
 #include "ice_protocol_type.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * ice_tc_count_lkups - determine lookup count for switch filter
  * @flags: TC-flower flags
@@ -409,6 +414,10 @@ ice_eswitch_add_tc_fltr(struct ice_vsi *vsi, struct ice_tc_flower_fltr *fltr)
 
 	lkups_cnt = ice_tc_count_lkups(flags, headers, fltr);
 	list = kcalloc(lkups_cnt, sizeof(*list), GFP_ATOMIC);
+	{
+		typeof((*list)) __uncontained_tmp93;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!list)
 		return -ENOMEM;
 
@@ -518,6 +527,10 @@ ice_add_tc_flower_adv_fltr(struct ice_vsi *vsi,
 
 	lkups_cnt = ice_tc_count_lkups(flags, headers, tc_fltr);
 	list = kcalloc(lkups_cnt, sizeof(*list), GFP_ATOMIC);
+	{
+		typeof((*list)) __uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!list)
 		return -ENOMEM;
 

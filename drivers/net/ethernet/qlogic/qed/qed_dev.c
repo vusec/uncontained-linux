@@ -19,6 +19,11 @@
 #include <linux/etherdevice.h>
 #include <linux/qed/qed_chain.h>
 #include <linux/qed/qed_if.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qed.h"
 #include "qed_cxt.h"
 #include "qed_dcbx.h"
@@ -2130,24 +2135,40 @@ static int qed_alloc_qm_data(struct qed_hwfn *p_hwfn)
 	qm_info->qm_pq_params = kcalloc(qed_init_qm_get_num_pqs(p_hwfn),
 					sizeof(*qm_info->qm_pq_params),
 					GFP_KERNEL);
+	{
+		typeof((*qm_info->qm_pq_params)) __uncontained_tmp118;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+	}
 	if (!qm_info->qm_pq_params)
 		goto alloc_err;
 
 	qm_info->qm_vport_params = kcalloc(qed_init_qm_get_num_vports(p_hwfn),
 					   sizeof(*qm_info->qm_vport_params),
 					   GFP_KERNEL);
+	{
+		typeof((*qm_info->qm_vport_params)) __uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!qm_info->qm_vport_params)
 		goto alloc_err;
 
 	qm_info->qm_port_params = kcalloc(p_hwfn->cdev->num_ports_in_engine,
 					  sizeof(*qm_info->qm_port_params),
 					  GFP_KERNEL);
+	{
+		typeof((*qm_info->qm_port_params)) __uncontained_tmp120;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (!qm_info->qm_port_params)
 		goto alloc_err;
 
 	qm_info->wfq_data = kcalloc(qed_init_qm_get_num_vports(p_hwfn),
 				    sizeof(*qm_info->wfq_data),
 				    GFP_KERNEL);
+	{
+		typeof((*qm_info->wfq_data)) __uncontained_tmp121;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp121;
+	}
 	if (!qm_info->wfq_data)
 		goto alloc_err;
 

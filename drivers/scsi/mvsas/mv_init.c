@@ -15,6 +15,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 int interrupt_coalescing = 0x80;
 
 static struct scsi_transport_template *mvs_stt;
@@ -427,7 +432,15 @@ static int mvs_prep_sas_ha_init(struct Scsi_Host *shost,
 
 	memset(sha, 0x00, sizeof(struct sas_ha_struct));
 	arr_phy  = kcalloc(phy_nr, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp238;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp238;
+	}
 	arr_port = kcalloc(port_nr, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp239;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp239;
+	}
 	if (!arr_phy || !arr_port)
 		goto exit_free;
 

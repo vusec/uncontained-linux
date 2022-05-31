@@ -39,6 +39,11 @@
 #endif
 #include <linux/i2c.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -3704,6 +3709,10 @@ static int igb_enable_sriov(struct pci_dev *pdev, int num_vfs)
 
 	adapter->vf_data = kcalloc(adapter->vfs_allocated_count,
 				sizeof(struct vf_data_storage), GFP_KERNEL);
+	{
+		struct vf_data_storage __uncontained_tmp159;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp159;
+	}
 
 	/* if allocation failed then we do not support SR-IOV */
 	if (!adapter->vf_data) {
@@ -3724,6 +3733,10 @@ static int igb_enable_sriov(struct pci_dev *pdev, int num_vfs)
 	adapter->vf_mac_list = kcalloc(num_vf_mac_filters,
 				       sizeof(struct vf_mac_filter),
 				       GFP_KERNEL);
+	{
+		struct vf_mac_filter __uncontained_tmp160;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp160;
+	}
 
 	mac_list = adapter->vf_mac_list;
 	INIT_LIST_HEAD(&adapter->vf_macs.l);
@@ -4011,6 +4024,10 @@ static int igb_sw_init(struct igb_adapter *adapter)
 	adapter->mac_table = kcalloc(hw->mac.rar_entry_count,
 				     sizeof(struct igb_mac_addr),
 				     GFP_KERNEL);
+	{
+		struct igb_mac_addr __uncontained_tmp161;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp161;
+	}
 	if (!adapter->mac_table)
 		return -ENOMEM;
 
@@ -4021,6 +4038,10 @@ static int igb_sw_init(struct igb_adapter *adapter)
 	/* Setup and initialize a copy of the hw vlan table array */
 	adapter->shadow_vfta = kcalloc(E1000_VLAN_FILTER_TBL_SIZE, sizeof(u32),
 				       GFP_KERNEL);
+	{
+		u32 __uncontained_tmp162;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp162;
+	}
 	if (!adapter->shadow_vfta)
 		return -ENOMEM;
 

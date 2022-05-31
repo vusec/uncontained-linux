@@ -7,6 +7,11 @@
  */
 
 #include <linux/sched.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "cw1200.h"
 #include "scan.h"
 #include "sta.h"
@@ -228,6 +233,10 @@ void cw1200_scan_work(struct work_struct *work)
 		scan.ch = kcalloc(it - priv->scan.curr,
 				  sizeof(struct wsm_scan_ch),
 				  GFP_KERNEL);
+		{
+			struct wsm_scan_ch __uncontained_tmp232;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp232;
+		}
 		if (!scan.ch) {
 			priv->scan.status = -ENOMEM;
 			goto fail;

@@ -6,6 +6,11 @@
 #include <asm/page.h>
 #include <linux/string.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mmu_rb.h"
 #include "user_exp_rcv.h"
 #include "trace.h"
@@ -49,6 +54,10 @@ int hfi1_user_exp_rcv_init(struct hfi1_filedata *fd,
 	fd->entry_to_rb = kcalloc(uctxt->expected_count,
 				  sizeof(struct rb_node *),
 				  GFP_KERNEL);
+	{
+		struct rb_node *__uncontained_tmp98;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp98;
+	}
 	if (!fd->entry_to_rb)
 		return -ENOMEM;
 
@@ -57,6 +66,10 @@ int hfi1_user_exp_rcv_init(struct hfi1_filedata *fd,
 		fd->invalid_tids = kcalloc(uctxt->expected_count,
 					   sizeof(*fd->invalid_tids),
 					   GFP_KERNEL);
+		{
+			typeof((*fd->invalid_tids)) __uncontained_tmp99;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp99;
+		}
 		if (!fd->invalid_tids) {
 			kfree(fd->entry_to_rb);
 			fd->entry_to_rb = NULL;
@@ -170,6 +183,10 @@ static int pin_rcv_pages(struct hfi1_filedata *fd, struct tid_user_buf *tidbuf)
 
 	/* Allocate the array of struct page pointers needed for pinning */
 	pages = kcalloc(npages, sizeof(*pages), GFP_KERNEL);
+	{
+		typeof((*pages)) __uncontained_tmp100;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp100;
+	}
 	if (!pages)
 		return -ENOMEM;
 
@@ -265,6 +282,10 @@ int hfi1_user_exp_rcv_setup(struct hfi1_filedata *fd,
 	tidbuf->length = tinfo->length;
 	tidbuf->psets = kcalloc(uctxt->expected_count, sizeof(*tidbuf->psets),
 				GFP_KERNEL);
+	{
+		typeof((*tidbuf->psets)) __uncontained_tmp101;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp101;
+	}
 	if (!tidbuf->psets) {
 		kfree(tidbuf);
 		return -ENOMEM;
@@ -297,6 +318,10 @@ int hfi1_user_exp_rcv_setup(struct hfi1_filedata *fd,
 
 	ngroups = pageset_count / dd->rcv_entries.group_size;
 	tidlist = kcalloc(pageset_count, sizeof(*tidlist), GFP_KERNEL);
+	{
+		typeof((*tidlist)) __uncontained_tmp102;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp102;
+	}
 	if (!tidlist) {
 		ret = -ENOMEM;
 		goto nomem;
@@ -485,6 +510,10 @@ int hfi1_user_exp_rcv_invalid(struct hfi1_filedata *fd,
 	 * Copy the data to a local buffer so we can release the lock.
 	 */
 	array = kcalloc(uctxt->expected_count, sizeof(*array), GFP_KERNEL);
+	{
+		typeof((*array)) __uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	if (!array)
 		return -EFAULT;
 

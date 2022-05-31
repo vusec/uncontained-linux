@@ -16,6 +16,11 @@
 #include <linux/udp.h>
 #include <linux/rtnetlink.h>
 #include <linux/slab.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "net_driver.h"
 #include "efx.h"
 #include "nic.h"
@@ -535,6 +540,10 @@ ef4_test_loopback(struct ef4_tx_queue *tx_queue,
 		state->packet_count = min(1 << (i << 2), state->packet_count);
 		state->skbs = kcalloc(state->packet_count,
 				      sizeof(state->skbs[0]), GFP_KERNEL);
+		{
+			typeof((state->skbs[0])) __uncontained_tmp179;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp179;
+		}
 		if (!state->skbs)
 			return -ENOMEM;
 		state->flush = false;

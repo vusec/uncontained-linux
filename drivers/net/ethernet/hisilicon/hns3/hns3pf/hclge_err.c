@@ -3,6 +3,11 @@
 
 #include "hclge_err.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static const struct hclge_hw_error hclge_imp_tcm_ecc_int[] = {
 	{
 		.int_msk = BIT(1),
@@ -2057,6 +2062,10 @@ static int hclge_handle_all_ras_errors(struct hclge_dev *hdev)
 
 	bd_num = max_t(u32, mpf_bd_num, pf_bd_num);
 	desc = kcalloc(bd_num, sizeof(struct hclge_desc), GFP_KERNEL);
+	{
+		struct hclge_desc __uncontained_tmp149;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp149;
+	}
 	if (!desc)
 		return -ENOMEM;
 
@@ -2614,6 +2623,10 @@ static int hclge_handle_all_hw_msix_error(struct hclge_dev *hdev,
 
 	bd_num = max_t(u32, mpf_bd_num, pf_bd_num);
 	desc = kcalloc(bd_num, sizeof(struct hclge_desc), GFP_KERNEL);
+	{
+		struct hclge_desc __uncontained_tmp150;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp150;
+	}
 	if (!desc)
 		return -ENOMEM;
 
@@ -2703,6 +2716,10 @@ void hclge_handle_all_hns_hw_errors(struct hnae3_ae_dev *ae_dev)
 
 	bd_num = max_t(u32, mpf_bd_num, pf_bd_num);
 	desc = kcalloc(bd_num, sizeof(struct hclge_desc), GFP_KERNEL);
+	{
+		struct hclge_desc __uncontained_tmp151;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp151;
+	}
 	if (!desc)
 		return;
 

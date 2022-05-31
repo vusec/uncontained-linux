@@ -34,6 +34,11 @@
 #include <linux/mlx5/fs.h>
 #include <linux/ip.h>
 #include <linux/ipv6.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "en.h"
 
 #define ARFS_HASH_SHIFT BITS_PER_BYTE
@@ -239,6 +244,10 @@ static int arfs_create_groups(struct mlx5e_flow_table *ft,
 
 	ft->g = kcalloc(MLX5E_ARFS_NUM_GROUPS,
 			sizeof(*ft->g), GFP_KERNEL);
+	{
+		typeof((*ft->g)) __uncontained_tmp183;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp183;
+	}
 	in = kvzalloc(inlen, GFP_KERNEL);
 	if  (!in || !ft->g) {
 		kfree(ft->g);

@@ -37,6 +37,11 @@
 
 #include <linux/mm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static struct start_info _xen_start_info;
 struct start_info *xen_start_info = &_xen_start_info;
 EXPORT_SYMBOL(xen_start_info);
@@ -341,6 +346,10 @@ int __init arch_xen_unpopulated_init(struct resource **res)
 	}
 
 	regs = kcalloc(nr_reg, sizeof(*regs), GFP_KERNEL);
+	{
+		typeof((*regs)) __uncontained_tmp1;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!regs)
 		return -ENOMEM;
 

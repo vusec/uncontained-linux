@@ -16,6 +16,11 @@
 #include <linux/module.h>
 #include <linux/wmi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dell-wmi-privacy.h"
 
 #define DELL_PRIVACY_GUID "6932965F-1671-4CEB-B988-D3AB0A901919"
@@ -315,6 +320,10 @@ static int dell_privacy_wmi_probe(struct wmi_device *wdev, const void *context)
 	/* remap the wmi keymap event to new keymap */
 	keymap = kcalloc(ARRAY_SIZE(dell_wmi_keymap_type_0012),
 			sizeof(struct key_entry), GFP_KERNEL);
+	{
+		struct key_entry __uncontained_tmp239;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp239;
+	}
 	if (!keymap)
 		return -ENOMEM;
 

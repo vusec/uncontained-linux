@@ -22,6 +22,11 @@
 #include <net/sctp/sm.h>
 #include <net/sctp/stream_sched.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static void sctp_stream_shrink_out(struct sctp_stream *stream, __u16 outcnt)
 {
 	struct sctp_association *asoc;
@@ -319,6 +324,10 @@ int sctp_send_reset_streams(struct sctp_association *asoc,
 	}
 
 	nstr_list = kcalloc(str_nums, sizeof(__be16), GFP_KERNEL);
+	{
+		__be16 __uncontained_tmp309;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp309;
+	}
 	if (!nstr_list) {
 		retval = -ENOMEM;
 		goto out;

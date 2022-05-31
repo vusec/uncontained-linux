@@ -8,6 +8,11 @@
 #include "efct_hw.h"
 #include "efct_unsol.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 int
 efct_hw_init_queues(struct efct_hw *hw)
 {
@@ -101,6 +106,10 @@ efct_hw_map_wq_cpu(struct efct_hw *hw)
 	/* Init cpu_map array */
 	hw->wq_cpu_array = kcalloc(num_possible_cpus(), sizeof(void *),
 				   GFP_KERNEL);
+	{
+		void *__uncontained_tmp246;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp246;
+	}
 	if (!hw->wq_cpu_array)
 		return -ENOMEM;
 

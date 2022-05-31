@@ -10,6 +10,11 @@
 #include <linux/of_net.h>
 #include <linux/if_vlan.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "prestera.h"
 #include "prestera_hw.h"
 #include "prestera_acl.h"
@@ -683,6 +688,10 @@ static int prestera_lag_init(struct prestera_switch *sw)
 	u16 id;
 
 	sw->lags = kcalloc(sw->lag_max, sizeof(*sw->lags), GFP_KERNEL);
+	{
+		typeof((*sw->lags)) __uncontained_tmp175;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp175;
+	}
 	if (!sw->lags)
 		return -ENOMEM;
 

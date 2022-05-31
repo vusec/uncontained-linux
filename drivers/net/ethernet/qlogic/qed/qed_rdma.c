@@ -31,6 +31,11 @@
 #include "qed_mcp.h"
 #include "qed_reg_addr.h"
 #include <linux/qed/qed_rdma_if.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "qed_rdma.h"
 #include "qed_roce.h"
 #include "qed_sp.h"
@@ -44,6 +49,10 @@ int qed_rdma_bmap_alloc(struct qed_hwfn *p_hwfn,
 
 	bmap->bitmap = kcalloc(BITS_TO_LONGS(max_count), sizeof(long),
 			       GFP_KERNEL);
+	{
+		long __uncontained_tmp209;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp209;
+	}
 	if (!bmap->bitmap)
 		return -ENOMEM;
 

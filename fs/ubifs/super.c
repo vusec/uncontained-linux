@@ -24,6 +24,11 @@
 #include <linux/mount.h>
 #include <linux/math64.h>
 #include <linux/writeback.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ubifs.h"
 
 static int ubifs_default_version_set(const char *val, const struct kernel_param *kp)
@@ -825,6 +830,10 @@ static int alloc_wbufs(struct ubifs_info *c)
 
 	c->jheads = kcalloc(c->jhead_cnt, sizeof(struct ubifs_jhead),
 			    GFP_KERNEL);
+	{
+		struct ubifs_jhead __uncontained_tmp296;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp296;
+	}
 	if (!c->jheads)
 		return -ENOMEM;
 

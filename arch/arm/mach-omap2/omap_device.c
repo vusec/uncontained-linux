@@ -34,6 +34,11 @@
 #include <linux/of_irq.h>
 #include <linux/notifier.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "common.h"
 #include "soc.h"
 #include "omap_device.h"
@@ -154,6 +159,10 @@ static int omap_device_build_from_dt(struct platform_device *pdev)
 		return -ENODEV;
 
 	hwmods = kcalloc(oh_cnt, sizeof(struct omap_hwmod *), GFP_KERNEL);
+	{
+		struct omap_hwmod *__uncontained_tmp0;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!hwmods) {
 		ret = -ENOMEM;
 		goto odbfd_exit;

@@ -4,6 +4,11 @@
 #include <linux/etherdevice.h>
 #include <linux/iopoll.h>
 #include <net/rtnetlink.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hclgevf_cmd.h"
 #include "hclgevf_main.h"
 #include "hclge_mbx.h"
@@ -3137,6 +3142,10 @@ static int hclgevf_set_channels(struct hnae3_handle *handle, u32 new_tqps_num,
 	/* Reinitializes the rss indirect table according to the new RSS size */
 	rss_indir = kcalloc(hdev->ae_dev->dev_specs.rss_ind_tbl_size,
 			    sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!rss_indir)
 		return -ENOMEM;
 

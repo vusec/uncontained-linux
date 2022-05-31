@@ -24,6 +24,11 @@
 
 #include <trace/events/thermal.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * Cooling state <-> CPUFreq frequency
  *
@@ -222,6 +227,10 @@ static int cpufreq_get_requested_power(struct thermal_cooling_device *cdev,
 		u32 ncpus = cpumask_weight(policy->related_cpus);
 
 		load_cpu = kcalloc(ncpus, sizeof(*load_cpu), GFP_KERNEL);
+		{
+			typeof((*load_cpu)) __uncontained_tmp248;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp248;
+		}
 	}
 
 	for_each_cpu(cpu, policy->related_cpus) {
@@ -368,6 +377,10 @@ static int allocate_idle_time(struct cpufreq_cooling_device *cpufreq_cdev)
 	cpufreq_cdev->idle_time = kcalloc(num_cpus,
 					  sizeof(*cpufreq_cdev->idle_time),
 					  GFP_KERNEL);
+	{
+		typeof((*cpufreq_cdev->idle_time)) __uncontained_tmp249;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp249;
+	}
 	if (!cpufreq_cdev->idle_time)
 		return -ENOMEM;
 

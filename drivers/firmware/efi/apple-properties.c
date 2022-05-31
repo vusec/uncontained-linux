@@ -19,6 +19,11 @@
 #include <linux/ucs2_string.h>
 #include <asm/setup.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -157,6 +162,10 @@ static int __init unmarshal_devices(struct properties_header *properties)
 
 		entry = kcalloc(dev_header->prop_count + 1, sizeof(*entry),
 				GFP_KERNEL);
+		{
+			typeof((*entry)) __uncontained_tmp69;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp69;
+		}
 		if (!entry) {
 			dev_err(dev, "cannot allocate properties\n");
 			goto skip_device;

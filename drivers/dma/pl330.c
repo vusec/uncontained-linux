@@ -27,6 +27,11 @@
 #include <linux/bug.h>
 #include <linux/reset.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dmaengine.h"
 #define PL330_MAX_CHAN		8
 #define PL330_MAX_IRQS		32
@@ -1883,6 +1888,10 @@ static int dmac_alloc_threads(struct pl330_dmac *pl330)
 	/* Allocate 1 Manager and 'chans' Channel threads */
 	pl330->channels = kcalloc(1 + chans, sizeof(*thrd),
 					GFP_KERNEL);
+	{
+		typeof((*thrd)) __uncontained_tmp45;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp45;
+	}
 	if (!pl330->channels)
 		return -ENOMEM;
 
@@ -2540,6 +2549,10 @@ static int add_desc(struct list_head *pool, spinlock_t *lock,
 	int i;
 
 	desc = kcalloc(count, sizeof(*desc), flg);
+	{
+		typeof((*desc)) __uncontained_tmp46;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp46;
+	}
 	if (!desc)
 		return 0;
 
@@ -3088,6 +3101,10 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
 	pl330->num_peripherals = num_chan;
 
 	pl330->peripherals = kcalloc(num_chan, sizeof(*pch), GFP_KERNEL);
+	{
+		typeof((*pch)) __uncontained_tmp47;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp47;
+	}
 	if (!pl330->peripherals) {
 		ret = -ENOMEM;
 		goto probe_err2;

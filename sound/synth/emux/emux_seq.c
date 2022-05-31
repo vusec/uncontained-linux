@@ -10,6 +10,11 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Prototypes for static functions */
 static void free_port(void *private);
 static void snd_emux_init_port(struct snd_emux_port *p);
@@ -137,6 +142,10 @@ snd_emux_create_port(struct snd_emux *emu, char *name,
 
 	p->chset.channels = kcalloc(max_channels, sizeof(*p->chset.channels),
 				    GFP_KERNEL);
+	{
+		typeof((*p->chset.channels)) __uncontained_tmp356;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp356;
+	}
 	if (!p->chset.channels) {
 		kfree(p);
 		return NULL;
@@ -358,6 +367,10 @@ int snd_emux_init_virmidi(struct snd_emux *emu, struct snd_card *card)
 		return 0;
 
 	emu->vmidi = kcalloc(emu->midi_ports, sizeof(*emu->vmidi), GFP_KERNEL);
+	{
+		typeof((*emu->vmidi)) __uncontained_tmp357;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp357;
+	}
 	if (!emu->vmidi)
 		return -ENOMEM;
 

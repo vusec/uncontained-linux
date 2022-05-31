@@ -9,6 +9,11 @@
 
 #include "main.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static const struct acpi_device_id xge_acpi_match[];
 
 static int xge_get_resources(struct xge_pdata *pdata)
@@ -421,6 +426,10 @@ static struct xge_desc_ring *xge_create_desc_ring(struct net_device *ndev)
 
 	ring->pkt_info = kcalloc(XGENE_ENET_NUM_DESC, sizeof(*ring->pkt_info),
 				 GFP_KERNEL);
+	{
+		typeof((*ring->pkt_info)) __uncontained_tmp142;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+	}
 	if (!ring->pkt_info)
 		goto err;
 

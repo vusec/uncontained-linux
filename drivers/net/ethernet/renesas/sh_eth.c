@@ -32,6 +32,11 @@
 #include <linux/sh_eth.h>
 #include <linux/of_mdio.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "sh_eth.h"
 
 #define SH_ETH_DEF_MSG_ENABLE \
@@ -1414,11 +1419,19 @@ static int sh_eth_ring_init(struct net_device *ndev)
 	/* Allocate RX and TX skb rings */
 	mdp->rx_skbuff = kcalloc(mdp->num_rx_ring, sizeof(*mdp->rx_skbuff),
 				 GFP_KERNEL);
+	{
+		typeof((*mdp->rx_skbuff)) __uncontained_tmp128;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp128;
+	}
 	if (!mdp->rx_skbuff)
 		return -ENOMEM;
 
 	mdp->tx_skbuff = kcalloc(mdp->num_tx_ring, sizeof(*mdp->tx_skbuff),
 				 GFP_KERNEL);
+	{
+		typeof((*mdp->tx_skbuff)) __uncontained_tmp129;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp129;
+	}
 	if (!mdp->tx_skbuff)
 		goto ring_free;
 

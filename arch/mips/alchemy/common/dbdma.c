@@ -40,6 +40,11 @@
 #include <asm/mach-au1x00/au1000.h>
 #include <asm/mach-au1x00/au1xxx_dbdma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * The Descriptor Based DMA supports up to 16 channels.
  *
@@ -1051,6 +1056,10 @@ static int __init dbdma_setup(unsigned int irq, dbdev_tab_t *idtable)
 	int ret;
 
 	dbdev_tab = kcalloc(DBDEV_TAB_SIZE, sizeof(dbdev_tab_t), GFP_KERNEL);
+	{
+		dbdev_tab_t __uncontained_tmp6;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp6;
+	}
 	if (!dbdev_tab)
 		return -ENOMEM;
 

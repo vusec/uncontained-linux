@@ -20,6 +20,11 @@
 #include <linux/slab.h>
 
 #include <linux/uaccess.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "internal.h"
 
 static int ramfs_nommu_setattr(struct user_namespace *, struct dentry *, struct iattr *);
@@ -222,6 +227,10 @@ static unsigned long ramfs_nommu_get_unmapped_area(struct file *file,
 
 	/* gang-find the pages */
 	pages = kcalloc(lpages, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp294;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp294;
+	}
 	if (!pages)
 		goto out_free;
 

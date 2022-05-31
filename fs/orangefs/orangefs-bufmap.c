@@ -8,6 +8,11 @@
 #include "orangefs-kernel.h"
 #include "orangefs-bufmap.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct slot_map {
 	int c;
 	wait_queue_head_t q;
@@ -233,6 +238,10 @@ orangefs_bufmap_alloc(struct ORANGEFS_dev_map_desc *user_desc)
 	bufmap->desc_array =
 		kcalloc(bufmap->desc_count, sizeof(struct orangefs_bufmap_desc),
 			GFP_KERNEL);
+	{
+		struct orangefs_bufmap_desc __uncontained_tmp292;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp292;
+	}
 	if (!bufmap->desc_array)
 		goto out_free_index_array;
 
@@ -241,6 +250,10 @@ orangefs_bufmap_alloc(struct ORANGEFS_dev_map_desc *user_desc)
 	/* allocate storage to track our page mappings */
 	bufmap->page_array =
 		kcalloc(bufmap->page_count, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp293;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp293;
+	}
 	if (!bufmap->page_array)
 		goto out_free_desc_array;
 

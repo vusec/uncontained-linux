@@ -11,6 +11,11 @@
 #include <linux/log2.h>
 #include <linux/circ_buf.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "sdma.h"
 #include "verbs.h"
 #include "trace_ibhdrs.h"
@@ -697,6 +702,10 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
 				  sizeof(struct hfi1_ipoib_txq),
 				  GFP_KERNEL,
 				  priv->dd->node);
+	{
+		struct hfi1_ipoib_txq __uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!priv->txqs)
 		return -ENOMEM;
 

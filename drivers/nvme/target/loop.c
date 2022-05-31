@@ -10,6 +10,11 @@
 #include <linux/module.h>
 #include <linux/parser.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -633,6 +638,10 @@ static struct nvme_ctrl *nvme_loop_create_ctrl(struct device *dev,
 
 	ctrl->queues = kcalloc(opts->nr_io_queues + 1, sizeof(*ctrl->queues),
 			GFP_KERNEL);
+	{
+		typeof((*ctrl->queues)) __uncontained_tmp229;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp229;
+	}
 	if (!ctrl->queues)
 		goto out_uninit_ctrl;
 

@@ -29,6 +29,11 @@
 
 #include <cluster/masklog.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ocfs2.h"
 
 #include "alloc.h"
@@ -1717,6 +1722,10 @@ static int ocfs2_create_symlink_data(struct ocfs2_super *osb,
 	}
 
 	bhs = kcalloc(blocks, sizeof(struct buffer_head *), GFP_KERNEL);
+	{
+		struct buffer_head *__uncontained_tmp288;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp288;
+	}
 	if (!bhs) {
 		status = -ENOMEM;
 		mlog_errno(status);

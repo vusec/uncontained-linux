@@ -5,6 +5,11 @@
 #include <linux/ptp_classify.h>
 #include <linux/posix-clock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* The XL710 timesync is very much like Intel's 82599 design when it comes to
  * the fundamental clock design. However, the clock operations are much simpler
  * in the XL710 because the device supports a full 64 bits of nanoseconds.
@@ -1362,6 +1367,10 @@ static int i40e_init_pin_config(struct i40e_pf *pf)
 	pf->ptp_caps.pin_config = kcalloc(pf->ptp_caps.n_pins,
 					  sizeof(*pf->ptp_caps.pin_config),
 					  GFP_KERNEL);
+	{
+		typeof((*pf->ptp_caps.pin_config)) __uncontained_tmp178;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp178;
+	}
 	if (!pf->ptp_caps.pin_config)
 		return -ENOMEM;
 

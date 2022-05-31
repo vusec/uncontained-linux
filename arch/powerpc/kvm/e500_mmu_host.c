@@ -29,6 +29,11 @@
 #include <asm/kvm_ppc.h>
 #include <asm/pte-walk.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "e500.h"
 #include "timing.h"
 #include "e500_mmu_host.h"
@@ -791,6 +796,10 @@ int e500_mmu_host_init(struct kvmppc_vcpu_e500 *vcpu_e500)
 	vcpu_e500->h2g_tlb1_rmap = kcalloc(host_tlb_params[1].entries,
 					   sizeof(*vcpu_e500->h2g_tlb1_rmap),
 					   GFP_KERNEL);
+	{
+		typeof((*vcpu_e500->h2g_tlb1_rmap)) __uncontained_tmp13;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!vcpu_e500->h2g_tlb1_rmap)
 		return -EINVAL;
 

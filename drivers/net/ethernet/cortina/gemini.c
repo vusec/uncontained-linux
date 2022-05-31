@@ -41,6 +41,11 @@
 #include <linux/ip.h>
 #include <linux/ipv6.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "gemini.h"
 
 #define DRV_NAME		"gmac-gemini"
@@ -560,6 +565,10 @@ static int gmac_setup_txqs(struct net_device *netdev)
 	rwptr_reg = port->dma_base + GMAC_SW_TX_QUEUE0_PTR_REG;
 
 	skb_tab = kcalloc(len, sizeof(*skb_tab), GFP_KERNEL);
+	{
+		typeof((*skb_tab)) __uncontained_tmp143;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp143;
+	}
 	if (!skb_tab)
 		return -ENOMEM;
 
@@ -947,6 +956,10 @@ static int geth_setup_freeq(struct gemini_ethernet *geth)
 	/* Allocate a mapping to page look-up index */
 	geth->freeq_pages = kcalloc(pages, sizeof(*geth->freeq_pages),
 				    GFP_KERNEL);
+	{
+		typeof((*geth->freeq_pages)) __uncontained_tmp144;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp144;
+	}
 	if (!geth->freeq_pages)
 		goto err_freeq;
 	geth->num_freeq_pages = pages;

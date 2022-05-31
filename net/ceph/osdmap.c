@@ -11,6 +11,11 @@
 #include <linux/crush/hash.h>
 #include <linux/crush/mapper.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -74,9 +79,17 @@ static int crush_decode_list_bucket(void **p, void *end,
 	int j;
 	dout("crush_decode_list_bucket %p to %p\n", *p, end);
 	b->item_weights = kcalloc(b->h.size, sizeof(u32), GFP_NOFS);
+	{
+		u32 __uncontained_tmp258;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp258;
+	}
 	if (b->item_weights == NULL)
 		return -ENOMEM;
 	b->sum_weights = kcalloc(b->h.size, sizeof(u32), GFP_NOFS);
+	{
+		u32 __uncontained_tmp259;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp259;
+	}
 	if (b->sum_weights == NULL)
 		return -ENOMEM;
 	ceph_decode_need(p, end, 2 * b->h.size * sizeof(u32), bad);
@@ -96,6 +109,10 @@ static int crush_decode_tree_bucket(void **p, void *end,
 	dout("crush_decode_tree_bucket %p to %p\n", *p, end);
 	ceph_decode_8_safe(p, end, b->num_nodes, bad);
 	b->node_weights = kcalloc(b->num_nodes, sizeof(u32), GFP_NOFS);
+	{
+		u32 __uncontained_tmp260;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp260;
+	}
 	if (b->node_weights == NULL)
 		return -ENOMEM;
 	ceph_decode_need(p, end, b->num_nodes * sizeof(u32), bad);
@@ -112,9 +129,17 @@ static int crush_decode_straw_bucket(void **p, void *end,
 	int j;
 	dout("crush_decode_straw_bucket %p to %p\n", *p, end);
 	b->item_weights = kcalloc(b->h.size, sizeof(u32), GFP_NOFS);
+	{
+		u32 __uncontained_tmp261;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp261;
+	}
 	if (b->item_weights == NULL)
 		return -ENOMEM;
 	b->straws = kcalloc(b->h.size, sizeof(u32), GFP_NOFS);
+	{
+		u32 __uncontained_tmp262;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp262;
+	}
 	if (b->straws == NULL)
 		return -ENOMEM;
 	ceph_decode_need(p, end, 2 * b->h.size * sizeof(u32), bad);
@@ -133,6 +158,10 @@ static int crush_decode_straw2_bucket(void **p, void *end,
 	int j;
 	dout("crush_decode_straw2_bucket %p to %p\n", *p, end);
 	b->item_weights = kcalloc(b->h.size, sizeof(u32), GFP_NOFS);
+	{
+		u32 __uncontained_tmp263;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp263;
+	}
 	if (b->item_weights == NULL)
 		return -ENOMEM;
 	ceph_decode_need(p, end, b->h.size * sizeof(u32), bad);
@@ -359,6 +388,10 @@ static int decode_choose_args(void **p, void *end, struct crush_map *c)
 		arg_map->size = c->max_buckets;
 		arg_map->args = kcalloc(arg_map->size, sizeof(*arg_map->args),
 					GFP_NOIO);
+		{
+			typeof((*arg_map->args)) __uncontained_tmp265;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp265;
+		}
 		if (!arg_map->args) {
 			ret = -ENOMEM;
 			goto fail;
@@ -458,9 +491,17 @@ static struct crush_map *crush_decode(void *pbyval, void *end)
 	c->max_devices = ceph_decode_32(p);
 
 	c->buckets = kcalloc(c->max_buckets, sizeof(*c->buckets), GFP_NOFS);
+	{
+		typeof((*c->buckets)) __uncontained_tmp266;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp266;
+	}
 	if (c->buckets == NULL)
 		goto badmem;
 	c->rules = kcalloc(c->max_rules, sizeof(*c->rules), GFP_NOFS);
+	{
+		typeof((*c->rules)) __uncontained_tmp267;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp267;
+	}
 	if (c->rules == NULL)
 		goto badmem;
 
@@ -514,6 +555,10 @@ static struct crush_map *crush_decode(void *pbyval, void *end)
 		     b->size, (int)(*p-start), *p, end);
 
 		b->items = kcalloc(b->size, sizeof(__s32), GFP_NOFS);
+		{
+			__s32 __uncontained_tmp264;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp264;
+		}
 		if (b->items == NULL)
 			goto badmem;
 

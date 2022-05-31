@@ -9,6 +9,11 @@
 #include <linux/nfs_xdr.h>
 #include <linux/pr.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "blocklayout.h"
 
 #define NFSDBG_FACILITY		NFSDBG_PNFS_LD
@@ -423,6 +428,10 @@ bl_parse_concat(struct nfs_server *server, struct pnfs_block_dev *d,
 
 	d->children = kcalloc(v->concat.volumes_count,
 			sizeof(struct pnfs_block_dev), GFP_KERNEL);
+	{
+		struct pnfs_block_dev __uncontained_tmp284;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp284;
+	}
 	if (!d->children)
 		return -ENOMEM;
 
@@ -452,6 +461,10 @@ bl_parse_stripe(struct nfs_server *server, struct pnfs_block_dev *d,
 
 	d->children = kcalloc(v->stripe.volumes_count,
 			sizeof(struct pnfs_block_dev), GFP_KERNEL);
+	{
+		struct pnfs_block_dev __uncontained_tmp285;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp285;
+	}
 	if (!d->children)
 		return -ENOMEM;
 
@@ -519,6 +532,10 @@ bl_alloc_deviceid_node(struct nfs_server *server, struct pnfs_device *pdev,
 
 	volumes = kcalloc(nr_volumes, sizeof(struct pnfs_block_volume),
 			  gfp_mask);
+	{
+		struct pnfs_block_volume __uncontained_tmp286;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp286;
+	}
 	if (!volumes)
 		goto out_free_scratch;
 

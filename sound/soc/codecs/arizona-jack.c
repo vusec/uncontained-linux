@@ -25,6 +25,11 @@
 #include <linux/mfd/arizona/registers.h>
 #include <dt-bindings/mfd/arizona.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "arizona.h"
 
 #define ARIZONA_MAX_MICD_RANGE 8
@@ -1168,6 +1173,10 @@ static int arizona_extcon_get_micd_configs(struct device *dev,
 		return 0;
 
 	vals = kcalloc(nconfs, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp349;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp349;
+	}
 	if (!vals)
 		return -ENOMEM;
 

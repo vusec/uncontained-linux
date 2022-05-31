@@ -26,6 +26,11 @@
 #include "11n.h"
 #include "11n_rxreorder.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* This function will dispatch amsdu packet and forward it to kernel/upper
  * layer.
  */
@@ -397,6 +402,10 @@ mwifiex_11n_create_rx_reorder_tbl(struct mwifiex_private *priv, u8 *ta,
 
 	new_node->rx_reorder_ptr = kcalloc(win_size, sizeof(void *),
 					   GFP_KERNEL);
+	{
+		void *__uncontained_tmp206;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp206;
+	}
 	if (!new_node->rx_reorder_ptr) {
 		kfree(new_node);
 		mwifiex_dbg(priv->adapter, ERROR,

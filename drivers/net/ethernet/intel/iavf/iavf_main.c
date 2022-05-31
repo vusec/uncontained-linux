@@ -11,6 +11,11 @@
 #define CREATE_TRACE_POINTS
 #include "iavf_trace.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int iavf_setup_all_tx_resources(struct iavf_adapter *adapter);
 static int iavf_setup_all_rx_resources(struct iavf_adapter *adapter);
 static int iavf_close(struct net_device *netdev);
@@ -1325,10 +1330,18 @@ static int iavf_alloc_queues(struct iavf_adapter *adapter)
 
 	adapter->tx_rings = kcalloc(num_active_queues,
 				    sizeof(struct iavf_ring), GFP_KERNEL);
+	{
+		struct iavf_ring __uncontained_tmp153;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp153;
+	}
 	if (!adapter->tx_rings)
 		goto err_out;
 	adapter->rx_rings = kcalloc(num_active_queues,
 				    sizeof(struct iavf_ring), GFP_KERNEL);
+	{
+		struct iavf_ring __uncontained_tmp154;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp154;
+	}
 	if (!adapter->rx_rings)
 		goto err_out;
 
@@ -1394,6 +1407,10 @@ static int iavf_set_interrupt_capability(struct iavf_adapter *adapter)
 
 	adapter->msix_entries = kcalloc(v_budget,
 					sizeof(struct msix_entry), GFP_KERNEL);
+	{
+		struct msix_entry __uncontained_tmp155;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp155;
+	}
 	if (!adapter->msix_entries) {
 		err = -ENOMEM;
 		goto out;
@@ -1553,6 +1570,10 @@ static int iavf_alloc_q_vectors(struct iavf_adapter *adapter)
 	num_q_vectors = adapter->num_msix_vectors - NONQ_VECS;
 	adapter->q_vectors = kcalloc(num_q_vectors, sizeof(*q_vector),
 				     GFP_KERNEL);
+	{
+		typeof((*q_vector)) __uncontained_tmp156;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp156;
+	}
 	if (!adapter->q_vectors)
 		return -ENOMEM;
 

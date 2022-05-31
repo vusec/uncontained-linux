@@ -28,6 +28,11 @@
 #include <acpi/video.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define ACPI_VIDEO_BUS_NAME		"Video Bus"
 #define ACPI_VIDEO_DEVICE_NAME		"Video Device"
 
@@ -1350,6 +1355,10 @@ static int acpi_video_device_enumerate(struct acpi_video_bus *video)
 	active_list = kcalloc(1 + dod->package.count,
 			      sizeof(struct acpi_video_enumerated_device),
 			      GFP_KERNEL);
+	{
+		struct acpi_video_enumerated_device __uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!active_list) {
 		status = -ENOMEM;
 		goto out;

@@ -29,6 +29,11 @@
 #include <net/dst.h>
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "b43legacy.h"
 #include "main.h"
 #include "debugfs.h"
@@ -3271,6 +3276,10 @@ static int b43legacy_wireless_core_init(struct b43legacy_wldev *dev)
 		phy->_lo_pairs = kcalloc(B43legacy_LO_COUNT,
 					 sizeof(struct b43legacy_lopair),
 					 GFP_KERNEL);
+		{
+			struct b43legacy_lopair __uncontained_tmp217;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp217;
+		}
 		if (!phy->_lo_pairs)
 			return -ENOMEM;
 	}

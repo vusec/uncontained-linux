@@ -15,6 +15,11 @@
 #include <linux/fiemap.h>
 #include <uapi/linux/magic.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -568,6 +573,10 @@ parse_server_interfaces(struct network_interface_info_ioctl_rsp *buf,
 	 */
 
 	*iface_list = kcalloc(nb_iface, sizeof(**iface_list), GFP_KERNEL);
+	{
+		typeof((**iface_list)) __uncontained_tmp280;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp280;
+	}
 	if (!*iface_list) {
 		rc = -ENOMEM;
 		goto out;
@@ -4790,6 +4799,10 @@ init_read_bvec(struct page **pages, unsigned int npages, unsigned int data_size,
 	int i;
 
 	bvec = kcalloc(npages, sizeof(struct bio_vec), GFP_KERNEL);
+	{
+		struct bio_vec __uncontained_tmp279;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp279;
+	}
 	if (!bvec)
 		return -ENOMEM;
 

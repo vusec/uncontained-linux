@@ -34,6 +34,11 @@
 #include <linux/bug.h>
 
 #include <linux/hw_breakpoint.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 /*
  * Constraints data
  */
@@ -690,6 +695,10 @@ int __init init_hw_breakpoint(void)
 
 			info->tsk_pinned = kcalloc(nr_slots[i], sizeof(int),
 							GFP_KERNEL);
+			{
+				int __uncontained_tmp298;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp298;
+			}
 			if (!info->tsk_pinned)
 				goto err_alloc;
 		}

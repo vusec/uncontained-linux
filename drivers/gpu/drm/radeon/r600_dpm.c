@@ -28,6 +28,11 @@
 #include "r600_dpm.h"
 #include "atom.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 const u32 r600_utc[R600_PM_NUMBER_OF_TC] =
 {
 	R600_UTC_DFLT_00,
@@ -826,6 +831,10 @@ static int r600_parse_clk_voltage_dep_table(struct radeon_clock_voltage_dependen
 	radeon_table->entries = kcalloc(atom_table->ucNumEntries,
 					sizeof(struct radeon_clock_voltage_dependency_entry),
 					GFP_KERNEL);
+	{
+		struct radeon_clock_voltage_dependency_entry __uncontained_tmp77;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp77;
+	}
 	if (!radeon_table->entries)
 		return -ENOMEM;
 
@@ -993,6 +1002,10 @@ int r600_parse_extended_power_table(struct radeon_device *rdev)
 				kcalloc(psl->ucNumEntries,
 					sizeof(struct radeon_phase_shedding_limits_entry),
 					GFP_KERNEL);
+			{
+				struct radeon_phase_shedding_limits_entry __uncontained_tmp78;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+			}
 			if (!rdev->pm.dpm.dyn_state.phase_shedding_limits_table.entries) {
 				r600_free_extended_power_table(rdev);
 				return -ENOMEM;

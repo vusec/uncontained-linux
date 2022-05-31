@@ -55,6 +55,11 @@
 #include <scsi/scsi_tcq.h>
 #include <scsi/scsi_dbg.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -4909,6 +4914,10 @@ static int sdebug_device_create_zones(struct sdebug_dev_info *devip)
 
 	devip->zstate = kcalloc(devip->nr_zones,
 				sizeof(struct sdeb_zone_state), GFP_KERNEL);
+	{
+		struct sdeb_zone_state __uncontained_tmp207;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp207;
+	}
 	if (!devip->zstate)
 		return -ENOMEM;
 
@@ -6801,6 +6810,10 @@ static int __init scsi_debug_init(void)
 
 	sdebug_q_arr = kcalloc(submit_queues, sizeof(struct sdebug_queue),
 			       GFP_KERNEL);
+	{
+		struct sdebug_queue __uncontained_tmp208;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp208;
+	}
 	if (sdebug_q_arr == NULL)
 		return -ENOMEM;
 	for (k = 0; k < submit_queues; ++k)

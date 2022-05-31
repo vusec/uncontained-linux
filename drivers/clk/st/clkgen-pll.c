@@ -15,6 +15,11 @@
 #include <linux/clk-provider.h>
 #include <linux/iopoll.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clkgen.h"
 
 static DEFINE_SPINLOCK(clkgena_c32_odf_lock);
@@ -784,6 +789,10 @@ static void __init clkgen_c32_pll_setup(struct device_node *np,
 	clk_data->clk_num = num_odfs;
 	clk_data->clks = kcalloc(clk_data->clk_num, sizeof(struct clk *),
 				 GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp49;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+	}
 
 	if (!clk_data->clks)
 		goto err;

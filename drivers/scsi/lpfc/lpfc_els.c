@@ -34,6 +34,11 @@
 #include <uapi/scsi/fc/fc_fs.h>
 #include <uapi/scsi/fc/fc_els.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -11652,6 +11657,10 @@ lpfc_cmpl_els_qfpa(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
 		max_desc = FCELSSIZE / sizeof(*vport->qfpa_res);
 		vport->qfpa_res = kcalloc(max_desc, sizeof(*vport->qfpa_res),
 					  GFP_KERNEL);
+		{
+			typeof((*vport->qfpa_res)) __uncontained_tmp208;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp208;
+		}
 		if (!vport->qfpa_res)
 			goto out;
 	}
@@ -11666,6 +11675,10 @@ lpfc_cmpl_els_qfpa(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
 	if (!vmid_range) {
 		vmid_range = kcalloc(MAX_PRIORITY_DESC, sizeof(*vmid_range),
 				     GFP_KERNEL);
+		{
+			typeof((*vmid_range)) __uncontained_tmp209;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp209;
+		}
 		if (!vmid_range) {
 			kfree(vport->qfpa_res);
 			goto out;

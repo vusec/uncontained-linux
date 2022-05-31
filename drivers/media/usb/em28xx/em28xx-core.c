@@ -30,6 +30,11 @@
 #include <sound/ac97_codec.h>
 #include <media/v4l2-common.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRIVER_AUTHOR "Ludovico Cavedon <cavedon@sssup.it>, " \
 		      "Markus Rechberger <mrechberger@gmail.com>, " \
 		      "Mauro Carvalho Chehab <mchehab@kernel.org>, " \
@@ -928,10 +933,18 @@ int em28xx_alloc_urbs(struct em28xx *dev, enum em28xx_mode mode, int xfer_bulk,
 	usb_bufs->num_bufs = num_bufs;
 
 	usb_bufs->urb = kcalloc(num_bufs, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!usb_bufs->urb)
 		return -ENOMEM;
 
 	usb_bufs->buf = kcalloc(num_bufs, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp49;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp49;
+	}
 	if (!usb_bufs->buf) {
 		kfree(usb_bufs->urb);
 		return -ENOMEM;

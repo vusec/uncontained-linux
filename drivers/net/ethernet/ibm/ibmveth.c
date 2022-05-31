@@ -36,6 +36,11 @@
 #include <net/tcp.h>
 #include <net/ip6_checksum.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ibmveth.h"
 
 static irqreturn_t ibmveth_interrupt(int irq, void *dev_instance);
@@ -164,6 +169,10 @@ static int ibmveth_alloc_buffer_pool(struct ibmveth_buff_pool *pool)
 		return -1;
 
 	pool->dma_addr = kcalloc(pool->size, sizeof(dma_addr_t), GFP_KERNEL);
+	{
+		dma_addr_t __uncontained_tmp149;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp149;
+	}
 	if (!pool->dma_addr) {
 		kfree(pool->free_map);
 		pool->free_map = NULL;
@@ -171,6 +180,10 @@ static int ibmveth_alloc_buffer_pool(struct ibmveth_buff_pool *pool)
 	}
 
 	pool->skbuff = kcalloc(pool->size, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp150;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp150;
+	}
 
 	if (!pool->skbuff) {
 		kfree(pool->dma_addr);

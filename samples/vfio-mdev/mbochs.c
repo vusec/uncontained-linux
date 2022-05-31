@@ -39,6 +39,11 @@
 #include <drm/drm_property.h>
 #include <drm/drm_plane.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 #define VBE_DISPI_INDEX_ID		0x0
 #define VBE_DISPI_INDEX_XRES		0x1
@@ -534,6 +539,10 @@ static int mbochs_probe(struct mdev_device *mdev)
 	mdev_state->pages = kcalloc(mdev_state->pagecount,
 				    sizeof(struct page *),
 				    GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp312;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp312;
+	}
 	if (!mdev_state->pages)
 		goto err_mem;
 
@@ -920,6 +929,10 @@ static struct mbochs_dmabuf *mbochs_dmabuf_alloc(struct mdev_state *mdev_state,
 	dmabuf->pagecount = DIV_ROUND_UP(mode->size, PAGE_SIZE);
 	dmabuf->pages = kcalloc(dmabuf->pagecount, sizeof(struct page *),
 				GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp313;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp313;
+	}
 	if (!dmabuf->pages)
 		goto err_free_dmabuf;
 

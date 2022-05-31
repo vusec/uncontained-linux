@@ -17,6 +17,11 @@
 #include <sound/mixer_oss.h>
 #include <linux/soundcard.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define OSS_ALSAEMULVER         _SIOR ('M', 249, int)
 
 MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
@@ -1376,6 +1381,10 @@ static int snd_mixer_oss_notify_handler(struct snd_card *card, int cmd)
 		int idx, err;
 
 		mixer = kcalloc(2, sizeof(*mixer), GFP_KERNEL);
+		{
+			typeof((*mixer)) __uncontained_tmp337;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp337;
+		}
 		if (mixer == NULL)
 			return -ENOMEM;
 		mutex_init(&mixer->reg_mutex);

@@ -36,6 +36,11 @@
 #include <linux/tcp.h>
 #include <linux/mlx5/fs.h>
 #include <linux/mlx5/mpfs.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "en.h"
 #include "en_rep.h"
 #include "lib/mpfs.h"
@@ -156,6 +161,10 @@ static int mlx5e_vport_context_update_vlans(struct mlx5e_priv *priv)
 	}
 
 	vlans = kcalloc(list_size, sizeof(*vlans), GFP_KERNEL);
+	{
+		typeof((*vlans)) __uncontained_tmp167;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp167;
+	}
 	if (!vlans)
 		return -ENOMEM;
 
@@ -986,6 +995,10 @@ static int mlx5e_create_l2_table_groups(struct mlx5e_l2_table *l2_table)
 	u8 *mc;
 
 	ft->g = kcalloc(MLX5E_NUM_L2_GROUPS, sizeof(*ft->g), GFP_KERNEL);
+	{
+		typeof((*ft->g)) __uncontained_tmp168;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp168;
+	}
 	if (!ft->g)
 		return -ENOMEM;
 	in = kvzalloc(inlen, GFP_KERNEL);
@@ -1198,6 +1211,10 @@ static int mlx5e_create_vlan_table(struct mlx5e_priv *priv)
 		return PTR_ERR(ft->t);
 
 	ft->g = kcalloc(MLX5E_NUM_VLAN_GROUPS, sizeof(*ft->g), GFP_KERNEL);
+	{
+		typeof((*ft->g)) __uncontained_tmp169;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp169;
+	}
 	if (!ft->g) {
 		err = -ENOMEM;
 		goto err_destroy_vlan_table;

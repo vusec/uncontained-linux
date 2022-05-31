@@ -43,6 +43,11 @@
 #include <net/ipv6.h>
 
 #include <linux/mlx4/driver.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "mlx4_ib.h"
 
 enum {
@@ -1615,12 +1620,20 @@ static int mlx4_ib_alloc_pv_bufs(struct mlx4_ib_demux_pv_ctx *ctx,
 	tun_qp->ring = kcalloc(nmbr_bufs,
 			       sizeof(struct mlx4_ib_buf),
 			       GFP_KERNEL);
+	{
+		struct mlx4_ib_buf __uncontained_tmp104;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!tun_qp->ring)
 		return -ENOMEM;
 
 	tun_qp->tx_ring = kcalloc(nmbr_bufs,
 				  sizeof (struct mlx4_ib_tun_tx_buf),
 				  GFP_KERNEL);
+	{
+		struct mlx4_ib_tun_tx_buf __uncontained_tmp105;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (!tun_qp->tx_ring) {
 		kfree(tun_qp->ring);
 		tun_qp->ring = NULL;
@@ -2164,6 +2177,10 @@ static int mlx4_ib_alloc_demux_ctx(struct mlx4_ib_dev *dev,
 
 	ctx->tun = kcalloc(dev->dev->caps.sqp_demux,
 			   sizeof (struct mlx4_ib_demux_pv_ctx *), GFP_KERNEL);
+	{
+		struct mlx4_ib_demux_pv_ctx *__uncontained_tmp106;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!ctx->tun)
 		return -ENOMEM;
 

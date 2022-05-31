@@ -16,6 +16,11 @@
 #include <asm/traps.h>
 #include <asm/reg_ops.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static struct irq_domain *root_domain;
 static void __iomem *INTCG_base;
 static void __iomem *INTCL_base;
@@ -241,6 +246,10 @@ csky_mpintc_init(struct device_node *node, struct device_node *parent)
 		nr_irq = INTC_IRQS;
 
 	__trigger  = kcalloc(nr_irq, sizeof(unsigned long), GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp115;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp115;
+	}
 	if (__trigger == NULL)
 		return -ENXIO;
 

@@ -30,6 +30,11 @@
 static volatile unsigned long __uncontained_complex_alloc;
 #endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* The maximum number of channels the firmware can scan per command */
 #define MWIFIEX_MAX_CHANNELS_PER_SPECIFIC_SCAN   14
 
@@ -1541,6 +1546,10 @@ int mwifiex_scan_networks(struct mwifiex_private *priv,
 	scan_chan_list = kcalloc(MWIFIEX_USER_SCAN_CHAN_MAX,
 				 sizeof(struct mwifiex_chan_scan_param_set),
 				 GFP_KERNEL);
+	{
+		struct mwifiex_chan_scan_param_set __uncontained_tmp237;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp237;
+	}
 	if (!scan_chan_list) {
 		kfree(scan_cfg_out);
 		ret = -ENOMEM;

@@ -19,6 +19,11 @@
 
 #include <dt-bindings/clock/lpc18xx-ccu.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Bit defines for CCU branch configuration register */
 #define LPC18XX_CCU_RUN		BIT(0)
 #define LPC18XX_CCU_AUTO	BIT(1)
@@ -285,6 +290,10 @@ static void __init lpc18xx_ccu_init(struct device_node *np)
 
 	clk_data->num = of_property_count_strings(np, "clock-names");
 	clk_data->name = kcalloc(clk_data->num, sizeof(char *), GFP_KERNEL);
+	{
+		char *__uncontained_tmp35;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp35;
+	}
 	if (!clk_data->name) {
 		iounmap(reg_base);
 		kfree(clk_data);

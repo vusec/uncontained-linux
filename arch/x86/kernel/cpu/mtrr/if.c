@@ -12,6 +12,11 @@
 
 #include <asm/mtrr.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mtrr.h"
 
 #define FILE_FCOUNT(f) (((struct seq_file *)((f)->private_data))->private)
@@ -44,6 +49,10 @@ mtrr_file_add(unsigned long base, unsigned long size,
 	max = num_var_ranges;
 	if (fcount == NULL) {
 		fcount = kcalloc(max, sizeof(*fcount), GFP_KERNEL);
+		{
+			typeof((*fcount)) __uncontained_tmp14;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+		}
 		if (!fcount)
 			return -ENOMEM;
 		FILE_FCOUNT(file) = fcount;

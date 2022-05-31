@@ -14,6 +14,11 @@
 #include <linux/sysfs.h>
 #include <linux/aer.h>
 #include <linux/log2.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #ifdef CONFIG_QLCNIC_HWMON
 #include <linux/hwmon.h>
 #include <linux/hwmon-sysfs.h>
@@ -911,6 +916,10 @@ static ssize_t qlcnic_sysfs_read_pci_config(struct file *file,
 	u32 count;
 
 	pci_info = kcalloc(size, sizeof(*pci_info), GFP_KERNEL);
+	{
+		typeof((*pci_info)) __uncontained_tmp127;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp127;
+	}
 	if (!pci_info)
 		return -ENOMEM;
 
@@ -957,6 +966,10 @@ static ssize_t qlcnic_83xx_sysfs_flash_read_handler(struct file *filp,
 		count++;
 
 	p_read_buf = kcalloc(size, sizeof(unsigned char), GFP_KERNEL);
+	{
+		unsigned char __uncontained_tmp124;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp124;
+	}
 	if (!p_read_buf)
 		return -ENOMEM;
 	if (qlcnic_83xx_lock_flash(adapter) != 0) {
@@ -989,6 +1002,10 @@ static int qlcnic_83xx_sysfs_flash_bulk_write(struct qlcnic_adapter *adapter,
 	unsigned char *p_cache, *p_src;
 
 	p_cache = kcalloc(size, sizeof(unsigned char), GFP_KERNEL);
+	{
+		unsigned char __uncontained_tmp125;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp125;
+	}
 	if (!p_cache)
 		return -ENOMEM;
 
@@ -1057,6 +1074,10 @@ static int qlcnic_83xx_sysfs_flash_write(struct qlcnic_adapter *adapter,
 	unsigned char *p_cache, *p_src;
 
 	p_cache = kcalloc(size, sizeof(unsigned char), GFP_KERNEL);
+	{
+		unsigned char __uncontained_tmp126;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp126;
+	}
 	if (!p_cache)
 		return -ENOMEM;
 

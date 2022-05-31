@@ -64,6 +64,11 @@
 #include <linux/slab.h>
 #include <linux/delay.h>
 #include <media/dvb_frontend.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "mxl5005s.h"
 
 static int debug;
@@ -3924,11 +3929,19 @@ static int mxl5005s_reconfigure(struct dvb_frontend *fe, u32 mod_type,
 
 	AddrTable = kcalloc(MXL5005S_REG_WRITING_TABLE_LEN_MAX, sizeof(u8),
 			    GFP_KERNEL);
+	{
+		u8 __uncontained_tmp128;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp128;
+	}
 	if (!AddrTable)
 		return -ENOMEM;
 
 	ByteTable = kcalloc(MXL5005S_REG_WRITING_TABLE_LEN_MAX, sizeof(u8),
 			    GFP_KERNEL);
+	{
+		u8 __uncontained_tmp129;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp129;
+	}
 	if (!ByteTable) {
 		kfree(AddrTable);
 		return -ENOMEM;

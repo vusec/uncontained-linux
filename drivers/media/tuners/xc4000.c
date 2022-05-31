@@ -20,6 +20,11 @@
 
 #include <media/dvb_frontend.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "xc4000.h"
 #include "tuner-i2c.h"
 #include "tuner-xc2028-types.h"
@@ -766,6 +771,10 @@ static int xc4000_fwupload(struct dvb_frontend *fe)
 		priv->firm_version >> 8, priv->firm_version & 0xff);
 
 	priv->firm = kcalloc(n_array, sizeof(*priv->firm), GFP_KERNEL);
+	{
+		typeof((*priv->firm)) __uncontained_tmp127;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp127;
+	}
 	if (priv->firm == NULL) {
 		printk(KERN_ERR "Not enough memory to load firmware file.\n");
 		rc = -ENOMEM;

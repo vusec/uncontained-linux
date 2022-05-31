@@ -63,6 +63,11 @@
 #include "ib_verbs.h"
 #include <rdma/bnxt_re-abi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int __from_ib_access_flags(int iflags)
 {
 	int qflags = 0;
@@ -1324,6 +1329,10 @@ static int bnxt_re_create_shadow_gsi(struct bnxt_re_qp *qp,
 	/* Create a shadow QP to handle the QP1 traffic */
 	sqp_tbl = kcalloc(BNXT_RE_MAX_GSI_SQP_ENTRIES, sizeof(*sqp_tbl),
 			  GFP_KERNEL);
+	{
+		typeof((*sqp_tbl)) __uncontained_tmp95;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (!sqp_tbl)
 		return -ENOMEM;
 	rdev->gsi_ctx.sqp_tbl = sqp_tbl;
@@ -2858,6 +2867,10 @@ int bnxt_re_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
 		cq->max_cql = min_t(u32, entries, MAX_CQL_PER_POLL);
 		cq->cql = kcalloc(cq->max_cql, sizeof(struct bnxt_qplib_cqe),
 				  GFP_KERNEL);
+		{
+			struct bnxt_qplib_cqe __uncontained_tmp93;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+		}
 		if (!cq->cql) {
 			rc = -ENOMEM;
 			goto fail;
@@ -3692,6 +3705,10 @@ struct ib_mr *bnxt_re_alloc_mr(struct ib_pd *ib_pd, enum ib_mr_type type,
 	mr->ib_mr.rkey = mr->ib_mr.lkey;
 
 	mr->pages = kcalloc(max_num_sg, sizeof(u64), GFP_KERNEL);
+	{
+		u64 __uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!mr->pages) {
 		rc = -ENOMEM;
 		goto fail;

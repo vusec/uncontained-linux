@@ -59,6 +59,11 @@
 #include <linux/slab.h>
 #include <linux/types.h>
 #include <linux/uaccess.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "linux/ntb.h"
 #include "linux/ntb_transport.h"
 
@@ -1301,6 +1306,10 @@ static int ntb_transport_probe(struct ntb_client *self, struct ntb_dev *ndev)
 
 	nt->mw_vec = kcalloc_node(mw_count, sizeof(*nt->mw_vec),
 				  GFP_KERNEL, node);
+	{
+		typeof((*nt->mw_vec)) __uncontained_tmp234;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp234;
+	}
 	if (!nt->mw_vec) {
 		rc = -ENOMEM;
 		goto err;
@@ -1348,6 +1357,10 @@ static int ntb_transport_probe(struct ntb_client *self, struct ntb_dev *ndev)
 
 	nt->qp_vec = kcalloc_node(qp_count, sizeof(*nt->qp_vec),
 				  GFP_KERNEL, node);
+	{
+		typeof((*nt->qp_vec)) __uncontained_tmp235;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp235;
+	}
 	if (!nt->qp_vec) {
 		rc = -ENOMEM;
 		goto err1;

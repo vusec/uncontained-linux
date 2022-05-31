@@ -17,6 +17,11 @@
 #include <linux/sysfs.h>
 #include <linux/pci.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internals.h"
 
 static inline int msi_sysfs_create_group(struct device *dev);
@@ -392,6 +397,10 @@ static int msi_sysfs_populate_desc(struct device *dev, struct msi_desc *desc)
 	int ret, i;
 
 	attrs = kcalloc(desc->nvec_used, sizeof(*attrs), GFP_KERNEL);
+	{
+		typeof((*attrs)) __uncontained_tmp283;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp283;
+	}
 	if (!attrs)
 		return -ENOMEM;
 

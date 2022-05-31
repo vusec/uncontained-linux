@@ -17,6 +17,11 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -342,6 +347,10 @@ int input_ff_create(struct input_dev *dev, unsigned int max_effects)
 
 	ff->effects = kcalloc(max_effects, sizeof(struct ff_effect),
 			      GFP_KERNEL);
+	{
+		struct ff_effect __uncontained_tmp120;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp120;
+	}
 	if (!ff->effects) {
 		kfree(ff);
 		return -ENOMEM;

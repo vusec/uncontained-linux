@@ -13,6 +13,11 @@
 #include "orangefs-debugfs.h"
 #include "orangefs-sysfs.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* ORANGEFS_VERSION is a ./configure define */
 #ifndef ORANGEFS_VERSION
 #define ORANGEFS_VERSION "upstream"
@@ -99,6 +104,10 @@ static int __init orangefs_init(void)
 
 	orangefs_htable_ops_in_progress =
 	    kcalloc(hash_table_size, sizeof(struct list_head), GFP_KERNEL);
+	{
+		struct list_head __uncontained_tmp289;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp289;
+	}
 	if (!orangefs_htable_ops_in_progress) {
 		ret = -ENOMEM;
 		goto cleanup_inode;

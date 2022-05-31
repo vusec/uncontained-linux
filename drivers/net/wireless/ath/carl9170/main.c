@@ -43,6 +43,11 @@
 #include <linux/random.h>
 #include <net/mac80211.h>
 #include <net/cfg80211.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hw.h"
 #include "carl9170.h"
 #include "cmd.h"
@@ -1938,6 +1943,10 @@ static int carl9170_parse_eeprom(struct ar9170 *ar)
 		return -EINVAL;
 
 	ar->survey = kcalloc(chans, sizeof(struct survey_info), GFP_KERNEL);
+	{
+		struct survey_info __uncontained_tmp213;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp213;
+	}
 	if (!ar->survey)
 		return -ENOMEM;
 	ar->num_channels = chans;

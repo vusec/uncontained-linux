@@ -22,6 +22,11 @@
 #include <linux/soc/ti/ti_sci_protocol.h>
 #include <linux/reboot.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ti_sci.h"
 
 /* List of all TI SCI devices active in system */
@@ -3222,6 +3227,10 @@ devm_ti_sci_get_of_resource(const struct ti_sci_handle *handle,
 	}
 
 	sub_types = kcalloc(sets, sizeof(*sub_types), GFP_KERNEL);
+	{
+		typeof((*sub_types)) __uncontained_tmp53;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp53;
+	}
 	if (!sub_types)
 		return ERR_PTR(-ENOMEM);
 

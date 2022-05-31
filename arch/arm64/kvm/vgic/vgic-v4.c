@@ -10,6 +10,11 @@
 #include <linux/kvm_host.h>
 #include <linux/irqchip/arm-gic-v3.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vgic.h"
 
 /*
@@ -248,6 +253,10 @@ int vgic_v4_init(struct kvm *kvm)
 
 	dist->its_vm.vpes = kcalloc(nr_vcpus, sizeof(*dist->its_vm.vpes),
 				    GFP_KERNEL_ACCOUNT);
+	{
+		typeof((*dist->its_vm.vpes)) __uncontained_tmp1;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!dist->its_vm.vpes)
 		return -ENOMEM;
 

@@ -15,6 +15,11 @@
 #include <linux/notifier.h>
 #include <linux/of.h>
 #include <linux/of_device.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hsi_core.h"
 
 static ssize_t modalias_show(struct device *dev,
@@ -254,12 +259,20 @@ static void hsi_add_client_from_dt(struct hsi_port *port,
 	cl->rx_cfg.num_channels = cells;
 	cl->tx_cfg.num_channels = cells;
 	cl->rx_cfg.channels = kcalloc(cells, sizeof(channel), GFP_KERNEL);
+	{
+		typeof((channel)) __uncontained_tmp81;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp81;
+	}
 	if (!cl->rx_cfg.channels) {
 		err = -ENOMEM;
 		goto err;
 	}
 
 	cl->tx_cfg.channels = kcalloc(cells, sizeof(channel), GFP_KERNEL);
+	{
+		typeof((channel)) __uncontained_tmp82;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp82;
+	}
 	if (!cl->tx_cfg.channels) {
 		err = -ENOMEM;
 		goto err2;
@@ -472,6 +485,10 @@ struct hsi_controller *hsi_alloc_controller(unsigned int n_ports, gfp_t flags)
 	if (!hsi)
 		return NULL;
 	port = kcalloc(n_ports, sizeof(*port), flags);
+	{
+		typeof((*port)) __uncontained_tmp83;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!port) {
 		kfree(hsi);
 		return NULL;

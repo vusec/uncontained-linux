@@ -40,6 +40,11 @@
 #include <linux/amba/bus.h>
 #include <linux/fsl/mc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "arm-smmu.h"
 
 /*
@@ -171,6 +176,10 @@ static int arm_smmu_register_legacy_master(struct device *dev,
 		return err;
 
 	sids = kcalloc(it.cur_count, sizeof(*sids), GFP_KERNEL);
+	{
+		typeof((*sids)) __uncontained_tmp118;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp118;
+	}
 	if (!sids)
 		return -ENOMEM;
 

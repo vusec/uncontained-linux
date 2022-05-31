@@ -29,6 +29,11 @@
 #include "sumo_dpm.h"
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SUMO_MAX_DEEPSLEEP_DIVIDER_ID 5
 #define SUMO_MINIMUM_ENGINE_CLOCK 800
 #define BOOST_DPM_LEVEL 7
@@ -1484,6 +1489,10 @@ static int sumo_parse_power_table(struct radeon_device *rdev)
 	rdev->pm.dpm.ps = kcalloc(state_array->ucNumEntries,
 				  sizeof(struct radeon_ps),
 				  GFP_KERNEL);
+	{
+		struct radeon_ps __uncontained_tmp87;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp87;
+	}
 	if (!rdev->pm.dpm.ps)
 		return -ENOMEM;
 	power_state_offset = (u8 *)state_array->states;

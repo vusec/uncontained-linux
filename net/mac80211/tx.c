@@ -28,6 +28,11 @@
 #include <asm/unaligned.h>
 #include <net/fq_impl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ieee80211_i.h"
 #include "driver-ops.h"
 #include "led.h"
@@ -1585,6 +1590,10 @@ int ieee80211_txq_setup_flows(struct ieee80211_local *local)
 
 	local->cvars = kcalloc(fq->flows_cnt, sizeof(local->cvars[0]),
 			       GFP_KERNEL);
+	{
+		typeof((local->cvars[0])) __uncontained_tmp294;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp294;
+	}
 	if (!local->cvars) {
 		spin_lock_bh(&fq->lock);
 		fq_reset(fq, fq_skb_free_func);

@@ -34,6 +34,11 @@
 #include <linux/iomap.h>
 #include <asm/unaligned.h>
 #include <linux/fsverity.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "misc.h"
 #include "ctree.h"
 #include "disk-io.h"
@@ -675,6 +680,10 @@ again:
 	if (inode_need_compress(BTRFS_I(inode), start, end)) {
 		WARN_ON(pages);
 		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
+		{
+			struct page *__uncontained_tmp319;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp319;
+		}
 		if (!pages) {
 			/* just bail out to the uncompressed code */
 			nr_pages = 0;

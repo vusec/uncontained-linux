@@ -31,6 +31,11 @@
 
 #include <media/videobuf-dma-sg.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -230,10 +235,18 @@ static int videobuf_dma_init_kernel(struct videobuf_dmabuf *dma, int direction,
 	dma->direction = direction;
 	dma->vaddr_pages = kcalloc(nr_pages, sizeof(*dma->vaddr_pages),
 				   GFP_KERNEL);
+	{
+		typeof((*dma->vaddr_pages)) __uncontained_tmp127;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp127;
+	}
 	if (!dma->vaddr_pages)
 		return -ENOMEM;
 
 	dma->dma_addr = kcalloc(nr_pages, sizeof(*dma->dma_addr), GFP_KERNEL);
+	{
+		typeof((*dma->dma_addr)) __uncontained_tmp128;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp128;
+	}
 	if (!dma->dma_addr) {
 		kfree(dma->vaddr_pages);
 		return -ENOMEM;

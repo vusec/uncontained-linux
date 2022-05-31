@@ -39,6 +39,11 @@
 
 #include <asm/unaligned.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "bcmgenet.h"
 
 /* Maximum number of hardware queues, downsized if needed */
@@ -3052,6 +3057,10 @@ static int bcmgenet_init_dma(struct bcmgenet_priv *priv)
 	priv->num_rx_bds = TOTAL_DESC;
 	priv->rx_cbs = kcalloc(priv->num_rx_bds, sizeof(struct enet_cb),
 			       GFP_KERNEL);
+	{
+		struct enet_cb __uncontained_tmp138;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp138;
+	}
 	if (!priv->rx_cbs)
 		return -ENOMEM;
 
@@ -3065,6 +3074,10 @@ static int bcmgenet_init_dma(struct bcmgenet_priv *priv)
 	priv->num_tx_bds = TOTAL_DESC;
 	priv->tx_cbs = kcalloc(priv->num_tx_bds, sizeof(struct enet_cb),
 			       GFP_KERNEL);
+	{
+		struct enet_cb __uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!priv->tx_cbs) {
 		kfree(priv->rx_cbs);
 		return -ENOMEM;

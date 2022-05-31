@@ -11,6 +11,11 @@
 #include <linux/acpi.h>
 #include <linux/adxl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define ADXL_REVISION			0x1
 #define ADXL_IDX_GET_ADDR_PARAMS	0x1
 #define ADXL_IDX_FORWARD_TRANSLATE	0x2
@@ -179,6 +184,10 @@ static int __init adxl_init(void)
 	 * Allocate one extra for NULL termination.
 	 */
 	adxl_component_names = kcalloc(adxl_count + 1, sizeof(char *), GFP_KERNEL);
+	{
+		char *__uncontained_tmp14;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!adxl_component_names) {
 		ACPI_FREE(params);
 		return -ENOMEM;

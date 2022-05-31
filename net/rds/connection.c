@@ -38,6 +38,11 @@
 #include <net/inet6_hashtables.h>
 #include <net/addrconf.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rds.h"
 #include "loop.h"
 
@@ -196,6 +201,10 @@ static struct rds_connection *__rds_conn_create(struct net *net,
 		goto out;
 	}
 	conn->c_path = kcalloc(npaths, sizeof(struct rds_conn_path), gfp);
+	{
+		struct rds_conn_path __uncontained_tmp324;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp324;
+	}
 	if (!conn->c_path) {
 		kmem_cache_free(rds_conn_slab, conn);
 		conn = ERR_PTR(-ENOMEM);

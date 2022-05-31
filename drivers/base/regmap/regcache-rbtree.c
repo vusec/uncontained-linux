@@ -12,6 +12,11 @@
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 static int regcache_rbtree_write(struct regmap *map, unsigned int reg,
@@ -353,6 +358,10 @@ regcache_rbtree_node_alloc(struct regmap *map, unsigned int reg)
 	rbnode->cache_present = kcalloc(BITS_TO_LONGS(rbnode->blklen),
 					sizeof(*rbnode->cache_present),
 					GFP_KERNEL);
+	{
+		typeof((*rbnode->cache_present)) __uncontained_tmp24;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp24;
+	}
 	if (!rbnode->cache_present)
 		goto err_free_block;
 

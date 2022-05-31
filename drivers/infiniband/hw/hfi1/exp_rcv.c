@@ -6,6 +6,11 @@
 #include "exp_rcv.h"
 #include "trace.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /**
  * hfi1_exp_tid_set_init - initialize exp_tid_set
  * @set: the set
@@ -43,6 +48,10 @@ int hfi1_alloc_ctxt_rcv_groups(struct hfi1_ctxtdata *rcd)
 	rcd->groups =
 		kcalloc_node(ngroups, sizeof(*rcd->groups),
 			     GFP_KERNEL, rcd->numa_id);
+	{
+		typeof((*rcd->groups)) __uncontained_tmp93;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!rcd->groups)
 		return -ENOMEM;
 	tidbase = rcd->expected_base;

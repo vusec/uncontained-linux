@@ -194,6 +194,11 @@
 
 #include <linux/nospec.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "configfs.h"
 
 
@@ -2660,6 +2665,10 @@ int fsg_common_set_num_buffers(struct fsg_common *common, unsigned int n)
 	int i;
 
 	buffhds = kcalloc(n, sizeof(*buffhds), GFP_KERNEL);
+	{
+		typeof((*buffhds)) __uncontained_tmp218;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp218;
+	}
 	if (!buffhds)
 		return -ENOMEM;
 

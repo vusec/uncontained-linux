@@ -18,6 +18,11 @@
 #include <asm/traps.h>
 #include <asm/mach-pic32/pic32.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define REG_INTCON	0x0000
 #define REG_INTSTAT	0x0020
 #define REG_IFS_OFFSET	0x0040
@@ -224,6 +229,10 @@ static int __init pic32_of_init(struct device_node *node,
 		return -ENOMEM;
 
 	priv = kcalloc(nchips, sizeof(*priv), GFP_KERNEL);
+	{
+		typeof((*priv)) __uncontained_tmp40;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp40;
+	}
 	if (!priv) {
 		ret = -ENOMEM;
 		goto err_iounmap;

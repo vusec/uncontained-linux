@@ -19,6 +19,11 @@
 
 #include <dt-bindings/clock/hi3620-clock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "clk.h"
 
 /* clock parent list */
@@ -467,6 +472,10 @@ static void __init hi3620_mmc_clk_init(struct device_node *node)
 		return;
 
 	clk_data->clks = kcalloc(num, sizeof(*clk_data->clks), GFP_KERNEL);
+	{
+		typeof((*clk_data->clks)) __uncontained_tmp34;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp34;
+	}
 	if (!clk_data->clks)
 		return;
 

@@ -8,6 +8,11 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "channel.h"
 #include "dev.h"
 #include "job.h"
@@ -18,12 +23,20 @@ int host1x_channel_list_init(struct host1x_channel_list *chlist,
 {
 	chlist->channels = kcalloc(num_channels, sizeof(struct host1x_channel),
 				   GFP_KERNEL);
+	{
+		struct host1x_channel __uncontained_tmp83;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp83;
+	}
 	if (!chlist->channels)
 		return -ENOMEM;
 
 	chlist->allocated_channels =
 		kcalloc(BITS_TO_LONGS(num_channels), sizeof(unsigned long),
 			GFP_KERNEL);
+	{
+		unsigned long __uncontained_tmp84;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp84;
+	}
 	if (!chlist->allocated_channels) {
 		kfree(chlist->channels);
 		return -ENOMEM;

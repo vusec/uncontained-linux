@@ -19,6 +19,11 @@
 #include <net/sctp/sctp.h>
 #include <net/sctp/auth.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -473,6 +478,10 @@ int sctp_auth_init_hmacs(struct sctp_endpoint *ep, gfp_t gfp)
 	ep->auth_hmacs = kcalloc(SCTP_AUTH_NUM_HMACS,
 				 sizeof(struct crypto_shash *),
 				 gfp);
+	{
+		struct crypto_shash *__uncontained_tmp281;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp281;
+	}
 	if (!ep->auth_hmacs)
 		return -ENOMEM;
 

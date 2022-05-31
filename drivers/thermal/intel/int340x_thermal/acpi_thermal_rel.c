@@ -21,6 +21,11 @@
 #include <linux/miscdevice.h>
 #include <linux/fs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -95,6 +100,10 @@ int acpi_parse_trt(acpi_handle handle, int *trt_count, struct trt **trtp,
 
 	*trt_count = p->package.count;
 	trts = kcalloc(*trt_count, sizeof(struct trt), GFP_KERNEL);
+	{
+		struct trt __uncontained_tmp286;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp286;
+	}
 	if (!trts) {
 		result = -ENOMEM;
 		goto end;
@@ -171,6 +180,10 @@ int acpi_parse_art(acpi_handle handle, int *art_count, struct art **artp,
 	/* ignore p->package.elements[0], as this is _ART Revision field */
 	*art_count = p->package.count - 1;
 	arts = kcalloc(*art_count, sizeof(struct art), GFP_KERNEL);
+	{
+		struct art __uncontained_tmp287;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp287;
+	}
 	if (!arts) {
 		result = -ENOMEM;
 		goto end;

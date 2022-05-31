@@ -7,6 +7,11 @@
 
 #include "pelt.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 int sched_rr_timeslice = RR_TIMESLICE;
 int sysctl_sched_rr_timeslice = (MSEC_PER_SEC / HZ) * RR_TIMESLICE;
 /* More than 4 hours if BW_SHIFT equals 20. */
@@ -198,9 +203,17 @@ int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent)
 	int i;
 
 	tg->rt_rq = kcalloc(nr_cpu_ids, sizeof(rt_rq), GFP_KERNEL);
+	{
+		typeof((rt_rq)) __uncontained_tmp286;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp286;
+	}
 	if (!tg->rt_rq)
 		goto err;
 	tg->rt_se = kcalloc(nr_cpu_ids, sizeof(rt_se), GFP_KERNEL);
+	{
+		typeof((rt_se)) __uncontained_tmp287;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp287;
+	}
 	if (!tg->rt_se)
 		goto err;
 

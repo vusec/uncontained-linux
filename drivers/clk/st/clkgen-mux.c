@@ -13,6 +13,11 @@
 #include <linux/of_address.h>
 #include <linux/clk.h>
 #include <linux/clk-provider.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "clkgen.h"
 
 static const char ** __init clkgen_mux_get_parents(struct device_node *np,
@@ -26,6 +31,10 @@ static const char ** __init clkgen_mux_get_parents(struct device_node *np,
 		return ERR_PTR(-EINVAL);
 
 	parents = kcalloc(nparents, sizeof(const char *), GFP_KERNEL);
+	{
+		const char *__uncontained_tmp48;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp48;
+	}
 	if (!parents)
 		return ERR_PTR(-ENOMEM);
 

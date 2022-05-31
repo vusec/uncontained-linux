@@ -13,6 +13,11 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static DEFINE_SPINLOCK(gates_lock);
 
 static void __init sunxi_simple_gates_setup(struct device_node *node,
@@ -44,6 +49,10 @@ static void __init sunxi_simple_gates_setup(struct device_node *node,
 	of_property_read_u32_index(node, "clock-indices", number - 1, &number);
 
 	clk_data->clks = kcalloc(number + 1, sizeof(struct clk *), GFP_KERNEL);
+	{
+		struct clk *__uncontained_tmp36;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp36;
+	}
 	if (!clk_data->clks)
 		goto err_free_data;
 

@@ -14,6 +14,11 @@
 #include <linux/bitops.h>
 #include <linux/slab.h>
 #include <linux/mtd/nand-ecc-sw-hamming.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "nand/raw/sm_common.h"
 #include "sm_ftl.h"
 
@@ -81,6 +86,10 @@ static struct attribute_group *sm_create_sysfs_attributes(struct sm_ftl *ftl)
 	/* Create array of pointers to the attributes */
 	attributes = kcalloc(NUM_ATTRIBUTES + 1, sizeof(struct attribute *),
 								GFP_KERNEL);
+	{
+		struct attribute *__uncontained_tmp140;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp140;
+	}
 	if (!attributes)
 		goto error3;
 	attributes[0] = &vendor_attribute->dev_attr.attr;
@@ -1159,6 +1168,10 @@ static void sm_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
 	/* Allocate zone array, it will be initialized on demand */
 	ftl->zones = kcalloc(ftl->zone_count, sizeof(struct ftl_zone),
 								GFP_KERNEL);
+	{
+		struct ftl_zone __uncontained_tmp141;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp141;
+	}
 	if (!ftl->zones)
 		goto error3;
 

@@ -9,6 +9,11 @@
 #include <linux/sbitmap.h>
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -116,6 +121,10 @@ int sbitmap_init_node(struct sbitmap *sb, unsigned int depth, int shift,
 	}
 
 	sb->map = kcalloc_node(sb->map_nr, sizeof(*sb->map), flags, node);
+	{
+		typeof((*sb->map)) __uncontained_tmp334;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp334;
+	}
 	if (!sb->map) {
 		free_percpu(sb->alloc_hint);
 		return -ENOMEM;

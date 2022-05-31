@@ -17,6 +17,11 @@
 #include <linux/reset.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "omap_remoteproc.h"
 #include "remoteproc_internal.h"
 #include "ti_sci_proc.h"
@@ -496,6 +501,10 @@ static int k3_dsp_reserved_mem_init(struct k3_dsp_rproc *kproc)
 
 	num_rmems--;
 	kproc->rmem = kcalloc(num_rmems, sizeof(*kproc->rmem), GFP_KERNEL);
+	{
+		typeof((*kproc->rmem)) __uncontained_tmp227;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp227;
+	}
 	if (!kproc->rmem) {
 		ret = -ENOMEM;
 		goto release_rmem;

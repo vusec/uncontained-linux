@@ -33,6 +33,11 @@
 #include <net/fib_notifier.h>
 #include <net/switchdev.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -729,6 +734,10 @@ static int mlxsw_sp_lpm_init(struct mlxsw_sp *mlxsw_sp)
 	mlxsw_sp->router->lpm.trees = kcalloc(mlxsw_sp->router->lpm.tree_count,
 					     sizeof(struct mlxsw_sp_lpm_tree),
 					     GFP_KERNEL);
+	{
+		struct mlxsw_sp_lpm_tree __uncontained_tmp179;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp179;
+	}
 	if (!mlxsw_sp->router->lpm.trees)
 		return -ENOMEM;
 
@@ -1046,6 +1055,10 @@ static int mlxsw_sp_vrs_init(struct mlxsw_sp *mlxsw_sp)
 	max_vrs = MLXSW_CORE_RES_GET(mlxsw_sp->core, MAX_VRS);
 	mlxsw_sp->router->vrs = kcalloc(max_vrs, sizeof(struct mlxsw_sp_vr),
 					GFP_KERNEL);
+	{
+		struct mlxsw_sp_vr __uncontained_tmp180;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp180;
+	}
 	if (!mlxsw_sp->router->vrs)
 		return -ENOMEM;
 
@@ -7546,6 +7559,10 @@ mlxsw_sp_router_fib6_event_init(struct mlxsw_sp_fib6_event *fib6_event,
 	nrt6 = fen6_info->nsiblings + 1;
 
 	rt_arr = kcalloc(nrt6, sizeof(struct fib6_info *), GFP_ATOMIC);
+	{
+		struct fib6_info *__uncontained_tmp181;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp181;
+	}
 	if (!rt_arr)
 		return -ENOMEM;
 
@@ -9794,6 +9811,10 @@ static int mlxsw_sp_rifs_init(struct mlxsw_sp *mlxsw_sp)
 	mlxsw_sp->router->rifs = kcalloc(max_rifs,
 					 sizeof(struct mlxsw_sp_rif *),
 					 GFP_KERNEL);
+	{
+		struct mlxsw_sp_rif *__uncontained_tmp182;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp182;
+	}
 	if (!mlxsw_sp->router->rifs)
 		return -ENOMEM;
 

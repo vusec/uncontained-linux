@@ -14,6 +14,11 @@
 #include "tpm.h"
 #include <crypto/hash_info.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static struct tpm2_hash tpm2_hash_map[] = {
 	{HASH_ALGO_SHA1, TPM_ALG_SHA1},
 	{HASH_ALGO_SHA256, TPM_ALG_SHA256},
@@ -569,6 +574,10 @@ ssize_t tpm2_get_pcr_allocation(struct tpm_chip *chip)
 	chip->allocated_banks = kcalloc(nr_possible_banks,
 					sizeof(*chip->allocated_banks),
 					GFP_KERNEL);
+	{
+		typeof((*chip->allocated_banks)) __uncontained_tmp25;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp25;
+	}
 	if (!chip->allocated_banks) {
 		rc = -ENOMEM;
 		goto out;

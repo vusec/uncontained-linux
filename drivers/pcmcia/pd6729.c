@@ -19,6 +19,11 @@
 
 #include <pcmcia/ss.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 
 #include "pd6729.h"
 #include "i82365.h"
@@ -630,6 +635,10 @@ static int pd6729_pci_probe(struct pci_dev *dev,
 
 	socket = kcalloc(MAX_SOCKETS, sizeof(struct pd6729_socket),
 			 GFP_KERNEL);
+	{
+		struct pd6729_socket __uncontained_tmp213;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp213;
+	}
 	if (!socket) {
 		dev_warn(&dev->dev, "failed to kzalloc socket.\n");
 		return -ENOMEM;

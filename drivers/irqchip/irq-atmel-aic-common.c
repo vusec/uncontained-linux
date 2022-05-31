@@ -22,6 +22,11 @@
 #include <linux/of_address.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "irq-atmel-aic-common.h"
 
 #define AT91_AIC_PRIOR			GENMASK(2, 0)
@@ -225,6 +230,10 @@ struct irq_domain *__init aic_common_of_init(struct device_node *node,
 		return ERR_PTR(-ENOMEM);
 
 	aic = kcalloc(nchips, sizeof(*aic), GFP_KERNEL);
+	{
+		typeof((*aic)) __uncontained_tmp119;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp119;
+	}
 	if (!aic) {
 		ret = -ENOMEM;
 		goto err_iounmap;

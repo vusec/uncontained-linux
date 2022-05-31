@@ -29,6 +29,11 @@
 #include <linux/types.h>
 #include <uapi/linux/vm_sockets.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ne_misc_dev.h"
 #include "ne_pci_dev.h"
 
@@ -297,6 +302,10 @@ static int ne_setup_cpu_pool(const char *ne_cpu_list)
 	ne_cpu_pool.avail_threads_per_core = kcalloc(ne_cpu_pool.nr_parent_vm_cores,
 						     sizeof(*ne_cpu_pool.avail_threads_per_core),
 						     GFP_KERNEL);
+	{
+		typeof((*ne_cpu_pool.avail_threads_per_core)) __uncontained_tmp284;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp284;
+	}
 	if (!ne_cpu_pool.avail_threads_per_core) {
 		rc = -ENOMEM;
 
@@ -936,6 +945,10 @@ static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
 
 	ne_mem_region->pages = kcalloc(max_nr_pages, sizeof(*ne_mem_region->pages),
 				       GFP_KERNEL);
+	{
+		typeof((*ne_mem_region->pages)) __uncontained_tmp285;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp285;
+	}
 	if (!ne_mem_region->pages) {
 		rc = -ENOMEM;
 
@@ -945,6 +958,10 @@ static int ne_set_user_memory_region_ioctl(struct ne_enclave *ne_enclave,
 	phys_contig_mem_regions.regions = kcalloc(max_nr_pages,
 						  sizeof(*phys_contig_mem_regions.regions),
 						  GFP_KERNEL);
+	{
+		typeof((*phys_contig_mem_regions.regions)) __uncontained_tmp286;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp286;
+	}
 	if (!phys_contig_mem_regions.regions) {
 		rc = -ENOMEM;
 
@@ -1632,6 +1649,10 @@ static int ne_create_vm_ioctl(struct ne_pci_dev *ne_pci_dev, u64 __user *slot_ui
 	ne_enclave->threads_per_core = kcalloc(ne_enclave->nr_parent_vm_cores,
 					       sizeof(*ne_enclave->threads_per_core),
 					       GFP_KERNEL);
+	{
+		typeof((*ne_enclave->threads_per_core)) __uncontained_tmp287;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp287;
+	}
 	if (!ne_enclave->threads_per_core) {
 		rc = -ENOMEM;
 

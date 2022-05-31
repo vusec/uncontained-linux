@@ -8,6 +8,11 @@
 #include <linux/bitops.h>
 #include <linux/if_vlan.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1331,11 +1336,19 @@ static int e1000_alloc_queues(struct e1000_adapter *adapter)
 {
 	adapter->tx_ring = kcalloc(adapter->num_tx_queues,
 				   sizeof(struct e1000_tx_ring), GFP_KERNEL);
+	{
+		struct e1000_tx_ring __uncontained_tmp152;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp152;
+	}
 	if (!adapter->tx_ring)
 		return -ENOMEM;
 
 	adapter->rx_ring = kcalloc(adapter->num_rx_queues,
 				   sizeof(struct e1000_rx_ring), GFP_KERNEL);
+	{
+		struct e1000_rx_ring __uncontained_tmp153;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp153;
+	}
 	if (!adapter->rx_ring) {
 		kfree(adapter->tx_ring);
 		return -ENOMEM;

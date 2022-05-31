@@ -34,6 +34,11 @@
 #include <linux/slab.h>
 #include <linux/errno.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mthca_dev.h"
 #include "mthca_cmd.h"
 #include "mthca_memfree.h"
@@ -146,8 +151,16 @@ static int mthca_buddy_init(struct mthca_buddy *buddy, int max_order)
 
 	buddy->bits = kcalloc(buddy->max_order + 1, sizeof(long *),
 			      GFP_KERNEL);
+	{
+		long *__uncontained_tmp103;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp103;
+	}
 	buddy->num_free = kcalloc((buddy->max_order + 1), sizeof *buddy->num_free,
 				  GFP_KERNEL);
+	{
+		typeof(*buddy->num_free) __uncontained_tmp104;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp104;
+	}
 	if (!buddy->bits || !buddy->num_free)
 		goto err_out;
 

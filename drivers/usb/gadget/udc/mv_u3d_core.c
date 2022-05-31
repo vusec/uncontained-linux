@@ -27,6 +27,11 @@
 #include <linux/platform_data/mv_usb.h>
 #include <linux/clk.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -437,10 +442,18 @@ static int mv_u3d_req_to_trb(struct mv_u3d_req *req)
 			trb_num++;
 
 		trb = kcalloc(trb_num, sizeof(*trb), GFP_ATOMIC);
+		{
+			typeof((*trb)) __uncontained_tmp293;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp293;
+		}
 		if (!trb)
 			return -ENOMEM;
 
 		trb_hw = kcalloc(trb_num, sizeof(*trb_hw), GFP_ATOMIC);
+		{
+			typeof((*trb_hw)) __uncontained_tmp294;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp294;
+		}
 		if (!trb_hw) {
 			kfree(trb);
 			return -ENOMEM;

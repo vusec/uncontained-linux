@@ -48,6 +48,11 @@
 #include <rdma/ib_verbs.h>
 #include <rdma/ib_umem.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -605,18 +610,34 @@ static int bnxt_qplib_alloc_sgid_tbl(struct bnxt_qplib_res *res,
 				     u16 max)
 {
 	sgid_tbl->tbl = kcalloc(max, sizeof(*sgid_tbl->tbl), GFP_KERNEL);
+	{
+		typeof((*sgid_tbl->tbl)) __uncontained_tmp98;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp98;
+	}
 	if (!sgid_tbl->tbl)
 		return -ENOMEM;
 
 	sgid_tbl->hw_id = kcalloc(max, sizeof(u16), GFP_KERNEL);
+	{
+		u16 __uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 	if (!sgid_tbl->hw_id)
 		goto out_free1;
 
 	sgid_tbl->ctx = kcalloc(max, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp95;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (!sgid_tbl->ctx)
 		goto out_free2;
 
 	sgid_tbl->vlan = kcalloc(max, sizeof(u8), GFP_KERNEL);
+	{
+		u8 __uncontained_tmp96;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+	}
 	if (!sgid_tbl->vlan)
 		goto out_free3;
 
@@ -807,6 +828,10 @@ static int bnxt_qplib_alloc_dpi_tbl(struct bnxt_qplib_res     *res,
 	dpit->max = dbr_len / PAGE_SIZE;
 
 	dpit->app_tbl = kcalloc(dpit->max, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp97;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp97;
+	}
 	if (!dpit->app_tbl)
 		goto unmap_io;
 

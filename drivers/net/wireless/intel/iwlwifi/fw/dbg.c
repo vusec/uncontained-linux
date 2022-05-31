@@ -6,6 +6,11 @@
  */
 #include <linux/devcoredump.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -580,6 +585,10 @@ static struct scatterlist *alloc_sgtable(int size)
 
 	nents = DIV_ROUND_UP(size, PAGE_SIZE);
 	table = kcalloc(nents, sizeof(*table), GFP_KERNEL);
+	{
+		typeof((*table)) __uncontained_tmp187;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp187;
+	}
 	if (!table)
 		return NULL;
 	sg_init_table(table, nents);

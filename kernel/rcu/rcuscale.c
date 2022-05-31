@@ -40,6 +40,11 @@
 #include <linux/vmalloc.h>
 #include <linux/rcupdate_trace.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -776,6 +781,10 @@ kfree_scale_init(void)
 
 	kfree_reader_tasks = kcalloc(kfree_nrealthreads, sizeof(kfree_reader_tasks[0]),
 			       GFP_KERNEL);
+	{
+		typeof((kfree_reader_tasks[0])) __uncontained_tmp304;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp304;
+	}
 	if (kfree_reader_tasks == NULL) {
 		firsterr = -ENOMEM;
 		goto unwind;
@@ -853,6 +862,10 @@ rcu_scale_init(void)
 	}
 	reader_tasks = kcalloc(nrealreaders, sizeof(reader_tasks[0]),
 			       GFP_KERNEL);
+	{
+		typeof((reader_tasks[0])) __uncontained_tmp305;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp305;
+	}
 	if (reader_tasks == NULL) {
 		SCALEOUT_ERRSTRING("out of memory");
 		firsterr = -ENOMEM;
@@ -868,11 +881,23 @@ rcu_scale_init(void)
 		schedule_timeout_uninterruptible(1);
 	writer_tasks = kcalloc(nrealwriters, sizeof(reader_tasks[0]),
 			       GFP_KERNEL);
+	{
+		typeof((reader_tasks[0])) __uncontained_tmp306;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp306;
+	}
 	writer_durations = kcalloc(nrealwriters, sizeof(*writer_durations),
 				   GFP_KERNEL);
+	{
+		typeof((*writer_durations)) __uncontained_tmp307;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp307;
+	}
 	writer_n_durations =
 		kcalloc(nrealwriters, sizeof(*writer_n_durations),
 			GFP_KERNEL);
+	{
+		typeof((*writer_n_durations)) __uncontained_tmp308;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp308;
+	}
 	if (!writer_tasks || !writer_durations || !writer_n_durations) {
 		SCALEOUT_ERRSTRING("out of memory");
 		firsterr = -ENOMEM;
@@ -882,6 +907,10 @@ rcu_scale_init(void)
 		writer_durations[i] =
 			kcalloc(MAX_MEAS, sizeof(*writer_durations[i]),
 				GFP_KERNEL);
+		{
+			typeof((*writer_durations[i])) __uncontained_tmp309;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp309;
+		}
 		if (!writer_durations[i]) {
 			firsterr = -ENOMEM;
 			goto unwind;

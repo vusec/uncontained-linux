@@ -35,6 +35,11 @@
 #include <linux/uaccess.h>
 #include <net/arp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ieee80211.h"
 
 MODULE_DESCRIPTION("802.11 data/management/control stack");
@@ -51,6 +56,10 @@ static inline int ieee80211_networks_allocate(struct ieee80211_device *ieee)
 	ieee->networks = kcalloc(MAX_NETWORK_COUNT,
 				 sizeof(struct ieee80211_network),
 				 GFP_KERNEL);
+	{
+		struct ieee80211_network __uncontained_tmp232;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp232;
+	}
 	if (!ieee->networks) {
 		netdev_warn(ieee->dev, "Out of memory allocating beacons\n");
 		return -ENOMEM;

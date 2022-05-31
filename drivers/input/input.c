@@ -23,6 +23,11 @@
 #include <linux/device.h>
 #include <linux/mutex.h>
 #include <linux/rcupdate.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "input-compat.h"
 #include "input-poller.h"
 
@@ -494,6 +499,10 @@ void input_alloc_absinfo(struct input_dev *dev)
 		return;
 
 	dev->absinfo = kcalloc(ABS_CNT, sizeof(*dev->absinfo), GFP_KERNEL);
+	{
+		typeof((*dev->absinfo)) __uncontained_tmp107;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp107;
+	}
 	if (!dev->absinfo) {
 		dev_err(dev->dev.parent ?: &dev->dev,
 			"%s: unable to allocate memory\n", __func__);
@@ -2300,6 +2309,10 @@ int input_register_device(struct input_dev *dev)
 
 	dev->max_vals = dev->hint_events_per_packet + 2;
 	dev->vals = kcalloc(dev->max_vals, sizeof(*dev->vals), GFP_KERNEL);
+	{
+		typeof((*dev->vals)) __uncontained_tmp108;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp108;
+	}
 	if (!dev->vals) {
 		error = -ENOMEM;
 		goto err_devres_free;

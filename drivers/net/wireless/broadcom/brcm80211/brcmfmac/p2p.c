@@ -11,6 +11,11 @@
 #include <brcmu_wifi.h>
 #include <brcmu_utils.h>
 #include <defs.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "core.h"
 #include "debug.h"
 #include "fwil.h"
@@ -792,6 +797,10 @@ static s32 brcmf_p2p_run_escan(struct brcmf_cfg80211_info *cfg,
 	if (request->n_channels) {
 		chanspecs = kcalloc(request->n_channels, sizeof(*chanspecs),
 				    GFP_KERNEL);
+		{
+			typeof((*chanspecs)) __uncontained_tmp199;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp199;
+		}
 		if (!chanspecs) {
 			err = -ENOMEM;
 			goto exit;
@@ -1076,6 +1085,10 @@ static s32 brcmf_p2p_act_frm_search(struct brcmf_p2p_info *p2p, u16 channel)
 		channel_cnt = SOCIAL_CHAN_CNT;
 	default_chan_list = kcalloc(channel_cnt, sizeof(*default_chan_list),
 				    GFP_KERNEL);
+	{
+		typeof((*default_chan_list)) __uncontained_tmp200;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp200;
+	}
 	if (default_chan_list == NULL) {
 		bphy_err(drvr, "channel list allocation failed\n");
 		err = -ENOMEM;

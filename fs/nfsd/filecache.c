@@ -13,6 +13,11 @@
 #include <linux/fsnotify.h>
 #include <linux/seq_file.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vfs.h"
 #include "nfsd.h"
 #include "nfsfh.h"
@@ -634,6 +639,10 @@ nfsd_file_cache_init(void)
 
 	nfsd_file_hashtbl = kcalloc(NFSD_FILE_HASH_SIZE,
 				sizeof(*nfsd_file_hashtbl), GFP_KERNEL);
+	{
+		typeof((*nfsd_file_hashtbl)) __uncontained_tmp290;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp290;
+	}
 	if (!nfsd_file_hashtbl) {
 		pr_err("nfsd: unable to allocate nfsd_file_hashtbl\n");
 		goto out_err;

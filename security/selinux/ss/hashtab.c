@@ -7,6 +7,11 @@
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/errno.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hashtab.h"
 #include "security.h"
 
@@ -40,6 +45,10 @@ int hashtab_init(struct hashtab *h, u32 nel_hint)
 
 	if (size) {
 		h->htable = kcalloc(size, sizeof(*h->htable), GFP_KERNEL);
+		{
+			typeof((*h->htable)) __uncontained_tmp333;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp333;
+		}
 		if (!h->htable)
 			return -ENOMEM;
 		h->size = size;
@@ -142,6 +151,10 @@ int hashtab_duplicate(struct hashtab *new, struct hashtab *orig,
 	memset(new, 0, sizeof(*new));
 
 	new->htable = kcalloc(orig->size, sizeof(*new->htable), GFP_KERNEL);
+	{
+		typeof((*new->htable)) __uncontained_tmp334;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp334;
+	}
 	if (!new->htable)
 		return -ENOMEM;
 

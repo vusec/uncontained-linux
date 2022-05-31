@@ -47,6 +47,11 @@
 #include <scsi/scsi_device.h>
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_tcq.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "BusLogic.h"
 #include "FlashPoint.c"
 
@@ -2212,6 +2217,10 @@ static int __init blogic_init(void)
 	blogic_probeinfo_list =
 	    kcalloc(BLOGIC_MAX_ADAPTERS, sizeof(struct blogic_probeinfo),
 			    GFP_KERNEL);
+	{
+		struct blogic_probeinfo __uncontained_tmp251;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp251;
+	}
 	if (blogic_probeinfo_list == NULL) {
 		blogic_err("BusLogic: Unable to allocate Probe Info List\n",
 				NULL);

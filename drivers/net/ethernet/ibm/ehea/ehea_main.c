@@ -32,6 +32,11 @@
 
 #include <net/ip.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ehea.h"
 #include "ehea_qmr.h"
 #include "ehea_phyp.h"
@@ -171,6 +176,10 @@ static void ehea_update_firmware_handles(void)
 
 	if (num_fw_handles) {
 		arr = kcalloc(num_fw_handles, sizeof(*arr), GFP_KERNEL);
+		{
+			typeof((*arr)) __uncontained_tmp169;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp169;
+		}
 		if (!arr)
 			goto out;  /* Keep the existing array */
 	} else
@@ -254,6 +263,10 @@ static void ehea_update_bcmc_registrations(void)
 
 	if (num_registrations) {
 		arr = kcalloc(num_registrations, sizeof(*arr), GFP_ATOMIC);
+		{
+			typeof((*arr)) __uncontained_tmp170;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp170;
+		}
 		if (!arr)
 			goto out;  /* Keep the existing array */
 	} else

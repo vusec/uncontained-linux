@@ -33,6 +33,11 @@
 #include <asm/cpufeature.h>
 #include <asm/intel-family.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -3019,6 +3024,10 @@ static int intel_cpufreq_cpu_init(struct cpufreq_policy *policy)
 	policy->cur = policy->cpuinfo.min_freq;
 
 	req = kcalloc(2, sizeof(*req), GFP_KERNEL);
+	{
+		typeof((*req)) __uncontained_tmp39;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp39;
+	}
 	if (!req) {
 		ret = -ENOMEM;
 		goto pstate_exit;

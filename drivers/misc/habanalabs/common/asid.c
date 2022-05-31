@@ -9,10 +9,19 @@
 
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 int hl_asid_init(struct hl_device *hdev)
 {
 	hdev->asid_bitmap = kcalloc(BITS_TO_LONGS(hdev->asic_prop.max_asid),
 					sizeof(*hdev->asid_bitmap), GFP_KERNEL);
+	{
+		typeof((*hdev->asid_bitmap)) __uncontained_tmp54;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp54;
+	}
 	if (!hdev->asid_bitmap)
 		return -ENOMEM;
 

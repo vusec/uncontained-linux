@@ -57,6 +57,11 @@
 #include <linux/hwmon-sysfs.h>
 #include <net/page_pool.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -3024,12 +3029,20 @@ static int bnxt_alloc_tpa_info(struct bnxt *bp)
 
 		rxr->rx_tpa = kcalloc(bp->max_tpa, sizeof(struct bnxt_tpa_info),
 				      GFP_KERNEL);
+		{
+			struct bnxt_tpa_info __uncontained_tmp65;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp65;
+		}
 		if (!rxr->rx_tpa)
 			return -ENOMEM;
 
 		if (!(bp->flags & BNXT_FLAG_CHIP_P5))
 			continue;
 		agg = kcalloc(total_aggs, sizeof(*agg), GFP_KERNEL);
+		{
+			typeof((*agg)) __uncontained_tmp75;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp75;
+		}
 		rxr->rx_tpa[0].agg_arr = agg;
 		if (!agg)
 			return -ENOMEM;
@@ -3252,10 +3265,18 @@ static void bnxt_free_cp_arrays(struct bnxt_cp_ring_info *cpr)
 static int bnxt_alloc_cp_arrays(struct bnxt_cp_ring_info *cpr, int n)
 {
 	cpr->cp_desc_ring = kcalloc(n, sizeof(*cpr->cp_desc_ring), GFP_KERNEL);
+	{
+		typeof((*cpr->cp_desc_ring)) __uncontained_tmp76;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp76;
+	}
 	if (!cpr->cp_desc_ring)
 		return -ENOMEM;
 	cpr->cp_desc_mapping = kcalloc(n, sizeof(*cpr->cp_desc_mapping),
 				       GFP_KERNEL);
+	{
+		typeof((*cpr->cp_desc_mapping)) __uncontained_tmp77;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp77;
+	}
 	if (!cpr->cp_desc_mapping)
 		return -ENOMEM;
 	return 0;
@@ -3661,6 +3682,10 @@ static int bnxt_init_ring_grps(struct bnxt *bp, bool irq_re_init)
 		bp->grp_info = kcalloc(bp->cp_nr_rings,
 				       sizeof(struct bnxt_ring_grp_info),
 				       GFP_KERNEL);
+		{
+			struct bnxt_ring_grp_info __uncontained_tmp66;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp66;
+		}
 		if (!bp->grp_info)
 			return -ENOMEM;
 	}
@@ -3696,6 +3721,10 @@ static int bnxt_alloc_vnics(struct bnxt *bp)
 
 	bp->vnic_info = kcalloc(num_vnics, sizeof(struct bnxt_vnic_info),
 				GFP_KERNEL);
+	{
+		struct bnxt_vnic_info __uncontained_tmp67;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp67;
+	}
 	if (!bp->vnic_info)
 		return -ENOMEM;
 
@@ -3951,6 +3980,10 @@ static int bnxt_alloc_vnic_attributes(struct bnxt *bp)
 			max_rings = 1;
 
 		vnic->fw_grp_ids = kcalloc(max_rings, sizeof(u16), GFP_KERNEL);
+		{
+			u16 __uncontained_tmp68;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp68;
+		}
 		if (!vnic->fw_grp_ids) {
 			rc = -ENOMEM;
 			goto out;
@@ -4331,6 +4364,10 @@ static int bnxt_alloc_ntp_fltrs(struct bnxt *bp)
 	bp->ntp_fltr_bmap = kcalloc(BITS_TO_LONGS(BNXT_NTP_FLTR_MAX_FLTR),
 				    sizeof(long),
 				    GFP_KERNEL);
+	{
+		long __uncontained_tmp69;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp69;
+	}
 
 	if (!bp->ntp_fltr_bmap)
 		rc = -ENOMEM;
@@ -4411,6 +4448,10 @@ static int bnxt_alloc_mem(struct bnxt *bp, bool irq_re_init)
 		bp->rx_ring = kcalloc(bp->rx_nr_rings,
 				      sizeof(struct bnxt_rx_ring_info),
 				      GFP_KERNEL);
+		{
+			struct bnxt_rx_ring_info __uncontained_tmp70;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp70;
+		}
 		if (!bp->rx_ring)
 			return -ENOMEM;
 
@@ -4430,11 +4471,19 @@ static int bnxt_alloc_mem(struct bnxt *bp, bool irq_re_init)
 		bp->tx_ring = kcalloc(bp->tx_nr_rings,
 				      sizeof(struct bnxt_tx_ring_info),
 				      GFP_KERNEL);
+		{
+			struct bnxt_tx_ring_info __uncontained_tmp71;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp71;
+		}
 		if (!bp->tx_ring)
 			return -ENOMEM;
 
 		bp->tx_ring_map = kcalloc(bp->tx_nr_rings, sizeof(u16),
 					  GFP_KERNEL);
+		{
+			u16 __uncontained_tmp72;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp72;
+		}
 
 		if (!bp->tx_ring_map)
 			return -ENOMEM;
@@ -6941,6 +6990,10 @@ static int bnxt_hwrm_func_backing_store_qcaps(struct bnxt *bp)
 
 		tqm_rings = ctx->tqm_fp_rings_count + BNXT_MAX_TQM_SP_RINGS;
 		ctx_pg = kcalloc(tqm_rings, sizeof(*ctx_pg), GFP_KERNEL);
+		{
+			typeof((*ctx_pg)) __uncontained_tmp78;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp78;
+		}
 		if (!ctx_pg) {
 			kfree(ctx);
 			rc = -ENOMEM;
@@ -7126,6 +7179,10 @@ static int bnxt_alloc_ctx_pg_tbls(struct bnxt *bp,
 		rmem->depth = 2;
 		ctx_pg->ctx_pg_tbl = kcalloc(MAX_CTX_PAGES, sizeof(ctx_pg),
 					     GFP_KERNEL);
+		{
+			typeof((ctx_pg)) __uncontained_tmp79;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp79;
+		}
 		if (!ctx_pg->ctx_pg_tbl)
 			return -ENOMEM;
 		nr_tbls = DIV_ROUND_UP(ctx_pg->nr_pages, MAX_CTX_PAGES);
@@ -8953,6 +9010,10 @@ static int bnxt_init_msix(struct bnxt *bp)
 		return 0;
 
 	msix_ent = kcalloc(total_vecs, sizeof(struct msix_entry), GFP_KERNEL);
+	{
+		struct msix_entry __uncontained_tmp73;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp73;
+	}
 	if (!msix_ent)
 		return -ENOMEM;
 
@@ -8972,6 +9033,10 @@ static int bnxt_init_msix(struct bnxt *bp)
 	}
 
 	bp->irq_tbl = kcalloc(total_vecs, sizeof(struct bnxt_irq), GFP_KERNEL);
+	{
+		struct bnxt_irq __uncontained_tmp74;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp74;
+	}
 	if (bp->irq_tbl) {
 		for (i = 0; i < total_vecs; i++)
 			bp->irq_tbl[i].vector = msix_ent[i].vector;

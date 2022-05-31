@@ -10,6 +10,11 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define TRX_PARSER_MAX_PARTS		4
 
 /* Magics */
@@ -67,6 +72,10 @@ static int parser_trx_parse(struct mtd_info *mtd,
 
 	parts = kcalloc(TRX_PARSER_MAX_PARTS, sizeof(struct mtd_partition),
 			GFP_KERNEL);
+	{
+		struct mtd_partition __uncontained_tmp61;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp61;
+	}
 	if (!parts)
 		return -ENOMEM;
 

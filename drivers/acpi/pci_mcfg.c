@@ -13,6 +13,11 @@
 #include <linux/pci-acpi.h>
 #include <linux/pci-ecam.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* Structure to hold entries from the MCFG table */
 struct mcfg_entry {
 	struct list_head	list;
@@ -280,6 +285,10 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
 	mptr = (struct acpi_mcfg_allocation *) &mcfg[1];
 
 	arr = kcalloc(n, sizeof(*arr), GFP_KERNEL);
+	{
+		typeof((*arr)) __uncontained_tmp15;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp15;
+	}
 	if (!arr)
 		return -ENOMEM;
 

@@ -89,6 +89,11 @@
 #include <linux/crc32.h>
 #include <linux/freezer.h>
 #include <linux/kthread.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ubi.h"
 #include "wl.h"
 
@@ -1766,6 +1771,10 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
 
 	err = -ENOMEM;
 	ubi->lookuptbl = kcalloc(ubi->peb_count, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp142;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp142;
+	}
 	if (!ubi->lookuptbl)
 		return err;
 

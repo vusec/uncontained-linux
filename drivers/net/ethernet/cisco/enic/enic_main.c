@@ -47,6 +47,11 @@
 #include <net/busy_poll.h>
 #include <net/vxlan.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "cq_enet_desc.h"
 #include "vnic_dev.h"
 #include "vnic_intr.h"
@@ -2783,6 +2788,10 @@ static int enic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	/* Allocate structure for port profiles */
 	enic->pp = kcalloc(num_pps, sizeof(*enic->pp), GFP_KERNEL);
+	{
+		typeof((*enic->pp)) __uncontained_tmp146;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp146;
+	}
 	if (!enic->pp) {
 		err = -ENOMEM;
 		goto err_out_disable_sriov_pp;

@@ -41,6 +41,11 @@
 #include <net/genetlink.h>
 #include <linux/tipc_config.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* The legacy API had an artificial message length limit called
  * ULTRA_STRING_MAX_LEN.
  */
@@ -207,6 +212,10 @@ static int __tipc_nl_compat_dumpit(struct tipc_nl_compat_cmd_dump *cmd,
 
 	attrbuf = kcalloc(tipc_genl_family.maxattr + 1,
 			  sizeof(struct nlattr *), GFP_KERNEL);
+	{
+		struct nlattr *__uncontained_tmp311;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp311;
+	}
 	if (!attrbuf) {
 		err = -ENOMEM;
 		goto err_out;

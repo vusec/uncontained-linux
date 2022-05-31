@@ -22,6 +22,11 @@
 
 #include <dt-bindings/pinctrl/pinctrl-starfive.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "core.h"
 #include "pinctrl-utils.h"
 #include "pinmux.h"
@@ -517,6 +522,10 @@ static int starfive_dt_node_to_map(struct pinctrl_dev *pctldev,
 		return -ENOMEM;
 
 	map = kcalloc(nmaps, sizeof(*map), GFP_KERNEL);
+	{
+		typeof((*map)) __uncontained_tmp250;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp250;
+	}
 	if (!map)
 		return -ENOMEM;
 

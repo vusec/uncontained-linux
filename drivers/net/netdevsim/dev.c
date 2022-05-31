@@ -33,6 +33,11 @@
 #include <uapi/linux/ip.h>
 #include <uapi/linux/udp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -280,6 +285,10 @@ static ssize_t nsim_bus_dev_max_vfs_write(struct file *file,
 
 	vfconfigs = kcalloc(val, sizeof(struct nsim_vf_config),
 			    GFP_KERNEL | __GFP_NOWARN);
+	{
+		struct nsim_vf_config __uncontained_tmp135;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp135;
+	}
 	if (!vfconfigs)
 		return -ENOMEM;
 
@@ -871,6 +880,10 @@ static int nsim_dev_traps_init(struct devlink *devlink)
 	nsim_trap_data->trap_items_arr = kcalloc(ARRAY_SIZE(nsim_traps_arr),
 						 sizeof(struct nsim_trap_item),
 						 GFP_KERNEL);
+	{
+		struct nsim_trap_item __uncontained_tmp136;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp136;
+	}
 	if (!nsim_trap_data->trap_items_arr) {
 		err = -ENOMEM;
 		goto err_trap_data_free;
@@ -879,6 +892,10 @@ static int nsim_dev_traps_init(struct devlink *devlink)
 	nsim_trap_data->trap_policers_cnt_arr = kcalloc(policers_count,
 							sizeof(u64),
 							GFP_KERNEL);
+	{
+		u64 __uncontained_tmp137;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp137;
+	}
 	if (!nsim_trap_data->trap_policers_cnt_arr) {
 		err = -ENOMEM;
 		goto err_trap_items_free;
@@ -1559,6 +1576,10 @@ int nsim_drv_probe(struct nsim_bus_dev *nsim_bus_dev)
 	nsim_dev->vfconfigs = kcalloc(nsim_bus_dev->max_vfs,
 				      sizeof(struct nsim_vf_config),
 				      GFP_KERNEL | __GFP_NOWARN);
+	{
+		struct nsim_vf_config __uncontained_tmp138;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp138;
+	}
 	if (!nsim_dev->vfconfigs) {
 		err = -ENOMEM;
 		goto err_devlink_free;

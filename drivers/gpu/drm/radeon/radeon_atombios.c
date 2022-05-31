@@ -29,6 +29,11 @@
 #include <drm/drm_device.h>
 #include <drm/radeon_drm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "radeon.h"
 
 #include "atom.h"
@@ -2116,6 +2121,10 @@ static int radeon_atombios_parse_power_table_1_3(struct radeon_device *rdev)
 	rdev->pm.power_state = kcalloc(num_modes,
 				       sizeof(struct radeon_power_state),
 				       GFP_KERNEL);
+	{
+		struct radeon_power_state __uncontained_tmp92;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!rdev->pm.power_state)
 		return state_index;
 	/* last mode is usually default, array is low to high */
@@ -2590,6 +2599,10 @@ static int radeon_atombios_parse_power_table_4_5(struct radeon_device *rdev)
 	rdev->pm.power_state = kcalloc(power_info->pplib.ucNumStates,
 				       sizeof(struct radeon_power_state),
 				       GFP_KERNEL);
+	{
+		struct radeon_power_state __uncontained_tmp93;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp93;
+	}
 	if (!rdev->pm.power_state)
 		return state_index;
 	/* first mode is usually default, followed by low to high */
@@ -2609,6 +2622,10 @@ static int radeon_atombios_parse_power_table_4_5(struct radeon_device *rdev)
 				(power_info->pplib.ucStateEntrySize - 1) : 1,
 				sizeof(struct radeon_pm_clock_info),
 				GFP_KERNEL);
+		{
+			struct radeon_pm_clock_info __uncontained_tmp94;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+		}
 		if (!rdev->pm.power_state[i].clock_info)
 			return state_index;
 		if (power_info->pplib.ucStateEntrySize - 1) {
@@ -2693,6 +2710,10 @@ static int radeon_atombios_parse_power_table_6(struct radeon_device *rdev)
 	rdev->pm.power_state = kcalloc(state_array->ucNumEntries,
 				       sizeof(struct radeon_power_state),
 				       GFP_KERNEL);
+	{
+		struct radeon_power_state __uncontained_tmp95;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp95;
+	}
 	if (!rdev->pm.power_state)
 		return state_index;
 	power_state_offset = (u8 *)state_array->states;
@@ -2707,6 +2728,10 @@ static int radeon_atombios_parse_power_table_6(struct radeon_device *rdev)
 				power_state->v2.ucNumDPMLevels : 1,
 				sizeof(struct radeon_pm_clock_info),
 				GFP_KERNEL);
+		{
+			struct radeon_pm_clock_info __uncontained_tmp96;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp96;
+		}
 		if (!rdev->pm.power_state[i].clock_info)
 			return state_index;
 		if (power_state->v2.ucNumDPMLevels) {

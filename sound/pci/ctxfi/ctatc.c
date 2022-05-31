@@ -25,6 +25,11 @@
 #include <sound/control.h>
 #include <sound/asoundef.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define MONO_SUM_SCALE	0x19a8	/* 2^(-0.5) in 14-bit floating format */
 #define MAX_MULTI_CHN	8
 
@@ -273,6 +278,10 @@ static int atc_pcm_playback_prepare(struct ct_atc *atc, struct ct_atc_pcm *apcm)
 	/* Get AMIXER resource */
 	n_amixer = (n_amixer < 2) ? 2 : n_amixer;
 	apcm->amixers = kcalloc(n_amixer, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp343;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp343;
+	}
 	if (!apcm->amixers) {
 		err = -ENOMEM;
 		goto error1;
@@ -541,17 +550,29 @@ atc_pcm_capture_get_resources(struct ct_atc *atc, struct ct_atc_pcm *apcm)
 
 	if (n_srcc) {
 		apcm->srccs = kcalloc(n_srcc, sizeof(void *), GFP_KERNEL);
+		{
+			void *__uncontained_tmp344;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp344;
+		}
 		if (!apcm->srccs)
 			return -ENOMEM;
 	}
 	if (n_amixer) {
 		apcm->amixers = kcalloc(n_amixer, sizeof(void *), GFP_KERNEL);
+		{
+			void *__uncontained_tmp345;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp345;
+		}
 		if (!apcm->amixers) {
 			err = -ENOMEM;
 			goto error1;
 		}
 	}
 	apcm->srcimps = kcalloc(n_srcimp, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp346;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp346;
+	}
 	if (!apcm->srcimps) {
 		err = -ENOMEM;
 		goto error1;
@@ -817,6 +838,10 @@ static int spdif_passthru_playback_get_resources(struct ct_atc *atc,
 	/* Get AMIXER resource */
 	n_amixer = (n_amixer < 2) ? 2 : n_amixer;
 	apcm->amixers = kcalloc(n_amixer, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp347;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp347;
+	}
 	if (!apcm->amixers) {
 		err = -ENOMEM;
 		goto error1;
@@ -1376,18 +1401,34 @@ static int atc_get_resources(struct ct_atc *atc)
 	num_srcs = ((atc->model == CTSB1270) ? 6 : 4);
 
 	atc->daios = kcalloc(num_daios, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp348;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp348;
+	}
 	if (!atc->daios)
 		return -ENOMEM;
 
 	atc->srcs = kcalloc(num_srcs, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp349;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp349;
+	}
 	if (!atc->srcs)
 		return -ENOMEM;
 
 	atc->srcimps = kcalloc(num_srcs, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp350;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp350;
+	}
 	if (!atc->srcimps)
 		return -ENOMEM;
 
 	atc->pcm = kcalloc(2 * 4, sizeof(void *), GFP_KERNEL);
+	{
+		void *__uncontained_tmp351;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp351;
+	}
 	if (!atc->pcm)
 		return -ENOMEM;
 

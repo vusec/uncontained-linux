@@ -47,6 +47,11 @@
 
 #include <asm/io.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mlx4.h"
 #include "fw.h"
 #include "fw_qos.h"
@@ -926,6 +931,10 @@ static int mlx4_MAD_IFC_wrapper(struct mlx4_dev *dev, int slave,
 					return -EINVAL;
 				table = kcalloc((dev->caps.pkey_table_len[port] / 32) + 1,
 						sizeof(*table) * 32, GFP_KERNEL);
+				{
+					typeof((*table)) __uncontained_tmp191;
+					__uncontained_kcalloc = (unsigned long)&__uncontained_tmp191;
+				}
 
 				if (!table)
 					return -ENOMEM;
@@ -2381,6 +2390,10 @@ int mlx4_multi_func_init(struct mlx4_dev *dev)
 			kcalloc(dev->num_slaves,
 				sizeof(struct mlx4_slave_state),
 				GFP_KERNEL);
+		{
+			struct mlx4_slave_state __uncontained_tmp188;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp188;
+		}
 		if (!priv->mfunc.master.slave_state)
 			goto err_comm;
 
@@ -2388,6 +2401,10 @@ int mlx4_multi_func_init(struct mlx4_dev *dev)
 			kcalloc(dev->num_slaves,
 				sizeof(struct mlx4_vf_admin_state),
 				GFP_KERNEL);
+		{
+			struct mlx4_vf_admin_state __uncontained_tmp189;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp189;
+		}
 		if (!priv->mfunc.master.vf_admin)
 			goto err_comm_admin;
 
@@ -2395,6 +2412,10 @@ int mlx4_multi_func_init(struct mlx4_dev *dev)
 			kcalloc(dev->num_slaves,
 				sizeof(struct mlx4_vf_oper_state),
 				GFP_KERNEL);
+		{
+			struct mlx4_vf_oper_state __uncontained_tmp190;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp190;
+		}
 		if (!priv->mfunc.master.vf_oper)
 			goto err_comm_oper;
 

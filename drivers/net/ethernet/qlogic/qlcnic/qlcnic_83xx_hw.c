@@ -10,6 +10,11 @@
 #include <linux/interrupt.h>
 #include <linux/aer.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -919,10 +924,18 @@ int qlcnic_83xx_alloc_mbx_args(struct qlcnic_cmd_args *mbx,
 			mbx->rsp.num = mbx_tbl[i].out_args;
 			mbx->req.arg = kcalloc(mbx->req.num, sizeof(u32),
 					       GFP_ATOMIC);
+			{
+				u32 __uncontained_tmp186;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp186;
+			}
 			if (!mbx->req.arg)
 				return -ENOMEM;
 			mbx->rsp.arg = kcalloc(mbx->rsp.num, sizeof(u32),
 					       GFP_ATOMIC);
+			{
+				u32 __uncontained_tmp187;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp187;
+			}
 			if (!mbx->rsp.arg) {
 				kfree(mbx->req.arg);
 				mbx->req.arg = NULL;

@@ -27,6 +27,11 @@
 #include <linux/ceph/decode.h>
 #include <linux/ceph/mon_client.h>
 #include <linux/ceph/auth.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "crypto.h"
 
 
@@ -316,6 +321,10 @@ struct ceph_options *ceph_alloc_options(void)
 	opt->crush_locs = RB_ROOT;
 	opt->mon_addr = kcalloc(CEPH_MAX_MON, sizeof(*opt->mon_addr),
 				GFP_KERNEL);
+	{
+		typeof((*opt->mon_addr)) __uncontained_tmp242;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp242;
+	}
 	if (!opt->mon_addr) {
 		kfree(opt);
 		return NULL;

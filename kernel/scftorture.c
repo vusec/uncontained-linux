@@ -35,6 +35,11 @@
 #include <linux/torture.h>
 #include <linux/types.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SCFTORT_STRING "scftorture"
 #define SCFTORT_FLAG SCFTORT_STRING ": "
 
@@ -620,6 +625,10 @@ static int __init scf_torture_init(void)
 	if (nthreads < 0)
 		nthreads = num_online_cpus();
 	scf_stats_p = kcalloc(nthreads, sizeof(scf_stats_p[0]), GFP_KERNEL);
+	{
+		typeof((scf_stats_p[0])) __uncontained_tmp239;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp239;
+	}
 	if (!scf_stats_p) {
 		SCFTORTOUT_ERRSTRING("out of memory");
 		firsterr = -ENOMEM;

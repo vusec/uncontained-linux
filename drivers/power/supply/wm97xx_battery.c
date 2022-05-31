@@ -19,6 +19,11 @@
 #include <linux/irq.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static struct work_struct bat_work;
 static struct gpio_desc *charge_gpiod;
 static DEFINE_MUTEX(work_lock);
@@ -199,6 +204,10 @@ static int wm97xx_bat_probe(struct platform_device *dev)
 		props++;	/* POWER_SUPPLY_PROP_VOLTAGE_MIN */
 
 	prop = kcalloc(props, sizeof(*prop), GFP_KERNEL);
+	{
+		typeof((*prop)) __uncontained_tmp218;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp218;
+	}
 	if (!prop) {
 		ret = -ENOMEM;
 		goto err3;

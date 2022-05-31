@@ -35,6 +35,11 @@
 
 #include <asm/cacheflush.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRIVER_NAME	"pxa168-eth"
 #define DRIVER_VERSION	"0.3"
 
@@ -1025,6 +1030,10 @@ static int rxq_init(struct net_device *dev)
 
 	/* Allocate RX skb rings */
 	pep->rx_skb = kcalloc(rx_desc_num, sizeof(*pep->rx_skb), GFP_KERNEL);
+	{
+		typeof((*pep->rx_skb)) __uncontained_tmp165;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp165;
+	}
 	if (!pep->rx_skb)
 		return -ENOMEM;
 
@@ -1084,6 +1093,10 @@ static int txq_init(struct net_device *dev)
 	int tx_desc_num = pep->tx_ring_size;
 
 	pep->tx_skb = kcalloc(tx_desc_num, sizeof(*pep->tx_skb), GFP_KERNEL);
+	{
+		typeof((*pep->tx_skb)) __uncontained_tmp166;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp166;
+	}
 	if (!pep->tx_skb)
 		return -ENOMEM;
 

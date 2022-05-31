@@ -16,6 +16,11 @@
 #include <linux/log2.h>
 #include <linux/bitfield.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* when under memory pressure rx ring refill may fail and needs a retry */
 #define HTT_RX_RING_REFILL_RETRY_MS 50
 
@@ -777,6 +782,10 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
 	htt->rx_ring.netbufs_ring =
 		kcalloc(htt->rx_ring.size, sizeof(struct sk_buff *),
 			GFP_KERNEL);
+	{
+		struct sk_buff *__uncontained_tmp226;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp226;
+	}
 	if (!htt->rx_ring.netbufs_ring)
 		goto err_netbuf;
 

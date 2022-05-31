@@ -58,6 +58,11 @@
 
 #include <net/ip_vs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1853,6 +1858,10 @@ int start_sync_thread(struct netns_ipvs *ipvs, struct ipvs_sync_daemon_cfg *c,
 
 		result = -ENOMEM;
 		ipvs->ms = kcalloc(count, sizeof(ipvs->ms[0]), GFP_KERNEL);
+		{
+			typeof((ipvs->ms[0])) __uncontained_tmp323;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp323;
+		}
 		if (!ipvs->ms)
 			goto out;
 		ms = ipvs->ms;
@@ -1868,6 +1877,10 @@ int start_sync_thread(struct netns_ipvs *ipvs, struct ipvs_sync_daemon_cfg *c,
 	result = -ENOMEM;
 	ti = kcalloc(count, sizeof(struct ip_vs_sync_thread_data),
 		     GFP_KERNEL);
+	{
+		struct ip_vs_sync_thread_data __uncontained_tmp322;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp322;
+	}
 	if (!ti)
 		goto out;
 

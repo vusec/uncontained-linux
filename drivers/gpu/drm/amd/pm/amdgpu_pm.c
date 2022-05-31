@@ -34,6 +34,11 @@
 #include <linux/nospec.h>
 #include <linux/pm_runtime.h>
 #include <asm/processor.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "hwmgr.h"
 
 static const struct cg_flag_name clocks[] = {
@@ -3552,6 +3557,10 @@ static void amdgpu_debugfs_prints_cpu_info(struct seq_file *m,
 	if (is_support_cclk_dpm(adev)) {
 		p_val = kcalloc(adev->smu.cpu_core_num, sizeof(uint16_t),
 				GFP_KERNEL);
+		{
+			uint16_t __uncontained_tmp75;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp75;
+		}
 
 		if (!amdgpu_dpm_read_sensor(adev, AMDGPU_PP_SENSOR_CPU_CLK,
 					    (void *)p_val, &size)) {

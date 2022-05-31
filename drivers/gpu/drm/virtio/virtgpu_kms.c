@@ -29,6 +29,11 @@
 
 #include <drm/drm_file.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "virtgpu_drv.h"
 
 static void virtio_gpu_config_changed_work_func(struct work_struct *work)
@@ -70,6 +75,10 @@ static void virtio_gpu_get_capsets(struct virtio_gpu_device *vgdev,
 	vgdev->capsets = kcalloc(num_capsets,
 				 sizeof(struct virtio_gpu_drv_capset),
 				 GFP_KERNEL);
+	{
+		struct virtio_gpu_drv_capset __uncontained_tmp77;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp77;
+	}
 	if (!vgdev->capsets) {
 		DRM_ERROR("failed to allocate cap sets\n");
 		return;

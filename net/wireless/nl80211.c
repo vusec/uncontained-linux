@@ -27,6 +27,11 @@
 #include <net/sock.h>
 #include <net/inet_connection_sock.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -956,6 +961,10 @@ static int nl80211_prepare_wdev_dump(struct netlink_callback *cb,
 		if (!attrbuf) {
 			attrbuf = kcalloc(NUM_NL80211_ATTR, sizeof(*attrbuf),
 					  GFP_KERNEL);
+			{
+				typeof((*attrbuf)) __uncontained_tmp254;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp254;
+			}
 			if (!attrbuf)
 				return -ENOMEM;
 			attrbuf_free = attrbuf;
@@ -9517,6 +9526,10 @@ static int nl80211_channel_switch(struct sk_buff *skb, struct genl_info *info)
 
 	csa_attrs = kcalloc(NL80211_ATTR_MAX + 1, sizeof(*csa_attrs),
 			    GFP_KERNEL);
+	{
+		typeof((*csa_attrs)) __uncontained_tmp255;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp255;
+	}
 	if (!csa_attrs) {
 		err = -ENOMEM;
 		goto free;
@@ -9921,6 +9934,10 @@ static int nl80211_dump_survey(struct sk_buff *skb, struct netlink_callback *cb)
 	bool radio_stats;
 
 	attrbuf = kcalloc(NUM_NL80211_ATTR, sizeof(*attrbuf), GFP_KERNEL);
+	{
+		typeof((*attrbuf)) __uncontained_tmp256;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp256;
+	}
 	if (!attrbuf)
 		return -ENOMEM;
 
@@ -10896,6 +10913,10 @@ static int nl80211_testmode_dump(struct sk_buff *skb,
 	} else {
 		attrbuf = kcalloc(NUM_NL80211_ATTR, sizeof(*attrbuf),
 				  GFP_KERNEL);
+		{
+			typeof((*attrbuf)) __uncontained_tmp257;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp257;
+		}
 		if (!attrbuf) {
 			err = -ENOMEM;
 			goto out_err;
@@ -12656,6 +12677,10 @@ static int nl80211_parse_wowlan_nd(struct cfg80211_registered_device *rdev,
 	int err;
 
 	tb = kcalloc(NUM_NL80211_ATTR, sizeof(*tb), GFP_KERNEL);
+	{
+		typeof((*tb)) __uncontained_tmp258;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp258;
+	}
 	if (!tb)
 		return -ENOMEM;
 
@@ -12774,6 +12799,10 @@ static int nl80211_set_wowlan(struct sk_buff *skb, struct genl_info *info)
 		new_triggers.patterns = kcalloc(n_patterns,
 						sizeof(new_triggers.patterns[0]),
 						GFP_KERNEL);
+		{
+			typeof((new_triggers.patterns[0])) __uncontained_tmp259;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp259;
+		}
 		if (!new_triggers.patterns)
 			return -ENOMEM;
 
@@ -13027,6 +13056,10 @@ static int nl80211_parse_coalesce_rule(struct cfg80211_registered_device *rdev,
 
 	new_rule->patterns = kcalloc(n_patterns, sizeof(new_rule->patterns[0]),
 				     GFP_KERNEL);
+	{
+		typeof((new_rule->patterns[0])) __uncontained_tmp260;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp260;
+	}
 	if (!new_rule->patterns)
 		return -ENOMEM;
 
@@ -13109,6 +13142,10 @@ static int nl80211_set_coalesce(struct sk_buff *skb, struct genl_info *info)
 
 	new_coalesce.rules = kcalloc(n_rules, sizeof(new_coalesce.rules[0]),
 				     GFP_KERNEL);
+	{
+		typeof((new_coalesce.rules[0])) __uncontained_tmp261;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp261;
+	}
 	if (!new_coalesce.rules)
 		return -ENOMEM;
 
@@ -13442,6 +13479,10 @@ static int handle_nan_filter(struct nlattr *attr_filter,
 	BUILD_BUG_ON(sizeof(*func->rx_filters) != sizeof(*func->tx_filters));
 
 	filter = kcalloc(n_entries, sizeof(*func->rx_filters), GFP_KERNEL);
+	{
+		typeof((*func->rx_filters)) __uncontained_tmp262;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp262;
+	}
 	if (!filter)
 		return -ENOMEM;
 
@@ -13642,6 +13683,10 @@ static int nl80211_nan_add_func(struct sk_buff *skb,
 			func->srf_macs =
 				kcalloc(n_entries, sizeof(*func->srf_macs),
 					GFP_KERNEL);
+			{
+				typeof((*func->srf_macs)) __uncontained_tmp263;
+				__uncontained_kcalloc = (unsigned long)&__uncontained_tmp263;
+			}
 			if (!func->srf_macs) {
 				err = -ENOMEM;
 				goto out;
@@ -14155,6 +14200,10 @@ static int nl80211_prepare_vendor_dump(struct sk_buff *skb,
 	}
 
 	attrbuf = kcalloc(NUM_NL80211_ATTR, sizeof(*attrbuf), GFP_KERNEL);
+	{
+		typeof((*attrbuf)) __uncontained_tmp264;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp264;
+	}
 	if (!attrbuf)
 		return -ENOMEM;
 
@@ -15124,6 +15173,10 @@ static int nl80211_color_change(struct sk_buff *skb, struct genl_info *info)
 		return err;
 
 	tb = kcalloc(NL80211_ATTR_MAX + 1, sizeof(*tb), GFP_KERNEL);
+	{
+		typeof((*tb)) __uncontained_tmp265;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp265;
+	}
 	if (!tb)
 		return -ENOMEM;
 

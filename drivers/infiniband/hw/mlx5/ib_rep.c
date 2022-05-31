@@ -4,6 +4,11 @@
  */
 
 #include <linux/mlx5/vport.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "ib_rep.h"
 #include "srq.h"
 
@@ -68,6 +73,10 @@ mlx5_ib_vport_rep_load(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
 
 	ibdev->port = kcalloc(num_ports, sizeof(*ibdev->port),
 			      GFP_KERNEL);
+	{
+		typeof((*ibdev->port)) __uncontained_tmp111;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp111;
+	}
 	if (!ibdev->port) {
 		ret = -ENOMEM;
 		goto fail_port;

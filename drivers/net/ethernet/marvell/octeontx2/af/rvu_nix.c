@@ -8,6 +8,11 @@
 #include <linux/module.h>
 #include <linux/pci.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rvu_struct.h"
 #include "rvu_reg.h"
 #include "rvu.h"
@@ -1361,6 +1366,10 @@ int rvu_mbox_handler_nix_lf_alloc(struct rvu *rvu,
 		goto free_mem;
 
 	pfvf->rq_bmap = kcalloc(req->rq_cnt, sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp159;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp159;
+	}
 	if (!pfvf->rq_bmap)
 		goto free_mem;
 
@@ -1378,6 +1387,10 @@ int rvu_mbox_handler_nix_lf_alloc(struct rvu *rvu,
 		goto free_mem;
 
 	pfvf->sq_bmap = kcalloc(req->sq_cnt, sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp160;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp160;
+	}
 	if (!pfvf->sq_bmap)
 		goto free_mem;
 
@@ -1394,6 +1407,10 @@ int rvu_mbox_handler_nix_lf_alloc(struct rvu *rvu,
 		goto free_mem;
 
 	pfvf->cq_bmap = kcalloc(req->cq_cnt, sizeof(long), GFP_KERNEL);
+	{
+		long __uncontained_tmp161;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp161;
+	}
 	if (!pfvf->cq_bmap)
 		goto free_mem;
 
@@ -4384,6 +4401,10 @@ static int rvu_nix_block_init(struct rvu *rvu, struct nix_hw *nix_hw)
 
 		nix_hw->tx_credits = kcalloc(hw->cgx_links + hw->lbk_links,
 					     sizeof(u64), GFP_KERNEL);
+		{
+			u64 __uncontained_tmp162;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp162;
+		}
 		if (!nix_hw->tx_credits)
 			return -ENOMEM;
 

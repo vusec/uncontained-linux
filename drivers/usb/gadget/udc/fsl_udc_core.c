@@ -43,6 +43,11 @@
 #include <asm/unaligned.h>
 #include <asm/dma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "fsl_usb2_udc.h"
 
 #define	DRIVER_DESC	"Freescale High-Speed USB SOC Device Controller driver"
@@ -2241,6 +2246,10 @@ static int struct_udc_setup(struct fsl_udc *udc,
 	udc->phy_mode = pdata->phy_mode;
 
 	udc->eps = kcalloc(udc->max_ep, sizeof(struct fsl_ep), GFP_KERNEL);
+	{
+		struct fsl_ep __uncontained_tmp258;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp258;
+	}
 	if (!udc->eps) {
 		ERR("kmalloc udc endpoint status failed\n");
 		goto eps_alloc_failed;

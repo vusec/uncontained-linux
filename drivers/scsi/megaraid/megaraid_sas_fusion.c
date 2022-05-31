@@ -44,6 +44,11 @@
 #include <scsi/scsi_dbg.h>
 #include <linux/dmi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -605,6 +610,10 @@ megasas_alloc_cmdlist_fusion(struct megasas_instance *instance)
 	fusion->cmd_list =
 		kcalloc(max_mpt_cmd, sizeof(struct megasas_cmd_fusion *),
 			GFP_KERNEL);
+	{
+		struct megasas_cmd_fusion *__uncontained_tmp206;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp206;
+	}
 	if (!fusion->cmd_list) {
 		dev_err(&instance->pdev->dev,
 			"Failed from %s %d\n",  __func__, __LINE__);

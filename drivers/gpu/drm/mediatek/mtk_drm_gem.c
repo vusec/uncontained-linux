@@ -11,6 +11,11 @@
 #include <drm/drm_gem_cma_helper.h>
 #include <drm/drm_prime.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mtk_drm_drv.h"
 #include "mtk_drm_gem.h"
 
@@ -235,6 +240,10 @@ int mtk_drm_gem_prime_vmap(struct drm_gem_object *obj, struct dma_buf_map *map)
 
 	npages = obj->size >> PAGE_SHIFT;
 	mtk_gem->pages = kcalloc(npages, sizeof(*mtk_gem->pages), GFP_KERNEL);
+	{
+		typeof((*mtk_gem->pages)) __uncontained_tmp91;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (!mtk_gem->pages) {
 		kfree(sgt);
 		return -ENOMEM;

@@ -15,6 +15,11 @@
 #include <linux/poll.h>
 #include <linux/nospec.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 static void perf_output_wakeup(struct perf_output_handle *handle)
@@ -698,6 +703,10 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
 
 	rb->aux_pages = kcalloc_node(nr_pages, sizeof(void *), GFP_KERNEL,
 				     node);
+	{
+		void *__uncontained_tmp290;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp290;
+	}
 	if (!rb->aux_pages)
 		return -ENOMEM;
 

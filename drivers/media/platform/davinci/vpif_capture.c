@@ -20,6 +20,11 @@
 
 #include <linux/videodev2.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vpif.h"
 #include "vpif_capture.h"
 
@@ -1648,6 +1653,10 @@ static __init int vpif_probe(struct platform_device *pdev)
 
 	subdev_count = vpif_obj.config->subdev_count;
 	vpif_obj.sd = kcalloc(subdev_count, sizeof(*vpif_obj.sd), GFP_KERNEL);
+	{
+		typeof((*vpif_obj.sd)) __uncontained_tmp123;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (!vpif_obj.sd) {
 		err = -ENOMEM;
 		goto vpif_unregister;

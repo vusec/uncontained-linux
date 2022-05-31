@@ -6,6 +6,11 @@
 #include <linux/string.h>
 #include <linux/string_helpers.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "efivar.h"
 
 /* GUID for HFI1 variables in EFI */
@@ -42,6 +47,10 @@ static int read_efi_var(const char *name, unsigned long *size,
 		return -EOPNOTSUPP;
 
 	uni_name = kcalloc(strlen(name) + 1, sizeof(efi_char16_t), GFP_KERNEL);
+	{
+		efi_char16_t __uncontained_tmp94;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp94;
+	}
 	temp_buffer = kzalloc(EFI_DATA_SIZE, GFP_KERNEL);
 
 	if (!uni_name || !temp_buffer) {

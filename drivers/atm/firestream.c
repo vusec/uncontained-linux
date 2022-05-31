@@ -40,6 +40,11 @@
 #include <linux/uaccess.h>
 #include <linux/wait.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "firestream.h"
 
 static int loopback = 0;
@@ -1793,6 +1798,10 @@ static int fs_init(struct fs_dev *dev)
 	}
 	dev->atm_vccs = kcalloc (dev->nchannels, sizeof (struct atm_vcc *),
 				 GFP_KERNEL);
+	{
+		struct atm_vcc *__uncontained_tmp16;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp16;
+	}
 	fs_dprintk (FS_DEBUG_ALLOC, "Alloc atmvccs: %p(%zd)\n",
 		    dev->atm_vccs, dev->nchannels * sizeof (struct atm_vcc *));
 

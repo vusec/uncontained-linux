@@ -5,6 +5,11 @@
 #include <linux/bpf_trace.h>
 #include <net/xdp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -1445,6 +1450,10 @@ int i40e_setup_tx_descriptors(struct i40e_ring *tx_ring)
 	if (ring_is_xdp(tx_ring)) {
 		tx_ring->xsk_descs = kcalloc(I40E_MAX_NUM_DESCRIPTORS, sizeof(*tx_ring->xsk_descs),
 					     GFP_KERNEL);
+		{
+			typeof((*tx_ring->xsk_descs)) __uncontained_tmp154;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp154;
+		}
 		if (!tx_ring->xsk_descs)
 			goto err;
 	}

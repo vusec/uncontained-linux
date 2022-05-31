@@ -58,6 +58,11 @@ double __extendsfdf2(float a)
 #include <linux/slab.h>
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 /* FIXME: check if 2.6.7 is ok */
 
 #include "ieee80211/dot11d.h"
@@ -1625,6 +1630,10 @@ static short rtl8192_usb_initendpoints(struct net_device *dev)
 	memset(priv->rx_urb, 0, sizeof(struct urb *) * MAX_RX_URB);
 	priv->pp_rxskb = kcalloc(MAX_RX_URB, sizeof(struct sk_buff *),
 				 GFP_KERNEL);
+	{
+		struct sk_buff *__uncontained_tmp206;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp206;
+	}
 	if (!priv->pp_rxskb) {
 		kfree(priv->rx_urb);
 

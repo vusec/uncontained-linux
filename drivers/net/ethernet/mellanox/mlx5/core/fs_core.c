@@ -35,6 +35,11 @@
 #include <linux/mlx5/vport.h>
 #include <linux/mlx5/eswitch.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mlx5_core.h"
 #include "fs_core.h"
 #include "fs_cmd.h"
@@ -2010,6 +2015,10 @@ mlx5_add_flow_rules(struct mlx5_flow_table *ft,
 
 	gen_dest = kcalloc(num_dest + 1, sizeof(*dest),
 			   GFP_KERNEL);
+	{
+		typeof((*dest)) __uncontained_tmp174;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp174;
+	}
 	if (!gen_dest) {
 		handle = ERR_PTR(-ENOMEM);
 		goto unlock;
@@ -2835,6 +2844,10 @@ static int create_fdb_fast_path(struct mlx5_flow_steering *steering)
 	steering->fdb_sub_ns = kcalloc(FDB_NUM_CHAINS,
 				       sizeof(*steering->fdb_sub_ns),
 				       GFP_KERNEL);
+	{
+		typeof((*steering->fdb_sub_ns)) __uncontained_tmp175;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp175;
+	}
 	if (!steering->fdb_sub_ns)
 		return -ENOMEM;
 
@@ -2964,6 +2977,10 @@ int mlx5_fs_egress_acls_init(struct mlx5_core_dev *dev, int total_vports)
 			kcalloc(total_vports,
 				sizeof(*steering->esw_egress_root_ns),
 				GFP_KERNEL);
+	{
+		typeof((*steering->esw_egress_root_ns)) __uncontained_tmp176;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp176;
+	}
 	if (!steering->esw_egress_root_ns)
 		return -ENOMEM;
 
@@ -3008,6 +3025,10 @@ int mlx5_fs_ingress_acls_init(struct mlx5_core_dev *dev, int total_vports)
 			kcalloc(total_vports,
 				sizeof(*steering->esw_ingress_root_ns),
 				GFP_KERNEL);
+	{
+		typeof((*steering->esw_ingress_root_ns)) __uncontained_tmp177;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp177;
+	}
 	if (!steering->esw_ingress_root_ns)
 		return -ENOMEM;
 

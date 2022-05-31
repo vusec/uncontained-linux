@@ -9,6 +9,11 @@
 #include <linux/fs.h>
 #include <linux/vmalloc.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2057,6 +2062,10 @@ int ni_readpage_cmpr(struct ntfs_inode *ni, struct page *page)
 
 	pages_per_frame = frame_size >> PAGE_SHIFT;
 	pages = kcalloc(pages_per_frame, sizeof(struct page *), GFP_NOFS);
+	{
+		struct page *__uncontained_tmp272;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp272;
+	}
 	if (!pages) {
 		err = -ENOMEM;
 		goto out;
@@ -2141,6 +2150,10 @@ int ni_decompress_file(struct ntfs_inode *ni)
 	frame_size = 1u << frame_bits;
 	pages_per_frame = frame_size >> PAGE_SHIFT;
 	pages = kcalloc(pages_per_frame, sizeof(struct page *), GFP_NOFS);
+	{
+		struct page *__uncontained_tmp273;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp273;
+	}
 	if (!pages) {
 		err = -ENOMEM;
 		goto out;
@@ -2721,6 +2734,10 @@ int ni_write_frame(struct ntfs_inode *ni, struct page **pages,
 	}
 
 	pages_disk = kcalloc(pages_per_frame, sizeof(struct page *), GFP_NOFS);
+	{
+		struct page *__uncontained_tmp274;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp274;
+	}
 	if (!pages_disk) {
 		err = -ENOMEM;
 		goto out;

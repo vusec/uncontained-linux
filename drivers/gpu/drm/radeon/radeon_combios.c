@@ -30,6 +30,11 @@
 #include <drm/drm_device.h>
 #include <drm/radeon_drm.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "radeon.h"
 #include "radeon_legacy_encoders.h"
 #include "atom.h"
@@ -2647,6 +2652,10 @@ void radeon_combios_get_power_modes(struct radeon_device *rdev)
 	/* allocate 2 power states */
 	rdev->pm.power_state = kcalloc(2, sizeof(struct radeon_power_state),
 				       GFP_KERNEL);
+	{
+		struct radeon_power_state __uncontained_tmp73;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp73;
+	}
 	if (rdev->pm.power_state) {
 		/* allocate 1 clock mode per state */
 		rdev->pm.power_state[0].clock_info =

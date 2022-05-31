@@ -19,6 +19,11 @@
 #include "ice1712.h"
 #include "envy24ht.h"
 #include <sound/ak4113.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "quartet.h"
 
 struct qtet_spec {
@@ -1025,6 +1030,10 @@ static int qtet_init(struct snd_ice1712 *ice)
 	ice->num_total_adcs = 2;
 
 	ice->akm = kcalloc(2, sizeof(struct snd_akm4xxx), GFP_KERNEL);
+	{
+		struct snd_akm4xxx __uncontained_tmp340;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp340;
+	}
 	ak = ice->akm;
 	if (!ak)
 		return -ENOMEM;

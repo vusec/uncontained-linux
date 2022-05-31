@@ -8,6 +8,11 @@
 #include <linux/device.h>
 #include <sound/core.h>
 #include <sound/hdaudio.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "local.h"
 
 struct hdac_widget_tree {
@@ -374,6 +379,10 @@ static int widget_tree_create(struct hdac_device *codec)
 
 	tree->nodes = kcalloc(codec->num_nodes + 1, sizeof(*tree->nodes),
 			      GFP_KERNEL);
+	{
+		typeof((*tree->nodes)) __uncontained_tmp310;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp310;
+	}
 	if (!tree->nodes)
 		return -ENOMEM;
 
@@ -435,6 +444,10 @@ int hda_widget_sysfs_reinit(struct hdac_device *codec,
 		return -ENOMEM;
 
 	tree->nodes = kcalloc(num_nodes + 1, sizeof(*tree->nodes), GFP_KERNEL);
+	{
+		typeof((*tree->nodes)) __uncontained_tmp311;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp311;
+	}
 	if (!tree->nodes) {
 		kfree(tree);
 		return -ENOMEM;

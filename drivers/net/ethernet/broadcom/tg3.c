@@ -66,6 +66,11 @@
 #include <uapi/linux/net_tstamp.h>
 #include <linux/ptp_clock_kernel.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -8638,6 +8643,10 @@ static int tg3_mem_tx_acquire(struct tg3 *tp)
 		tnapi->tx_buffers = kcalloc(TG3_TX_RING_SIZE,
 					    sizeof(struct tg3_tx_ring_info),
 					    GFP_KERNEL);
+		{
+			struct tg3_tx_ring_info __uncontained_tmp154;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp154;
+		}
 		if (!tnapi->tx_buffers)
 			goto err_out;
 

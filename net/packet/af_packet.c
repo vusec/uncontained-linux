@@ -94,6 +94,11 @@
 #include <net/compat.h>
 #include <linux/netfilter_netdev.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "internal.h"
 
 /*
@@ -4324,6 +4329,10 @@ static struct pgv *alloc_pg_vec(struct tpacket_req *req, int order)
 	int i;
 
 	pg_vec = kcalloc(block_nr, sizeof(struct pgv), GFP_KERNEL | __GFP_NOWARN);
+	{
+		struct pgv __uncontained_tmp280;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp280;
+	}
 	if (unlikely(!pg_vec))
 		goto out;
 

@@ -3,6 +3,11 @@
 #include "uncore.h"
 #include "uncore_discovery.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /* SNB-EP pci bus to socket mapping */
 #define SNBEP_CPUNODEID			0x40
 #define SNBEP_GIDNIDMAP			0x54
@@ -3770,6 +3775,10 @@ static int skx_iio_get_topology(struct intel_uncore_type *type)
 
 	type->topology = kcalloc(uncore_max_dies(), sizeof(*type->topology),
 				 GFP_KERNEL);
+	{
+		typeof((*type->topology)) __uncontained_tmp11;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp11;
+	}
 	if (!type->topology)
 		return -ENOMEM;
 
@@ -3820,10 +3829,18 @@ pmu_iio_set_mapping(struct intel_uncore_type *type, struct attribute_group *ag)
 
 	/* One more for NULL. */
 	attrs = kcalloc((uncore_max_dies() + 1), sizeof(*attrs), GFP_KERNEL);
+	{
+		typeof((*attrs)) __uncontained_tmp12;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp12;
+	}
 	if (!attrs)
 		goto clear_topology;
 
 	eas = kcalloc(uncore_max_dies(), sizeof(*eas), GFP_KERNEL);
+	{
+		typeof((*eas)) __uncontained_tmp13;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp13;
+	}
 	if (!eas)
 		goto clear_attrs;
 
@@ -4463,6 +4480,10 @@ static int sad_cfg_iio_topology(struct intel_uncore_type *type, u8 *sad_pmon_map
 
 	type->topology = kcalloc(uncore_max_dies(), sizeof(*type->topology),
 				 GFP_KERNEL);
+	{
+		typeof((*type->topology)) __uncontained_tmp14;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp14;
+	}
 	if (!type->topology)
 		return -ENOMEM;
 

@@ -17,6 +17,11 @@
 #include <xen/events.h>
 #include <xen/grant_table.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "xen_drm_front.h"
 #include "xen_drm_front_evtchnl.h"
 
@@ -236,6 +241,10 @@ int xen_drm_front_evtchnl_create_all(struct xen_drm_front_info *front_info)
 			kcalloc(cfg->num_connectors,
 				sizeof(struct xen_drm_front_evtchnl_pair),
 				GFP_KERNEL);
+	{
+		struct xen_drm_front_evtchnl_pair __uncontained_tmp89;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp89;
+	}
 	if (!front_info->evt_pairs) {
 		ret = -ENOMEM;
 		goto fail;

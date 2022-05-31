@@ -39,6 +39,11 @@
 #include <asm/mpic.h>
 #include <asm/smp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "mpic.h"
 
 #ifdef DEBUG
@@ -545,6 +550,10 @@ static void __init mpic_scan_ht_pics(struct mpic *mpic)
 
 	/* Allocate fixups array */
 	mpic->fixups = kcalloc(128, sizeof(*mpic->fixups), GFP_KERNEL);
+	{
+		typeof((*mpic->fixups)) __uncontained_tmp18;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp18;
+	}
 	BUG_ON(mpic->fixups == NULL);
 
 	/* Init spinlock */

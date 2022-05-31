@@ -35,6 +35,11 @@
 #include <linux/pagemap.h>
 #include <linux/mutex.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "squashfs_fs.h"
 #include "squashfs_fs_sb.h"
 #include "squashfs_fs_i.h"
@@ -103,6 +108,10 @@ static struct meta_index *empty_meta_index(struct inode *inode, int offset,
 		 */
 		msblk->meta_index = kcalloc(SQUASHFS_META_SLOTS,
 			sizeof(*(msblk->meta_index)), GFP_KERNEL);
+		{
+			typeof((*(msblk->meta_index))) __uncontained_tmp277;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp277;
+		}
 		if (msblk->meta_index == NULL) {
 			ERROR("Failed to allocate meta_index\n");
 			goto failed;

@@ -17,6 +17,11 @@
 #include <linux/timekeeping.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "isp.h"
 
 #define ISP_STAT_USES_DMAENGINE(stat)	((stat)->dma_ch != NULL)
@@ -1056,6 +1061,10 @@ int omap3isp_stat_init(struct ispstat *stat, const char *name,
 	int ret;
 
 	stat->buf = kcalloc(STAT_MAX_BUFS, sizeof(*stat->buf), GFP_KERNEL);
+	{
+		typeof((*stat->buf)) __uncontained_tmp44;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp44;
+	}
 	if (!stat->buf)
 		return -ENOMEM;
 

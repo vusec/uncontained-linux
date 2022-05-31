@@ -51,6 +51,11 @@
 #define UVERBS_MODULE_NAME mlx5_ib
 #include <rdma/uverbs_named_ioctl.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_AUTHOR("Eli Cohen <eli@mellanox.com>");
 MODULE_DESCRIPTION("Mellanox 5th generation network adapters (ConnectX series) IB driver");
 MODULE_LICENSE("Dual BSD/GPL");
@@ -1919,6 +1924,10 @@ static int mlx5_ib_alloc_ucontext(struct ib_ucontext *uctx,
 	bfregi->lib_uar_4k = lib_uar_4k;
 	bfregi->count = kcalloc(bfregi->total_num_bfregs, sizeof(*bfregi->count),
 				GFP_KERNEL);
+	{
+		typeof((*bfregi->count)) __uncontained_tmp112;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp112;
+	}
 	if (!bfregi->count) {
 		err = -ENOMEM;
 		goto out_devx;
@@ -1927,6 +1936,10 @@ static int mlx5_ib_alloc_ucontext(struct ib_ucontext *uctx,
 	bfregi->sys_pages = kcalloc(bfregi->num_sys_pages,
 				    sizeof(*bfregi->sys_pages),
 				    GFP_KERNEL);
+	{
+		typeof((*bfregi->sys_pages)) __uncontained_tmp113;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!bfregi->sys_pages) {
 		err = -ENOMEM;
 		goto out_count;
@@ -4460,6 +4473,10 @@ static int mlx5r_probe(struct auxiliary_device *adev,
 		return -ENOMEM;
 	dev->port = kcalloc(num_ports, sizeof(*dev->port),
 			     GFP_KERNEL);
+	{
+		typeof((*dev->port)) __uncontained_tmp114;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp114;
+	}
 	if (!dev->port) {
 		ib_dealloc_device(&dev->ib_dev);
 		return -ENOMEM;

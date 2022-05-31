@@ -15,6 +15,11 @@
 #include <net/udp_tunnel.h>
 #include <net/xdp_sock_drv.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -11399,6 +11404,10 @@ static int i40e_alloc_rings(struct i40e_vsi *vsi)
 	for (i = 0; i < vsi->alloc_queue_pairs; i++) {
 		/* allocate space for both Tx and Rx in one shot */
 		ring = kcalloc(qpv, sizeof(struct i40e_ring), GFP_KERNEL);
+		{
+			struct i40e_ring __uncontained_tmp172;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp172;
+		}
 		if (!ring)
 			goto err_out;
 
@@ -11603,6 +11612,10 @@ static int i40e_init_msix(struct i40e_pf *pf)
 	v_budget += pf->num_lan_msix;
 	pf->msix_entries = kcalloc(v_budget, sizeof(struct msix_entry),
 				   GFP_KERNEL);
+	{
+		struct msix_entry __uncontained_tmp173;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp173;
+	}
 	if (!pf->msix_entries)
 		return -ENOMEM;
 
@@ -15267,6 +15280,10 @@ static int i40e_init_recovery_mode(struct i40e_pf *pf, struct i40e_hw *hw)
 	/* Set up the vsi struct and our local tracking of the MAIN PF vsi. */
 	pf->vsi = kcalloc(pf->num_alloc_vsi, sizeof(struct i40e_vsi *),
 			  GFP_KERNEL);
+	{
+		struct i40e_vsi *__uncontained_tmp174;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp174;
+	}
 	if (!pf->vsi) {
 		err = -ENOMEM;
 		goto err_switch_setup;
@@ -15695,6 +15712,10 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	/* Set up the *vsi struct and our local tracking of the MAIN PF vsi. */
 	pf->vsi = kcalloc(pf->num_alloc_vsi, sizeof(struct i40e_vsi *),
 			  GFP_KERNEL);
+	{
+		struct i40e_vsi *__uncontained_tmp175;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp175;
+	}
 	if (!pf->vsi) {
 		err = -ENOMEM;
 		goto err_switch_setup;

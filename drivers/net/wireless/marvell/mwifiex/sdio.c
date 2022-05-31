@@ -19,6 +19,11 @@
 
 #include <linux/firmware.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "decl.h"
 #include "ioctl.h"
 #include "util.h"
@@ -2528,6 +2533,10 @@ static int mwifiex_init_sdio(struct mwifiex_adapter *adapter)
 	/* Allocate skb pointer buffers */
 	card->mpa_rx.skb_arr = kcalloc(card->mp_agg_pkt_limit, sizeof(void *),
 				       GFP_KERNEL);
+	{
+		void *__uncontained_tmp228;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp228;
+	}
 	if (!card->mpa_rx.skb_arr) {
 		kfree(card->mp_regs);
 		return -ENOMEM;
@@ -2536,6 +2545,10 @@ static int mwifiex_init_sdio(struct mwifiex_adapter *adapter)
 	card->mpa_rx.len_arr = kcalloc(card->mp_agg_pkt_limit,
 				       sizeof(*card->mpa_rx.len_arr),
 				       GFP_KERNEL);
+	{
+		typeof((*card->mpa_rx.len_arr)) __uncontained_tmp229;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp229;
+	}
 	if (!card->mpa_rx.len_arr) {
 		kfree(card->mp_regs);
 		kfree(card->mpa_rx.skb_arr);

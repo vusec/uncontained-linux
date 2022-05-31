@@ -17,6 +17,11 @@
 #include <net/net_namespace.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -214,6 +219,10 @@ int br_dev_siocdevprivate(struct net_device *dev, struct ifreq *rq,
 			num = BR_MAX_PORTS;
 
 		indices = kcalloc(num, sizeof(int), GFP_KERNEL);
+		{
+			int __uncontained_tmp310;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp310;
+		}
 		if (indices == NULL)
 			return -ENOMEM;
 
@@ -367,6 +376,10 @@ static int old_deviceless(struct net *net, void __user *data)
 		if (args[2] >= 2048)
 			return -ENOMEM;
 		indices = kcalloc(args[2], sizeof(int), GFP_KERNEL);
+		{
+			int __uncontained_tmp311;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp311;
+		}
 		if (indices == NULL)
 			return -ENOMEM;
 

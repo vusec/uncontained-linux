@@ -14,6 +14,11 @@
 #include <linux/slab.h>
 #include <linux/z2_battery.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define	Z2_DEFAULT_NAME	"Z2"
 
 struct z2_charger {
@@ -141,6 +146,10 @@ static int z2_batt_ps_init(struct z2_charger *charger, int props)
 		props++;	/* POWER_SUPPLY_PROP_VOLTAGE_MIN */
 
 	prop = kcalloc(props, sizeof(*prop), GFP_KERNEL);
+	{
+		typeof((*prop)) __uncontained_tmp248;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp248;
+	}
 	if (!prop)
 		return -ENOMEM;
 

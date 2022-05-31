@@ -19,6 +19,11 @@
 #include <linux/platform_device.h>
 #include <sound/asound.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "sst-dsp.h"
 #include "sst-dsp-priv.h"
 #include "sst-ipc.h"
@@ -118,6 +123,10 @@ static int msg_empty_list_init(struct sst_generic_ipc *ipc)
 
 	ipc->msg = kcalloc(IPC_EMPTY_LIST_SIZE, sizeof(struct ipc_message),
 			   GFP_KERNEL);
+	{
+		struct ipc_message __uncontained_tmp354;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp354;
+	}
 	if (ipc->msg == NULL)
 		return -ENOMEM;
 

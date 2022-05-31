@@ -34,6 +34,11 @@
 #include <drm/drm_plane_helper.h>
 #include <drm/drm_rect.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define SUBPIXEL_MASK 0xffff
 
 /**
@@ -198,6 +203,10 @@ static int drm_primary_helper_update(struct drm_plane *plane, struct drm_crtc *c
 	BUG_ON(num_connectors == 0);
 	connector_list = kcalloc(num_connectors, sizeof(*connector_list),
 				 GFP_KERNEL);
+	{
+		typeof((*connector_list)) __uncontained_tmp69;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp69;
+	}
 	if (!connector_list)
 		return -ENOMEM;
 	get_connectors_for_crtc(crtc, connector_list, num_connectors);

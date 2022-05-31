@@ -20,6 +20,11 @@
 #include <linux/slab.h>
 #include <net/cfg80211-wext.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -11181,6 +11186,10 @@ static int ipw_up(struct ipw_priv *priv)
 	if (cmdlog && !priv->cmdlog) {
 		priv->cmdlog = kcalloc(cmdlog, sizeof(*priv->cmdlog),
 				       GFP_KERNEL);
+		{
+			typeof((*priv->cmdlog)) __uncontained_tmp187;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp187;
+		}
 		if (priv->cmdlog == NULL) {
 			IPW_ERROR("Error allocating %d command log entries.\n",
 				  cmdlog);
@@ -11342,6 +11351,10 @@ static int ipw_wdev_init(struct net_device *dev)
 		bg_band->channels = kcalloc(geo->bg_channels,
 					    sizeof(struct ieee80211_channel),
 					    GFP_KERNEL);
+		{
+			struct ieee80211_channel __uncontained_tmp185;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp185;
+		}
 		if (!bg_band->channels) {
 			rc = -ENOMEM;
 			goto out;
@@ -11381,6 +11394,10 @@ static int ipw_wdev_init(struct net_device *dev)
 		a_band->channels = kcalloc(geo->a_channels,
 					   sizeof(struct ieee80211_channel),
 					   GFP_KERNEL);
+		{
+			struct ieee80211_channel __uncontained_tmp186;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp186;
+		}
 		if (!a_band->channels) {
 			rc = -ENOMEM;
 			goto out;

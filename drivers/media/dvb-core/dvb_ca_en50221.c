@@ -30,6 +30,11 @@
 #include <media/dvb_ca_en50221.h>
 #include <media/dvb_ringbuffer.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int dvb_ca_en50221_debug;
 
 module_param_named(cam_debug, dvb_ca_en50221_debug, int, 0644);
@@ -1863,6 +1868,10 @@ int dvb_ca_en50221_init(struct dvb_adapter *dvb_adapter,
 	ca->slot_count = slot_count;
 	ca->slot_info = kcalloc(slot_count, sizeof(struct dvb_ca_slot),
 				GFP_KERNEL);
+	{
+		struct dvb_ca_slot __uncontained_tmp123;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp123;
+	}
 	if (!ca->slot_info) {
 		ret = -ENOMEM;
 		goto free_ca;

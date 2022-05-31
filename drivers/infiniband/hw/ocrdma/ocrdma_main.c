@@ -58,6 +58,11 @@
 #include "ocrdma_stats.h"
 #include <rdma/ocrdma-abi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 MODULE_DESCRIPTION(OCRDMA_ROCE_DRV_DESC " " OCRDMA_ROCE_DRV_VERSION);
 MODULE_AUTHOR("Emulex Corporation");
 MODULE_LICENSE("Dual BSD/GPL");
@@ -221,6 +226,10 @@ static int ocrdma_alloc_resources(struct ocrdma_dev *dev)
 	mutex_init(&dev->dev_lock);
 	dev->cq_tbl = kcalloc(OCRDMA_MAX_CQ, sizeof(struct ocrdma_cq *),
 			      GFP_KERNEL);
+	{
+		struct ocrdma_cq *__uncontained_tmp106;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp106;
+	}
 	if (!dev->cq_tbl)
 		goto alloc_err;
 
@@ -228,11 +237,19 @@ static int ocrdma_alloc_resources(struct ocrdma_dev *dev)
 		dev->qp_tbl = kcalloc(OCRDMA_MAX_QP,
 				      sizeof(struct ocrdma_qp *),
 				      GFP_KERNEL);
+		{
+			struct ocrdma_qp *__uncontained_tmp107;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp107;
+		}
 		if (!dev->qp_tbl)
 			goto alloc_err;
 	}
 
 	dev->stag_arr = kcalloc(OCRDMA_MAX_STAG, sizeof(u64), GFP_KERNEL);
+	{
+		typeof((u64)) __uncontained_tmp108;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp108;
+	}
 	if (dev->stag_arr == NULL)
 		goto alloc_err;
 

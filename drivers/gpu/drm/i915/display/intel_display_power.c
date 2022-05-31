@@ -24,6 +24,11 @@
 #include "intel_vga.h"
 #include "vlv_sideband.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 struct i915_power_well_ops {
 	/*
 	 * Synchronize the well's hw state to match the current sw state, for
@@ -5163,6 +5168,10 @@ __set_power_wells(struct i915_power_domains *power_domains,
 				kcalloc(power_well_count,
 					sizeof(*power_domains->power_wells),
 					GFP_KERNEL);
+	{
+		typeof((*power_domains->power_wells)) __uncontained_tmp88;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp88;
+	}
 	if (!power_domains->power_wells)
 		return -ENOMEM;
 

@@ -28,6 +28,11 @@
 #include <linux/sed-opal.h>
 #include <linux/pci-p2pdma.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2051,6 +2056,10 @@ static int __nvme_alloc_host_mem(struct nvme_dev *dev, u64 preferred,
 		goto out;
 
 	bufs = kcalloc(max_entries, sizeof(*bufs), GFP_KERNEL);
+	{
+		typeof((*bufs)) __uncontained_tmp210;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp210;
+	}
 	if (!bufs)
 		goto out_free_descs;
 
@@ -3082,6 +3091,10 @@ static int nvme_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	dev->nr_allocated_queues = nvme_max_io_queues(dev) + 1;
 	dev->queues = kcalloc_node(dev->nr_allocated_queues,
 			sizeof(struct nvme_queue), GFP_KERNEL, node);
+	{
+		struct nvme_queue __uncontained_tmp209;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp209;
+	}
 	if (!dev->queues)
 		goto free;
 

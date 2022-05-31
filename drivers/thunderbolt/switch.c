@@ -15,6 +15,11 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "tb.h"
 
 /* Switch NVM support */
@@ -2212,6 +2217,10 @@ struct tb_switch *tb_switch_alloc(struct tb *tb, struct device *parent,
 	/* initialize ports */
 	sw->ports = kcalloc(sw->config.max_port_number + 1, sizeof(*sw->ports),
 				GFP_KERNEL);
+	{
+		typeof((*sw->ports)) __uncontained_tmp244;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp244;
+	}
 	if (!sw->ports) {
 		ret = -ENOMEM;
 		goto err_free_sw_ports;

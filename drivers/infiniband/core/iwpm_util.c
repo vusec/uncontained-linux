@@ -33,6 +33,11 @@
 
 #include "iwpm_util.h"
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define IWPM_MAPINFO_HASH_SIZE	512
 #define IWPM_MAPINFO_HASH_MASK	(IWPM_MAPINFO_HASH_SIZE - 1)
 #define IWPM_REMINFO_HASH_SIZE	64
@@ -60,11 +65,19 @@ int iwpm_init(u8 nl_client)
 {
 	iwpm_hash_bucket = kcalloc(IWPM_MAPINFO_HASH_SIZE,
 				   sizeof(struct hlist_head), GFP_KERNEL);
+	{
+		struct hlist_head __uncontained_tmp91;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp91;
+	}
 	if (!iwpm_hash_bucket)
 		return -ENOMEM;
 
 	iwpm_reminfo_bucket = kcalloc(IWPM_REMINFO_HASH_SIZE,
 				      sizeof(struct hlist_head), GFP_KERNEL);
+	{
+		struct hlist_head __uncontained_tmp92;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp92;
+	}
 	if (!iwpm_reminfo_bucket) {
 		kfree(iwpm_hash_bucket);
 		return -ENOMEM;

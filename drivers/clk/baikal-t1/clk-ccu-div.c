@@ -26,6 +26,11 @@
 #include <dt-bindings/clock/bt1-ccu.h>
 #include <dt-bindings/reset/bt1-ccu.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ccu-div.h"
 
 #define CCU_AXI_MAIN_BASE		0x030
@@ -323,6 +328,10 @@ static struct ccu_div_data *ccu_div_create_data(struct device_node *np)
 	}
 
 	data->divs = kcalloc(data->divs_num, sizeof(*data->divs), GFP_KERNEL);
+	{
+		typeof((*data->divs)) __uncontained_tmp33;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp33;
+	}
 	if (!data->divs) {
 		ret = -ENOMEM;
 		goto err_kfree_data;

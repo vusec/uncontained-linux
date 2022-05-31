@@ -19,6 +19,11 @@
 #include <linux/vhost_iotlb.h>
 #include <linux/iova.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "vdpa_sim.h"
 
 #define DRV_VERSION  "0.1"
@@ -275,6 +280,10 @@ struct vdpasim *vdpasim_create(struct vdpasim_dev_attr *dev_attr)
 
 	vdpasim->vqs = kcalloc(dev_attr->nvqs, sizeof(struct vdpasim_virtqueue),
 			       GFP_KERNEL);
+	{
+		struct vdpasim_virtqueue __uncontained_tmp223;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp223;
+	}
 	if (!vdpasim->vqs)
 		goto err_iommu;
 

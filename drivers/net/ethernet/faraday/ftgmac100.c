@@ -27,6 +27,11 @@
 #include <net/ip.h>
 #include <net/ncsi.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "ftgmac100.h"
 
 #define DRV_NAME	"ftgmac100"
@@ -913,10 +918,18 @@ static int ftgmac100_alloc_rings(struct ftgmac100 *priv)
 	/* Allocate skb arrays */
 	priv->rx_skbs = kcalloc(MAX_RX_QUEUE_ENTRIES, sizeof(void *),
 				GFP_KERNEL);
+	{
+		void *__uncontained_tmp147;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp147;
+	}
 	if (!priv->rx_skbs)
 		return -ENOMEM;
 	priv->tx_skbs = kcalloc(MAX_TX_QUEUE_ENTRIES, sizeof(void *),
 				GFP_KERNEL);
+	{
+		void *__uncontained_tmp148;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp148;
+	}
 	if (!priv->tx_skbs)
 		return -ENOMEM;
 

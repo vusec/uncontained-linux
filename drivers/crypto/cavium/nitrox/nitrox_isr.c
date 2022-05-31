@@ -3,6 +3,11 @@
 #include <linux/printk.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "nitrox_dev.h"
 #include "nitrox_csr.h"
 #include "nitrox_common.h"
@@ -321,6 +326,10 @@ int nitrox_register_interrupts(struct nitrox_device *ndev)
 	ndev->num_vecs = nr_vecs;
 
 	ndev->qvec = kcalloc(nr_vecs, sizeof(*qvec), GFP_KERNEL);
+	{
+		typeof((*qvec)) __uncontained_tmp58;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp58;
+	}
 	if (!ndev->qvec) {
 		pci_free_irq_vectors(pdev);
 		return -ENOMEM;
@@ -425,6 +434,10 @@ int nitrox_sriov_register_interupts(struct nitrox_device *ndev)
 	}
 
 	qvec = kcalloc(NR_NON_RING_VECTORS, sizeof(*qvec), GFP_KERNEL);
+	{
+		typeof((*qvec)) __uncontained_tmp59;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp59;
+	}
 	if (!qvec) {
 		pci_disable_msix(pdev);
 		return -ENOMEM;

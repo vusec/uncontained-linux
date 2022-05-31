@@ -22,6 +22,11 @@
 #include <asm/vdso_datapage.h>
 #include <asm/vdso_timer_info.h>
 #include <asm/cache_info.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 extern struct cache_info L1_cache_info[2];
 extern char vdso_start[], vdso_end[];
 static unsigned long vdso_pages __ro_after_init;
@@ -79,6 +84,10 @@ static int __init vdso_init(void)
 
 	/* Allocate the vDSO pagelist */
 	vdso_pagelist = kcalloc(vdso_pages, sizeof(struct page *), GFP_KERNEL);
+	{
+		struct page *__uncontained_tmp4;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp4;
+	}
 	if (vdso_pagelist == NULL)
 		return -ENOMEM;
 

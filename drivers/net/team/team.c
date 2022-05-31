@@ -28,6 +28,11 @@
 #include <generated/utsrelease.h>
 #include <linux/if_team.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -265,6 +270,10 @@ static int __team_options_register(struct team *team,
 
 	dst_opts = kcalloc(option_count, sizeof(struct team_option *),
 			   GFP_KERNEL);
+	{
+		struct team_option *__uncontained_tmp139;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp139;
+	}
 	if (!dst_opts)
 		return -ENOMEM;
 	for (i = 0; i < option_count; i++, option++) {

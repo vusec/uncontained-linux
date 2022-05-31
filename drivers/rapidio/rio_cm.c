@@ -25,6 +25,11 @@
 #include <linux/printk.h>
 #include <linux/rio_cm_cdev.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define DRV_NAME        "rio_cm"
 #define DRV_VERSION     "1.0.0"
 #define DRV_AUTHOR      "Alexandre Bounine <alexandre.bounine@idt.com>"
@@ -1586,6 +1591,10 @@ static int cm_ep_get_list(void __user *arg)
 found:
 	nent = min(info[0], cm->npeers);
 	buf = kcalloc(nent + 2, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp172;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp172;
+	}
 	if (!buf) {
 		up_read(&rdev_sem);
 		return -ENOMEM;
@@ -1627,6 +1636,10 @@ static int cm_mport_get_list(void __user *arg)
 	if (entries == 0 || entries > RIO_MAX_MPORTS)
 		return -EINVAL;
 	buf = kcalloc(entries + 1, sizeof(u32), GFP_KERNEL);
+	{
+		u32 __uncontained_tmp173;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp173;
+	}
 	if (!buf)
 		return -ENOMEM;
 

@@ -9,6 +9,11 @@
 #include <linux/interrupt.h>
 #include <linux/pci.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "rvu_reg.h"
 #include "mbox.h"
 #include "rvu_trace.h"
@@ -118,6 +123,10 @@ static int otx2_mbox_setup(struct otx2_mbox *mbox, struct pci_dev *pdev,
 	mbox->pdev = pdev;
 
 	mbox->dev = kcalloc(ndevs, sizeof(struct otx2_mbox_dev), GFP_KERNEL);
+	{
+		struct otx2_mbox_dev __uncontained_tmp158;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp158;
+	}
 	if (!mbox->dev) {
 		otx2_mbox_destroy(mbox);
 		return -ENOMEM;

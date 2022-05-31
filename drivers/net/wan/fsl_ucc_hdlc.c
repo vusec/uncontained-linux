@@ -26,6 +26,11 @@
 #include <soc/fsl/qe/qe_tdm.h>
 #include <uapi/linux/if_arp.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "fsl_ucc_hdlc.h"
 
 #define DRV_DESC "Freescale QE UCC HDLC Driver"
@@ -204,6 +209,10 @@ static int uhdlc_init(struct ucc_hdlc_private *priv)
 	priv->rx_skbuff = kcalloc(priv->rx_ring_size,
 				  sizeof(*priv->rx_skbuff),
 				  GFP_KERNEL);
+	{
+		typeof((*priv->rx_skbuff)) __uncontained_tmp202;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp202;
+	}
 	if (!priv->rx_skbuff) {
 		ret = -ENOMEM;
 		goto free_ucc_pram;
@@ -212,6 +221,10 @@ static int uhdlc_init(struct ucc_hdlc_private *priv)
 	priv->tx_skbuff = kcalloc(priv->tx_ring_size,
 				  sizeof(*priv->tx_skbuff),
 				  GFP_KERNEL);
+	{
+		typeof((*priv->tx_skbuff)) __uncontained_tmp203;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp203;
+	}
 	if (!priv->tx_skbuff) {
 		ret = -ENOMEM;
 		goto free_rx_skbuff;

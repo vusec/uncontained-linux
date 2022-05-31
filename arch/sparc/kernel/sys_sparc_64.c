@@ -34,6 +34,11 @@
 #include <asm/utrap.h>
 #include <asm/unistd.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "entry.h"
 #include "kernel.h"
 #include "systbls.h"
@@ -632,6 +637,10 @@ SYSCALL_DEFINE5(utrap_install, utrap_entry_t, type,
 		current_thread_info()->utraps =
 			kcalloc(UT_TRAP_INSTRUCTION_31 + 1, sizeof(long),
 				GFP_KERNEL);
+		{
+			long __uncontained_tmp7;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp7;
+		}
 		if (!current_thread_info()->utraps)
 			return -ENOMEM;
 		current_thread_info()->utraps[0] = 1;

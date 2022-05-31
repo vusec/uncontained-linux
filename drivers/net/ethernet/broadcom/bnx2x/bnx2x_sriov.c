@@ -26,6 +26,11 @@
 #include <linux/crc32.h>
 #include <linux/if_vlan.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static int bnx2x_vf_op_prep(struct bnx2x *bp, int vfidx,
 			    struct bnx2x_virtf **vf,
 			    struct pf_vf_bulletin_content **bulletin,
@@ -553,6 +558,10 @@ int bnx2x_vf_mcast(struct bnx2x *bp, struct bnx2x_virtf *vf,
 	if (mc_num) {
 		mc = kcalloc(mc_num, sizeof(struct bnx2x_mcast_list_elem),
 			     GFP_KERNEL);
+		{
+			struct bnx2x_mcast_list_elem __uncontained_tmp149;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp149;
+		}
 		if (!mc) {
 			BNX2X_ERR("Cannot Configure multicasts due to lack of memory\n");
 			return -ENOMEM;
@@ -1246,6 +1255,10 @@ int bnx2x_iov_init_one(struct bnx2x *bp, int int_mode_param,
 	bp->vfdb->vfs = kcalloc(BNX2X_NR_VIRTFN(bp),
 				sizeof(struct bnx2x_virtf),
 				GFP_KERNEL);
+	{
+		struct bnx2x_virtf __uncontained_tmp150;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp150;
+	}
 	if (!bp->vfdb->vfs) {
 		BNX2X_ERR("failed to allocate vf array\n");
 		err = -ENOMEM;
@@ -1274,6 +1287,10 @@ int bnx2x_iov_init_one(struct bnx2x *bp, int int_mode_param,
 	bp->vfdb->vfqs = kcalloc(BNX2X_MAX_NUM_VF_QUEUES,
 				 sizeof(struct bnx2x_vf_queue),
 				 GFP_KERNEL);
+	{
+		struct bnx2x_vf_queue __uncontained_tmp151;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp151;
+	}
 
 	if (!bp->vfdb->vfqs) {
 		BNX2X_ERR("failed to allocate vf queue array\n");

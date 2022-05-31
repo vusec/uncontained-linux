@@ -24,6 +24,11 @@
 #include <linux/bpf_lsm.h>
 #include <linux/btf_ids.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -10181,6 +10186,10 @@ static int check_btf_func(struct bpf_verifier_env *env,
 	if (!krecord)
 		return -ENOMEM;
 	info_aux = kcalloc(nfuncs, sizeof(*info_aux), GFP_KERNEL | __GFP_NOWARN);
+	{
+		typeof((*info_aux)) __uncontained_tmp326;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp326;
+	}
 	if (!info_aux)
 		goto err_free;
 
@@ -12861,6 +12870,10 @@ static int jit_subprogs(struct bpf_verifier_env *env)
 
 	err = -ENOMEM;
 	func = kcalloc(env->subprog_cnt, sizeof(prog), GFP_KERNEL);
+	{
+		typeof((prog)) __uncontained_tmp327;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp327;
+	}
 	if (!func)
 		goto out_undo_insn;
 

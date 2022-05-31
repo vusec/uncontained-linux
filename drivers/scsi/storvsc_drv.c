@@ -34,6 +34,11 @@
 #include <scsi/scsi_transport_fc.h>
 #include <scsi/scsi_transport.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * All wire protocol details (storage protocol between the guest and the host)
  * are consolidated here.
@@ -977,6 +982,10 @@ static int storvsc_channel_init(struct hv_device *device, bool is_fc)
 	 */
 	stor_device->stor_chns = kcalloc(num_possible_cpus(), sizeof(void *),
 					 GFP_KERNEL);
+	{
+		void *__uncontained_tmp220;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp220;
+	}
 	if (stor_device->stor_chns == NULL)
 		return -ENOMEM;
 

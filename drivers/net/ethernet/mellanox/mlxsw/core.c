@@ -25,6 +25,11 @@
 #include <net/devlink.h>
 #include <trace/events/devlink.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -140,6 +145,10 @@ static int mlxsw_ports_init(struct mlxsw_core *mlxsw_core, bool reload)
 
 	mlxsw_core->ports = kcalloc(mlxsw_core->max_ports,
 				    sizeof(struct mlxsw_core_port), GFP_KERNEL);
+	{
+		struct mlxsw_core_port __uncontained_tmp187;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp187;
+	}
 	if (!mlxsw_core->ports)
 		return -ENOMEM;
 

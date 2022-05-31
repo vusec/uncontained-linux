@@ -13,6 +13,11 @@
 #include <linux/kdev_t.h>
 #include <linux/moduleparam.h>
 #include <linux/string.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "aoe.h"
 
 static void freetgt(struct aoedev *d, struct aoetgt *t);
@@ -463,6 +468,10 @@ aoedev_by_aoeaddr(ulong maj, int min, int do_alloc)
 	if (!d)
 		goto out;
 	d->targets = kcalloc(NTARGETS, sizeof(*d->targets), GFP_ATOMIC);
+	{
+		typeof((*d->targets)) __uncontained_tmp19;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp19;
+	}
 	if (!d->targets) {
 		kfree(d);
 		d = NULL;

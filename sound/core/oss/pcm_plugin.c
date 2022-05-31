@@ -31,6 +31,11 @@
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -185,6 +190,10 @@ int snd_pcm_plugin_build(struct snd_pcm_substream *plug,
 	else
 		channels = dst_format->channels;
 	plugin->buf_channels = kcalloc(channels, sizeof(*plugin->buf_channels), GFP_KERNEL);
+	{
+		typeof((*plugin->buf_channels)) __uncontained_tmp315;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp315;
+	}
 	if (plugin->buf_channels == NULL) {
 		snd_pcm_plugin_free(plugin);
 		return -ENOMEM;

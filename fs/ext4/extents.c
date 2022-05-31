@@ -35,6 +35,11 @@
 
 #include <trace/events/ext4.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 /*
  * used by extent splitting.
  */
@@ -595,6 +600,10 @@ int ext4_ext_precache(struct inode *inode)
 
 	path = kcalloc(depth + 1, sizeof(struct ext4_ext_path),
 		       GFP_NOFS);
+	{
+		struct ext4_ext_path __uncontained_tmp266;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp266;
+	}
 	if (path == NULL) {
 		up_read(&ei->i_data_sem);
 		return -ENOMEM;
@@ -904,6 +913,10 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
 		/* account possible depth increase */
 		path = kcalloc(depth + 2, sizeof(struct ext4_ext_path),
 				gfp_flags);
+		{
+			struct ext4_ext_path __uncontained_tmp267;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp267;
+		}
 		if (unlikely(!path))
 			return ERR_PTR(-ENOMEM);
 		path[0].p_maxdepth = depth + 1;
@@ -1095,6 +1108,10 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
 	 * upon them.
 	 */
 	ablocks = kcalloc(depth, sizeof(ext4_fsblk_t), gfp_flags);
+	{
+		ext4_fsblk_t __uncontained_tmp268;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp268;
+	}
 	if (!ablocks)
 		return -ENOMEM;
 
@@ -2931,6 +2948,10 @@ again:
 	} else {
 		path = kcalloc(depth + 1, sizeof(struct ext4_ext_path),
 			       GFP_NOFS | __GFP_NOFAIL);
+		{
+			struct ext4_ext_path __uncontained_tmp269;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp269;
+		}
 		if (path == NULL) {
 			ext4_journal_stop(handle);
 			return -ENOMEM;

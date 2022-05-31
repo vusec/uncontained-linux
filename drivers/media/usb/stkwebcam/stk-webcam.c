@@ -26,6 +26,11 @@
 #include <media/v4l2-ioctl.h>
 #include <media/v4l2-event.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "stk-webcam.h"
 
 
@@ -435,9 +440,14 @@ static int stk_prepare_iso(struct stk_camera *dev)
 
 	if (dev->isobufs)
 		pr_err("isobufs already allocated. Bad\n");
-	else
+	else {
 		dev->isobufs = kcalloc(MAX_ISO_BUFS, sizeof(*dev->isobufs),
 				       GFP_KERNEL);
+		{
+			typeof((*dev->isobufs)) __uncontained_tmp132;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp132;
+		}
+	}
 	if (dev->isobufs == NULL) {
 		pr_err("Unable to allocate iso buffers\n");
 		return -ENOMEM;
@@ -572,6 +582,10 @@ static int stk_prepare_sio_buffers(struct stk_camera *dev, unsigned n_sbufs)
 		dev->sio_bufs = kcalloc(n_sbufs,
 					sizeof(struct stk_sio_buffer),
 					GFP_KERNEL);
+		{
+			struct stk_sio_buffer __uncontained_tmp131;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp131;
+		}
 		if (dev->sio_bufs == NULL)
 			return -ENOMEM;
 		for (i = 0; i < n_sbufs; i++) {

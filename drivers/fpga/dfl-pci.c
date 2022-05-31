@@ -22,6 +22,11 @@
 #include <linux/errno.h>
 #include <linux/aer.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dfl.h"
 
 #define DRV_VERSION	"0.8"
@@ -127,6 +132,10 @@ static int *cci_pci_create_irq_table(struct pci_dev *pcidev, unsigned int nvec)
 	int *table;
 
 	table = kcalloc(nvec, sizeof(int), GFP_KERNEL);
+	{
+		int __uncontained_tmp66;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp66;
+	}
 	if (!table)
 		return table;
 

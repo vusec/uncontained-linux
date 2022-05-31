@@ -8,6 +8,11 @@
 
 #include <net/mac80211.h>
 #include <linux/sched.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "queue.h"
 #include "cw1200.h"
 #include "debug.h"
@@ -152,6 +157,10 @@ int cw1200_queue_stats_init(struct cw1200_queue_stats *stats,
 
 	stats->link_map_cache = kcalloc(map_capacity, sizeof(int),
 					GFP_KERNEL);
+	{
+		int __uncontained_tmp243;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp243;
+	}
 	if (!stats->link_map_cache)
 		return -ENOMEM;
 
@@ -179,11 +188,19 @@ int cw1200_queue_init(struct cw1200_queue *queue,
 
 	queue->pool = kcalloc(capacity, sizeof(struct cw1200_queue_item),
 			      GFP_KERNEL);
+	{
+		struct cw1200_queue_item __uncontained_tmp244;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp244;
+	}
 	if (!queue->pool)
 		return -ENOMEM;
 
 	queue->link_map_cache = kcalloc(stats->map_capacity, sizeof(int),
 					GFP_KERNEL);
+	{
+		int __uncontained_tmp245;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp245;
+	}
 	if (!queue->link_map_cache) {
 		kfree(queue->pool);
 		queue->pool = NULL;

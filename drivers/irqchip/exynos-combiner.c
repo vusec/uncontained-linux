@@ -18,6 +18,11 @@
 #include <linux/of_address.h>
 #include <linux/of_irq.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define COMBINER_ENABLE_SET	0x0
 #define COMBINER_ENABLE_CLEAR	0x4
 #define COMBINER_INT_STATUS	0xC
@@ -177,6 +182,10 @@ static void __init combiner_init(void __iomem *combiner_base,
 	nr_irq = max_nr * IRQ_IN_COMBINER;
 
 	combiner_data = kcalloc(max_nr, sizeof (*combiner_data), GFP_KERNEL);
+	{
+		typeof((*combiner_data)) __uncontained_tmp113;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp113;
+	}
 	if (!combiner_data)
 		return;
 

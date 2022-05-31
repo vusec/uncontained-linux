@@ -20,6 +20,11 @@
 #include <linux/ptp_classify.h>
 #include <linux/ptp_clock_kernel.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "dp83640_reg.h"
 
 #define DP83640_PHY_ID	0x20005ce1
@@ -1083,6 +1088,10 @@ static struct dp83640_clock *dp83640_clock_get_bus(struct mii_bus *bus)
 	clock->caps.pin_config = kcalloc(DP83640_N_PINS,
 					 sizeof(struct ptp_pin_desc),
 					 GFP_KERNEL);
+	{
+		struct ptp_pin_desc __uncontained_tmp212;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp212;
+	}
 	if (!clock->caps.pin_config) {
 		kfree(clock);
 		clock = NULL;

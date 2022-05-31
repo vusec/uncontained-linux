@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
 /* Copyright (c) 2020 Mellanox Technologies Ltd */
 #include <linux/mlx5/driver.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "vhca_event.h"
 #include "priv.h"
 #include "sf.h"
@@ -229,6 +234,10 @@ static int mlx5_sf_hw_table_hwc_init(struct mlx5_sf_hwc_table *hwc, u16 max_fn, 
 		return 0;
 
 	sfs = kcalloc(max_fn, sizeof(*sfs), GFP_KERNEL);
+	{
+		typeof((*sfs)) __uncontained_tmp186;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp186;
+	}
 	if (!sfs)
 		return -ENOMEM;
 

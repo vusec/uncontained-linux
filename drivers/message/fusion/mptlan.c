@@ -59,6 +59,11 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #define my_VERSION	MPT_LINUX_VERSION_COMMON
 #define MYNAM		"mptlan"
 
@@ -399,6 +404,10 @@ mpt_lan_open(struct net_device *dev)
 
 	priv->SendCtl = kcalloc(priv->tx_max_out, sizeof(struct BufferControl),
 				GFP_KERNEL);
+	{
+		struct BufferControl __uncontained_tmp130;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp130;
+	}
 	if (priv->SendCtl == NULL)
 		goto out_mpt_txfidx;
 	for (i = 0; i < priv->tx_max_out; i++)
@@ -415,6 +424,10 @@ mpt_lan_open(struct net_device *dev)
 	priv->RcvCtl = kcalloc(priv->max_buckets_out,
 			       sizeof(struct BufferControl),
 			       GFP_KERNEL);
+	{
+		struct BufferControl __uncontained_tmp131;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp131;
+	}
 	if (priv->RcvCtl == NULL)
 		goto out_mpt_rxfidx;
 	for (i = 0; i < priv->max_buckets_out; i++)

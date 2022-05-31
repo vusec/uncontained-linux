@@ -17,6 +17,11 @@
 #include <linux/kbd_diacr.h>
 #include <linux/uaccess.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "keyboard.h"
 
 /*
@@ -105,6 +110,10 @@ kbd_alloc(void) {
 	}
 	kbd->fn_handler =
 		kcalloc(NR_FN_HANDLER, sizeof(fn_handler_fn *), GFP_KERNEL);
+	{
+		fn_handler_fn *__uncontained_tmp203;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp203;
+	}
 	if (!kbd->fn_handler)
 		goto out_func;
 	kbd->accent_table = kmemdup(ebc_accent_table,

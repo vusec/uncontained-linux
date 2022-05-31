@@ -21,6 +21,11 @@
 #include <linux/pinctrl/pinconf.h>
 #include <linux/pinctrl/pinconf-generic.h>
 #include <linux/of.h>
+
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
 #include "core.h"
 #include "pinconf.h"
 #include "pinctrl-utils.h"
@@ -255,6 +260,10 @@ int pinconf_generic_parse_dt_config(struct device_node *np,
 	if (pctldev)
 		max_cfg += pctldev->desc->num_custom_params;
 	cfg = kcalloc(max_cfg, sizeof(*cfg), GFP_KERNEL);
+	{
+		typeof((*cfg)) __uncontained_tmp240;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp240;
+	}
 	if (!cfg)
 		return -ENOMEM;
 

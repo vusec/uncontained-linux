@@ -21,6 +21,11 @@
 #include <linux/of_address.h>
 #include <linux/regulator/consumer.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 static LIST_HEAD(mfd_of_node_list);
 
 struct mfd_of_node_entry {
@@ -177,6 +182,10 @@ static int mfd_add_device(struct device *parent, int id,
 		goto fail_device;
 
 	res = kcalloc(cell->num_resources, sizeof(*res), GFP_KERNEL);
+	{
+		typeof((*res)) __uncontained_tmp50;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp50;
+	}
 	if (!res)
 		goto fail_device;
 

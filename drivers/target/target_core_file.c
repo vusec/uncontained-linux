@@ -27,6 +27,11 @@
 #include <target/target_core_base.h>
 #include <target/target_core_backend.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "target_core_file.h"
 
 static inline struct fd_dev *FD_DEV(struct se_device *dev)
@@ -320,6 +325,10 @@ static int fd_do_rw(struct se_cmd *cmd, struct file *fd,
 	int ret = 0, i;
 
 	bvec = kcalloc(sgl_nents, sizeof(struct bio_vec), GFP_KERNEL);
+	{
+		struct bio_vec __uncontained_tmp271;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp271;
+	}
 	if (!bvec) {
 		pr_err("Unable to allocate fd_do_readv iov[]\n");
 		return -ENOMEM;
@@ -459,6 +468,10 @@ fd_execute_write_same(struct se_cmd *cmd)
 	}
 
 	bvec = kcalloc(nolb, sizeof(struct bio_vec), GFP_KERNEL);
+	{
+		struct bio_vec __uncontained_tmp272;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp272;
+	}
 	if (!bvec)
 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
 

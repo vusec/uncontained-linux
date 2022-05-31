@@ -28,6 +28,11 @@
 #include <rdma/ib_verbs.h>
 #include <asm/div64.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #include "smc.h"
 #include "smc_wr.h"
 
@@ -742,30 +747,54 @@ int smc_wr_alloc_link_mem(struct smc_link *link)
 		goto no_mem_wr_tx_bufs;
 	link->wr_tx_ibs = kcalloc(SMC_WR_BUF_CNT, sizeof(link->wr_tx_ibs[0]),
 				  GFP_KERNEL);
+	{
+		typeof((link->wr_tx_ibs[0])) __uncontained_tmp329;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp329;
+	}
 	if (!link->wr_tx_ibs)
 		goto no_mem_wr_rx_bufs;
 	link->wr_rx_ibs = kcalloc(SMC_WR_BUF_CNT * 3,
 				  sizeof(link->wr_rx_ibs[0]),
 				  GFP_KERNEL);
+	{
+		typeof((link->wr_rx_ibs[0])) __uncontained_tmp330;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp330;
+	}
 	if (!link->wr_rx_ibs)
 		goto no_mem_wr_tx_ibs;
 	link->wr_tx_rdmas = kcalloc(SMC_WR_BUF_CNT,
 				    sizeof(link->wr_tx_rdmas[0]),
 				    GFP_KERNEL);
+	{
+		typeof((link->wr_tx_rdmas[0])) __uncontained_tmp331;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp331;
+	}
 	if (!link->wr_tx_rdmas)
 		goto no_mem_wr_rx_ibs;
 	link->wr_tx_rdma_sges = kcalloc(SMC_WR_BUF_CNT,
 					sizeof(link->wr_tx_rdma_sges[0]),
 					GFP_KERNEL);
+	{
+		typeof((link->wr_tx_rdma_sges[0])) __uncontained_tmp332;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp332;
+	}
 	if (!link->wr_tx_rdma_sges)
 		goto no_mem_wr_tx_rdmas;
 	link->wr_tx_sges = kcalloc(SMC_WR_BUF_CNT, sizeof(link->wr_tx_sges[0]),
 				   GFP_KERNEL);
+	{
+		typeof((link->wr_tx_sges[0])) __uncontained_tmp333;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp333;
+	}
 	if (!link->wr_tx_sges)
 		goto no_mem_wr_tx_rdma_sges;
 	link->wr_rx_sges = kcalloc(SMC_WR_BUF_CNT * 3,
 				   sizeof(link->wr_rx_sges[0]) * sges_per_buf,
 				   GFP_KERNEL);
+	{
+		typeof((link->wr_rx_sges[0])) __uncontained_tmp334;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp334;
+	}
 	if (!link->wr_rx_sges)
 		goto no_mem_wr_tx_sges;
 	link->wr_tx_mask = bitmap_zalloc(SMC_WR_BUF_CNT, GFP_KERNEL);
@@ -774,11 +803,19 @@ int smc_wr_alloc_link_mem(struct smc_link *link)
 	link->wr_tx_pends = kcalloc(SMC_WR_BUF_CNT,
 				    sizeof(link->wr_tx_pends[0]),
 				    GFP_KERNEL);
+	{
+		typeof((link->wr_tx_pends[0])) __uncontained_tmp335;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp335;
+	}
 	if (!link->wr_tx_pends)
 		goto no_mem_wr_tx_mask;
 	link->wr_tx_compl = kcalloc(SMC_WR_BUF_CNT,
 				    sizeof(link->wr_tx_compl[0]),
 				    GFP_KERNEL);
+	{
+		typeof((link->wr_tx_compl[0])) __uncontained_tmp336;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp336;
+	}
 	if (!link->wr_tx_compl)
 		goto no_mem_wr_tx_pends;
 

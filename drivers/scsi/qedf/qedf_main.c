@@ -24,6 +24,11 @@
 #include "qedf_dbg.h"
 #include <uapi/linux/pci_regs.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -2754,6 +2759,10 @@ static int qedf_prepare_sb(struct qedf_ctx *qedf)
 	qedf->fp_array =
 	    kcalloc(qedf->num_queues, sizeof(struct qedf_fastpath),
 		GFP_KERNEL);
+	{
+		struct qedf_fastpath __uncontained_tmp260;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp260;
+	}
 
 	if (!qedf->fp_array) {
 		QEDF_ERR(&(qedf->dbg_ctx), "fastpath array allocation "
@@ -2765,6 +2774,10 @@ static int qedf_prepare_sb(struct qedf_ctx *qedf)
 		fp = &(qedf->fp_array[id]);
 		fp->sb_id = QEDF_SB_ID_NULL;
 		fp->sb_info = kcalloc(1, sizeof(*fp->sb_info), GFP_KERNEL);
+		{
+			typeof((*fp->sb_info)) __uncontained_tmp261;
+			__uncontained_kcalloc = (unsigned long)&__uncontained_tmp261;
+		}
 		if (!fp->sb_info) {
 			QEDF_ERR(&(qedf->dbg_ctx), "SB info struct "
 				  "allocation failed.\n");

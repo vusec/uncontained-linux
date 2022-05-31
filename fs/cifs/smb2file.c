@@ -12,6 +12,11 @@
 #include <linux/pagemap.h>
 #include <asm/div64.h>
 
+#ifndef _UNCONTAINED_KCALLOC_H
+#define _UNCONTAINED_KCALLOC_H
+static volatile unsigned long __uncontained_kcalloc;
+#endif /*_UNCONTAINED_KCALLOC_H*/
+
 #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 #define _UNCONTAINED_COMPLEX_ALLOC_H
 static volatile unsigned long __uncontained_complex_alloc;
@@ -136,6 +141,10 @@ smb2_unlock_range(struct cifsFileInfo *cfile, struct file_lock *flock,
 	max_buf = min_t(unsigned int, max_buf, PAGE_SIZE);
 	max_num = max_buf / sizeof(struct smb2_lock_element);
 	buf = kcalloc(max_num, sizeof(struct smb2_lock_element), GFP_KERNEL);
+	{
+		struct smb2_lock_element __uncontained_tmp320;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp320;
+	}
 	if (!buf)
 		return -ENOMEM;
 
@@ -279,6 +288,10 @@ smb2_push_mandatory_locks(struct cifsFileInfo *cfile)
 	max_buf = min_t(unsigned int, max_buf, PAGE_SIZE);
 	max_num = max_buf / sizeof(struct smb2_lock_element);
 	buf = kcalloc(max_num, sizeof(struct smb2_lock_element), GFP_KERNEL);
+	{
+		struct smb2_lock_element __uncontained_tmp321;
+		__uncontained_kcalloc = (unsigned long)&__uncontained_tmp321;
+	}
 	if (!buf) {
 		free_xid(xid);
 		return -ENOMEM;
