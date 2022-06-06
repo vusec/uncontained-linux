@@ -307,18 +307,24 @@ struct raw6_sock {
 	/* ipv6_pinfo has to be the last member of raw6_sock, see inet6_sk_generic */
 	struct ipv6_pinfo	inet6;
 };
+// make the type used at least once
+static struct raw6_sock _dummy_raw6 __attribute__((used));
 
 struct udp6_sock {
 	struct udp_sock	  udp;
 	/* ipv6_pinfo has to be the last member of udp6_sock, see inet6_sk_generic */
 	struct ipv6_pinfo inet6;
 };
+// make the type used at least once
+static struct udp6_sock _dummy_udp6 __attribute__((used));
 
 struct tcp6_sock {
 	struct tcp_sock	  tcp;
 	/* ipv6_pinfo has to be the last member of tcp6_sock, see inet6_sk_generic */
 	struct ipv6_pinfo inet6;
 };
+// make the type used at least once
+static struct tcp6_sock _dummy_tcp6 __attribute__((used));
 
 extern int inet6_sk_rebuild_header(struct sock *sk);
 
