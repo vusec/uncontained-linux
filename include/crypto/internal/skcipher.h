@@ -27,6 +27,9 @@ struct skcipher_instance {
 		struct skcipher_alg alg;
 	};
 };
+// used in unions
+static struct skcipher_alg* __uncontained_nosanitize_dst_skcipher_alg __attribute__((used));
+static struct crypto_instance* __uncontained_nosanitize_dst_crypto_instance __attribute__((used));
 
 struct crypto_skcipher_spawn {
 	struct crypto_spawn base;
