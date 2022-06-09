@@ -211,6 +211,9 @@ struct page {
 #endif
 } _struct_page_alignment;
 
+// used everywhere in arrays for bootmem stuff
+static struct page* __uncontained_nosanitize_dst_page __attribute__((used));
+
 /**
  * struct folio - Represents a contiguous set of bytes.
  * @flags: Identical to the page flags.
