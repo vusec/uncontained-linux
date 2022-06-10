@@ -1334,6 +1334,9 @@ EXPORT_TRACEPOINT_SYMBOL(kmalloc_node);
 EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc_node);
 EXPORT_TRACEPOINT_SYMBOL(kfree);
 EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
+// avoid triggering on tracepoints
+static struct trace_event_call* __uncontained_nosanitize_dst_trace_event_call __attribute__((used));
+static struct trace_event*      __uncontained_nosanitize_dst_trace_event      __attribute__((used));
 
 int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
 {
