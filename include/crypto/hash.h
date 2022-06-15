@@ -226,6 +226,14 @@ struct shash_alg {
 	struct crypto_alg base;
 };
 
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct shash_alg* outer;
+	struct hash_alg_common* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info  = {
+	.offset = __builtin_offsetof(struct shash_alg, digestsize),
+};
+
 struct crypto_ahash {
 	int (*init)(struct ahash_request *req);
 	int (*update)(struct ahash_request *req);
