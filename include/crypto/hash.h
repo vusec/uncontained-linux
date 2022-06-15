@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
 /*
  * Hash: Hash algorithms under the crypto API
- * 
+ *
  * Copyright (c) 2008 Herbert Xu <herbert@gondor.apana.org.au>
  */
 
@@ -224,6 +224,14 @@ struct shash_alg {
 	unsigned int statesize;
 
 	struct crypto_alg base;
+};
+
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct shash_alg* outer;
+	struct hash_alg_common* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info_shash  = {
+	.offset = __builtin_offsetof(struct shash_alg, digestsize),
 };
 
 struct crypto_ahash {

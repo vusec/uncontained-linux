@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
 /*
  * Hash algorithms.
- * 
+ *
  * Copyright (c) 2008 Herbert Xu <herbert@gondor.apana.org.au>
  */
 
@@ -40,6 +40,14 @@ struct ahash_instance {
 	};
 };
 
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct ahash_instance* outer;
+	struct ahash_alg* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info_ahash_1  = {
+	.offset = __builtin_offsetof(struct ahash_instance, alg),
+};
+
 struct shash_instance {
 	void (*free)(struct shash_instance *inst);
 	union {
@@ -49,6 +57,14 @@ struct shash_instance {
 		} s;
 		struct shash_alg alg;
 	};
+};
+
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct shash_instance* outer;
+	struct shash_alg* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info_shash_2  = {
+	.offset = __builtin_offsetof(struct shash_instance, alg),
 };
 
 struct crypto_ahash_spawn {
