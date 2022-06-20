@@ -36,6 +36,11 @@
 #include <drm/drm_print.h>
 #include <drm/drm_vblank.h>
 
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
+
 #include "drm_internal.h"
 #include "drm_trace.h"
 
@@ -529,6 +534,10 @@ int drm_vblank_init(struct drm_device *dev, unsigned int num_crtcs)
 	spin_lock_init(&dev->vblank_time_lock);
 
 	dev->vblank = drmm_kcalloc(dev, num_crtcs, sizeof(*dev->vblank), GFP_KERNEL);
+	{
+		typeof((*dev->vblank)) __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!dev->vblank)
 		return -ENOMEM;
 
