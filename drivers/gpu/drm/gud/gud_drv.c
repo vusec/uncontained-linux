@@ -28,6 +28,11 @@
 #include <drm/drm_simple_kms_helper.h>
 #include <drm/gud.h>
 
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
+
 #ifndef _UNCONTAINED_KCALLOC_H
 #define _UNCONTAINED_KCALLOC_H
 static volatile unsigned long __uncontained_kcalloc;
@@ -280,6 +285,10 @@ static int gud_get_properties(struct gud_device *gdrm)
 
 	gdrm->properties = drmm_kcalloc(&gdrm->drm, num_properties, sizeof(*gdrm->properties),
 					GFP_KERNEL);
+	{
+		typeof((*gdrm->properties)) __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!gdrm->properties) {
 		ret = -ENOMEM;
 		goto out;
