@@ -14,6 +14,11 @@
 #include <drm/drm_managed.h>
 #include <drm/drm_plane_helper.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "kmb_drv.h"
 #include "kmb_plane.h"
 #include "kmb_regs.h"
@@ -583,6 +588,10 @@ struct kmb_plane *kmb_plane_init(struct drm_device *drm)
 
 	for (i = 0; i < KMB_MAX_PLANES; i++) {
 		plane = drmm_kzalloc(drm, sizeof(*plane), GFP_KERNEL);
+		{
+			typeof((*plane)) __uncontained_tmp0;
+			__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+		}
 
 		if (!plane) {
 			drm_err(drm, "Failed to allocate plane\n");

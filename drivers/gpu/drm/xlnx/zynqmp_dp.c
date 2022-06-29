@@ -31,6 +31,11 @@
 #include <linux/phy/phy.h>
 #include <linux/reset.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 #include "zynqmp_disp.h"
 #include "zynqmp_dp.h"
 #include "zynqmp_dpsub.h"
@@ -1647,6 +1652,10 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub, struct drm_device *drm)
 	int ret;
 
 	dp = drmm_kzalloc(drm, sizeof(*dp), GFP_KERNEL);
+	{
+		typeof((*dp)) __uncontained_tmp1;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp1;
+	}
 	if (!dp)
 		return -ENOMEM;
 

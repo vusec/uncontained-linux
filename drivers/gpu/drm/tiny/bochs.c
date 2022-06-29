@@ -15,6 +15,11 @@
 
 #include <video/vga.h>
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* ---------------------------------------------------------------------- */
 
 #define VBE_DISPI_IOPORT_INDEX           0x01CE
@@ -568,6 +573,10 @@ static int bochs_load(struct drm_device *dev)
 	int ret;
 
 	bochs = drmm_kzalloc(dev, sizeof(*bochs), GFP_KERNEL);
+	{
+		typeof((*bochs)) __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (bochs == NULL)
 		return -ENOMEM;
 	dev->dev_private = bochs;
