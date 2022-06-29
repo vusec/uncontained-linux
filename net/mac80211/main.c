@@ -586,6 +586,10 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
 	 *
 	 */
 	priv_size = ALIGN(sizeof(*local), NETDEV_ALIGN) + priv_data_len;
+	{ // added manually since wiphy_new_nm() is a unique wrapper
+		struct ieee80211_local __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 
 	wiphy = wiphy_new_nm(&mac80211_config_ops, priv_size, requested_name);
 
