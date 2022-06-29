@@ -71,6 +71,7 @@ res = func2(first_param, <+... c ...+>, ...);@p2
 expression E;
 type T =~ "(unsigned char|char|unsigned short|short|unsigned int|unsigned|int|unsigned long|long|size_t|ssize_t)";
 T c;
+identifier ci;
 expression res, first_param;
 fresh identifier i = "__uncontained_tmp";
 identifier alloc_function.func;
@@ -87,9 +88,25 @@ res = func(<+... c ...+>, ...);@p2
 ++ __uncontained_complex_alloc = (unsigned long)&i;
 ++ }
 |
+T ci = <+... sizeof E ...+>;@p1
+...
+res = func(<+... ci ...+>, ...);@p2
+++ {
+++ typeof (E) i;
+++ __uncontained_complex_alloc = (unsigned long)&i;
+++ }
+|
 c = <+... sizeof E ...+>;@p1
 ...
 res = func2(first_param, <+... c ...+>, ...);@p2
+++ {
+++ typeof (E) i;
+++ __uncontained_complex_alloc = (unsigned long)&i;
+++ }
+|
+T ci = <+... sizeof E ...+>;@p1
+...
+res = func2(first_param, <+... ci ...+>, ...);@p2
 ++ {
 ++ typeof (E) i;
 ++ __uncontained_complex_alloc = (unsigned long)&i;
@@ -99,7 +116,7 @@ res = func2(first_param, <+... c ...+>, ...);@p2
 @add_glob_declaration depends on alloc_call_var || alloc_call_type@
 @@
 #include <...>
-+ 
++
 + #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 + #define _UNCONTAINED_COMPLEX_ALLOC_H
 + static volatile unsigned long __uncontained_complex_alloc;
@@ -108,7 +125,7 @@ res = func2(first_param, <+... c ...+>, ...);@p2
 @add_glob_declaration2 depends on (alloc_call_var || alloc_call_type) && !add_glob_declaration@
 @@
 #include "..."
-+ 
++
 + #ifndef _UNCONTAINED_COMPLEX_ALLOC_H
 + #define _UNCONTAINED_COMPLEX_ALLOC_H
 + static volatile unsigned long __uncontained_complex_alloc;
