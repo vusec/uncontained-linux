@@ -20,6 +20,11 @@
 #include "ieee802154_i.h"
 #include "cfg.h"
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 static void ieee802154_tasklet_handler(struct tasklet_struct *t)
 {
 	struct ieee802154_local *local = from_tasklet(local, t, tasklet);
@@ -73,6 +78,10 @@ ieee802154_alloc_hw(size_t priv_data_len, const struct ieee802154_ops *ops)
 	 */
 
 	priv_size = ALIGN(sizeof(*local), NETDEV_ALIGN) + priv_data_len;
+	{ // added manually since wpan_phy_new() is a unique wrapper
+		struct ieee802154_local __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 
 	phy = wpan_phy_new(&mac802154_config_ops, priv_size);
 	if (!phy) {
