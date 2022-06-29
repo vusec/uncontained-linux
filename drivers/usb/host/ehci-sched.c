@@ -11,6 +11,11 @@
 static volatile unsigned long __uncontained_kcalloc;
 #endif /*_UNCONTAINED_KCALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /*-------------------------------------------------------------------------*/
 
 /*
