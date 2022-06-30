@@ -47,7 +47,7 @@ unsigned int tomoyo_memory_quota[TOMOYO_MAX_MEMORY_STAT];
 bool tomoyo_memory_ok(void *ptr)
 {
 	if (ptr) {
-		const size_t s = ksize(ptr);
+		const size_t s = ksize_check(ptr);
 
 		tomoyo_memory_used[TOMOYO_MEMORY_POLICY] += s;
 		if (!tomoyo_memory_quota[TOMOYO_MEMORY_POLICY] ||

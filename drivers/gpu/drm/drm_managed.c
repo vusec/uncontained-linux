@@ -129,7 +129,7 @@ void drmm_add_final_kfree(struct drm_device *dev, void *container)
 {
 	WARN_ON(dev->managed.final_kfree);
 	WARN_ON(dev < (struct drm_device *) container);
-	WARN_ON(dev + 1 > (struct drm_device *) (container + ksize(container)));
+	WARN_ON(dev + 1 > (struct drm_device *) (container + ksize_check(container)));
 	dev->managed.final_kfree = container;
 }
 
