@@ -259,6 +259,9 @@ struct folio {
 	};
 };
 
+// struct folio and page are used interchangably (since folio consists of a union of struct page)
+static struct folio* __uncontained_nosanitize_dst_folio __attribute__((used));
+
 static_assert(sizeof(struct page) == sizeof(struct folio));
 #define FOLIO_MATCH(pg, fl)						\
 	static_assert(offsetof(struct page, pg) == offsetof(struct folio, fl))
