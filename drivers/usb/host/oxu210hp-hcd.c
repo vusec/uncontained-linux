@@ -96,7 +96,7 @@ struct oxu_hcd;
 /* EHCI register interface, corresponds to EHCI Revision 0.95 specification */
 
 /* Section 2.2 Host Controller Capability Registers */
-struct ehci_caps {
+struct oxu_ehci_caps {
 	/* these fields are specified as 8 and 16 bit registers,
 	 * but some hosts can't perform 8 or 16 bit PCI accesses.
 	 */
@@ -124,7 +124,7 @@ struct ehci_caps {
 
 
 /* Section 2.3 Host Controller Operational Registers */
-struct ehci_regs {
+struct oxu_ehci_regs {
 	/* USBCMD: offset 0x00 */
 	u32		command;
 /* 23:16 is r/w intr rate, in microframes; default "8" == 1/msec */
@@ -204,7 +204,7 @@ struct ehci_regs {
 /* Appendix C, Debug port ... intended for use with special "debug devices"
  * that can help if there's no serial console.  (nonstandard enumeration.)
  */
-struct ehci_dbg_port {
+struct oxu_ehci_dbg_port {
 	u32	control;
 #define DBGP_OWNER	(1<<30)
 #define DBGP_ENABLED	(1<<28)
@@ -236,7 +236,7 @@ struct ehci_dbg_port {
  * These are associated only with "QH" (Queue Head) structures,
  * used with control, bulk, and interrupt transfers.
  */
-struct ehci_qtd {
+struct oxu_ehci_qtd {
 	/* first part defined by EHCI spec */
 	__le32			hw_next;		/* see EHCI 3.5.1 */
 	__le32			hw_alt_next;		/* see EHCI 3.5.2 */
@@ -295,8 +295,8 @@ struct ehci_qtd {
  *
  * For entries in the async schedule, the type tag always says "qh".
  */
-union ehci_shadow {
-	struct ehci_qh		*qh;		/* Q_TYPE_QH */
+union oxu_ehci_shadow {
+	struct oxu_ehci_qh		*qh;		/* Q_TYPE_QH */
 	__le32			*hw_next;	/* (all types) */
 	void			*ptr;
 };
@@ -309,7 +309,7 @@ union ehci_shadow {
  * These appear in both the async and (for interrupt) periodic schedules.
  */
 
-struct ehci_qh {
+struct oxu_ehci_qh {
 	/* first part defined by EHCI spec */
 	__le32			hw_next;	 /* see EHCI 3.6.1 */
 	__le32			hw_info1;	/* see EHCI 3.6.2 */
@@ -322,7 +322,7 @@ struct ehci_qh {
 #define	QH_MULT		0xc0000000
 	__le32			hw_current;	 /* qtd list - see EHCI 3.6.4 */
 
-	/* qtd overlay (hardware parts of a struct ehci_qtd) */
+	/* qtd overlay (hardware parts of a struct oxu_ehci_qtd) */
 	__le32			hw_qtd_next;
 	__le32			hw_alt_next;
 	__le32			hw_token;
@@ -331,10 +331,10 @@ struct ehci_qh {
 
 	/* the rest is HCD-private */
 	dma_addr_t		qh_dma;		/* address of qh */
-	union ehci_shadow	qh_next;	/* ptr to qh; or periodic */
+	union oxu_ehci_shadow	qh_next;	/* ptr to qh; or periodic */
 	struct list_head	qtd_list;	/* sw qtd list */
-	struct ehci_qtd		*dummy;
-	struct ehci_qh		*reclaim;	/* next to reclaim */
+	struct oxu_ehci_qtd		*dummy;
+	struct oxu_ehci_qh		*reclaim;	/* next to reclaim */
 
 	struct oxu_hcd		*oxu;
 	struct kref		kref;
@@ -393,8 +393,8 @@ struct oxu_onchip_mem {
 	struct oxu_buf		db_pool[BUFFER_NUM];
 
 	u32			frame_list[DEFAULT_I_TDPS];
-	struct ehci_qh		qh_pool[QHEAD_NUM];
-	struct ehci_qtd		qtd_pool[QTD_NUM];
+	struct oxu_ehci_qh		qh_pool[QHEAD_NUM];
+	struct oxu_ehci_qtd		qtd_pool[QTD_NUM];
 } __aligned(4 << 10);
 
 #define	EHCI_MAX_ROOT_PORTS	15		/* see HCS_N_PORTS */
@@ -418,15 +418,15 @@ struct oxu_hcd {				/* one per controller */
 
 	struct timer_list	urb_timer;
 
-	struct ehci_caps __iomem *caps;
-	struct ehci_regs __iomem *regs;
+	struct oxu_ehci_caps __iomem *caps;
+	struct oxu_ehci_regs __iomem *regs;
 
 	u32			hcs_params;	/* cached register copy */
 	spinlock_t		lock;
 
 	/* async schedule support */
-	struct ehci_qh		*async;
-	struct ehci_qh		*reclaim;
+	struct oxu_ehci_qh		*async;
+	struct oxu_ehci_qh		*reclaim;
 	unsigned int		reclaim_ready:1;
 	unsigned int		scanning:1;
 
@@ -436,7 +436,7 @@ struct oxu_hcd {				/* one per controller */
 	dma_addr_t		periodic_dma;
 	unsigned int		i_thresh;	/* uframes HC might cache */
 
-	union ehci_shadow	*pshadow;	/* mirror hw periodic table */
+	union oxu_ehci_shadow	*pshadow;	/* mirror hw periodic table */
 	int			next_uframe;	/* scan periodic, start here */
 	unsigned int		periodic_sched;	/* periodic activity count */
 
@@ -909,7 +909,7 @@ static void ehci_hub_descriptor(struct oxu_hcd *oxu,
  * len=0. This is a waste of on-chip memory and should be fix. Then this
  * function should be changed to not allocate a buffer for len=0.
  */
-static int oxu_buf_alloc(struct oxu_hcd *oxu, struct ehci_qtd *qtd, int len)
+static int oxu_buf_alloc(struct oxu_hcd *oxu, struct oxu_ehci_qtd *qtd, int len)
 {
 	int n_blocks;	/* minium blocks needed to hold len */
 	int a_blocks;	/* blocks allocated */
@@ -961,7 +961,7 @@ static int oxu_buf_alloc(struct oxu_hcd *oxu, struct ehci_qtd *qtd, int len)
 	return -ENOMEM;
 }
 
-static void oxu_buf_free(struct oxu_hcd *oxu, struct ehci_qtd *qtd)
+static void oxu_buf_free(struct oxu_hcd *oxu, struct oxu_ehci_qtd *qtd)
 {
 	int index;
 
@@ -977,7 +977,7 @@ static void oxu_buf_free(struct oxu_hcd *oxu, struct ehci_qtd *qtd)
 	spin_unlock(&oxu->mem_lock);
 }
 
-static inline void ehci_qtd_init(struct ehci_qtd *qtd, dma_addr_t dma)
+static inline void ehci_qtd_init(struct oxu_ehci_qtd *qtd, dma_addr_t dma)
 {
 	memset(qtd, 0, sizeof *qtd);
 	qtd->qtd_dma = dma;
@@ -987,7 +987,7 @@ static inline void ehci_qtd_init(struct ehci_qtd *qtd, dma_addr_t dma)
 	INIT_LIST_HEAD(&qtd->qtd_list);
 }
 
-static inline void oxu_qtd_free(struct oxu_hcd *oxu, struct ehci_qtd *qtd)
+static inline void oxu_qtd_free(struct oxu_hcd *oxu, struct oxu_ehci_qtd *qtd)
 {
 	int index;
 
@@ -1002,10 +1002,10 @@ static inline void oxu_qtd_free(struct oxu_hcd *oxu, struct ehci_qtd *qtd)
 	spin_unlock(&oxu->mem_lock);
 }
 
-static struct ehci_qtd *ehci_qtd_alloc(struct oxu_hcd *oxu)
+static struct oxu_ehci_qtd *ehci_qtd_alloc(struct oxu_hcd *oxu)
 {
 	int i;
-	struct ehci_qtd *qtd = NULL;
+	struct oxu_ehci_qtd *qtd = NULL;
 
 	spin_lock(&oxu->mem_lock);
 
@@ -1014,7 +1014,7 @@ static struct ehci_qtd *ehci_qtd_alloc(struct oxu_hcd *oxu)
 			break;
 
 	if (i < QTD_NUM) {
-		qtd = (struct ehci_qtd *) &oxu->mem->qtd_pool[i];
+		qtd = (struct oxu_ehci_qtd *) &oxu->mem->qtd_pool[i];
 		memset(qtd, 0, sizeof *qtd);
 
 		qtd->hw_token = cpu_to_le32(QTD_STS_HALT);
@@ -1032,7 +1032,7 @@ static struct ehci_qtd *ehci_qtd_alloc(struct oxu_hcd *oxu)
 	return qtd;
 }
 
-static void oxu_qh_free(struct oxu_hcd *oxu, struct ehci_qh *qh)
+static void oxu_qh_free(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh)
 {
 	int index;
 
@@ -1046,7 +1046,7 @@ static void oxu_qh_free(struct oxu_hcd *oxu, struct ehci_qh *qh)
 
 static void qh_destroy(struct kref *kref)
 {
-	struct ehci_qh *qh = container_of(kref, struct ehci_qh, kref);
+	struct oxu_ehci_qh *qh = container_of(kref, struct oxu_ehci_qh, kref);
 	struct oxu_hcd *oxu = qh->oxu;
 
 	/* clean qtds first, and know this is not linked */
@@ -1059,10 +1059,10 @@ static void qh_destroy(struct kref *kref)
 	oxu_qh_free(oxu, qh);
 }
 
-static struct ehci_qh *oxu_qh_alloc(struct oxu_hcd *oxu)
+static struct oxu_ehci_qh *oxu_qh_alloc(struct oxu_hcd *oxu)
 {
 	int i;
-	struct ehci_qh *qh = NULL;
+	struct oxu_ehci_qh *qh = NULL;
 
 	spin_lock(&oxu->mem_lock);
 
@@ -1071,7 +1071,7 @@ static struct ehci_qh *oxu_qh_alloc(struct oxu_hcd *oxu)
 			break;
 
 	if (i < QHEAD_NUM) {
-		qh = (struct ehci_qh *) &oxu->mem->qh_pool[i];
+		qh = (struct oxu_ehci_qh *) &oxu->mem->qh_pool[i];
 		memset(qh, 0, sizeof *qh);
 
 		kref_init(&qh->kref);
@@ -1097,13 +1097,13 @@ unlock:
 }
 
 /* to share a qh (cpu threads, or hc) */
-static inline struct ehci_qh *qh_get(struct ehci_qh *qh)
+static inline struct oxu_ehci_qh *qh_get(struct oxu_ehci_qh *qh)
 {
 	kref_get(&qh->kref);
 	return qh;
 }
 
-static inline void qh_put(struct ehci_qh *qh)
+static inline void qh_put(struct oxu_ehci_qh *qh)
 {
 	kref_put(&qh->kref, qh_destroy);
 }
@@ -1216,7 +1216,7 @@ fail:
 
 /* Fill a qtd, returning how much of the buffer we were able to queue up.
  */
-static int qtd_fill(struct ehci_qtd *qtd, dma_addr_t buf, size_t len,
+static int qtd_fill(struct oxu_ehci_qtd *qtd, dma_addr_t buf, size_t len,
 				int token, int maxpacket)
 {
 	int i, count;
@@ -1255,7 +1255,7 @@ static int qtd_fill(struct ehci_qtd *qtd, dma_addr_t buf, size_t len,
 }
 
 static inline void qh_update(struct oxu_hcd *oxu,
-				struct ehci_qh *qh, struct ehci_qtd *qtd)
+				struct oxu_ehci_qh *qh, struct oxu_ehci_qtd *qtd)
 {
 	/* writes to an active overlay are unsafe */
 	BUG_ON(qh->qh_state != QH_STATE_IDLE);
@@ -1288,15 +1288,15 @@ static inline void qh_update(struct oxu_hcd *oxu,
  * overlay, so qh->hw_token wrongly becomes inactive/halted), only fault
  * recovery (including urb dequeue) would need software changes to a QH...
  */
-static void qh_refresh(struct oxu_hcd *oxu, struct ehci_qh *qh)
+static void qh_refresh(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh)
 {
-	struct ehci_qtd *qtd;
+	struct oxu_ehci_qtd *qtd;
 
 	if (list_empty(&qh->qtd_list))
 		qtd = qh->dummy;
 	else {
 		qtd = list_entry(qh->qtd_list.next,
-				struct ehci_qtd, qtd_list);
+				struct oxu_ehci_qtd, qtd_list);
 		/* first qtd may already be partially processed */
 		if (cpu_to_le32(qtd->qtd_dma) == qh->hw_current)
 			qtd = NULL;
@@ -1363,7 +1363,7 @@ __releases(oxu->lock)
 __acquires(oxu->lock)
 {
 	if (likely(urb->hcpriv != NULL)) {
-		struct ehci_qh	*qh = (struct ehci_qh *) urb->hcpriv;
+		struct oxu_ehci_qh	*qh = (struct oxu_ehci_qh *) urb->hcpriv;
 
 		/* S-mask in a QH means it's an interrupt urb */
 		if ((qh->hw_info2 & cpu_to_le32(QH_SMASK)) != 0) {
@@ -1405,11 +1405,11 @@ __acquires(oxu->lock)
 	spin_lock(&oxu->lock);
 }
 
-static void start_unlink_async(struct oxu_hcd *oxu, struct ehci_qh *qh);
-static void unlink_async(struct oxu_hcd *oxu, struct ehci_qh *qh);
+static void start_unlink_async(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh);
+static void unlink_async(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh);
 
-static void intr_deschedule(struct oxu_hcd *oxu, struct ehci_qh *qh);
-static int qh_schedule(struct oxu_hcd *oxu, struct ehci_qh *qh);
+static void intr_deschedule(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh);
+static int qh_schedule(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh);
 
 #define HALT_BIT cpu_to_le32(QTD_STS_HALT)
 
@@ -1417,10 +1417,10 @@ static int qh_schedule(struct oxu_hcd *oxu, struct ehci_qh *qh);
  * Chases up to qh->hw_current.  Returns number of completions called,
  * indicating how much "real" work we did.
  */
-static unsigned qh_completions(struct oxu_hcd *oxu, struct ehci_qh *qh)
+static unsigned qh_completions(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh)
 {
-	struct ehci_qtd *last = NULL, *end = qh->dummy;
-	struct ehci_qtd	*qtd, *tmp;
+	struct oxu_ehci_qtd *last = NULL, *end = qh->dummy;
+	struct oxu_ehci_qtd	*qtd, *tmp;
 	int stopped;
 	unsigned count = 0;
 	int do_status = 0;
@@ -1548,7 +1548,7 @@ halt:
 
 		if (stopped && qtd->qtd_list.prev != &qh->qtd_list) {
 			last = list_entry(qtd->qtd_list.prev,
-					struct ehci_qtd, qtd_list);
+					struct oxu_ehci_qtd, qtd_list);
 			last->hw_next = qtd->hw_next;
 		}
 		list_del(&qtd->qtd_list);
@@ -1613,7 +1613,7 @@ halt:
 static void qtd_list_free(struct oxu_hcd *oxu,
 				struct urb *urb, struct list_head *head)
 {
-	struct ehci_qtd	*qtd, *temp;
+	struct oxu_ehci_qtd	*qtd, *temp;
 
 	list_for_each_entry_safe(qtd, temp, head, qtd_list) {
 		list_del(&qtd->qtd_list);
@@ -1628,7 +1628,7 @@ static struct list_head *qh_urb_transaction(struct oxu_hcd *oxu,
 						struct list_head *head,
 						gfp_t flags)
 {
-	struct ehci_qtd	*qtd, *qtd_prev;
+	struct oxu_ehci_qtd	*qtd, *qtd_prev;
 	dma_addr_t buf;
 	int len, maxpacket;
 	int is_input;
@@ -1790,10 +1790,10 @@ cleanup:
  * just one microframe in the s-mask.  For split interrupt transactions
  * there are additional complications: c-mask, maybe FSTNs.
  */
-static struct ehci_qh *qh_make(struct oxu_hcd *oxu,
+static struct oxu_ehci_qh *qh_make(struct oxu_hcd *oxu,
 				struct urb *urb, gfp_t flags)
 {
-	struct ehci_qh *qh = oxu_qh_alloc(oxu);
+	struct oxu_ehci_qh *qh = oxu_qh_alloc(oxu);
 	u32 info1 = 0, info2 = 0;
 	int is_input, type;
 	int maxp = 0;
@@ -1926,10 +1926,10 @@ done:
 
 /* Move qh (and its qtds) onto async queue; maybe enable queue.
  */
-static void qh_link_async(struct oxu_hcd *oxu, struct ehci_qh *qh)
+static void qh_link_async(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh)
 {
 	__le32 dma = QH_NEXT(qh->qh_dma);
-	struct ehci_qh *head;
+	struct oxu_ehci_qh *head;
 
 	/* (re)start the async schedule? */
 	head = oxu->async;
@@ -1972,25 +1972,25 @@ static void qh_link_async(struct oxu_hcd *oxu, struct ehci_qh *qh)
  * Returns null if it can't allocate a QH it needs to.
  * If the QH has TDs (urbs) already, that's great.
  */
-static struct ehci_qh *qh_append_tds(struct oxu_hcd *oxu,
+static struct oxu_ehci_qh *qh_append_tds(struct oxu_hcd *oxu,
 				struct urb *urb, struct list_head *qtd_list,
 				int epnum, void	**ptr)
 {
-	struct ehci_qh *qh = NULL;
+	struct oxu_ehci_qh *qh = NULL;
 
-	qh = (struct ehci_qh *) *ptr;
+	qh = (struct oxu_ehci_qh *) *ptr;
 	if (unlikely(qh == NULL)) {
 		/* can't sleep here, we have oxu->lock... */
 		qh = qh_make(oxu, urb, GFP_ATOMIC);
 		*ptr = qh;
 	}
 	if (likely(qh != NULL)) {
-		struct ehci_qtd	*qtd;
+		struct oxu_ehci_qtd	*qtd;
 
 		if (unlikely(list_empty(qtd_list)))
 			qtd = NULL;
 		else
-			qtd = list_entry(qtd_list->next, struct ehci_qtd,
+			qtd = list_entry(qtd_list->next, struct oxu_ehci_qtd,
 					qtd_list);
 
 		/* control qh may need patching ... */
@@ -2005,7 +2005,7 @@ static struct ehci_qh *qh_append_tds(struct oxu_hcd *oxu,
 		 * only hc or qh_refresh() ever modify the overlay.
 		 */
 		if (likely(qtd != NULL)) {
-			struct ehci_qtd	*dummy;
+			struct oxu_ehci_qtd	*dummy;
 			dma_addr_t dma;
 			__le32 token;
 
@@ -2033,7 +2033,7 @@ static struct ehci_qh *qh_append_tds(struct oxu_hcd *oxu,
 			/* hc must see the new dummy at list end */
 			dma = qtd->qtd_dma;
 			qtd = list_entry(qh->qtd_list.prev,
-					struct ehci_qtd, qtd_list);
+					struct oxu_ehci_qtd, qtd_list);
 			qtd->hw_next = QTD_NEXT(dma);
 
 			/* let the hc process these next qtds */
@@ -2052,12 +2052,12 @@ static int submit_async(struct oxu_hcd	*oxu, struct urb *urb,
 {
 	int epnum = urb->ep->desc.bEndpointAddress;
 	unsigned long flags;
-	struct ehci_qh *qh = NULL;
+	struct oxu_ehci_qh *qh = NULL;
 	int rc = 0;
 #ifdef OXU_URB_TRACE
-	struct ehci_qtd	*qtd;
+	struct oxu_ehci_qtd	*qtd;
 
-	qtd = list_entry(qtd_list->next, struct ehci_qtd, qtd_list);
+	qtd = list_entry(qtd_list->next, struct oxu_ehci_qtd, qtd_list);
 
 	oxu_dbg(oxu, "%s %s urb %p ep%d%s len %d, qtd %p [qh %p]\n",
 		__func__, urb->dev->devpath, urb,
@@ -2094,8 +2094,8 @@ done:
 
 static void end_unlink_async(struct oxu_hcd *oxu)
 {
-	struct ehci_qh *qh = oxu->reclaim;
-	struct ehci_qh *next;
+	struct oxu_ehci_qh *qh = oxu->reclaim;
+	struct oxu_ehci_qh *next;
 
 	timer_action_done(oxu, TIMER_IAA_WATCHDOG);
 
@@ -2134,10 +2134,10 @@ static void end_unlink_async(struct oxu_hcd *oxu)
 /* makes sure the async qh will become idle */
 /* caller must own oxu->lock */
 
-static void start_unlink_async(struct oxu_hcd *oxu, struct ehci_qh *qh)
+static void start_unlink_async(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh)
 {
 	int cmd = readl(&oxu->regs->command);
-	struct ehci_qh *prev;
+	struct oxu_ehci_qh *prev;
 
 #ifdef DEBUG
 	assert_spin_locked(&oxu->lock);
@@ -2187,7 +2187,7 @@ static void start_unlink_async(struct oxu_hcd *oxu, struct ehci_qh *qh)
 
 static void scan_async(struct oxu_hcd *oxu)
 {
-	struct ehci_qh *qh;
+	struct oxu_ehci_qh *qh;
 	enum ehci_timer_action action = TIMER_IO_WATCHDOG;
 
 	if (!++(oxu->stamp))
@@ -2241,7 +2241,7 @@ rescan:
  * @periodic: host pointer to qh/itd/sitd
  * @tag: hardware tag for type of this record
  */
-static union ehci_shadow *periodic_next_shadow(union ehci_shadow *periodic,
+static union oxu_ehci_shadow *periodic_next_shadow(union oxu_ehci_shadow *periodic,
 						__le32 tag)
 {
 	switch (tag) {
@@ -2254,9 +2254,9 @@ static union ehci_shadow *periodic_next_shadow(union ehci_shadow *periodic,
 /* caller must hold oxu->lock */
 static void periodic_unlink(struct oxu_hcd *oxu, unsigned frame, void *ptr)
 {
-	union ehci_shadow *prev_p = &oxu->pshadow[frame];
+	union oxu_ehci_shadow *prev_p = &oxu->pshadow[frame];
 	__le32 *hw_p = &oxu->periodic[frame];
-	union ehci_shadow here = *prev_p;
+	union oxu_ehci_shadow here = *prev_p;
 
 	/* find predecessor of "ptr"; hw and shadow lists are in sync */
 	while (here.ptr && here.ptr != ptr) {
@@ -2280,7 +2280,7 @@ static unsigned short periodic_usecs(struct oxu_hcd *oxu,
 					unsigned frame, unsigned uframe)
 {
 	__le32 *hw_p = &oxu->periodic[frame];
-	union ehci_shadow *q = &oxu->pshadow[frame];
+	union oxu_ehci_shadow *q = &oxu->pshadow[frame];
 	unsigned usecs = 0;
 
 	while (q->ptr) {
@@ -2361,7 +2361,7 @@ static int disable_periodic(struct oxu_hcd *oxu)
  * this just links in a qh; caller guarantees uframe masks are set right.
  * no FSTN support (yet; oxu 0.96+)
  */
-static int qh_link_periodic(struct oxu_hcd *oxu, struct ehci_qh *qh)
+static int qh_link_periodic(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh)
 {
 	unsigned i;
 	unsigned period = qh->period;
@@ -2376,9 +2376,9 @@ static int qh_link_periodic(struct oxu_hcd *oxu, struct ehci_qh *qh)
 		period = 1;
 
 	for (i = qh->start; i < oxu->periodic_size; i += period) {
-		union ehci_shadow	*prev = &oxu->pshadow[i];
+		union oxu_ehci_shadow	*prev = &oxu->pshadow[i];
 		__le32			*hw_p = &oxu->periodic[i];
-		union ehci_shadow	here = *prev;
+		union oxu_ehci_shadow	here = *prev;
 		__le32			type = 0;
 
 		/* skip the iso nodes at list head */
@@ -2426,7 +2426,7 @@ static int qh_link_periodic(struct oxu_hcd *oxu, struct ehci_qh *qh)
 	return 0;
 }
 
-static void qh_unlink_periodic(struct oxu_hcd *oxu, struct ehci_qh *qh)
+static void qh_unlink_periodic(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh)
 {
 	unsigned i;
 	unsigned period;
@@ -2469,7 +2469,7 @@ static void qh_unlink_periodic(struct oxu_hcd *oxu, struct ehci_qh *qh)
 		(void) disable_periodic(oxu);
 }
 
-static void intr_deschedule(struct oxu_hcd *oxu, struct ehci_qh *qh)
+static void intr_deschedule(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh)
 {
 	unsigned wait;
 
@@ -2536,7 +2536,7 @@ static int check_period(struct oxu_hcd *oxu,
 
 static int check_intr_schedule(struct oxu_hcd	*oxu,
 				unsigned frame, unsigned uframe,
-				const struct ehci_qh *qh, __le32 *c_maskp)
+				const struct oxu_ehci_qh *qh, __le32 *c_maskp)
 {
 	int retval = -ENOSPC;
 
@@ -2558,7 +2558,7 @@ done:
 /* "first fit" scheduling policy used the first time through,
  * or when the previous schedule slot can't be re-used.
  */
-static int qh_schedule(struct oxu_hcd *oxu, struct ehci_qh *qh)
+static int qh_schedule(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh)
 {
 	int		status;
 	unsigned	uframe;
@@ -2626,7 +2626,7 @@ static int intr_submit(struct oxu_hcd *oxu, struct urb *urb,
 {
 	unsigned epnum;
 	unsigned long flags;
-	struct ehci_qh *qh;
+	struct oxu_ehci_qh *qh;
 	int status = 0;
 	struct list_head	empty;
 
@@ -2702,7 +2702,7 @@ static void scan_periodic(struct oxu_hcd *oxu)
 	clock %= mod;
 
 	for (;;) {
-		union ehci_shadow	q, *q_p;
+		union oxu_ehci_shadow	q, *q_p;
 		__le32			type, *hw_p;
 
 		/* don't scan past the live uframe */
@@ -2721,7 +2721,7 @@ restart:
 		modified = 0;
 
 		while (q.ptr != NULL) {
-			union ehci_shadow temp;
+			union oxu_ehci_shadow temp;
 
 			switch (type) {
 			case Q_TYPE_QH:
@@ -2838,13 +2838,13 @@ static void ehci_work(struct oxu_hcd *oxu)
 		timer_action(oxu, TIMER_IO_WATCHDOG);
 }
 
-static void unlink_async(struct oxu_hcd *oxu, struct ehci_qh *qh)
+static void unlink_async(struct oxu_hcd *oxu, struct oxu_ehci_qh *qh)
 {
 	/* if we need to use IAA and it's busy, defer */
 	if (qh->qh_state == QH_STATE_LINKED
 			&& oxu->reclaim
 			&& HC_IS_RUNNING(oxu_to_hcd(oxu)->state)) {
-		struct ehci_qh		*last;
+		struct oxu_ehci_qh		*last;
 
 		for (last = oxu->reclaim;
 				last->reclaim;
@@ -3369,7 +3369,7 @@ static int oxu_urb_enqueue(struct usb_hcd *hcd, struct urb *urb,
 static int oxu_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 {
 	struct oxu_hcd *oxu = hcd_to_oxu(hcd);
-	struct ehci_qh *qh;
+	struct oxu_ehci_qh *qh;
 	unsigned long flags;
 
 	spin_lock_irqsave(&oxu->lock, flags);
@@ -3377,14 +3377,14 @@ static int oxu_urb_dequeue(struct usb_hcd *hcd, struct urb *urb, int status)
 	case PIPE_CONTROL:
 	case PIPE_BULK:
 	default:
-		qh = (struct ehci_qh *) urb->hcpriv;
+		qh = (struct oxu_ehci_qh *) urb->hcpriv;
 		if (!qh)
 			break;
 		unlink_async(oxu, qh);
 		break;
 
 	case PIPE_INTERRUPT:
-		qh = (struct ehci_qh *) urb->hcpriv;
+		qh = (struct oxu_ehci_qh *) urb->hcpriv;
 		if (!qh)
 			break;
 		switch (qh->qh_state) {
@@ -3431,7 +3431,7 @@ static void oxu_endpoint_disable(struct usb_hcd *hcd,
 {
 	struct oxu_hcd *oxu = hcd_to_oxu(hcd);
 	unsigned long		flags;
-	struct ehci_qh		*qh, *tmp;
+	struct oxu_ehci_qh		*qh, *tmp;
 
 	/* ASSERT:  any requests/urbs are being unlinked */
 	/* ASSERT:  nobody can be submitting urbs for this any more */
