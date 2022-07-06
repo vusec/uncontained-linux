@@ -7288,10 +7288,6 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
 	LSM_HOOK_INIT(perf_event_alloc, selinux_perf_event_alloc),
 #endif
 };
-// security_hook_list contains a union, thus LLVM emits two different structures
-// in this array initialization to init the cells, and we lose the array-type information
-// here
-static struct security_hook_list* __uncontained_nosanitize_dst_security_hook_list __attribute__((used));
 
 static __init int selinux_init(void)
 {

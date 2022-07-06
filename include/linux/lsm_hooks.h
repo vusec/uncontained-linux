@@ -1598,6 +1598,11 @@ struct security_hook_list {
 	char				*lsm;
 } __randomize_layout;
 
+// security_hook_list contains a union, thus LLVM emits two different structures
+// in this array initialization to init the cells, and we lose the array-type information
+// here
+static struct security_hook_list* __uncontained_nosanitize_dst_security_hook_list __attribute__((used));
+
 /*
  * Security blob size or offset data.
  */
