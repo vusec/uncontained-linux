@@ -382,6 +382,44 @@ void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
 	trace_f2fs_commit_inmem_page(page, INMEM_INVALIDATE);
 }
 
+void f2fs_test(struct inode *inode, struct page *page)
+{
+	struct f2fs_inode_info *fi = F2FS_I(inode);
+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+	struct list_head *head = &fi->inmem_pages;
+	struct inmem_pages *cur = NULL;
+
+	list_for_each_entry(cur, head, list) {
+		if (cur->page == page)
+			break;
+	}
+
+	f2fs_bug_on(sbi, list_empty(head) || cur->page != page);
+	list_del(&cur->list);
+}
+
+int kernel_tools_test1(void) {
+		struct f2fs_inode_info *fi;
+		struct page	*page;
+		struct inmem_pages *cur;
+
+		printk(KERN_INFO "KERNEL TOOLS TEST");
+
+		fi = kzalloc(sizeof(*fi), GFP_KERNEL);
+		page = kzalloc(sizeof(*page), GFP_KERNEL);
+		(&fi->vfs_inode)->i_sb = kzalloc(sizeof(struct super_block), GFP_KERNEL);
+		(&fi->vfs_inode)->i_sb->s_fs_info = kzalloc(sizeof(struct f2fs_sb_info), GFP_KERNEL);
+		cur = kzalloc(sizeof(*cur), GFP_KERNEL);
+		cur->page = 0x123;
+
+		INIT_LIST_HEAD(&fi->inmem_pages);
+		list_add_tail(&cur->list, &fi->inmem_pages);
+
+		f2fs_test(&fi->vfs_inode, page);
+    return 0;
+}
+// __initcall(kernel_tools_test1);
+
 static int __f2fs_commit_inmem_pages(struct inode *inode)
 {
 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);

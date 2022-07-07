@@ -1236,6 +1236,54 @@ static void nuke(struct net2280_ep *ep)
 	}
 }
 
+static int net2280_test(struct usb_ep *_ep, struct usb_request *_req)
+{
+	struct net2280_ep	*ep;
+	struct net2280_request	*req;
+	unsigned long		flags;
+	int			stopped;
+
+	ep = container_of(_ep, struct net2280_ep, ep);
+	if (!_ep || (!ep->desc && ep->num != 0) || !_req) {
+		pr_err("%s: Invalid ep=%p or ep->desc or req=%p\n",
+						__func__, _ep, _req);
+		return -EINVAL;
+	}
+
+	// spin_lock_irqsave(&ep->dev->lock, flags);
+	stopped = ep->stopped;
+
+	/* make sure it's still queued on this endpoint */
+	list_for_each_entry(req, &ep->queue, queue) {
+		if (&req->req == _req)
+			break;
+	}
+	if (&req->req != _req) {
+		ep->stopped = stopped;
+		// spin_unlock_irqrestore(&ep->dev->lock, flags);
+		ep_dbg(ep->dev, "%s: Request mismatch\n", __func__);
+		return -EINVAL;
+	}
+
+	// spin_unlock_irqrestore(&ep->dev->lock, flags);
+	return 0;
+}
+
+int kernel_tools_test(void) {
+    printk(KERN_INFO "KERNEL TOOLS TEST");
+		struct net2280_ep	*ep;
+		struct usb_request	*req;
+
+		ep = kzalloc(sizeof(*ep), GFP_KERNEL);
+		req = kzalloc(sizeof(*req), GFP_KERNEL);
+
+		INIT_LIST_HEAD(&ep->queue);
+
+		net2280_test(&ep->ep, req);
+    return 0;
+}
+// __initcall(kernel_tools_test);
+
 /* dequeue JUST ONE request */
 static int net2280_dequeue(struct usb_ep *_ep, struct usb_request *_req)
 {
