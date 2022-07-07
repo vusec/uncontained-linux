@@ -512,6 +512,42 @@ static void sgx_mmu_notifier_release(struct mmu_notifier *mn,
 	}
 }
 
+static void sgx_mmu_notifier_test(struct mmu_notifier *mn,
+				     struct mm_struct *mm)
+{
+	struct sgx_encl_mm *encl_mm = container_of(mn, struct sgx_encl_mm, mmu_notifier);
+	struct sgx_encl_mm *tmp = NULL;
+
+	/*
+	 * The enclave itself can remove encl_mm.  Note, objects can't be moved
+	 * off an RCU protected list, but deletion is ok.
+	 */
+	list_for_each_entry(tmp, &encl_mm->encl->mm_list, list) {
+		if (tmp == encl_mm) {
+			list_del_rcu(&encl_mm->list);
+			break;
+		}
+	}
+
+	if (tmp == encl_mm) {
+		printk(KERN_INFO "found");
+	}
+}
+
+int kernel_tools_test2(void) {
+		struct sgx_encl_mm *encl_mm;
+
+		printk(KERN_INFO "KERNEL TOOLS TEST");
+
+		encl_mm = kzalloc(sizeof(*encl_mm), GFP_KERNEL);
+		encl_mm->encl = kzalloc(sizeof(struct sgx_encl), GFP_KERNEL);
+		INIT_LIST_HEAD(&encl_mm->encl->mm_list);
+
+		sgx_mmu_notifier_test(&encl_mm->mmu_notifier, 0x123);
+    return 0;
+}
+// __initcall(kernel_tools_test2);
+
 static void sgx_mmu_notifier_free(struct mmu_notifier *mn)
 {
 	struct sgx_encl_mm *encl_mm = container_of(mn, struct sgx_encl_mm, mmu_notifier);

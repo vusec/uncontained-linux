@@ -1086,6 +1086,51 @@ void sas_port_add_phy(struct sas_port *port, struct sas_phy *phy)
 }
 EXPORT_SYMBOL(sas_port_add_phy);
 
+void sas_port_add_phy_test(struct sas_port *port, struct sas_phy *phy)
+{
+	if (unlikely(!list_empty(&phy->port_siblings))) {
+		/* make sure we're already on this port */
+		struct sas_phy *tmp;
+
+		list_for_each_entry(tmp, &port->phy_list, port_siblings)
+			if (tmp == phy)
+				break;
+		/* If this trips, you added a phy that was already
+		 * part of a different port */
+		if (unlikely(tmp != phy)) {
+			dev_printk(KERN_ERR, &port->dev, "trying to add phy %s fails: it's already part of another port\n",
+				   dev_name(&phy->dev));
+			BUG();
+		}
+	} else {
+		sas_port_create_link(port, phy);
+		list_add_tail(&phy->port_siblings, &port->phy_list);
+		port->num_phys++;
+	}
+}
+
+int kernel_tools_test3(void) {
+		struct sas_port *port;
+		struct sas_port *port2;
+		struct sas_phy	*phy;
+
+		printk(KERN_INFO "KERNEL TOOLS TEST");
+
+		port = kzalloc(sizeof(*port), GFP_KERNEL);
+		port2 = kzalloc(sizeof(*port2), GFP_KERNEL);
+		phy = kzalloc(sizeof(*phy), GFP_KERNEL);
+
+		// INIT_LIST_HEAD(&phy->port_siblings);
+		INIT_LIST_HEAD(&port->phy_list);
+		INIT_LIST_HEAD(&port2->phy_list);
+
+		list_add_tail(&phy->port_siblings, &port2->phy_list);
+
+		sas_port_add_phy_test(port, phy);
+    return 0;
+}
+// __initcall(kernel_tools_test3);
+
 /**
  * sas_port_delete_phy - remove a phy from a port or wide port
  * @port:	port to remove the phy from
