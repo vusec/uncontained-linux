@@ -5672,8 +5672,10 @@ static void binder_deferred_func(struct work_struct *work)
 		if (defer & BINDER_DEFERRED_FLUSH)
 			binder_deferred_flush(proc);
 
-		if (defer & BINDER_DEFERRED_RELEASE)
+		if (defer & BINDER_DEFERRED_RELEASE) {
 			binder_deferred_release(proc); /* frees proc */
+			continue;
+		}
 	} while (proc);
 }
 static DECLARE_WORK(binder_deferred_work, binder_deferred_func);
