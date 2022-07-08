@@ -38,6 +38,11 @@
 static volatile unsigned long __uncontained_kcalloc;
 #endif /*_UNCONTAINED_KCALLOC_H*/
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+
 /* IDA to assign each registered device a unique id */
 static DEFINE_IDA(iio_ida);
 
@@ -1654,6 +1659,10 @@ struct iio_dev *iio_device_alloc(struct device *parent, int sizeof_priv)
 	}
 
 	iio_dev_opaque = kzalloc(alloc_size, GFP_KERNEL);
+	{
+		typeof((*iio_dev_opaque)) __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!iio_dev_opaque)
 		return NULL;
 
