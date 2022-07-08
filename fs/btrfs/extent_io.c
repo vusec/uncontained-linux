@@ -135,6 +135,15 @@ struct tree_entry {
 	struct rb_node rb_node;
 };
 
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct extent_state* outer;
+	struct tree_entry* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info3  = {
+	.offset = 0x0,
+	.outer = (struct extent_state*)0x1,
+};
+
 struct extent_page_data {
 	struct btrfs_bio_ctrl bio_ctrl;
 	/* tells writepage not to lock the state bits for this range
