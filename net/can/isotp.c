@@ -1407,6 +1407,7 @@ static int isotp_notifier(struct notifier_block *nb, unsigned long msg,
 			  void *ptr)
 {
 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+	struct isotp_sock *tmp;
 
 	if (dev->type != ARPHRD_CAN)
 		return NOTIFY_DONE;
@@ -1416,7 +1417,8 @@ static int isotp_notifier(struct notifier_block *nb, unsigned long msg,
 		return NOTIFY_DONE;
 
 	spin_lock(&isotp_notifier_lock);
-	list_for_each_entry(isotp_busy_notifier, &isotp_notifier_list, notifier) {
+	list_for_each_entry(tmp, &isotp_notifier_list, notifier) {
+		isotp_busy_notifier = tmp;
 		spin_unlock(&isotp_notifier_lock);
 		isotp_notify(isotp_busy_notifier, msg, dev);
 		spin_lock(&isotp_notifier_lock);
