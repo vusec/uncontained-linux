@@ -1435,6 +1435,7 @@ static int bcm_notifier(struct notifier_block *nb, unsigned long msg,
 			void *ptr)
 {
 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+	struct bcm_sock *tmp;
 
 	if (dev->type != ARPHRD_CAN)
 		return NOTIFY_DONE;
@@ -1444,7 +1445,8 @@ static int bcm_notifier(struct notifier_block *nb, unsigned long msg,
 		return NOTIFY_DONE;
 
 	spin_lock(&bcm_notifier_lock);
-	list_for_each_entry(bcm_busy_notifier, &bcm_notifier_list, notifier) {
+	list_for_each_entry(tmp, &bcm_notifier_list, notifier) {
+		bcm_busy_notifier = tmp;
 		spin_unlock(&bcm_notifier_lock);
 		bcm_notify(bcm_busy_notifier, msg, dev);
 		spin_lock(&bcm_notifier_lock);
