@@ -585,6 +585,16 @@ struct rb_entry {
 	} __packed;
 };
 
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+    struct discard_cmd* outer;
+    struct rb_entry* inner;
+    unsigned long offset;
+} __uncontained_struct_nesting_info4  = {
+    .offset = 0x0,
+    .outer = (struct discard_cmd *)0x1,
+};
+
+
 struct extent_info {
 	unsigned int fofs;		/* start offset in a file */
 	unsigned int len;		/* length of the extent */
