@@ -203,6 +203,9 @@ struct cpu_attr {
 	const struct cpumask *const map;
 };
 
+// cpu_attrs is a static array without redzones
+static struct cpu_attr* __uncontained_nosanitize_dst_cpu_attr __attribute__((used));
+
 static ssize_t show_cpus_attr(struct device *dev,
 			      struct device_attribute *attr,
 			      char *buf)
