@@ -338,9 +338,7 @@ union fpregs_state {
 	struct fxregs_state		fxsave;
 	struct swregs_state		soft;
 	struct xregs_state		xsave;
-	// no need for padding since the size is still 
-	// computed by the largest size (xsave)
-	// u8 __padding[PAGE_SIZE];
+	u8 __padding[PAGE_SIZE];
 };
 
 struct fpstate {
