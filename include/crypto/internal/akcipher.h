@@ -20,9 +20,20 @@ struct akcipher_instance {
 		struct akcipher_alg alg;
 	};
 };
-// used in unions
-static struct akcipher_alg* __uncontained_nosanitize_dst_akcipher_alg __attribute__((used));
-static struct crypto_instance* __uncontained_nosanitize_dst_crypto_instance __attribute__((used));
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct akcipher_instance* outer;
+	struct akcipher_alg* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info_akcipher_1  = {
+	.offset = __builtin_offsetof(struct akcipher_instance, alg),
+};
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct akcipher_instance* outer;
+	struct crypto_instance* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info_akcipher_2  = {
+	.offset = __builtin_offsetof(struct akcipher_instance, s.base),
+};
 
 struct crypto_akcipher_spawn {
 	struct crypto_spawn base;

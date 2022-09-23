@@ -27,9 +27,20 @@ struct skcipher_instance {
 		struct skcipher_alg alg;
 	};
 };
-// used in unions
-static struct skcipher_alg* __uncontained_nosanitize_dst_skcipher_alg __attribute__((used));
-static struct crypto_instance* __uncontained_nosanitize_dst_crypto_instance __attribute__((used));
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct skcipher_instance* outer;
+	struct skcipher_alg* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info__skcipher_1  = {
+	.offset = __builtin_offsetof(struct skcipher_instance, alg),
+};
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct skcipher_instance* outer;
+	struct crypto_instance* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info_skcipher_2  = {
+	.offset = __builtin_offsetof(struct skcipher_instance, s.base),
+};
 
 struct crypto_skcipher_spawn {
 	struct crypto_spawn base;

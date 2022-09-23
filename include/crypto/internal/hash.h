@@ -47,6 +47,13 @@ __attribute__((no_sanitize_address)) __attribute__((used)) static struct {
 } __uncontained_struct_nesting_info_ahash_1  = {
 	.offset = __builtin_offsetof(struct ahash_instance, alg),
 };
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct ahash_instance* outer;
+	struct crypto_instance* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info_ahash_3  = {
+	.offset = __builtin_offsetof(struct ahash_instance, s.base),
+};
 
 struct shash_instance {
 	void (*free)(struct shash_instance *inst);
@@ -65,6 +72,13 @@ __attribute__((no_sanitize_address)) __attribute__((used)) static struct {
 	unsigned long offset;
 } __uncontained_struct_nesting_info_shash_2  = {
 	.offset = __builtin_offsetof(struct shash_instance, alg),
+};
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct shash_instance* outer;
+	struct crypto_instance* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info_shash_4  = {
+	.offset = __builtin_offsetof(struct shash_instance, s.base),
 };
 
 struct crypto_ahash_spawn {
