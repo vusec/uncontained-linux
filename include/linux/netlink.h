@@ -222,6 +222,15 @@ struct netlink_callback {
 		long		args[6];
 	};
 };
+// https://elixir.bootlin.com/linux/latest/source/net/xfrm/xfrm_user.c#L1100
+// xfrm maps &args[1]:&args[5] to a struct xfrm_state_walk
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct netlink_callback* outer;
+	struct xfrm_state_walk* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info  = {
+	.offset = __builtin_offsetof(struct netlink_callback, args) + sizeof(long),
+};
 
 struct netlink_notify {
 	struct net *net;
