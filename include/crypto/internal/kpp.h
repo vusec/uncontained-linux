@@ -27,6 +27,20 @@ struct kpp_instance {
 		struct kpp_alg alg;
 	};
 };
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct kpp_instance* outer;
+	struct kpp_alg* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info_1  = {
+	.offset = __builtin_offsetof(struct kpp_instance, alg),
+};
+__attribute__((no_sanitize_address)) __attribute__((used)) static struct {
+	struct kpp_instance* outer;
+	struct crypto_instance* inner;
+	unsigned long offset;
+} __uncontained_struct_nesting_info_2  = {
+	.offset = __builtin_offsetof(struct kpp_instance, s.base),
+};
 
 /**
  * struct crypto_kpp_spawn - KPP algorithm spawn
