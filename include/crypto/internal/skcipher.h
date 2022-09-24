@@ -31,14 +31,14 @@ __attribute__((no_sanitize_address)) __attribute__((used)) static struct {
 	struct skcipher_instance* outer;
 	struct skcipher_alg* inner;
 	unsigned long offset;
-} __uncontained_struct_nesting_info_1  = {
+} __uncontained_struct_nesting_info__skcipher_1  = {
 	.offset = __builtin_offsetof(struct skcipher_instance, alg),
 };
 __attribute__((no_sanitize_address)) __attribute__((used)) static struct {
 	struct skcipher_instance* outer;
 	struct crypto_instance* inner;
 	unsigned long offset;
-} __uncontained_struct_nesting_info_2  = {
+} __uncontained_struct_nesting_info_skcipher_2  = {
 	.offset = __builtin_offsetof(struct skcipher_instance, s.base),
 };
 

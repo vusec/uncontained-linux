@@ -230,7 +230,7 @@ __attribute__((no_sanitize_address)) __attribute__((used)) static struct {
 	struct shash_alg* outer;
 	struct hash_alg_common* inner;
 	unsigned long offset;
-} __uncontained_struct_nesting_info  = {
+} __uncontained_struct_nesting_info_shash  = {
 	.offset = __builtin_offsetof(struct shash_alg, digestsize),
 };
 

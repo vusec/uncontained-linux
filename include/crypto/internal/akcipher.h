@@ -24,14 +24,14 @@ __attribute__((no_sanitize_address)) __attribute__((used)) static struct {
 	struct akcipher_instance* outer;
 	struct akcipher_alg* inner;
 	unsigned long offset;
-} __uncontained_struct_nesting_info_1  = {
+} __uncontained_struct_nesting_info_akcipher_1  = {
 	.offset = __builtin_offsetof(struct akcipher_instance, alg),
 };
 __attribute__((no_sanitize_address)) __attribute__((used)) static struct {
 	struct akcipher_instance* outer;
 	struct crypto_instance* inner;
 	unsigned long offset;
-} __uncontained_struct_nesting_info_2  = {
+} __uncontained_struct_nesting_info_akcipher_2  = {
 	.offset = __builtin_offsetof(struct akcipher_instance, s.base),
 };
 

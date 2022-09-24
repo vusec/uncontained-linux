@@ -29,14 +29,14 @@ __attribute__((no_sanitize_address)) __attribute__((used)) static struct {
 	struct aead_instance* outer;
 	struct aead_alg* inner;
 	unsigned long offset;
-} __uncontained_struct_nesting_info_1  = {
+} __uncontained_struct_nesting_info_aead_1  = {
 	.offset = __builtin_offsetof(struct aead_instance, alg),
 };
 __attribute__((no_sanitize_address)) __attribute__((used)) static struct {
 	struct aead_instance* outer;
 	struct crypto_instance* inner;
 	unsigned long offset;
-} __uncontained_struct_nesting_info_2  = {
+} __uncontained_struct_nesting_info_aead_2  = {
 	.offset = __builtin_offsetof(struct aead_instance, s.base),
 };
 

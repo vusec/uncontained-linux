@@ -589,7 +589,7 @@ __attribute__((no_sanitize_address)) __attribute__((used)) static struct {
     struct discard_cmd* outer;
     struct rb_entry* inner;
     unsigned long offset;
-} __uncontained_struct_nesting_info4  = {
+} __uncontained_struct_nesting_info_discad_4  = {
     .offset = 0x0,
     .outer = (struct discard_cmd *)0x1,
 };

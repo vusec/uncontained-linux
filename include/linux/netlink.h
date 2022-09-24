@@ -228,7 +228,7 @@ __attribute__((no_sanitize_address)) __attribute__((used)) static struct {
 	struct netlink_callback* outer;
 	struct xfrm_state_walk* inner;
 	unsigned long offset;
-} __uncontained_struct_nesting_info  = {
+} __uncontained_struct_nesting_info_netlink  = {
 	.offset = __builtin_offsetof(struct netlink_callback, args) + sizeof(long),
 };
 
