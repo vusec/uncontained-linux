@@ -1,0 +1,32 @@
+---
+rules:
+#  - name: inet_lookup
+#    source: "__inet_lookup_established"
+#    sink: ANY
+#   #  ignore all the flows inside the "ignore" functions
+#    ignore:
+#     - kmem_cache_free
+#     - sock_gen_put
+#     - sock_diag_destroy
+#     - sock_diag_check_cookie
+#     - sk_free
+#     - esp_output_tcp_encap
+#   #  ignore all the flows dominated by the sanitizers
+#    sanitizers:
+#     - { instruction: "load", offset: 18 } # access to skc_state
+#     - { function_call: "sk_fullsock" }
+ - name: list_entry
+   source: "__uncontained_list_entry_source"
+   sink: ANY
+  #  ignore all the flows dominated by the sanitizers
+   sanitizers:
+    - { function_call: "list_is_last" }
+    - { function_call: "list_is_first" }
+    - { function_call: "list_is_head" }
+    - { function_call: "list_empty" }
+    - { function_call: "__uncontained_list_entry_is_head" }
+   options:
+     # do not need dominance for sanitizers, just reachability
+     sanitize_reachable: true 
+     # filter out if the source is actually generated behind any sanitizer
+     sanitize_source: true
