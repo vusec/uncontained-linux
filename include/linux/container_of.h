@@ -26,6 +26,29 @@ static volatile unsigned long __container_of_ptr_diff;
 
 #endif /* _UNCONTAINED_CONTAINER_OF_H */
 
+#define __uncontained_container_of(ptr, type, member) ({				\
+	void *__mptr = (void *)(ptr);					\
+	static_assert(__same_type(*(ptr), ((type *)0)->member) ||	\
+		      __same_type(*(ptr), void),			\
+		      "pointer type mismatch in container_of()");	\
+	((type *)(__mptr - offsetof(type, member))); })
+
+static volatile unsigned long __container_of_flow_ptr_in;
+static volatile unsigned long __container_of_flow_type_in;
+static volatile unsigned long __container_of_flow_type_out;
+
+#define container_of_tainted(ptr, type, member) ({ \
+    typeof(ptr) __tmp_type_in; \
+    type *__tmp_ptr_out; \
+    __container_of_flow_ptr_in   = (unsigned long)ptr; \
+    __container_of_flow_type_in  = (unsigned long)&__tmp_type_in; \
+    __tmp_ptr_out = __uncontained_container_of(ptr, type, member); \
+    __container_of_flow_type_out = (unsigned long)&__tmp_ptr_out; \
+    (type*)__tmp_ptr_out;  })
+
+#define container_of_blacklisted(ptr, type, member) ({ \
+    __uncontained_container_of(ptr, type, member); })
+
 // define a wrapper for container_of only if kasan is enabled
 #ifdef KASAN_ENABLED
 #define container_of(ptr, type, member) ({ \
@@ -38,16 +61,11 @@ static volatile unsigned long __container_of_ptr_diff;
     __container_of_ptr_diff = (unsigned long) offsetof(type, member); \
     (type*)__container_of_ptr_out;  })
 #else
+// #define container_of(ptr, type, member) ({ \
+//     __uncontained_container_of(ptr, type, member); })
 #define container_of(ptr, type, member) ({ \
-    __uncontained_container_of(ptr, type, member); })
+    container_of_tainted(ptr, type, member); })
 #endif
-
-#define __uncontained_container_of(ptr, type, member) ({				\
-	void *__mptr = (void *)(ptr);					\
-	static_assert(__same_type(*(ptr), ((type *)0)->member) ||	\
-		      __same_type(*(ptr), void),			\
-		      "pointer type mismatch in container_of()");	\
-	((type *)(__mptr - offsetof(type, member))); })
 
 /**
  * container_of_safe - cast a member of a structure out to the containing structure
