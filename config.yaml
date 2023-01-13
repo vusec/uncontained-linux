@@ -18,7 +18,7 @@ rules:
  - name: list_entry
    source: "__uncontained_list_entry_source"
    sink: ANY
-  #  ignore all the flows dominated by the sanitizers
+   #  ignore all the flows dominated by the sanitizers
    sanitizers:
     - { function_call: "list_is_last" }
     - { function_call: "list_is_first" }
@@ -27,6 +27,31 @@ rules:
     - { function_call: "__uncontained_list_entry_is_head" }
    options:
      # do not need dominance for sanitizers, just reachability
-     sanitize_reachable: true 
+     sanitize_reachable: true
      # filter out if the source is actually generated behind any sanitizer
      sanitize_source: true
+ - name: backwards_contained
+   source: "backwards_contained"
+   sink: ANY
+   sanitizers:
+     - { function_call: "__uncontained_sanitize" }
+ - name: kobj
+   source: "kobj"
+   sink: ANY
+ - name: list_entry_correlation
+   source: "list_entry_correlation"
+   sink: ANY
+   sanitizers:
+     - { function_call: "kfree" }
+     - { function_call: "__free_pages" }
+     - { function_call: "__list_add" }
+     - { function_call: "free_unref_page" }
+     - { function_call: "___slab_alloc" }
+     - { function_call: "mempool_alloc" }
+     - { function_call: "__get_user_pages" }
+     - { function_call: "kobject_put" }
+     - { function_call: "__alloc_percpu" }
+     - { function_call: "wake_up_var" }
+     - { function_call: "__wake_up_common" }
+     - { function_call: "__queue_work" }
+     - { function_call: "__sk_free" }
