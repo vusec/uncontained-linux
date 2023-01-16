@@ -83,7 +83,7 @@ static inline void __list_add(struct list_head *new,
  * Insert a new entry after the specified head.
  * This is good for implementing stacks.
  */
-static inline void list_add(struct list_head *new, struct list_head *head)
+static noinline void list_add(struct list_head *new, struct list_head *head)
 {
 	__list_add(new, head, head->next);
 }
@@ -97,7 +97,7 @@ static inline void list_add(struct list_head *new, struct list_head *head)
  * Insert a new entry before the specified head.
  * This is useful for implementing queues.
  */
-static inline void list_add_tail(struct list_head *new, struct list_head *head)
+static noinline void list_add_tail(struct list_head *new, struct list_head *head)
 {
 	__list_add(new, head->prev, head);
 }
@@ -520,9 +520,16 @@ void* __attribute__((weak)) noinline __uncontained_list_entry_source(void* ptr);
 void* __attribute__((weak)) noinline __uncontained_list_entry_source(void* ptr) {
     return ptr;
 }
-#define list_entry(ptr, type, member)({ \
-	type* __tmp_ptr_out = container_of(ptr, type, member); \
-	(type*)__uncontained_list_entry_source((void*)__tmp_ptr_out);})
+
+static volatile unsigned long __list_entry_flow_ptr_in;
+static volatile unsigned long __list_entry_flow_type_out;
+
+#define list_entry(ptr, type, member) ({ \
+    type* __tmp_ptr_out; \
+    __list_entry_flow_ptr_in   = (unsigned long)ptr; \
+    __tmp_ptr_out = container_of(ptr, type, member); \
+    __list_entry_flow_type_out = (unsigned long)&__tmp_ptr_out; \
+    (type*)__tmp_ptr_out;  })
 
 /**
  * list_first_entry - get the first element from a list
@@ -532,8 +539,12 @@ void* __attribute__((weak)) noinline __uncontained_list_entry_source(void* ptr) 
  *
  * Note, that list is expected to be not empty.
  */
-#define list_first_entry(ptr, type, member) \
-	list_entry((ptr)->next, type, member)
+#define list_first_entry(ptr, type, member) ({ \
+  type* __tmp_ptr_out; \
+  __list_entry_flow_ptr_in   = (unsigned long)ptr; \
+  __tmp_ptr_out = container_of((ptr)->next, type, member); \
+  __list_entry_flow_type_out = (unsigned long)&__tmp_ptr_out; \
+  (type*)__tmp_ptr_out;  })
 
 /**
  * list_last_entry - get the last element from a list
@@ -543,8 +554,12 @@ void* __attribute__((weak)) noinline __uncontained_list_entry_source(void* ptr) 
  *
  * Note, that list is expected to be not empty.
  */
-#define list_last_entry(ptr, type, member) \
-	list_entry((ptr)->prev, type, member)
+#define list_last_entry(ptr, type, member) ({ \
+  type* __tmp_ptr_out; \
+  __list_entry_flow_ptr_in   = (unsigned long)ptr; \
+  __tmp_ptr_out = container_of((ptr)->prev, type, member); \
+  __list_entry_flow_type_out = (unsigned long)&__tmp_ptr_out; \
+  (type*)__tmp_ptr_out;  })
 
 /**
  * list_first_entry_or_null - get the first element from a list
