@@ -106,6 +106,11 @@ static int map_gicc_mpidr(struct acpi_subtable_header *entry,
 	return -EINVAL;
 }
 
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
+
 static phys_cpuid_t map_madt_entry(struct acpi_table_madt *madt,
 				   int type, u32 acpi_id)
 {
@@ -119,6 +124,22 @@ static phys_cpuid_t map_madt_entry(struct acpi_table_madt *madt,
 	madt_end = entry + madt->header.length;
 
 	/* Parse all entries looking for a match. */
+	{
+		static struct acpi_madt_local_apic __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
+	{
+		static struct acpi_madt_local_x2apic __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
+	{
+		static struct acpi_madt_local_sapic __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
+	{
+		static struct acpi_madt_generic_interrupt __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
 
 	entry += sizeof(struct acpi_table_madt);
 	while (entry + sizeof(struct acpi_subtable_header) < madt_end) {
