@@ -6907,6 +6907,37 @@ struct lsm_blob_sizes selinux_blob_sizes __lsm_ro_after_init = {
 	.lbs_superblock = sizeof(struct superblock_security_struct),
 };
 
+#ifndef _UNCONTAINED_ARRAY_H
+#define _UNCONTAINED_ARRAY_H
+static volatile unsigned long __uncontained_array;
+#endif /*_UNCONTAINED_ARRAY_H*/
+static void selinux_uncontained_blacklist(void) __attribute__((used)) {
+	{
+		static struct task_security_struct __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
+	{
+		static struct file_security_struct __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
+	{
+		static struct inode_security_struct __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
+	{
+		static struct ipc_security_struct __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
+	{
+		static struct msg_security_struct __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
+	{
+		static struct superblock_security_struct __uncontained_tmp0;
+		__uncontained_array = (unsigned long)&__uncontained_tmp0;
+	}
+}
+
 #ifdef CONFIG_PERF_EVENTS
 static int selinux_perf_event_open(struct perf_event_attr *attr, int type)
 {
