@@ -68,6 +68,18 @@ static struct nf_hook_entries *allocate_hook_entries_size(u16 num)
 		typeof((*e)) __uncontained_tmp102;
 		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp102;
 	}
+	{
+		struct nf_hook_entry __uncontained_tmp103;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp103;
+	}
+	{
+		struct nf_hook_ops __uncontained_tmp104;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp104;
+	}
+	{
+		struct nf_hook_entries_rcu_head __uncontained_tmp105;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp105;
+	}
 	if (e)
 		e->num_hook_entries = num;
 	return e;
