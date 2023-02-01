@@ -34,6 +34,9 @@ struct bdev_inode {
 	struct inode vfs_inode;
 };
 
+// make the type used at least once
+static struct bdev_inode _dummy_raw __attribute__((used));
+
 static inline struct bdev_inode *BDEV_I(struct inode *inode)
 {
 	return container_of(inode, struct bdev_inode, vfs_inode);
