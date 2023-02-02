@@ -3156,6 +3156,18 @@ static void mac80211_hwsim_he_capab(struct ieee80211_supported_band *sband)
 	 BIT(NL80211_IFTYPE_MESH_POINT) | \
 	 BIT(NL80211_IFTYPE_OCB))
 
+#ifndef _UNCONTAINED_COMPLEX_ALLOC_H
+#define _UNCONTAINED_COMPLEX_ALLOC_H
+static volatile unsigned long __uncontained_complex_alloc;
+#endif /*_UNCONTAINED_COMPLEX_ALLOC_H*/
+// set complex alloc
+static void uncontained_struct_80211_hwsim(void) __attribute__((used)) {
+	{
+		struct mac80211_hwsim_data __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
+}
+
 static int mac80211_hwsim_new_radio(struct genl_info *info,
 				    struct hwsim_new_radio_params *param)
 {

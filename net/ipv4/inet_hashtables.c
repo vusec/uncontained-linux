@@ -748,11 +748,12 @@ int __inet_hash_connect(struct inet_timewait_death_row *death_row,
 						  hinfo->bhash_size)];
 		tb = inet_csk(sk)->icsk_bind_hash;
 		spin_lock_bh(&head->lock);
-		if (sk_head(&tb->owners) == sk && !sk->sk_bind_node.next) {
-			inet_ehash_nolisten(sk, NULL, NULL);
-			spin_unlock_bh(&head->lock);
-			return 0;
-		}
+		// UNCONTAINED: should be sk_bind_head
+		// if (sk_head(&tb->owners) == sk && !sk->sk_bind_node.next) {
+		// 	inet_ehash_nolisten(sk, NULL, NULL);
+		// 	spin_unlock_bh(&head->lock);
+		// 	return 0;
+		// }
 		spin_unlock(&head->lock);
 		/* No definite answer... Walk to established hash table */
 		ret = check_established(death_row, sk, port, NULL);
