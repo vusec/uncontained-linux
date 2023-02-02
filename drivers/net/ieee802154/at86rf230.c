@@ -1699,6 +1699,10 @@ static int at86rf230_probe(struct spi_device *spi)
 	}
 
 	hw = ieee802154_alloc_hw(sizeof(*lp), &at86rf230_ops);
+	{
+		static typeof(*lp)  __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!hw)
 		return -ENOMEM;
 

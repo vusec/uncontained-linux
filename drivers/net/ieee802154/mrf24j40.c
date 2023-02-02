@@ -1279,6 +1279,10 @@ static int mrf24j40_probe(struct spi_device *spi)
 	/* Register with the 802154 subsystem */
 
 	hw = ieee802154_alloc_hw(sizeof(*devrec), &mrf24j40_ops);
+	{
+		static typeof(*devrec)  __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!hw)
 		goto err_ret;
 

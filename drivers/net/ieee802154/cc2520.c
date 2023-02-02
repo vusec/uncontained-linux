@@ -827,6 +827,10 @@ static int cc2520_register(struct cc2520_private *priv)
 	int ret = -ENOMEM;
 
 	priv->hw = ieee802154_alloc_hw(sizeof(*priv), &cc2520_ops);
+	{
+		static typeof(*priv)  __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!priv->hw)
 		goto err_ret;
 

@@ -1024,6 +1024,10 @@ static int atusb_probe(struct usb_interface *interface,
 	int ret = -ENOMEM;
 
 	hw = ieee802154_alloc_hw(sizeof(struct atusb), &atusb_ops);
+	{
+		static struct atusb  __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!hw)
 		return -ENOMEM;
 

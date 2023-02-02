@@ -131,6 +131,10 @@ static int fakelb_add_one(struct device *dev)
 	int err;
 
 	hw = ieee802154_alloc_hw(sizeof(*phy), &fakelb_ops);
+	{
+		static typeof(*phy)  __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!hw)
 		return -ENOMEM;
 

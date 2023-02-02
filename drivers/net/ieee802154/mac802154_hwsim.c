@@ -739,6 +739,10 @@ static int hwsim_add_one(struct genl_info *info, struct device *dev,
 	idx = hwsim_radio_idx++;
 
 	hw = ieee802154_alloc_hw(sizeof(*phy), &hwsim_ops);
+	{
+		static typeof(*phy)  __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!hw)
 		return -ENOMEM;
 

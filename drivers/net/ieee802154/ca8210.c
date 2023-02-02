@@ -3108,6 +3108,10 @@ static int ca8210_probe(struct spi_device *spi_device)
 
 	/* allocate ieee802154_hw and private data */
 	hw = ieee802154_alloc_hw(sizeof(struct ca8210_priv), &ca8210_phy_ops);
+	{
+		static struct ca8210_priv  __uncontained_tmp0;
+		__uncontained_complex_alloc = (unsigned long)&__uncontained_tmp0;
+	}
 	if (!hw) {
 		dev_crit(&spi_device->dev, "ieee802154_alloc_hw failed\n");
 		ret = -ENOMEM;
