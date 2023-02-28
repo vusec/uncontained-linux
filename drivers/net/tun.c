@@ -3361,6 +3361,8 @@ out:
 	return ret;
 }
 
+static struct socket_alloc* __uncontained_nosanitize_dst_socket_alloc __attribute__((used));
+
 static int tun_chr_open(struct inode *inode, struct file * file)
 {
 	struct net *net = current->nsproxy->net_ns;
