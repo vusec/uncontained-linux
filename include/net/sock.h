@@ -352,6 +352,9 @@ struct sk_filter;
   *	@sk_txtime_unused: unused txtime flags
   *	@ns_tracker: tracker for netns reference
   */
+
+static struct sock* __uncontained_nosanitize_dst_sock __attribute__((used));
+
 struct sock {
 	/*
 	 * Now struct inet_timewait_sock also uses sock_common, so please just
