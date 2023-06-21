@@ -258,7 +258,7 @@ static inline void list_bulk_move_tail(struct list_head *head,
  * @list: the entry to test
  * @head: the head of the list
  */
-static inline int list_is_first(const struct list_head *list, const struct list_head *head)
+__attribute__((weak)) noinline int list_is_first(const struct list_head *list, const struct list_head *head)
 {
 	return list->prev == head;
 }
@@ -268,7 +268,7 @@ static inline int list_is_first(const struct list_head *list, const struct list_
  * @list: the entry to test
  * @head: the head of the list
  */
-static inline int list_is_last(const struct list_head *list, const struct list_head *head)
+__attribute__((weak)) noinline int list_is_last(const struct list_head *list, const struct list_head *head)
 {
 	return list->next == head;
 }
@@ -278,7 +278,7 @@ static inline int list_is_last(const struct list_head *list, const struct list_h
  * @list: the entry to test
  * @head: the head of the list
  */
-static inline int list_is_head(const struct list_head *list, const struct list_head *head)
+__attribute__((weak)) noinline int list_is_head(const struct list_head *list, const struct list_head *head)
 {
 	return list == head;
 }
@@ -287,7 +287,7 @@ static inline int list_is_head(const struct list_head *list, const struct list_h
  * list_empty - tests whether a list is empty
  * @head: the list to test.
  */
-static inline int list_empty(const struct list_head *head)
+__attribute__((weak)) noinline int list_empty(const struct list_head *head)
 {
 	return READ_ONCE(head->next) == head;
 }
@@ -516,8 +516,13 @@ static inline void list_splice_tail_init(struct list_head *list,
  * @type:	the type of the struct this is embedded in.
  * @member:	the name of the list_head within the struct.
  */
-#define list_entry(ptr, type, member) \
-	container_of(ptr, type, member)
+void* __attribute__((weak)) noinline __uncontained_list_entry_source(void* ptr);
+void* __attribute__((weak)) noinline __uncontained_list_entry_source(void* ptr) {
+    return ptr;
+}
+#define list_entry(ptr, type, member)({ \
+	type* __tmp_ptr_out = container_of(ptr, type, member); \
+	(type*)__uncontained_list_entry_source((void*)__tmp_ptr_out);})
 
 /**
  * list_first_entry - get the first element from a list
@@ -552,7 +557,7 @@ static inline void list_splice_tail_init(struct list_head *list,
 #define list_first_entry_or_null(ptr, type, member) ({ \
 	struct list_head *head__ = (ptr); \
 	struct list_head *pos__ = READ_ONCE(head__->next); \
-	pos__ != head__ ? list_entry(pos__, type, member) : NULL; \
+	!list_is_head(pos__, head__) ? list_entry(pos__, type, member) : NULL; \
 })
 
 /**
@@ -625,8 +630,12 @@ static inline void list_splice_tail_init(struct list_head *list,
  * @head:	the head for your list.
  * @member:	the name of the list_head within the struct.
  */
+int __attribute__((weak)) noinline __uncontained_list_entry_is_head(int res);
+int __attribute__((weak)) noinline __uncontained_list_entry_is_head(int res) {
+    return res;
+}
 #define list_entry_is_head(pos, head, member)				\
-	(&pos->member == (head))
+	(__uncontained_list_entry_is_head(&pos->member == (head)))
 
 /**
  * list_for_each_entry	-	iterate over list of given type
@@ -721,11 +730,11 @@ static inline void list_splice_tail_init(struct list_head *list,
  * @head:	the head for your list.
  * @member:	the name of the list_head within the struct.
  */
+// NOTICE: n is type confused by design, let's patch this away to avoid FP
 #define list_for_each_entry_safe(pos, n, head, member)			\
-	for (pos = list_first_entry(head, typeof(*pos), member),	\
-		n = list_next_entry(pos, member);			\
+	for (n = pos = list_first_entry(head, typeof(*pos), member);			\
 	     !list_entry_is_head(pos, head, member); 			\
-	     pos = n, n = list_next_entry(n, member))
+	     n = pos = list_next_entry(pos, member))
 
 /**
  * list_for_each_entry_safe_continue - continue list iteration safe against removal
@@ -768,11 +777,11 @@ static inline void list_splice_tail_init(struct list_head *list,
  * Iterate backwards over list of given type, safe against removal
  * of list entry.
  */
+// NOTICE: n is type confused by design, let's patch this away to avoid FP
 #define list_for_each_entry_safe_reverse(pos, n, head, member)		\
-	for (pos = list_last_entry(head, typeof(*pos), member),		\
-		n = list_prev_entry(pos, member);			\
+	for (n = pos = list_last_entry(head, typeof(*pos), member);			\
 	     !list_entry_is_head(pos, head, member); 			\
-	     pos = n, n = list_prev_entry(n, member))
+	     pos = n = list_prev_entry(n, member))
 
 /**
  * list_safe_reset_next - reset a stale list_for_each_entry_safe loop
