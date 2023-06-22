@@ -15,20 +15,19 @@ rules:
 #    sanitizers:
 #     - { instruction: "load", offset: 18 } # access to skc_state
 #     - { function_call: "sk_fullsock" }
- - name: list_entry
+ - name: list_entry_strict
    source: "__uncontained_list_entry_source"
    sink: ANY
-   #  ignore all the flows dominated by the sanitizers
+     #  ignore all the flows dominated by the sanitizers
    sanitizers:
-    - { function_call: "list_is_last" }
-    - { function_call: "list_is_first" }
-    - { function_call: "list_is_head" }
-    - { function_call: "list_empty" }
-    - { function_call: "__uncontained_list_entry_is_head" }
+     - { function_call: "list_empty" }
+     - { function_call: "list_is_head" }
+     - { function_call: "__uncontained_list_entry_is_head" }
+     - { instruction: "cbr"}
    options:
      # do not need dominance for sanitizers, just reachability
      sanitize_reachable: true
-     # filter out if the source is actually generated behind any sanitizer
+       # filter out if the source is actually generated behind any sanitizer
      sanitize_source: true
  - name: backwards_contained
    source: "backwards_contained"
