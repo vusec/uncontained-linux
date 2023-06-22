@@ -19,6 +19,7 @@ virtual org
 virtual report
 
 @r exists@
+identifier found =~ "^(found)$";
 identifier c,member;
 expression E,x;
 iterator name list_for_each_entry;
@@ -134,6 +135,8 @@ T c;
 c = E
 |
 *c@p2
+|
+found
 )
 
 @script:python depends on org@
@@ -150,4 +153,4 @@ p2 << r.p2;
 @@
 
 msg = "ERROR: invalid reference to the index variable of the iterator on line %s" % (p1[0].line)
-coccilib.report.print_report(p2[0], msg)
+coccilib.report.print_report(p1[0], msg)
